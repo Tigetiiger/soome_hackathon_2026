@@ -85,3 +85,32 @@ Visual/structural only. All content, data, filters, views, insight cards, grid, 
 - Flat: no shadows, 3 px radii, hairlines; dense: body 13 px, h1 18 px, KPI 1.2 rem, card padding .7 rem, table cells .32 rem, top bar 44 px, grid gaps .5–.7 rem.
 - One font: Roboto, tabular numerals; licence row updated.
 - Verified: Playwright 1280 light (#overview, #trace, #inbox, #method, #causes), 400 light (#overview, #trace), 1280 dark (#trace, #inbox), 400 dark (#inbox); 0 console errors in all.
+
+## v5 — R1 design plan (designer, 2026-11-06)
+
+Implements `sites/reviews/r1_product_design_plan.md` steps 1–25 in order. Visual/layout only: content, data, filters, views and JS behaviour unchanged; the `<script id="data">` block is untouched, so `build_data.py` still re-inlines it. Built on a temp copy (`scratchpad/v5/patch.py`) and moved into place atomically.
+
+**Done:**
+1. Every SVG is sized to its container (`cw(w, el)`); the 560 px min-width rule is gone. Measured scale 0.999–1.001 for all 8 charts at 1280 and 400, and no figure scrolls at 400. The resize handler re-renders the active chart view when the width changes.
+2. Chart text uses only `font-size` 11 and 12.
+3. Last x label is end-anchored in the strip, fullness and mass-trace charts; "Jul 2026" is visible. At widths under 520 px the strip and fullness charts show 3 date ticks.
+4. Fixed mark sizes, plus a legend under the fullness chart. **Bug fixed:** the `.s-dev` CSS class overrode the `fill="var(--surface)"` attribute, so "hollow" markers (and the mass-trace line) were painted solid. They now use inline `style`.
+5. The cause bar, patterns and list share one ranked order. Colour comes from rank (`--cz-1…6`), and navy is gone from the chart.
+6–8. Top bar is one 44 px row at 1280 and 1100. At 400 it is 2 rows, 80 px, with the portal links scrolling. The side nav paints the full column.
+9–11. KPI strip (one border, no chips on overview); quieter insight cards (scope tag moved to the footer, "Show the math" is a disclosure); kicker colour shows severity only.
+12–16. Links in `--wave-ink`. Primary button is action blue (#1f6fc4). Buttons are 26 or 30 px tall. No navy outside chrome and `.seg`. Type is on the px scale. One minus sign (`nf`, axis ticks).
+17–25. Status glyphs. Neutral states in the approval lane. Chain IDs break only after a hyphen (`<wbr>`). Chips sit at the end of bullets. Verdict is a single list. Device strip uses auto-fit columns. Drift table header shortened. Outbox/audit split: 8 events take 316 px. Spacing on the 4/8/12/16/24 scale. Dark-mode tweaks.
+
+**Deviations / skipped, and why:**
+- Step 1: the resize handler re-renders the panel instead of calling `route()`, because `route()` scrolls to top. It only does so for chart views.
+- Step 5: in light mode a white hatch is invisible on the two lightest ranks (and in dark mode on the light ranks), so hatch colour is set per rank (`--czh-N`).
+- Step 7: the customer-view select is moved into the filter bar by a small matchMedia script at ≤640 px, and stays in the top bar on wide screens. A static markup move would have conflicted with step 6.
+- Step 9: the chipline already carries an Observed chip, so nothing was added there.
+- Step 12: `nav.side a{color:inherit}` would have turned the nav text dark on navy, and `.btn{color:inherit}` would have broken secondary buttons, so both get `text-decoration:none` only. In dark mode `--wave-ink` is set to #7fb5f0, as the acceptance criterion requires.
+- Step 13: the dark-mode primary keeps dark text for contrast, and is now `:not(:disabled)` so the disabled state shows.
+- Step 15: `sub`/`sup` in formulas, and step 20's 10 px inline chips, fall outside the size set. The "NEW" tag in content is neutral grey at weight 500.
+- Step 23: events use 4/8 px padding (step 23 wins over step 24). The "JSON" summary sits in the header row so that 8 rows stay ≤420 px.
+- Step 25: `--line-strong` equals `--g30` in dark mode (#4d555d, about 2:1). The vehicle bars use the new `--veh-bar` token instead (#7c868f in dark).
+- Not in the plan, left as is: the `ⓘ` icon on info kickers renders as a box in headless Chromium (pre-existing).
+
+Verified: `node --check` on the inline script; 24 screenshots `r1i_prod_<view>_<1280|400>_<light|dark>.png`, 0 console errors; approve flow, resize and dark mode spot-checked.

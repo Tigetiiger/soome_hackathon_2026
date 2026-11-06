@@ -29,36 +29,42 @@
   --shadow:none;
   --f-title:"Roboto",Helvetica,Arial,sans-serif; --f-body:"Roboto",Helvetica,Arial,sans-serif; --f-data:"Roboto",Helvetica,Arial,sans-serif;
   --fs-xs:.75rem; --fs-s:.875rem; --fs-m:1rem; --fs-l:1.125rem;
-  --r-card:3px; --r-pill:3px; --top-h:48px; color-scheme:light;
+  --r-card:3px; --r-pill:3px; --top-h:44px; color-scheme:light;
+  --cz-1:#1f6fc4; --cz-2:#7fa8dc; --cz-3:#3d4750; --cz-4:#8a95a0; --cz-5:#c5ccd3; --cz-6:#dfe4e8;
+  --czh-1:rgba(255,255,255,.45); --czh-2:rgba(255,255,255,.45); --czh-3:rgba(255,255,255,.45); --czh-4:rgba(255,255,255,.45); --czh-5:rgba(31,36,41,.3); --czh-6:rgba(31,36,41,.3); --veh-bar:var(--g30);
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#ffffff; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
+  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#eef1f3; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
   --ice:#262b30; --mint-wash:#163626; --pink-wash:#1b2c40; --amber-wash:#3a2f14; --g15:#262b30; --g5:#1e2226; --g30:#4d555d;
   --focus:#5aa0ea; --side-bg:#111417; --top-bg:#111417; --navy:#5aa0ea; --navy-hi:#7fb5f0; --mint:#5aa0ea; --mint-hover:#7fb5f0;
   --c-dev:#5aa0ea; --c-tk:#eef1f3; --c-inv:#8a95a0; --c-band-dev:rgba(90,160,234,.2); --c-band-tk:rgba(238,241,243,.12);
   --cz-side:#5aa0ea; --cz-tare:#9cc3f0; --cz-comb:#cfd5da; --cz-agree:#3a4147; --cz-small:#7c868f; --cz-dev:#2c5a8e;
   --chip-obs-fg:#eef1f3; --chip-obs-bg:#2d3338; --chip-est-fg:#9cc3f0; --chip-est-bg:#1b2c40; --chip-sim-fg:#e8bd5a; --chip-sim-bg:#3a2f14; --chip-hyp-fg:#a4adb5; --chip-hyp-bg:#262b30;
-  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#9cc3f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
+  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#7fb5f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
   --shadow:none; color-scheme:dark;
+  --cz-1:#5aa0ea; --cz-2:#9cc3f0; --cz-3:#cfd5da; --cz-4:#7c868f; --cz-5:#3a4147; --cz-6:#2d3338;
+  --czh-1:rgba(17,20,23,.45); --czh-2:rgba(17,20,23,.45); --czh-3:rgba(17,20,23,.45); --czh-4:rgba(17,20,23,.45); --czh-5:rgba(255,255,255,.55); --czh-6:rgba(255,255,255,.55); --veh-bar:#7c868f;
 }}
 /* same dark tokens for the explicit theme switch (kept in sync with the block above). Values = the SMART portal's own html.dark-mode set. */
 :root[data-theme="dark"]{
-  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#ffffff; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
+  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#eef1f3; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
   --ice:#262b30; --mint-wash:#163626; --pink-wash:#1b2c40; --amber-wash:#3a2f14; --g15:#262b30; --g5:#1e2226; --g30:#4d555d;
   --focus:#5aa0ea; --side-bg:#111417; --top-bg:#111417; --navy:#5aa0ea; --navy-hi:#7fb5f0; --mint:#5aa0ea; --mint-hover:#7fb5f0;
   --c-dev:#5aa0ea; --c-tk:#eef1f3; --c-inv:#8a95a0; --c-band-dev:rgba(90,160,234,.2); --c-band-tk:rgba(238,241,243,.12);
   --cz-side:#5aa0ea; --cz-tare:#9cc3f0; --cz-comb:#cfd5da; --cz-agree:#3a4147; --cz-small:#7c868f; --cz-dev:#2c5a8e;
   --chip-obs-fg:#eef1f3; --chip-obs-bg:#2d3338; --chip-est-fg:#9cc3f0; --chip-est-bg:#1b2c40; --chip-sim-fg:#e8bd5a; --chip-sim-bg:#3a2f14; --chip-hyp-fg:#a4adb5; --chip-hyp-bg:#262b30;
-  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#9cc3f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
+  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#7fb5f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
   --shadow:none; color-scheme:dark;
+  --cz-1:#5aa0ea; --cz-2:#9cc3f0; --cz-3:#cfd5da; --cz-4:#7c868f; --cz-5:#3a4147; --cz-6:#2d3338;
+  --czh-1:rgba(17,20,23,.45); --czh-2:rgba(17,20,23,.45); --czh-3:rgba(17,20,23,.45); --czh-4:rgba(17,20,23,.45); --czh-5:rgba(255,255,255,.55); --czh-6:rgba(255,255,255,.55); --veh-bar:#7c868f;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
 body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
 h1,h2,h3,h4{font-family:var(--f-title);font-stretch:115%;font-weight:700;line-height:1.15;color:var(--head);margin:0}
 h1{font-size:1.35rem} h2{font-size:1.2rem} h3{font-size:var(--fs-m)} h4{font-size:var(--fs-s)}
-p{margin:.45rem 0} a{color:inherit;text-decoration:underline;text-decoration-color:var(--wave);text-underline-offset:.15em}
-a:hover{color:var(--wave-ink)}
+p{margin:.45rem 0} a{color:var(--wave-ink);text-decoration:underline;text-decoration-color:var(--g30);text-underline-offset:2px}
+a:hover{text-decoration-color:currentColor}
 :focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .num,td.r{font-variant-numeric:tabular-nums}
 .sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
@@ -76,7 +82,7 @@ a:hover{color:var(--wave-ink)}
 .pn{font-size:var(--fs-xs);font-weight:700;color:inherit;text-decoration:none;padding:.3rem .55rem;border-radius:.4rem;opacity:.9}
 a.pn:hover{background:rgba(255,255,255,.12)} .pn.off{opacity:.5;cursor:not-allowed}
 .pn[aria-current="page"]{background:rgba(255,255,255,.16);opacity:1}
-.newtag{background:var(--mint);color:var(--navy);border-radius:var(--r-pill);font-size:.6rem;padding:.05rem .35rem;margin-left:.2rem}
+.newtag{background:var(--mint);color:#fff;border-radius:var(--r-pill);font-size:.6rem;padding:.05rem .35rem;margin-left:.2rem}
 .mocknote{font-size:.66rem;opacity:.75;font-style:italic}
 abbr.tip{text-decoration:underline dotted;text-underline-offset:.2em;cursor:help}
 .strip{display:grid;grid-template-columns:repeat(auto-fill,minmax(160px,1fr));gap:.5rem;margin:.5rem 0}
@@ -136,7 +142,7 @@ main{padding:1rem 1.25rem 2rem;min-width:0}
 .sev-notice{background:var(--amber-wash);color:var(--amber-ink)} .sev-notice::before{content:"◆"}
 .sev-warning{background:var(--sev-warn-bg);color:var(--sev-warn-fg)} .sev-warning::before{content:"▲"}
 .sev-none{background:var(--g15);color:var(--muted)} .sev-none::before{content:"○"}
-.tagact{background:var(--navy);color:#fff;font:700 .68rem var(--f-title);border-radius:var(--r-pill);padding:.2rem .6rem;text-transform:uppercase;letter-spacing:.04em}
+.tagact{background:var(--g15);color:var(--text);font:700 .68rem var(--f-title);border-radius:var(--r-pill);padding:.2rem .6rem;text-transform:uppercase;letter-spacing:.04em}
 /* tables */
 .tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
 table{border-collapse:collapse;width:100%;font-size:var(--fs-s)}
@@ -157,7 +163,7 @@ select,input[type=search],input[type=text]{font:400 var(--fs-s) var(--f-body);pa
 .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
 :root[data-theme="dark"] .seg button[aria-pressed="true"]{background:var(--mint);color:var(--navy)}
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{background:var(--mint);color:var(--navy)}}
-.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border:0;border-radius:var(--r-pill);font:700 .8rem/1 var(--f-body);letter-spacing:.04em;padding:.7rem 1.1rem;cursor:pointer;color:var(--navy);text-decoration:none}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.4rem;border:0;border-radius:var(--r-pill);font:700 .8rem/1 var(--f-body);letter-spacing:.04em;padding:.7rem 1.1rem;cursor:pointer;color:var(--head);text-decoration:none}
 .btn-primary{background:var(--mint)} .btn-primary:hover:not(:disabled){background:var(--mint-hover)}
 .btn-secondary{background:var(--surface);color:var(--head);border:2px solid var(--mint)}
 .btn-ghost{background:transparent;color:var(--head);border:2px solid var(--line-strong)}
@@ -168,7 +174,6 @@ select,input[type=search],input[type=text]{font:400 var(--fs-s) var(--f-body);pa
 /* charts */
 figure{margin:.5rem 0;overflow-x:auto} figcaption{font-size:var(--fs-xs);color:var(--muted);margin-top:.3rem}
 svg.chart{width:100%;height:auto;display:block}
-@media (max-width:699px){svg.chart{min-width:560px}}
 svg text{font-family:var(--f-body);fill:var(--text-2)}
 svg .ax{stroke:var(--line)} svg .ax2{stroke:var(--line-strong)}
 svg .lbl-h{fill:var(--head);font-weight:700}
@@ -178,36 +183,36 @@ svg .lbl-h{fill:var(--head);font-weight:700}
 .legend span{display:inline-flex;align-items:center;gap:.35rem}
 .sw{display:inline-block;width:14px;height:10px;border-radius:2px}
 /* explain blocks */
-.wrong{border-left:4px solid var(--amber);background:var(--amber-wash);border-radius:.5rem;padding:.65rem .9rem;font-size:var(--fs-s);color:var(--text)}
+.wrong{border-left:4px solid var(--amber);background:var(--amber-wash);border-radius:var(--r-card);padding:.65rem .9rem;font-size:var(--fs-s);color:var(--text)}
 .wrong h4{font-size:var(--fs-s);margin-bottom:.2rem;color:var(--amber-ink)}
 details{border-top:1px solid var(--line);padding:.45rem 0}
 details summary{cursor:pointer;font-weight:700;color:var(--head);font-size:var(--fs-s)}
-details.math{background:var(--surface-2);border:1px solid var(--line);border-radius:.5rem;padding:.4rem .7rem}
+details.math{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:.4rem .7rem}
 details.math ol{margin:.4rem 0;padding-left:1.2rem;font-size:var(--fs-s)} details.math li{margin:.25rem 0}
 details.math code{font-size:.78rem}
 pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem}
-pre{background:var(--code-bg);border:1px solid var(--line);border-radius:.5rem;padding:.7rem;overflow:auto;max-height:340px;margin:.5rem 0;white-space:pre}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:var(--r-card);padding:.7rem;overflow:auto;max-height:340px;margin:.5rem 0;white-space:pre}
 .verdict{display:grid;gap:.45rem;margin:.6rem 0}
-.verdict div{padding:.55rem .75rem;border-radius:.5rem;background:var(--surface-2);border:1px solid var(--line);font-size:var(--fs-s)}
+.verdict div{padding:.55rem .75rem;border-radius:var(--r-card);background:var(--surface-2);border:1px solid var(--line);font-size:var(--fs-s)}
 .verdict b.ok{color:var(--forest)} .verdict b.look{color:var(--autumn-ink)}
 .chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:.6rem 0}
-.chain div{background:var(--surface-2);border:1px solid var(--line);border-radius:.6rem;padding:.55rem;font-size:.8rem}
+.chain div{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:.55rem;font-size:.8rem}
 .chain div b{display:block;font-size:.66rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
 .chain div .v{font-weight:700;color:var(--head);word-break:break-all}
 .steps{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:.6rem 0;counter-reset:s}
-.steps>div{background:var(--surface-2);border:1px solid var(--line);border-radius:.6rem;padding:.6rem;font-size:.82rem;position:relative}
+.steps>div{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:.6rem;font-size:.82rem;position:relative}
 .steps>div b{display:block;color:var(--head);font-size:.85rem;margin-bottom:.2rem}
 .steps>div code{display:block;margin:.25rem 0;color:var(--head);white-space:normal}
 .flow{display:flex;align-items:stretch;gap:.4rem;flex-wrap:wrap;margin:.6rem 0}
-.flow .fn{flex:1 1 150px;background:var(--surface-2);border:1.5px solid var(--line-strong);border-radius:.6rem;padding:.55rem .65rem;font-size:.8rem}
+.flow .fn{flex:1 1 150px;background:var(--surface-2);border:1.5px solid var(--line-strong);border-radius:var(--r-card);padding:.55rem .65rem;font-size:.8rem}
 .flow .fn.new{border-style:dashed;border-color:var(--wave)}
 .flow .fn b{display:block;color:var(--head);font-size:.86rem}
 .flow .fn em{font-style:normal;font:700 .62rem var(--f-body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
 .flow .fn.new em{color:var(--wave-ink)}
 .flow .ar{align-self:center;font-weight:700;color:var(--muted)}
 .tiers .acc{font-family:var(--f-title);font-stretch:115%;font-weight:700;font-size:1.25rem;color:var(--head)}
-.tiers .card{border-top:5px solid var(--mint)} .tiers .card.t1{border-top-color:var(--wave)} .tiers .card.t2{border-top-color:var(--navy)}
-:root[data-theme="dark"] .tiers .card.t2{border-top-color:#9aa6ff}
+.tiers .card{border-top:5px solid var(--mint)} .tiers .card.t1{border-top-color:var(--wave)} .tiers .card.t2{border-top-color:var(--text-2)}
+:root[data-theme="dark"] .tiers .card.t2{border-top-color:var(--text-2)}
 .tiers ul,ul.clean{padding-left:1.1rem;margin:.4rem 0;font-size:var(--fs-s)} ul.clean li{margin:.25rem 0}
 .ctrl{display:flex;gap:1rem;flex-wrap:wrap;margin:.5rem 0}
 .ctrl label{font-size:.8rem;display:flex;flex-direction:column;gap:.2rem;min-width:170px;flex:1}
@@ -217,7 +222,7 @@ input[type=range]{accent-color:var(--focus);width:100%}
 .inbox{display:grid;grid-template-columns:minmax(0,.9fr) minmax(0,1.4fr);gap:1rem;align-items:start}
 .plist{list-style:none;margin:0;padding:0;display:grid;gap:.5rem}
 .pbtn{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:.65rem .8rem}
-.pbtn:hover{border-color:var(--line-strong)} .pbtn[aria-pressed="true"]{border-color:var(--navy);box-shadow:var(--shadow)}
+.pbtn:hover{border-color:var(--line-strong)} .pbtn[aria-pressed="true"]{border-color:var(--mint);box-shadow:var(--shadow)}
 :root[data-theme="dark"] .pbtn[aria-pressed="true"]{border-color:var(--mint)}
 .pbtn:focus-visible{outline:3px solid var(--focus);outline-offset:2px}
 .pbtn .t{font-family:var(--f-title);font-stretch:105%;font-weight:700;color:var(--head);font-size:.9rem;margin:.3rem 0 .15rem;line-height:1.2;display:block}
@@ -232,20 +237,20 @@ input[type=range]{accent-color:var(--focus);width:100%}
 .life li.br{background:var(--g15);color:var(--text);font-weight:700}
 .life li.prod{border-style:dashed;font-style:italic}
 .vrange{display:flex;gap:.5rem;flex-wrap:wrap;margin:.4rem 0}
-.vrange div{background:var(--surface-2);border:1px solid var(--line);border-radius:.5rem;padding:.35rem .65rem;font-size:.78rem}
+.vrange div{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:.35rem .65rem;font-size:.78rem}
 .vrange div b{display:block;font-family:var(--f-title);font-size:1rem;color:var(--head)}
-.draft{background:var(--code-bg);border:1px dashed var(--line-strong);border-radius:.5rem;padding:.7rem;font-size:.84rem;white-space:pre-wrap}
+.draft{background:var(--code-bg);border:1px dashed var(--line-strong);border-radius:var(--r-card);padding:.7rem;font-size:.84rem;white-space:pre-wrap}
 .guard{list-style:none;padding:0;margin:.4rem 0;font-size:.8rem} .guard li::before{content:"✓ ";color:var(--forest);font-weight:700} .guard li.bad::before{content:"✗ ";color:var(--autumn-ink)}
 .ev{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
-.ev span{font-size:.72rem;border:1px solid var(--line);border-radius:.4rem;padding:.15rem .4rem;background:var(--surface-2)}
-.decide{background:var(--surface-2);border:1px solid var(--line);border-radius:.6rem;padding:.6rem .8rem;margin:.6rem 0}
+.ev span{font-size:.72rem;border:1px solid var(--line);border-radius:var(--r-card);padding:.15rem .4rem;background:var(--surface-2)}
+.decide{background:var(--surface-2);border:1px solid var(--line);border-radius:var(--r-card);padding:.6rem .8rem;margin:.6rem 0}
 .check{display:flex;gap:.5rem;align-items:flex-start;font-size:var(--fs-s);margin:.2rem 0}
 .check input,.reasons input{accent-color:var(--focus)}
 .check input{width:1.1rem;height:1.1rem;margin-top:.15rem}
 .reasons{border:0;padding:0;margin:.5rem 0;font-size:var(--fs-s)} .reasons label{display:block;margin:.2rem 0}
-.done{background:var(--mint-wash);color:var(--forest);border-radius:.5rem;padding:.55rem .8rem;font-weight:600;font-size:var(--fs-s);margin-top:.4rem}
+.done{background:var(--mint-wash);color:var(--forest);border-radius:var(--r-card);padding:.55rem .8rem;font-weight:600;font-size:var(--fs-s);margin-top:.4rem}
 .done.grey{background:var(--g15);color:var(--text)}
-.evt{border:1px solid var(--line);border-radius:.5rem;padding:.45rem .65rem;margin:.4rem 0;background:var(--surface-2)}
+.evt{border:1px solid var(--line);border-radius:var(--r-card);padding:.45rem .65rem;margin:.4rem 0;background:var(--surface-2)}
 .evt.new{background:var(--mint-wash);transition:background 1.5s}
 .evt .h{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.78rem}
 .evt code{font-weight:700;color:var(--head)}
@@ -293,12 +298,11 @@ nav.side .grp{color:#bfcfde}
 .filterbar,.card,.pbtn,.strip>div,.verdict div,.chain div,.steps>div,.flow .fn,.vrange div,.evt,.decide,.draft,.wrong,details.math,pre,.ev span,.done,.life li{border-radius:var(--r-card)}
 .life li{border-radius:0}
 .btn{font-weight:500;letter-spacing:0;font-size:.82rem;padding:.6rem 1rem;border:1px solid transparent}
-.btn-primary{background:var(--navy);color:#fff} .btn-primary:hover:not(:disabled){background:var(--navy-hi)}
 .btn-secondary{border-color:var(--line-strong);color:var(--head);background:var(--surface)}
 .btn-ghost{border-color:var(--line-strong)}
 .btn-sm{padding:.42rem .75rem}
-:root[data-theme="dark"] .btn-primary{background:var(--mint);color:#0b1a2b}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary{background:var(--mint);color:#0b1a2b}}
+:root[data-theme="dark"] .btn-primary:not(:disabled){background:var(--mint);color:#0b1a2b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary:not(:disabled){background:var(--mint);color:#0b1a2b}}
 .seg{border-radius:4px;border-width:1px} .seg button{font-weight:500}
 .seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
 :root[data-theme="dark"] .seg button[aria-pressed="true"]{background:var(--mint);color:#0b1a2b}
@@ -309,8 +313,8 @@ nav.side .grp{color:#bfcfde}
 select,input[type=search],input[type=text]{border-radius:4px;border-width:1px}
 tr.sel td{background:var(--chip-est-bg)}
 tr.click:hover td{background:var(--g5)}
-.tiers .card{border-top-color:var(--c-dev)} .tiers .card.t1{border-top-color:var(--c-tk)} .tiers .card.t2{border-top-color:var(--navy)}
-:root[data-theme="dark"] .tiers .card.t2{border-top-color:var(--mint)}
+.tiers .card{border-top-color:var(--c-dev)} .tiers .card.t1{border-top-color:var(--c-tk)} .tiers .card.t2{border-top-color:var(--text-2)}
+:root[data-theme="dark"] .tiers .card.t2{border-top-color:var(--text-2)}
 .pbtn{border-width:1px} .pbtn[aria-pressed="true"]{border-color:var(--mint);border-width:1px;box-shadow:0 0 0 1px var(--mint)}
 .copy.ok{border-color:var(--forest)}
 .done{background:var(--chip-obs-bg);color:var(--chip-obs-fg)}
@@ -337,7 +341,7 @@ main{padding:.75rem 1rem 1.5rem}
 .topbar{min-height:44px;padding:.35rem .9rem;box-shadow:none}
 nav.side a{padding:.4rem .6rem;font-size:.82rem}
 .pbtn[aria-pressed="true"]{box-shadow:none;border-color:var(--mint);border-left:3px solid var(--mint)}
-.tiers .card{border-top-width:3px;border-top-color:var(--line-strong)} .tiers .card.t1{border-top-color:var(--c-dev)} .tiers .card.t2{border-top-color:var(--navy)}
+.tiers .card{border-top-width:3px;border-top-color:var(--line-strong)} .tiers .card.t1{border-top-color:var(--c-dev)} .tiers .card.t2{border-top-color:var(--text-2)}
 .wrong{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--amber-ink)}
 .evt.new{background:var(--pink-wash)}
 th{font-size:.62rem} td,th{padding:.32rem .45rem} table{font-size:.8rem}
@@ -347,16 +351,146 @@ th{font-size:.62rem} td,th{padding:.32rem .45rem} table{font-size:.8rem}
 .copy.ok{border-color:var(--forest);background:var(--mint-wash);color:var(--forest)}
 tr.sel td{background:var(--pink-wash)}
 .vwc{background:var(--pink-wash)}
+
+/* ===== v5: R1 design plan (sites/reviews/r1_product_design_plan.md), steps 1-25 ===== */
+/* 6 top bar: one 44 px row */
+.topbar{flex-wrap:nowrap;gap:.6rem;padding:0 .9rem;height:44px;min-height:0}
+.portal{flex-wrap:nowrap} .pn{white-space:nowrap;font-size:12px}
+.mocknote{display:none}
+.asof{font-size:11px;color:#b8c6d6;opacity:1}
+.topbar label span{display:none}
+.topbar select{max-width:11rem;height:28px;font-size:12px;padding:0 6px}
+.badge-syn{height:20px;line-height:20px;padding:0 .5rem;font-size:11px}
+.theme-btn{height:28px;padding:0 .6rem;font-size:12px}
+.newtag{font-size:11px;padding:0 4px}
+main .newtag{background:var(--g15);color:var(--text);border:1px solid var(--line-strong);font-weight:500}
+.tiers .acc small{font-size:13px;font-weight:400}
+/* 8 side nav paints the full column */
+@media (min-width:821px){.shell{background:linear-gradient(90deg,var(--side-bg) 0 220px,transparent 220px)}}
+main{min-height:calc(100vh - var(--top-h))}
+/* 9 KPI strip */
+#ovKpis,#pofTiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:0;border:1px solid var(--line);border-radius:3px;background:var(--surface)}
+#ovKpis>.card.kpi,#pofTiles>.card.kpi{border:0;border-left:1px solid var(--line);border-radius:0;padding:8px 12px}
+#ovKpis>.card.kpi:first-child,#pofTiles>.card.kpi:first-child{border-left:0}
+#ovKpis .kpi .row{display:block} #ovKpis .kpi .row .chip{display:none}
+#pofTiles .kpi .row{flex-direction:column;align-items:flex-start;gap:2px}
+.kpi .val{font-size:22px;font-weight:500;line-height:1.15;margin:2px 0}
+.kpi .val small{font-size:12px;font-weight:400;color:var(--muted)}
+.kpi .lbl{font:500 11px/1.3 var(--f-body);letter-spacing:.06em}
+.kpi .note{font-size:12px;color:var(--muted)}
+/* 10 insight card */
+details.math{background:none;border:0;border-top:1px solid var(--line);border-radius:0;padding:.3rem 0 0;margin-top:.35rem}
+details.math summary{font:500 12px/1.4 var(--f-body);color:var(--wave-ink)}
+details.math[open]{background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:.4rem .7rem}
+details.math ol{font-size:13px} details.math code,pre,code{font-size:12px}
+.ins .ins-n{font-size:22px} .ins .ins-n small{font-size:12px;font-weight:400;color:var(--muted)}
+.ins .ins-f{font-size:14px;font-weight:500} .ins{gap:4px} .card{padding:8px 12px}
+.ins .ins-a{font-size:13px}
+.scopetag{font-size:11px}
+/* 11 kicker colour = severity only */
+.sev{background:none;padding:0;border-radius:0;font:500 11px/1 var(--f-body);letter-spacing:.06em}
+.sev-info{background:none;color:var(--text-2)} .sev-none{background:none;color:var(--muted)}
+.sev-notice{background:none;color:var(--amber-ink)} .sev-warning{background:none;color:var(--sev-warn-fg)}
+/* 12 links */
+nav.side a,a.btn{text-decoration:none}
+.pn,.pbtn,.life a{color:inherit;text-decoration:none}
+.ins .ins-a a{font-weight:500}
+/* 13 buttons */
+.btn{height:30px;padding:0 12px;font:500 13px/1 var(--f-body);letter-spacing:0}
+.btn-sm{height:26px;padding:0 8px;font-size:12px}
+.btn-primary{background:var(--mint);color:#fff} .btn-primary:hover:not(:disabled){background:var(--mint-hover)}
+.btn:disabled{background:var(--g15);color:var(--muted);border-color:var(--line)}
+.copy{height:26px;padding:0 8px;font:500 12px/1 var(--f-body);border:1px solid var(--line-strong);border-radius:3px}
+/* 14 navy leaks */
+.tagact{background:var(--g15);color:var(--text);border:1px solid var(--line-strong);font:500 11px/1.4 var(--f-body);padding:1px 6px}
+.tiers .card.t2{border-top-color:var(--text-2)}
+/* 15 type tokens in px */
+h1{font-size:18px} h2{font-size:16px} h3{font-size:14px} h4{font-size:13px}
+.herosent{font-size:16px;font-weight:500;line-height:1.3}
+.sub{font-size:12px} .howcalc{font-size:12px}
+th{font:500 11px/1.3 var(--f-body);letter-spacing:.06em} table{font-size:12px} td,th{padding:5px 8px}
+label.f,.kpi .lbl,nav.side .grp,.flow .fn em,.chain div b{font-weight:500}
+label.f,nav.side .grp,.flow .fn em,.chain div b{font-size:11px}
+nav.side a{font-size:13px} .cnt{font-size:11px}
+.chip{font-size:11px} .chipline,.legend,figcaption{font-size:12px}
+.seg button{font-size:12px} select,input[type=search],input[type=text]{font-size:13px}
+ul.clean,.tiers ul,.check,.reasons,details summary,.wrong,.wrong h4,.done,.verdict div{font-size:13px}
+.tiers .acc{font-size:18px} .ctrl label{font-size:12px}
+.strip>div{font-size:12px} .strip>div b{font-size:14px}
+.vrange div{font-size:12px} .vrange div b{font-size:16px}
+.steps>div,.flow .fn,.chain div,.guard,.ev span,.audit ol{font-size:12px} .steps>div b,.flow .fn b{font-size:13px}
+.draft{font-size:13px}
+.pbtn .t{font-size:14px} .pbtn .m{font-size:12px}
+/* 17 row status glyph */
+.stt{display:inline-flex;align-items:center;gap:5px;white-space:nowrap}
+.stt::before{content:"";width:8px;height:8px;border-radius:50%;background:currentColor;flex:none}
+.stt-ok{color:var(--forest)}
+.stt-notice{color:var(--amber-ink)} .stt-notice::before{border-radius:0;clip-path:polygon(50% 0,100% 100%,0 100%)}
+.stt-warn{color:var(--autumn-ink)} .stt-warn::before{border-radius:1px;transform:rotate(45deg) scale(.85)}
+.stt-none{color:var(--muted)} .stt-none::before{background:transparent;border:1.5px solid currentColor}
+/* 18 proposal list states */
+.st-waiting{color:var(--text-2)} .st-approved{color:var(--forest)} .st-more{color:var(--amber-ink)} .st-rejected{color:var(--muted)}
+.pbtn .st{font-weight:500;font-size:11px}
+.life li.on{background:var(--mint-wash);color:var(--forest)}
+.life{font-size:11px} .life li{font-size:11px;padding:2px 8px}
+/* 19 chain cards */
+.chain{grid-template-columns:repeat(auto-fit,minmax(170px,1fr))}
+.chain div .v{word-break:normal;overflow-wrap:anywhere;font-size:12px;font-weight:500}
+/* 20 inline chips */
+li .chip,p .chip{height:16px;padding:0 5px;font-size:10px;vertical-align:1px}
+/* 21 verdict list */
+.verdict{gap:0;border:1px solid var(--line);border-radius:3px}
+.verdict div{background:none;border:0;border-left:3px solid var(--line-strong);border-radius:0;padding:6px 10px}
+.verdict div+div{border-top:1px solid var(--line)}
+.verdict div.ok{border-left-color:var(--forest)} .verdict div.look{border-left-color:var(--autumn-ink)}
+/* 22 device strip, drift table */
+.strip{grid-template-columns:repeat(auto-fit,minmax(150px,1fr))}
+#driftTbl th,#pofPol th{white-space:normal;line-height:1.2}
+#driftTbl td:first-child,#devTbl td:first-child,#grid td:first-child{white-space:nowrap}
+/* 24 spacing on the 4/8/12/16/24 scale */
+main{padding:12px 16px 24px}
+.filterbar{padding:8px 12px;margin-bottom:12px;gap:8px}
+.grid2,.grid3,.split,.insights{gap:12px} .grid4{gap:12px}
+.row{gap:8px}
+.mt{margin-top:12px} .mt2{margin-top:24px}
+figure{margin:8px 0} figcaption{margin-top:4px}
+.wrong,.decide,.evt,.draft,.vrange div,.chain div,.steps>div,.flow .fn{padding:8px 12px;border-radius:3px}
+/* 23 outbox / audit split (after 24 so the compact event rows win) */
+.inbox + .grid2{grid-template-columns:minmax(0,1.4fr) minmax(0,.9fr);align-items:start}
+.evt{padding:4px 8px;margin:4px 0} .evt .h{font-size:12px}
+.evt details summary{font:500 12px/1.4 var(--f-body);color:var(--wave-ink)}
+.audit{min-height:120px}
+.evt{position:relative} .evt .h{padding-right:52px;min-height:26px}
+.evt details{border-top:0;padding:0} .evt details>summary{position:absolute;top:4px;right:8px;line-height:26px}
+.evt details[open]>pre{margin:4px 0}
+/* 25 dark-mode details */
+:root[data-theme="dark"] .badge-syn{background:#c9962a;color:#1c2020}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .badge-syn{background:#c9962a;color:#1c2020}}
+/* responsive */
+@media (max-width:1000px){.inbox + .grid2{grid-template-columns:1fr}}
+@media (max-width:640px){
+  .topbar{display:grid;grid-template-columns:auto 1fr auto auto;grid-template-rows:44px 36px;align-items:center;height:auto;row-gap:0;column-gap:8px;padding:0 12px}
+  .brand{grid-row:1} .badge-syn{grid-row:1;grid-column:3} .theme-btn{grid-row:1;grid-column:4;margin-left:0}
+  .portal{grid-row:2;grid-column:1/-1;display:flex;overflow-x:auto;flex-wrap:nowrap;scrollbar-width:none}
+  .portal::-webkit-scrollbar{display:none}
+  .topbar label{display:none} .asof{display:none}
+  .filterbar .scope::before{content:"As of 31 Jul 2026 · "}
+  main{padding:12px 12px 24px}
+  #ovKpis,#pofTiles{grid-template-columns:repeat(2,minmax(0,1fr))}
+  #ovKpis>.card.kpi:nth-child(odd),#pofTiles>.card.kpi:nth-child(odd){border-left:0}
+  #ovKpis>.card.kpi:nth-child(n+3),#pofTiles>.card.kpi:nth-child(n+3){border-top:1px solid var(--line)}
+  .chain{grid-template-columns:repeat(2,minmax(0,1fr))}
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">Skip to content</a>
 <header class="topbar">
   <span class="brand">SMART</span>
-  <nav class="portal" aria-label="SMART portal (concept mock)"><span class="pn off" title="Not part of this concept mock">Fleet</span><a class="pn" href="#devices" data-tab="devices">Devices</a><span class="pn off" title="Not part of this concept mock">Reports</span><a class="pn" href="#inbox" data-tab="inbox">SMART Center</a><a class="pn" href="#overview" data-tab="overview">Verified Weight <b class="newtag">NEW</b></a></nav>
+  <nav class="portal" aria-label="SMART portal (concept mock)"><span class="pn off" title="Not part of this concept mock">Fleet</span><a class="pn" href="#devices" data-tab="devices">Devices</a><span class="pn off" title="Not part of this concept mock">Reports</span><a class="pn" href="#inbox" data-tab="inbox">SMART Center</a><a class="pn" href="#overview" data-tab="overview" title="Concept mock, not the real SMART UI">Verified Weight <b class="newtag">NEW</b></a></nav>
   <span class="mocknote">Concept mock, not the real SMART UI</span>
   <label><span>Customer view</span><select id="gSec" aria-label="Customer view (sector)"><option value="">All customers (demo portfolio)</option></select></label>
-  <span class="asof" id="asOf">As of 31 Jul 2026 · window 1 Oct 2025 – 31 Jul 2026</span>
+  <span class="asof" id="asOf" title="As of 31 Jul 2026 · window 1 Oct 2025 – 31 Jul 2026">As of 31 Jul 2026</span>
   <span class="badge-syn" title="Since AI synthetic dataset v1.0.1. Customers, haulers, contracts and prices are invented; all € are hypothetical tariffs, not savings.">Synthetic data</span>
   <button class="theme-btn" id="themeBtn" type="button">Theme: auto</button>
 </header>
@@ -380,7 +514,7 @@ tr.sel td{background:var(--pink-wash)}
     <label class="f">Stream<select id="gSt"><option value="">All</option></select></label>
     <label class="f">Schedule<select id="gPol"><option value="">All</option></select></label>
     <label class="f">Period<select id="gPer"><option value="all">Whole window</option><option value="q4">Oct–Dec 2025</option><option value="q1">Jan–Mar 2026</option><option value="q2">Apr–Jul 2026</option></select></label>
-    <div><span class="f" style="display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Device accuracy</span>
+    <div><span class="f" style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Device accuracy</span>
       <div class="seg" role="group" aria-label="Device accuracy tier"><button type="button" data-tier="T0" aria-pressed="true">T0 ±13% per lift</button><button type="button" data-tier="T1">T1 ±12% bias removed</button><button type="button" data-tier="T2">T2 ±1.4% (dataset)</button></div></div>
     <button class="btn btn-ghost btn-sm" id="gReset" type="button">Clear filters</button>
     <p class="scope" id="scopeLine" aria-live="polite"></p>
@@ -422,7 +556,7 @@ tr.sel td{background:var(--pink-wash)}
     <div class="card mt" id="liftCard">
       <div class="filters">
         <label class="f">Device<input type="text" id="tDev" list="devList" value="CMP-00392" style="width:9rem"></label><datalist id="devList"></datalist>
-        <div><span class="f" style="display:block;font-size:.7rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Examples</span>
+        <div><span class="f" style="display:block;font-size:11px;font-weight:500;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Examples</span>
           <div class="seg" role="group" aria-label="Jump to example"><button type="button" data-jump="H1">Invoice gap</button><button type="button" data-jump="NO">Says no</button><button type="button" data-jump="V06">Stored tare</button></div></div>
         <p class="howcalc" id="tDevMsg" role="status"></p>
       </div>
@@ -470,7 +604,8 @@ tr.sel td{background:var(--pink-wash)}
     <p class="sub">SMART already fills on-call containers well, so this is <b>not</b> a pickup optimiser. It is evidence for customers on fixed schedules (common in Poland and Central Europe) that a lower frequency or SMART on-call would do. Fill shows the lift was not needed; the compactor's kg is the tonnage evidence.</p>
     <div class="grid4 mt" id="pofTiles"></div>
     <div class="card mt"><div class="row"><h3 id="pofTitle">CMP-00430</h3><span class="chip c-obs"><i></i>Observed</span></div>
-      <figure><div id="pofChart"></div><figcaption>Top: daily maximum fill (grey line) and fill at each lift; hollow ring = lift labelled not needed, filled = needed; dashed line = 40% fill. Bottom: kg collected per lift by the compactor (T0 band ±26% at 2σ shown as whisker). Hauler Delta shares no tickets, so the compactor's kg is the only tonnage.</figcaption></figure></div>
+      <figure><div id="pofChart"></div><figcaption>Top: daily maximum fill (grey line) and fill at each lift; hollow ring = lift labelled not needed, filled = needed; dashed line = 40% fill. Bottom: kg collected per lift by the compactor (T0 band ±26% at 2σ shown as whisker). Hauler Delta shares no tickets, so the compactor's kg is the only tonnage.</figcaption></figure>
+      <div class="legend"><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="3.5" class="s-dev"/></svg>lift, needed</span><span><svg width="12" height="12" aria-hidden="true"><circle cx="6" cy="6" r="4.5" class="s-dev" style="fill:var(--surface)" stroke-width="1.75"/></svg>lift, labelled not needed</span><span><svg width="22" height="10" aria-hidden="true"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--line-strong)" stroke-width="1.5"/></svg>daily max fill</span><span><svg width="22" height="10" aria-hidden="true"><line x1="0" y1="5" x2="22" y2="5" stroke="var(--line-strong)" stroke-width="1.5" stroke-dasharray="5 4"/></svg>40 % fill</span></div></div>
     <div class="split mt">
       <div class="card"><div class="row"><h3>Options for the next 56 days</h3><span class="chip c-sim"><i></i>Simulated</span></div>
         <div class="tbl"><table id="pofOpts"></table></div>
@@ -551,9 +686,9 @@ tr.sel td{background:var(--pink-wash)}
         </tbody></table></div><p class="howcalc">Live examples: the <a href="#inbox">Recommendations</a> outbox.</p></div>
       <div class="card"><h3>Operator ticket ingest: give to get</h3>
         <p class="sub">Operators push tickets; they get back a reconciliation receipt and a private tare-hygiene report <b>before</b> anything reaches the customer.</p>
-        <div class="row"><b style="font-size:.85rem">POST /v1/operator/tickets</b><button class="copy" data-copy="ingestReq" type="button">Copy</button></div>
+        <div class="row"><b style="font-size:13px">POST /v1/operator/tickets</b><button class="copy" data-copy="ingestReq" type="button">Copy</button></div>
         <pre id="ingestReq"></pre>
-        <div class="row"><b style="font-size:.85rem">202 receipt (returned to the operator)</b><button class="copy" data-copy="ingestRes" type="button">Copy</button></div>
+        <div class="row"><b style="font-size:13px">202 receipt (returned to the operator)</b><button class="copy" data-copy="ingestRes" type="button">Copy</button></div>
         <pre id="ingestRes"></pre>
         <p class="howcalc">Illustrative API shape <span class="chip c-hyp"><i></i>Hypothetical</span>. Values are the real OP-E-V06 ticket from the dataset.</p></div>
     </div>
@@ -711,7 +846,8 @@ tr.sel td{background:var(--pink-wash)}
 const D = JSON.parse(document.getElementById("data").textContent);
 const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
 const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
-const nf = (v, d = 0) => v == null || isNaN(v) ? "–" : Number(v).toLocaleString("en-GB", {minimumFractionDigits: d, maximumFractionDigits: d});
+const nf = (v, d = 0) => v == null || isNaN(v) ? "–" : Number(v).toLocaleString("en-GB", {minimumFractionDigits: d, maximumFractionDigits: d}).replace(/^-/, "−");
+const tickN = v => String(v).replace(/^-/, "−");   // axis ticks: one minus sign
 const eur = (v, d = 0) => v == null ? "–" : (v < 0 ? "−€" : "€") + nf(Math.abs(v), d);
 const pct = (v, d = 0) => v == null || isNaN(v) ? "–" : nf(v * 100, d) + "%";
 const sgn = v => (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v));
@@ -762,9 +898,16 @@ const tip = (k, label) => `<abbr class="tip" title="${esc(GLOSS[k])}">${label ||
   apply();
 })();
 
+/* ---------- customer view: top bar on wide screens, filter bar at <= 640 px ---------- */
+(function placeSector() {
+  const lab = $("#gSec").closest("label"), top = $(".topbar"), fb = $(".filterbar"), mq = window.matchMedia("(max-width:640px)");
+  const put = () => { if (mq.matches) { lab.classList.add("f"); fb.insertBefore(lab, fb.firstChild); } else { lab.classList.remove("f"); top.insertBefore(lab, $("#asOf")); } };
+  mq.addEventListener ? mq.addEventListener("change", put) : mq.addListener(put); put();
+})();
+
 /* ---------- svg helpers ---------- */
 const NARROW = () => window.innerWidth < 700;
-const cw = w => NARROW() ? 560 : w;           // narrow screens: smaller viewBox + CSS min-width keeps 11px text at ~11px
+const cw = (w, el) => { const c = el && el.clientWidth; return c ? Math.max(320, Math.round(c)) : (NARROW() ? 560 : w); };   // viewBox = container width, so 11 px text renders at 11 px
 const svg = (w, h, body, title, desc) => `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><title>${esc(title)}</title>${desc ? `<desc>${esc(desc)}</desc>` : ""}${body}</svg>`;
 const ticksLin = (a, b, n) => { const s = (b - a) / n, p = Math.pow(10, Math.floor(Math.log10(s))), m = [1, 2, 2.5, 5, 10].find(m => m * p >= s) * p; const out = []; for (let v = Math.ceil(a / m) * m; v <= b + 1e-9; v += m) out.push(+v.toFixed(6)); return out; };
 
@@ -838,9 +981,9 @@ function scopeText(nd, nl) {
 function agreeStats(ls, t) { let k = 0, gt10 = 0, outZero = 0, out = 0; for (const i of ls) { const s = liftStatsT(i, t); if (s.within) k++; else { out++; if (Math.abs(LF.d_eur[i]) < RULES.ZERO_EUR) outZero++; } if (isBig(i)) gt10++; } return {n: ls.length, k, gt10, out, outZero}; }
 const math = (steps) => `<details class="math"><summary>Show the math</summary><ol>${steps.map(s => `<li>${s}</li>`).join("")}</ol></details>`;
 const RANK = {OBSERVED: 0, ESTIMATED: 1, SIMULATED: 2, HYPOTHETICAL: 3};
-const card = c => `<article class="card ins"><div class="row"><span class="sev sev-${c.sev}">${c.kind}</span><span>${c.scope ? '<span class="scopetag">fleet, not filtered</span> ' : ""}${c.tags.map(chip).join(" ")}</span></div>
+const card = c => `<article class="card ins"><div class="row"><span class="sev sev-${c.sev}">${c.kind}</span><span>${c.tags.map(chip).join(" ")}</span></div>
   <p class="ins-f">${c.finding}</p><div class="ins-n">${c.num}${c.band ? ` <small>${c.band}</small>` : ""}</div><p class="howcalc" style="margin:0">${c.rows}</p>${c.math ? math(c.math) : ""}
-  <div class="ins-a"><b>Suggested action:</b> ${c.action}<br>${c.grid ? `<a href="#trace" data-grid="${c.grid}">Open the ${c.gridN != null ? nf(c.gridN) + " " : ""}rows in the grid →</a> · ` : ""}<a href="#${c.view}"${c.jump ? ` data-jump="${c.jump}"` : ""}>${c.viewLbl} →</a></div></article>`;
+  <div class="ins-a"><b>Suggested action:</b> ${c.action}<br>${c.grid ? `<a href="#trace" data-grid="${c.grid}">Open the ${c.gridN != null ? nf(c.gridN) + " " : ""}rows in the grid →</a> · ` : ""}<a href="#${c.view}"${c.jump ? ` data-jump="${c.jump}"` : ""}>${c.viewLbl} →</a>${c.scope ? ' <span class="scopetag">fleet, not filtered</span>' : ""}</div></article>`;
 function renderOverview() {
   const {devs, lifts: ls} = filtered();
   $("#scopeLine").textContent = scopeText(devs.length, ls.length);
@@ -932,18 +1075,18 @@ function renderOverview() {
 let fleetChartsDone = false;
 function renderFleetCharts() {
   const e = F.gap_hist.edges, hw = F.gap_hist_by_tare.WEIGHED, hs = F.gap_hist_by_tare.STORED;
-  const W = cw(640), Hh = 250, L = 46, R = 12, T = 14, B = 34, pw = W - L - R, ph = Hh - T - B;
+  const W = cw(640, $("#gapHist")), Hh = 250, L = 46, R = 12, T = 14, B = 34, pw = W - L - R, ph = Hh - T - B;
   const ymax = Math.max(...hw, ...hs) * 1.08, x = v => L + (v + 60) / 120 * pw, y = v => T + ph - v / ymax * ph;
   let g = ""; ticksLin(0, ymax, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${nf(v)}</text>`);
-  [-60, -40, -20, 0, 20, 40, 60].forEach(v => g += `<text x="${x(v)}" y="${T + ph + 16}" text-anchor="middle" font-size="11">${v > 0 ? "+" : ""}${v}%</text>`);
+  [-60, -40, -20, 0, 20, 40, 60].forEach(v => g += `<text x="${x(v)}" y="${T + ph + 16}" text-anchor="middle" font-size="11">${v > 0 ? "+" : ""}${tickN(v)}%</text>`);
   const bw = F.bands["WEIGHED|SINGLE"].robust_sd_rel * 200, bs = F.bands["STORED|SINGLE"].robust_sd_rel * 200;
   g += `<rect x="${x(-bs)}" y="${T}" width="${x(bs) - x(-bs)}" height="${ph}" fill="var(--cz-tare)" opacity=".07"/><rect x="${x(-bw)}" y="${T}" width="${x(bw) - x(-bw)}" height="${ph}" fill="var(--c-tk)" opacity=".10"/>`;
-  g += `<text x="${x(bw) + 4}" y="${T + 12}" font-size="10.5">±2σ weighed ${nf(bw, 1)}%</text><text x="${x(bs) + 4}" y="${T + 26}" font-size="10.5">±2σ stored ${nf(bs, 1)}%</text>`;
+  g += `<text x="${x(bw) + 4}" y="${T + 12}" font-size="11">±2σ weighed ${nf(bw, 1)}%</text><text x="${x(bs) + 4}" y="${T + 26}" font-size="11">±2σ stored ${nf(bs, 1)}%</text>`;
   const path = arr => arr.map((c, i) => (i ? "L" : "M") + x((e[i] + e[i + 1]) / 2).toFixed(1) + " " + y(c).toFixed(1)).join("");
   g += `<path d="${path(hw)}" fill="none" stroke="var(--c-tk)" stroke-width="2.5"/><path d="${path(hs)}" fill="none" stroke="var(--cz-tare)" stroke-width="2.5" stroke-dasharray="6 4"/>`;
   g += `<text x="14" y="${T + ph / 2}" transform="rotate(-90 14 ${T + ph / 2})" text-anchor="middle" font-size="11">lifts</text>`;
   $("#gapHist").innerHTML = svg(W, Hh, g, "Histogram of device versus ticket gaps by tare method", `Weighed-tare gaps have a robust SD of ${nf(bw / 2, 1)}%, stored-tare gaps ${nf(bs / 2, 1)}%.`);
-  $("#tkBars").innerHTML = Object.keys(H).sort().map(op => { const s = F.tk_share_by_op[op] || 0; return `<div style="display:grid;grid-template-columns:7.5rem 1fr 3rem;gap:.5rem;align-items:center;font-size:.84rem;margin:.3rem 0"><span>${esc(hn(op))}</span><span style="background:var(--g15);border-radius:4px;height:12px;overflow:hidden"><span style="display:block;height:100%;width:${s * 100}%;background:var(--c-tk)"></span></span><span class="num" style="text-align:right">${s === 0 ? "<b>0%</b>" : pct(s)}</span></div>`; }).join("");
+  $("#tkBars").innerHTML = Object.keys(H).sort().map(op => { const s = F.tk_share_by_op[op] || 0; return `<div style="display:grid;grid-template-columns:7.5rem 1fr 3rem;gap:.5rem;align-items:center;font-size:13px;margin:4px 0"><span>${esc(hn(op))}</span><span style="background:var(--g15);border-radius:4px;height:12px;overflow:hidden"><span style="display:block;height:100%;width:${s * 100}%;background:var(--c-tk)"></span></span><span class="num" style="text-align:right">${s === 0 ? "<b>0%</b>" : pct(s)}</span></div>`; }).join("");
   $("#devList").innerHTML = DEV.filter(d => d.pairs > 0).map(d => `<option value="${d.id}">`).join("");
   fleetChartsDone = true;
 }
@@ -951,7 +1094,8 @@ const GRID = {outside: ["Outside the band", s => !s.within], r1: ["Rule R1: invo
   sayno: ["Outside the band but €0 on the invoice (checked and dismissed)", (s, i) => !s.within && Math.abs(LF.d_eur[i]) < RULES.ZERO_EUR], tare: [`Stored-tare tickets of vehicles off by ≥ ${RULES.TARE_VEH_KG} kg`, (s, i) => LF.tare[i] === 1 && TAREV.has(LF.veh[i])]};
 let gridKey = "outside", gridAll = false;
 document.addEventListener("click", e => { const b = e.target.closest("[data-grid]"); if (b) { gridKey = b.dataset.grid; gridAll = false; if (location.hash !== "#trace") return; e.preventDefault(); renderTraceView(); $("#gridCard").scrollIntoView(); } });
-function statusOf(s, i) { if (r1Flag(s)) return "Invoice query proposed"; if (s.within) return "Agrees"; if (Math.abs(LF.d_eur[i]) < RULES.ZERO_EUR) return "Dismissed: €0"; return "Needs a look"; }
+function statusOf(s, i) { if (r1Flag(s)) return ["Invoice query proposed", "warn"]; if (s.within) return ["Agrees", "ok"]; if (Math.abs(LF.d_eur[i]) < RULES.ZERO_EUR) return ["Dismissed: €0", "none"]; return ["Needs a look", "notice"]; }
+const statusHtml = (s, i) => { const [t, c] = statusOf(s, i); return `<span class="stt stt-${c}">${t}</span>`; };
 function renderGrid(ls) {
   const [lbl, fn] = GRID[gridKey] || GRID.outside, rows = [];
   for (const i of ls) { const s = liftStats(i); if (fn(s, i)) rows.push([i, s]); }
@@ -959,7 +1103,7 @@ function renderGrid(ls) {
   $("#gridChip").innerHTML = `${chip("OBSERVED")} ${chip("ESTIMATED")}`;
   $("#gridLbl").innerHTML = `<b>${esc(lbl)}</b> · ${nf(rows.length)} rows at ${tier} · ${esc(scopeText(filtered().devs.length, ls.length))} · change: ${Object.entries(GRID).map(([k, v]) => k === gridKey ? "" : `<a href="#trace" data-grid="${k}">${esc(v[0].split(":")[0].split("(")[0].trim())}</a>`).filter(Boolean).join(" · ")}`;
   const shown = gridAll ? rows : rows.slice(0, 50);
-  $("#grid").innerHTML = `<thead><tr><th>Lift</th><th>Date</th><th class="r">Device ± ${tip("band", "band")}</th><th class="r">Ticket</th><th class="r">Invoiced</th><th class="r">Gap</th><th class="r">${tip("z", "z")}</th><th>Cause</th><th>Status</th></tr></thead><tbody>${shown.map(([i, s]) => `<tr class="click" tabindex="0" data-lift="${i}"><td><b>${colId(i)}</b></td><td>${dayStr(LF.day[i])}</td><td class="r">${nf(s.dv)} <span class="howcalc">±${nf(2 * s.sd)}</span></td><td class="r">${nf(s.wb)} <span class="howcalc">${TARE[LF.tare[i]] === "STORED" ? "stored" : "weighed"}${LF.loads[i] > 1 ? " ×" + LF.loads[i] : ""}</span></td><td class="r">${s.inv == null ? "–" : nf(s.inv)}</td><td class="r">${sgn(s.gap)} <span class="howcalc">${nf(s.gap / s.wb * 100, 1)}%</span></td><td class="r">${s.zInv != null ? nf(s.zInv, 1) : nf(s.gap / Math.sqrt(s.sd ** 2 + s.st ** 2), 1)}</td><td>${esc(CZ.find(c => c[0] === causeKey(i))[1])}</td><td>${statusOf(s, i)}</td></tr>`).join("")}${rows.length > shown.length ? `<tr><td colspan="9"><button class="btn btn-ghost btn-sm" type="button" id="gridMore">Show all ${nf(rows.length)}</button></td></tr>` : ""}${rows.length ? "" : '<tr><td colspan="9" class="howcalc">No rows match in this view.</td></tr>'}</tbody>`;
+  $("#grid").innerHTML = `<thead><tr><th>Lift</th><th>Date</th><th class="r">Device ± ${tip("band", "band")}</th><th class="r">Ticket</th><th class="r">Invoiced</th><th class="r">Gap</th><th class="r">${tip("z", "z")}</th><th>Cause</th><th>Status</th></tr></thead><tbody>${shown.map(([i, s]) => `<tr class="click" tabindex="0" data-lift="${i}"><td><b>${colId(i)}</b></td><td>${dayStr(LF.day[i])}</td><td class="r">${nf(s.dv)} <span class="howcalc">±${nf(2 * s.sd)}</span></td><td class="r">${nf(s.wb)} <span class="howcalc">${TARE[LF.tare[i]] === "STORED" ? "stored" : "weighed"}${LF.loads[i] > 1 ? " ×" + LF.loads[i] : ""}</span></td><td class="r">${s.inv == null ? "–" : nf(s.inv)}</td><td class="r">${sgn(s.gap)} <span class="howcalc">${nf(s.gap / s.wb * 100, 1)}%</span></td><td class="r">${s.zInv != null ? nf(s.zInv, 1) : nf(s.gap / Math.sqrt(s.sd ** 2 + s.st ** 2), 1)}</td><td>${esc(CZ.find(c => c[0] === causeKey(i))[1])}</td><td>${statusHtml(s, i)}</td></tr>`).join("")}${rows.length > shown.length ? `<tr><td colspan="9"><button class="btn btn-ghost btn-sm" type="button" id="gridMore">Show all ${nf(rows.length)}</button></td></tr>` : ""}${rows.length ? "" : '<tr><td colspan="9" class="howcalc">No rows match in this view.</td></tr>'}</tbody>`;
   const m = $("#gridMore"); if (m) m.addEventListener("click", () => { gridAll = true; renderGrid(ls); });
 }
 const openLift = i => { traceState.dev = DEV[LF.dev[i]].id; traceState.lift = i; $("#tDev").value = traceState.dev; renderTrace(); $("#liftCard").scrollIntoView(); };
@@ -985,33 +1129,33 @@ function renderTrace() {
   if (traceState.lift == null || LF.dev[traceState.lift] !== di) traceState.lift = defaultLift(di);
   const i = traceState.lift, s = liftStats(i);
   $("#stripTitle").textContent = `${d.id} · ${STREAM(d.stream)} · ${hn(d.op)} · ${ls.length} lifts with a ticket (all periods)`;
-  const W = cw(760), Hh = 210, L = 46, R = 12, T = 12, B = 30, pw = W - L - R, ph = Hh - T - B;
+  const W = cw(760, $("#strip")), Hh = 210, L = 46, R = 12, T = 12, B = 30, pw = W - L - R, ph = Hh - T - B;
   const rel = ls.map(j => (LF.dev_kg[j] / LF.wb_kg[j] - 1) * 100), bnd = ls.map(j => liftStats(j).band / LF.wb_kg[j] * 100);
   const lim = Math.min(80, Math.max(15, ...rel.map(Math.abs), ...bnd) * 1.1), x = dd => L + dd / 304 * pw, cl = v => Math.max(-lim, Math.min(lim, v)), y = v => T + ph / 2 - cl(v) / lim * ph / 2;
-  let g = ""; ticksLin(-lim, lim, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${v}%</text>`);
-  [0, 61, 123, 182, 243, 303].forEach(dd => g += `<text x="${x(dd)}" y="${Hh - 8}" text-anchor="middle" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
+  let g = ""; ticksLin(-lim, lim, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${tickN(v)}%</text>`);
+  (W < 520 ? [0, 151, 303] : [0, 61, 123, 182, 243, 303]).forEach((dd, k, arr) => g += `<text x="${x(dd)}" y="${Hh - 8}" text-anchor="${k === arr.length - 1 ? "end" : "middle"}" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
   ls.forEach((j, k) => { const sel = j === i, out = Math.abs(rel[k]) > bnd[k], xx = x(LF.day[j]), clipped = Math.abs(rel[k]) > lim;
-    g += `<line x1="${xx}" x2="${xx}" y1="${y(-bnd[k])}" y2="${y(bnd[k])}" stroke="var(--c-band-dev)" stroke-width="5"/>`;
-    g += `<g class="pt" data-i="${j}" tabindex="0" role="button" aria-label="${colId(j)} ${dayStr(LF.day[j])} gap ${nf(rel[k], 1)}%${out ? ", outside band" : ""}" style="cursor:pointer">` + (clipped ? `<text x="${xx}" y="${y(rel[k]) + (rel[k] > 0 ? 9 : -2)}" text-anchor="middle" font-size="11" class="lbl-h">${rel[k] > 0 ? "▲" : "▼"}</text>` : `<circle cx="${xx}" cy="${y(rel[k])}" r="${sel ? 7 : 4.5}" class="s-dev" ${out ? 'fill="var(--surface)" stroke-width="2.5"' : ""} ${sel ? 'stroke="var(--head)" stroke-width="3"' : ""}/>`) + `<circle cx="${xx}" cy="${y(rel[k])}" r="10" fill="transparent"/></g>`; });
+    g += `<line x1="${xx}" x2="${xx}" y1="${y(-bnd[k])}" y2="${y(bnd[k])}" stroke="var(--c-band-dev)" stroke-width="4"/>`;
+    g += `<g class="pt" data-i="${j}" tabindex="0" role="button" aria-label="${colId(j)} ${dayStr(LF.day[j])} gap ${nf(rel[k], 1)}%${out ? ", outside band" : ""}" style="cursor:pointer">` + (clipped ? `<text x="${xx}" y="${y(rel[k]) + (rel[k] > 0 ? 9 : -2)}" text-anchor="middle" font-size="11" class="lbl-h">${rel[k] > 0 ? "▲" : "▼"}</text>` : `<circle cx="${xx}" cy="${y(rel[k])}" r="${sel ? 6 : out ? 4 : 3.5}" class="s-dev" stroke-width="${sel ? 3 : 2}" style="${out ? "fill:var(--surface);" : ""}${sel ? "stroke:var(--head);" : ""}"/>`) + `<circle cx="${xx}" cy="${y(rel[k])}" r="10" fill="transparent"/></g>`; });
   $("#strip").innerHTML = svg(W, Hh, g, `Device versus ticket gap per lift for ${d.id}`, `${ls.filter((j, k) => Math.abs(rel[k]) > bnd[k]).length} of ${ls.length} lifts fall outside the band at ${tier}.`);
   // band chart
   const vals = [s.dv - 2 * s.sd, s.dv + 2 * s.sd, s.wb - 2 * s.st, s.wb + 2 * s.st]; if (s.inv != null) vals.push(s.inv);
   const lo = Math.max(0, Math.min(...vals) * .92), hi = Math.max(...vals) * 1.05;
-  const W2 = cw(640), H2 = 190, L2 = 110, R2 = 110, pw2 = W2 - L2 - R2, xx = v => L2 + (v - lo) / (hi - lo) * pw2;
+  const W2 = cw(640, $("#bandChart")), H2 = 190, L2 = 110, R2 = 110, pw2 = W2 - L2 - R2, xx = v => L2 + (v - lo) / (hi - lo) * pw2;
   let b = ""; ticksLin(lo, hi, 5).forEach(v => b += `<line class="ax" x1="${xx(v)}" x2="${xx(v)}" y1="12" y2="${H2 - 28}"/><text x="${xx(v)}" y="${H2 - 12}" text-anchor="middle" font-size="11">${nf(v)}</text>`);
   b += `<text x="${W2 - 4}" y="${H2 - 12}" text-anchor="end" font-size="11">kg</text>`;
   const rowY = [38, 88, 138];
   const whisk = (yy, c, v, sd) => `<rect x="${xx(v - 2 * sd)}" y="${yy - 9}" width="${xx(v + 2 * sd) - xx(v - 2 * sd)}" height="18" rx="4" fill="var(--c-band-${c === "s-dev" ? "dev" : "tk"})"/><line x1="${xx(v - 2 * sd)}" x2="${xx(v + 2 * sd)}" y1="${yy}" y2="${yy}" class="${c}" stroke-width="2"/><line x1="${xx(v - 2 * sd)}" x2="${xx(v - 2 * sd)}" y1="${yy - 7}" y2="${yy + 7}" class="${c}" stroke-width="2"/><line x1="${xx(v + 2 * sd)}" x2="${xx(v + 2 * sd)}" y1="${yy - 7}" y2="${yy + 7}" class="${c}" stroke-width="2"/>`;
-  b += `<text x="${L2 - 10}" y="${rowY[0] + 4}" text-anchor="end" font-size="12" class="lbl-h">Compactor</text>${whisk(rowY[0], "s-dev", s.dv, s.sd)}<circle cx="${xx(s.dv)}" cy="${rowY[0]}" r="6.5" class="s-dev" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[0] + 4}" font-size="11.5">${nf(s.dv)} ±${nf(2 * s.sd)}</text>`;
-  b += `<text x="${L2 - 10}" y="${rowY[1] + 4}" text-anchor="end" font-size="12" class="lbl-h">Ticket</text>${whisk(rowY[1], "s-tk", s.wb, s.st)}<rect x="${xx(s.wb) - 6}" y="${rowY[1] - 6}" width="12" height="12" transform="rotate(45 ${xx(s.wb)} ${rowY[1]})" class="s-tk" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[1] + 4}" font-size="11.5">${nf(s.wb)} ±${nf(2 * s.st)}</text>`;
-  b += `<text x="${L2 - 10}" y="${rowY[2] + 4}" text-anchor="end" font-size="12" class="lbl-h">Invoice</text>` + (s.inv != null ? `<rect x="${xx(s.inv) - 6}" y="${rowY[2] - 6}" width="12" height="12" class="s-inv"/><line x1="${xx(s.inv)}" x2="${xx(s.inv)}" y1="${rowY[0]}" y2="${rowY[2]}" class="s-inv" stroke-dasharray="3 3" stroke-width="1.2"/><text x="${W2 - R2 + 8}" y="${rowY[2] + 4}" font-size="11.5">${nf(s.inv)} exact</text>` : `<text x="${L2 + 4}" y="${rowY[2] + 4}" font-size="11.5">no mass-priced line (${D.meta.pm[LF.pm[i]].replace(/_/g, " ").toLowerCase()})</text>`);
+  b += `<text x="${L2 - 10}" y="${rowY[0] + 4}" text-anchor="end" font-size="12" class="lbl-h">Compactor</text>${whisk(rowY[0], "s-dev", s.dv, s.sd)}<circle cx="${xx(s.dv)}" cy="${rowY[0]}" r="6.5" class="s-dev" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[0] + 4}" font-size="12">${nf(s.dv)} ±${nf(2 * s.sd)}</text>`;
+  b += `<text x="${L2 - 10}" y="${rowY[1] + 4}" text-anchor="end" font-size="12" class="lbl-h">Ticket</text>${whisk(rowY[1], "s-tk", s.wb, s.st)}<rect x="${xx(s.wb) - 6}" y="${rowY[1] - 6}" width="12" height="12" transform="rotate(45 ${xx(s.wb)} ${rowY[1]})" class="s-tk" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[1] + 4}" font-size="12">${nf(s.wb)} ±${nf(2 * s.st)}</text>`;
+  b += `<text x="${L2 - 10}" y="${rowY[2] + 4}" text-anchor="end" font-size="12" class="lbl-h">Invoice</text>` + (s.inv != null ? `<rect x="${xx(s.inv) - 6}" y="${rowY[2] - 6}" width="12" height="12" class="s-inv"/><line x1="${xx(s.inv)}" x2="${xx(s.inv)}" y1="${rowY[0]}" y2="${rowY[2]}" class="s-inv" stroke-dasharray="3 3" stroke-width="1.2"/><text x="${W2 - R2 + 8}" y="${rowY[2] + 4}" font-size="12">${nf(s.inv)} exact</text>` : `<text x="${L2 + 4}" y="${rowY[2] + 4}" font-size="12">no mass-priced line (${D.meta.pm[LF.pm[i]].replace(/_/g, " ").toLowerCase()})</text>`);
   $("#bandChart").innerHTML = svg(W2, H2, b, `Three masses for lift ${colId(i)}`, `Device ${nf(s.dv)} kg, ticket ${nf(s.wb)} kg${s.inv != null ? ", invoice " + nf(s.inv) + " kg" : ""}.`);
   const hk = HERO_BY_COL[colId(i)], h = hk ? D.heroes[hk] : null;
   $("#liftTitle").textContent = `${colId(i)} · ${dayStr(LF.day[i])}`;
   $("#liftChips").innerHTML = `${chip("OBSERVED")} ${chip("ESTIMATED")}`;
   const zdt = s.gap / Math.sqrt(s.sd ** 2 + s.st ** 2);
-  let v = `<div><b class="${s.within ? "ok" : "look"}">${s.within ? "Device and ticket agree." : "Device and ticket disagree."}</b> Gap ${sgn(s.gap)} kg (${nf(s.gap / s.wb * 100, 1)}%), ${tip("band", "band")} ±${nf(s.band)} kg, ${nf(Math.abs(zdt), 1)}${tip("σ")}${s.within ? "" : ". Likely cause: " + causeName(LF.cause[i])}.</div>`;
-  if (s.inv != null) { const ig = s.inv - s.wb; v += r1Flag(s) ? `<div><b class="look">The invoice bills ${nf(ig / 1000, 2)} t more than the ticket.</b> Both independent masses agree, so device error does not explain this (${nf(Math.abs(s.zInv), 1)}σ from the combined estimate ${nf(s.best)} ± ${nf(s.bsd)} kg at ${tier}).</div>` : Math.abs(ig) > 100 ? `<div><b class="look">The invoice differs from the ticket by ${nf(ig)} kg</b>, but the masses disagree or the evidence is under 3σ (${nf(Math.abs(s.zInv), 1)}σ), so ask for the ticket basis before disputing.</div>` : `<div><b class="ok">The invoice uses the ticket mass.</b> ${nf(s.inv)} kg billed, within ${nf(Math.abs(ig))} kg of the ticket.</div>`; }
+  let v = `<div class="${s.within ? "ok" : "look"}"><b class="${s.within ? "ok" : "look"}">${s.within ? "Device and ticket agree." : "Device and ticket disagree."}</b> Gap ${sgn(s.gap)} kg (${nf(s.gap / s.wb * 100, 1)}%), ${tip("band", "band")} ±${nf(s.band)} kg, ${nf(Math.abs(zdt), 1)}${tip("σ")}${s.within ? "" : ". Likely cause: " + causeName(LF.cause[i])}.</div>`;
+  if (s.inv != null) { const ig = s.inv - s.wb; v += r1Flag(s) ? `<div class="look"><b class="look">The invoice bills ${nf(ig / 1000, 2)} t more than the ticket.</b> Both independent masses agree, so device error does not explain this (${nf(Math.abs(s.zInv), 1)}σ from the combined estimate ${nf(s.best)} ± ${nf(s.bsd)} kg at ${tier}).</div>` : Math.abs(ig) > 100 ? `<div class="look"><b class="look">The invoice differs from the ticket by ${nf(ig)} kg</b>, but the masses disagree or the evidence is under 3σ (${nf(Math.abs(s.zInv), 1)}σ), so ask for the ticket basis before disputing.</div>` : `<div class="ok"><b class="ok">The invoice uses the ticket mass.</b> ${nf(s.inv)} kg billed, within ${nf(Math.abs(ig))} kg of the ticket.</div>`; }
   const de = LF.d_eur[i]; v += `<div><b>${Math.abs(de) < .005 ? "€0.00 at stake." : "Re-pricing on device weight: " + (de > 0 ? "+" : "−") + "€" + nf(Math.abs(de), 2) + "."}</b> ${Math.abs(de) < .005 ? "No invoice line depends on mass here, so the engine says no action." : "Difference if this lift were billed on the compactor's mass (same contract version)."} ${chip("HYPOTHETICAL")}</div>`;
   $("#verdict").innerHTML = v;
   $("#mathBox").innerHTML = math([
@@ -1029,20 +1173,21 @@ function renderTrace() {
   $("#traceHero").textContent = heroSent[hk] || (s.within ? `${colId(i)}: device and ticket agree within ±${nf(s.band)} kg.` : `${colId(i)}: device and ticket differ by ${nf(Math.abs(s.gap))} kg, outside the expected band.`);
 }
 function chainHtml(h) {
+  const wb = id => String(id).replace(/-/g, "-<wbr>");
   const t = h.ticket, ml = h.lines.find(l => ["PROCESSING", "HAUL_PER_TONNE", "MATERIAL_CREDIT"].includes(l.type));
   return `<div class="chain" aria-label="Document chain">
-    <div><b>Job</b><span class="v">${h.job}</span><br>${h.date} ${h.time}</div>
-    <div><b>Lift</b><span class="v">${h.collection_id}</span><br>${nf(h.mass_before)} → ${nf(h.mass_after)} kg, fill ${nf(h.fill_before)}%</div>
-    <div><b>Ticket</b><span class="v">${t ? t.id : "none"}</span><br>${t ? `${t.vehicle}: ${nf(t.gross)} − ${nf(t.tare)} (${t.tare_method.toLowerCase()}) = ${nf(t.net)} kg` : ""}</div>
-    <div><b>Contract</b><span class="v">${h.contract_version}</span><br>${h.contract.pricing_model.replace(/_/g, " ").toLowerCase()}${h.contract.processing_fee_cents_per_t ? `, €${nf(h.contract.processing_fee_cents_per_t / 100, 2)}/t` : ""}${h.contract.credit_share_bp ? `, credit ${h.contract.credit_share_bp / 100}%` : ""}</div>
-    <div><b>Invoice line</b><span class="v">${ml ? ml.id : "no mass line"}</span><br>${ml ? `${ml.type.toLowerCase()} ${nf(ml.qty, 3)} t × €${nf(Math.abs(ml.price), 2)} = ${eur(ml.eur, 2)}` : `${h.lines.length} lines, ${eur(h.lines.reduce((a, l) => a + l.eur, 0), 2)}`}</div></div>
+    <div><b>Job</b><span class="v">${wb(h.job)}</span><br>${h.date} ${h.time}</div>
+    <div><b>Lift</b><span class="v">${wb(h.collection_id)}</span><br>${nf(h.mass_before)} → ${nf(h.mass_after)} kg, fill ${nf(h.fill_before)}%</div>
+    <div><b>Ticket</b><span class="v">${t ? wb(t.id) : "none"}</span><br>${t ? `${t.vehicle}: ${nf(t.gross)} − ${nf(t.tare)} (${t.tare_method.toLowerCase()}) = ${nf(t.net)} kg` : ""}</div>
+    <div><b>Contract</b><span class="v">${wb(h.contract_version)}</span><br>${h.contract.pricing_model.replace(/_/g, " ").toLowerCase()}${h.contract.processing_fee_cents_per_t ? `, €${nf(h.contract.processing_fee_cents_per_t / 100, 2)}/t` : ""}${h.contract.credit_share_bp ? `, credit ${h.contract.credit_share_bp / 100}%` : ""}</div>
+    <div><b>Invoice line</b><span class="v">${ml ? wb(ml.id) : "no mass line"}</span><br>${ml ? `${ml.type.toLowerCase()} ${nf(ml.qty, 3)} t × €${nf(Math.abs(ml.price), 2)} = ${eur(ml.eur, 2)}` : `${h.lines.length} lines, ${eur(h.lines.reduce((a, l) => a + l.eur, 0), 2)}`}</div></div>
     <details><summary>All invoice lines for this job (${h.lines.length})</summary><div class="tbl"><table><thead><tr><th>Line</th><th>Type</th><th class="r">Qty</th><th class="r">€</th><th class="r">Reference €</th></tr></thead><tbody>${h.lines.map(l => { const r = h.ref_lines.find(x => x.type === l.type); return `<tr><td>${l.id}</td><td>${l.type.toLowerCase()}</td><td class="r">${nf(l.qty, 3)} ${l.unit}</td><td class="r">${nf(l.eur, 2)}</td><td class="r">${r ? nf(r.eur, 2) : "–"}</td></tr>`; }).join("")}</tbody></table></div>
     <p class="howcalc">Reference = the dataset's contract re-pricing on ${h.ref_basis.replace(/_/g, " ").toLowerCase()} ${nf(h.ref_billing_kg)} kg (${eur(h.ref_invoice_eur, 2)}, ${eur(h.ref_eur_t, 2)}/t). Labels: ${h.labels.length ? h.labels.map(x => `${x.family} ${x.eur != null ? eur(x.eur, 2) : ""} (${x.sev})`).join("; ") : "none"}.</p></details>`;
 }
 function whyHtml(i, s, h, hk) {
   const items = [];
-  items.push(`<li><b>Compactor:</b> ${nf(s.dv)} kg collected ${chip("OBSERVED")} σ ${nf(s.sd)} kg at ${tier}.</li>`);
-  items.push(`<li><b>Ticket:</b> ${nf(s.wb)} kg, ${TARE[LF.tare[i]].toLowerCase()} tare, ${LF.loads[i]} load(s) ${chip("OBSERVED")} σ ${nf(s.st)} kg.</li>`);
+  items.push(`<li><b>Compactor:</b> ${nf(s.dv)} kg collected, σ ${nf(s.sd)} kg at ${tier}. ${chip("OBSERVED")}</li>`);
+  items.push(`<li><b>Ticket:</b> ${nf(s.wb)} kg, ${TARE[LF.tare[i]].toLowerCase()} tare, ${LF.loads[i]} load(s), σ ${nf(s.st)} kg. ${chip("OBSERVED")}</li>`);
   items.push(`<li><b>Combined estimate:</b> ${nf(s.best)} ± ${nf(s.bsd)} kg (inverse-variance) ${chip("ESTIMATED")}</li>`);
   if (hk === "H1") items.push(`<li><b>Label check:</b> the dataset labels line INV-00392-202512-L045 WEIGHT_BASIS_MISMATCH, €111.61 at stake (ticket basis). Rule R1 found it without labels.</li>`);
   if (hk === "NO" || hk === "V06") items.push(`<li><b>Vehicle OP-E-V06:</b> its stored tare (15,960 kg) is 360 kg below its weighed median (16,320 kg). See <a href="#causes">Causes</a>.</li>`);
@@ -1051,13 +1196,13 @@ function whyHtml(i, s, h, hk) {
 }
 function massTrace(h) {
   const tr = h.trace; if (!tr.length) return "";
-  const W = cw(640), Hh = 200, L = 50, R = 12, T = 14, B = 30, pw = W - L - R, ph = Hh - T - B, mx = Math.max(...tr.map(p => p[1] + 2 * p[2])) * 1.05;
+  const W = cw(640, $("#traceBox")), Hh = 200, L = 50, R = 12, T = 14, B = 30, pw = W - L - R, ph = Hh - T - B, mx = Math.max(...tr.map(p => p[1] + 2 * p[2])) * 1.05;
   const x = t => L + (t + 72) / 144 * pw, y = m => T + ph - m / mx * ph;
   let g = ""; ticksLin(0, mx, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${nf(v)}</text>`);
-  [-72, -48, -24, 0, 24, 48, 72].forEach(t => g += `<text x="${x(t)}" y="${Hh - 8}" text-anchor="middle" font-size="11">${t > 0 ? "+" : ""}${t} h</text>`);
+  [-72, -48, -24, 0, 24, 48, 72].forEach((t, k, arr) => g += `<text x="${x(t)}" y="${Hh - 8}" text-anchor="${k === arr.length - 1 ? "end" : "middle"}" font-size="11">${t > 0 ? "+" : ""}${tickN(t)} h</text>`);
   let line = ""; tr.forEach((p, k) => { line += (k ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1); });
   const up = tr.map(p => x(p[0]).toFixed(1) + "," + y(p[1] + 2 * p[2]).toFixed(1)), dn = tr.slice().reverse().map(p => x(p[0]).toFixed(1) + "," + y(Math.max(0, p[1] - 2 * p[2])).toFixed(1));
-  g += `<polygon points="${up.concat(dn).join(" ")}" fill="var(--c-band-dev)"/><path d="${line}" fill="none" class="s-dev" stroke-width="2"/><line x1="${x(0)}" x2="${x(0)}" y1="${T}" y2="${T + ph}" class="ax2" stroke-dasharray="4 3" stroke-width="1.5"/><text x="${x(0) + 5}" y="${T + 12}" font-size="11">lift: ${nf(h.mass_before)} → ${nf(h.mass_after)} kg</text>`;
+  g += `<polygon points="${up.concat(dn).join(" ")}" fill="var(--c-band-dev)"/><path d="${line}" class="s-dev" style="fill:none" stroke-width="2"/><line x1="${x(0)}" x2="${x(0)}" y1="${T}" y2="${T + ph}" class="ax2" stroke-dasharray="4 3" stroke-width="1.5"/><text x="${x(0) + 5}" y="${T + 12}" font-size="11">lift: ${nf(h.mass_before)} → ${nf(h.mass_after)} kg</text>`;
   return `<h4 class="mt">Container mass around the lift</h4><figure>${svg(W, Hh, g, "Hourly container mass 72 hours either side of the lift", `Mass rises to ${nf(h.mass_before)} kg and drops to ${nf(h.mass_after)} kg at the lift.`)}<figcaption>Hourly telemetry, CMP-00392, ±2σ reported uncertainty band ${chip("OBSERVED")}</figcaption></figure>`;
 }
 $("#tDev").addEventListener("change", () => { const v = $("#tDev").value.trim().toUpperCase(); if (devIdx[v] != null) { $("#tDevMsg").textContent = ""; traceState.dev = v; traceState.lift = null; renderTrace(); } else $("#tDevMsg").textContent = `No device "${v}". Pick one from the list, e.g. CMP-00392.`; });
@@ -1076,22 +1221,23 @@ function renderCauses() {
   const nb = big.length || 1, share = Object.fromEntries(CZ.map(c => [c[0], cnt[c[0]] / nb])), ws = share.side_waste + share.stored_tare + share.combined_load;
   $("#czScope").textContent = anyFilter() ? "filtered" : "";
   $("#causeHero").textContent = big.length ? `Of ${nf(big.length)} large gaps, ${pct(ws)} come from the weighbridge side and only ${pct(share.device, 1)} from the compactor's sensor.` : "No large gaps in this view.";
-  const W = cw(760), Hh = 64, L = 8, R = 8, pw = W - L - R;
-  let g = `<defs>${CZ.map(([k, , c, p]) => `<pattern id="pt-${k}" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(${p === "d1" ? 45 : p === "d2" ? -45 : p === "d3" ? 90 : 0})"><rect width="8" height="8" fill="var(${c})"/>${p === "x" ? '<path d="M0 0L8 8M8 0L0 8" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>' : p === "v" ? "" : p === "h" ? '<circle cx="4" cy="4" r="1.3" fill="rgba(255,255,255,.6)"/>' : '<line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,.45)" stroke-width="2.5"/>'}</pattern>`).join("")}</defs>`;
-  let x0 = L; CZ.forEach(([k]) => { const w = share[k] * pw; g += `<rect x="${x0}" y="8" width="${Math.max(0, w - 2)}" height="40" fill="url(#pt-${k})" rx="3"/>`; if (w > 60) g += `<text x="${x0 + 5}" y="62" font-size="12" class="lbl-h">${nf(share[k] * 100, 1)}%</text>`; x0 += w; });
-  $("#causeBar").innerHTML = svg(W, Hh, g, "Share of large device versus ticket gaps by cause", CZ.map(([k, l]) => `${l} ${nf(share[k] * 100, 1)}%`).join(", "));
-  $("#causeList").innerHTML = `<ol class="clean" style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:.3rem .9rem">${CZ.slice().sort((a, b) => share[b[0]] - share[a[0]]).map(([k, l]) => `<li style="display:flex;gap:.45rem;align-items:center"><svg width="16" height="12" aria-hidden="true"><rect width="16" height="12" rx="2" fill="url(#pt-${k})"/></svg><b class="num">${nf(share[k] * 100, 1)}%</b> ${l} <span class="howcalc">(${cnt[k]})</span></li>`).join("")}</ol>`;
+  const W = cw(760, $("#causeBar")), Hh = 64, L = 8, R = 8, pw = W - L - R;
+  const ranked = CZ.slice().sort((a, b) => share[b[0]] - share[a[0]]), rk = Object.fromEntries(ranked.map((c, r) => [c[0], r + 1]));   // one order: bar, patterns, list; lightness = rank
+  let g = `<defs>${ranked.map(([k, , , p]) => { const hc = `var(--czh-${rk[k]})`; return `<pattern id="pt-${k}" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(${p === "d1" ? 45 : p === "d2" ? -45 : p === "d3" ? 90 : 0})"><rect width="8" height="8" fill="var(--cz-${rk[k]})"/>${p === "x" ? `<path d="M0 0L8 8M8 0L0 8" stroke="${hc}" stroke-width="1"/>` : p === "v" ? "" : p === "h" ? `<circle cx="4" cy="4" r="1.3" fill="${hc}"/>` : `<line x1="0" y1="0" x2="0" y2="8" stroke="${hc}" stroke-width="1"/>`}</pattern>`; }).join("")}</defs>`;
+  let x0 = L; ranked.forEach(([k]) => { const w = share[k] * pw; g += `<rect x="${x0}" y="8" width="${Math.max(0, w - 2)}" height="40" fill="url(#pt-${k})" rx="3"/>`; if (w > 60) g += `<text x="${x0 + 4}" y="60" font-size="12" class="lbl-h">${nf(share[k] * 100, 1)}%</text>`; x0 += w; });
+  $("#causeBar").innerHTML = svg(W, Hh, g, "Share of large device versus ticket gaps by cause", ranked.map(([k, l]) => `${l} ${nf(share[k] * 100, 1)}%`).join(", "));
+  $("#causeList").innerHTML = `<ol class="clean" style="list-style:none;padding:0;display:grid;grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:4px 12px">${ranked.map(([k, l]) => `<li style="display:flex;gap:6px;align-items:center"><svg width="16" height="12" aria-hidden="true"><rect width="16" height="12" rx="2" fill="url(#pt-${k})"/></svg><b class="num">${nf(share[k] * 100, 1)}%</b> ${l} <span class="howcalc">(${cnt[k]})</span></li>`).join("")}</ol>`;
   $("#causeCap").innerHTML = `n = ${nf(big.length)} of ${nf(ls.length)} pairs in view differ by more than 10%. Each cause has its own hatch as well as colour; small segments are labelled in the ranked list below.`;
-  const V = C.vehicles, W2 = cw(760), H2 = 260, L2 = 50, R2 = 12, T2 = 16, B2 = 30, pw2 = W2 - L2 - R2, ph2 = H2 - T2 - B2;
+  const V = C.vehicles, W2 = cw(760, $("#vehChart")), H2 = 260, L2 = 50, R2 = 12, T2 = 16, B2 = 30, pw2 = W2 - L2 - R2, ph2 = H2 - T2 - B2;
   const mx = 500, xv = k => L2 + (k + .5) / V.length * pw2, yv = v => T2 + ph2 / 2 - v / mx * ph2 / 2, bw = pw2 / V.length * .7;
-  let vg = ""; [-400, -200, 0, 200, 400].forEach(v => vg += `<line class="ax" x1="${L2}" x2="${W2 - R2}" y1="${yv(v)}" y2="${yv(v)}"/><text x="${L2 - 6}" y="${yv(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${v}</text>`);
-  V.forEach((v, k) => { const hero = v.v === "OP-E-V06" || v.v === "OP-A-V12", dim = G.op && v.op !== G.op; vg += `<rect x="${xv(k) - bw / 2}" y="${Math.min(yv(0), yv(v.off))}" width="${bw}" height="${Math.abs(yv(v.off) - yv(0))}" fill="${hero ? "var(--cz-tare)" : "var(--g30)"}" opacity="${dim ? .25 : 1}"><title>${v.v}: stored ${nf(v.stored)} kg, weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}), offset ${sgn(v.off)} kg</title></rect>`; if (hero) vg += `<text x="${xv(k) + (v.off < 0 ? 8 : -8)}" y="${yv(v.off) + 4}" font-size="11.5" class="lbl-h" text-anchor="${v.off < 0 ? "start" : "end"}">${v.v} ${sgn(v.off)} kg</text>`; });
+  let vg = ""; [-400, -200, 0, 200, 400].forEach(v => vg += `<line class="ax" x1="${L2}" x2="${W2 - R2}" y1="${yv(v)}" y2="${yv(v)}"/><text x="${L2 - 6}" y="${yv(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${tickN(v)}</text>`);
+  V.forEach((v, k) => { const hero = v.v === "OP-E-V06" || v.v === "OP-A-V12", dim = G.op && v.op !== G.op; vg += `<rect x="${xv(k) - bw / 2}" y="${Math.min(yv(0), yv(v.off))}" width="${bw}" height="${Math.abs(yv(v.off) - yv(0))}" fill="${hero ? "var(--cz-tare)" : "var(--veh-bar)"}" opacity="${dim ? .25 : 1}"><title>${v.v}: stored ${nf(v.stored)} kg, weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}), offset ${sgn(v.off)} kg</title></rect>`; if (hero) vg += `<text x="${xv(k) + (v.off < 0 ? 8 : -8)}" y="${yv(v.off) + 4}" font-size="12" class="lbl-h" text-anchor="${v.off < 0 ? "start" : "end"}">${v.v} ${sgn(v.off)} kg</text>`; });
   vg += `<text x="${L2 + 4}" y="${H2 - 8}" font-size="11">${V.length} vehicles with ≥10 stored and ≥20 weighed tares, sorted by offset</text><text x="14" y="${T2 + ph2 / 2}" transform="rotate(-90 14 ${T2 + ph2 / 2})" text-anchor="middle" font-size="11">kg</text>`;
   $("#vehChart").innerHTML = svg(W2, H2, vg, "Stored minus weighed tare for each vehicle", `${C.vehicles_abs_ge200} of ${V.length} vehicles are off by 200 kg or more.`);
   $("#vehCap").innerHTML = `${C.vehicles_abs_ge200} of ${V.length} vehicles are off by ≥200 kg. Negative = stored tare too low, so the ticket net is too high.${G.op ? " Other haulers' vehicles are dimmed." : ""}`;
   $("#vehTop").innerHTML = `<p class="howcalc"><b>Largest offsets:</b> ${V.filter(v => !G.op || v.op === G.op).sort((a, b) => Math.abs(b.off) - Math.abs(a.off)).slice(0, 5).map(v => `${v.v} ${sgn(v.off)} kg (n=${v.n_we})`).join(" · ")}</p>`;
   const vv = id => V.find(v => v.v === id);
-  $("#vehHeroes").innerHTML = ["OP-E-V06", "OP-A-V12"].map(id => { const v = vv(id), hk = id === "OP-E-V06" ? "V06" : "V12", hh = D.heroes[hk]; return `<div style="border:1px solid var(--line);border-radius:.6rem;padding:.65rem;margin:.5rem 0;background:var(--surface-2)"><b>${id}</b> · ${esc(hn(v.op))}<br><span style="font-size:.86rem">Stored ${nf(v.stored)} kg vs weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}) → nets about <b>${nf(Math.abs(v.off))} kg too ${v.off < 0 ? "high" : "low"}</b>. Split halves: ${sgn(v.off_h1)} / ${sgn(v.off_h2)} kg. Device vs ticket median ${v.rel_med_st > 0 ? "+" : ""}${nf(v.rel_med_st, 1)}% (n=${v.n_pairs_st}).</span><br><span class="howcalc">Example ${hh.collection_id}: ${hh.ticket.gross ? nf(hh.ticket.gross) : ""} − ${nf(hh.ticket.tare)} = ${nf(hh.ticket.net)} kg on the ticket, compactor ${nf(hh.dev_kg)} kg.</span> <button class="btn btn-secondary btn-sm" type="button" data-jump="${hk}">Trace it</button></div>`; }).join("") + `<p class="howcalc">Same mechanism as the "says no" lift: vehicle OP-E-V06 again, 335 kg off, €0 at stake.</p>`;
+  $("#vehHeroes").innerHTML = ["OP-E-V06", "OP-A-V12"].map(id => { const v = vv(id), hk = id === "OP-E-V06" ? "V06" : "V12", hh = D.heroes[hk]; return `<div style="border:1px solid var(--line);border-radius:3px;padding:8px 12px;margin:8px 0;background:var(--surface-2)"><b>${id}</b> · ${esc(hn(v.op))}<br><span style="font-size:13px">Stored ${nf(v.stored)} kg vs weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}) → nets about <b>${nf(Math.abs(v.off))} kg too ${v.off < 0 ? "high" : "low"}</b>. Split halves: ${sgn(v.off_h1)} / ${sgn(v.off_h2)} kg. Device vs ticket median ${v.rel_med_st > 0 ? "+" : ""}${nf(v.rel_med_st, 1)}% (n=${v.n_pairs_st}).</span><br><span class="howcalc">Example ${hh.collection_id}: ${hh.ticket.gross ? nf(hh.ticket.gross) : ""} − ${nf(hh.ticket.tare)} = ${nf(hh.ticket.net)} kg on the ticket, compactor ${nf(hh.dev_kg)} kg.</span> <button class="btn btn-secondary btn-sm" type="button" data-jump="${hk}">Trace it</button></div>`; }).join("") + `<p class="howcalc">Same mechanism as the "says no" lift: vehicle OP-E-V06 again, 335 kg off, €0 at stake.</p>`;
   const ops = Object.keys(H).sort(), PO = {};
   ls.forEach(i => { if (!isBig(i)) return; const op = DEV[LF.dev[i]].op; (PO[op] = PO[op] || {})[causeKey(i)] = (PO[op][causeKey(i)] || 0) + 1; });
   $("#causeOp").innerHTML = `<thead><tr><th>Hauler</th><th class="r">Pairs &gt;10%</th>${CZ.map(c => `<th class="r">${c[1]}</th>`).join("")}</tr></thead><tbody>${ops.map(op => { const r = PO[op]; if (!r) return `<tr><td>${esc(hn(op))}</td><td colspan="${CZ.length + 1}" class="howcalc">${(F.tk_share_by_op[op] || 0) === 0 ? "Not enough data to score (0% tickets shared)" : "No large gaps in this view"}</td></tr>`; const n = Object.values(r).reduce((a, b) => a + b, 0); return `<tr><td>${esc(hn(op))}</td><td class="r">${nf(n)}</td>${CZ.map(c => `<td class="r">${pct((r[c[0]] || 0) / n)}</td>`).join("")}</tr>`; }).join("")}</tbody>`;
@@ -1109,17 +1255,17 @@ function renderPof() {
     ["Fixed + hybrid fleet", `${eur(fh.mean)} <small>/device-yr</small>`, `Mean; median ${eur(fh.p50)}, p90 ${eur(fh.p90)}. 30–32% of their lifts not needed.`, "HYPOTHETICAL"]];
   $("#pofTiles").innerHTML = tiles.map(([l, v, n, t]) => `<div class="card kpi"><div class="row"><span class="lbl">${l}</span>${chip(t)}</div><div class="val">${v}</div><div class="note">${n}</div></div>`).join("");
   $("#pofTitle").textContent = `${P.device} · ${P.m3} m³ ${STREAM(P.stream)} · fixed ${P.per_week}×/week · ${hn(P.op)} · ${P.customer}`;
-  const W = cw(760), Hh = 340, L = 50, R = 12, T = 14, pw = W - L - R, ph = 200, kT = T + ph + 30, kH = 70, x = d => L + d / 304 * pw, y = v => T + ph - v / 100 * ph;
+  const W = cw(760, $("#pofChart")), Hh = 340, L = 50, R = 12, T = 14, pw = W - L - R, ph = 200, kT = T + ph + 30, kH = 70, x = d => L + d / 304 * pw, y = v => T + ph - v / 100 * ph;
   const kmax = Math.max(...P.lifts.map(l => l[3] * 1.26)) * 1.05, yk = k => kT + kH - k / kmax * kH;
   let g = ""; [0, 20, 40, 60, 80, 100].forEach(v => g += `<line class="${v === 40 ? "ax2" : "ax"}" ${v === 40 ? 'stroke-dasharray="5 4"' : ""} x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v}%</text>`);
-  g += `<text x="${W - R - 4}" y="${y(40) - 4}" text-anchor="end" font-size="10.5">40% fill</text>`;
-  ticksLin(0, kmax, 2).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${yk(v)}" y2="${yk(v)}"/><text x="${L - 6}" y="${yk(v) + 4}" text-anchor="end" font-size="10.5">${nf(v)}</text>`);
+  g += `<text x="${W - R - 4}" y="${y(40) - 4}" text-anchor="end" font-size="11">40% fill</text>`;
+  ticksLin(0, kmax, 2).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${yk(v)}" y2="${yk(v)}"/><text x="${L - 6}" y="${yk(v) + 4}" text-anchor="end" font-size="11">${nf(v)}</text>`);
   g += `<text x="${L}" y="${kT - 8}" font-size="11" class="lbl-h">kg per lift (compactor)</text>`;
-  [0, 61, 123, 182, 243, 303].forEach(dd => g += `<text x="${x(dd)}" y="${Hh - 6}" text-anchor="middle" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
+  (W < 520 ? [0, 151, 303] : [0, 61, 123, 182, 243, 303]).forEach((dd, k, arr) => g += `<text x="${x(dd)}" y="${Hh - 6}" text-anchor="${k === arr.length - 1 ? "end" : "middle"}" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
   g += `<path d="${P.daily.filter(p => p[1] != null).map((p, k) => (k ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1)).join("")}" fill="none" stroke="var(--line-strong)" stroke-width="1.5"/>`;
   P.lifts.forEach(l => { const cx = x(l[0] + l[1] / 24), cy = y(l[2] ?? 0), t = `${dayStr(l[0])}: fill ${l[2]}%, ${nf(l[3])} kg${l[4] ? `, not needed (${eur(l[5], 2)})` : ""}`;
-    g += l[4] ? `<circle cx="${cx}" cy="${cy}" r="5" fill="var(--surface)" class="s-dev" stroke-width="2"><title>${t}</title></circle>` : `<circle cx="${cx}" cy="${cy}" r="4.5" class="s-dev"><title>${t}</title></circle>`;
-    g += `<line x1="${cx}" x2="${cx}" y1="${yk(l[3] * .74)}" y2="${yk(l[3] * 1.26)}" stroke="var(--c-band-dev)" stroke-width="4"/><rect x="${cx - 2}" y="${yk(l[3]) - 2}" width="4" height="4" class="s-dev" ${l[4] ? 'fill="var(--surface)"' : ""}><title>${t}</title></rect>`; });
+    g += l[4] ? `<circle cx="${cx}" cy="${cy}" r="4.5" class="s-dev" style="fill:var(--surface)" stroke-width="1.75"><title>${t}</title></circle>` : `<circle cx="${cx}" cy="${cy}" r="3.5" class="s-dev"><title>${t}</title></circle>`;
+    g += `<line x1="${cx}" x2="${cx}" y1="${yk(l[3] * .74)}" y2="${yk(l[3] * 1.26)}" stroke="var(--c-band-dev)" stroke-width="4"/><rect x="${cx - 2}" y="${yk(l[3]) - 2}" width="4" height="4" class="s-dev" ${l[4] ? 'style="fill:var(--surface)"' : ""}><title>${t}</title></rect>`; });
   $("#pofChart").innerHTML = svg(W, Hh, g, `Fill level and kg per lift for ${P.device}`, `${P.n_unjust} of ${P.n_lifts} labelled lifts happened at low fill and were labelled not needed.`);
   const c0 = P.cases[0]; $("#pofCase").textContent = `${c0.case}, ${c0.at}, ${c0.h} days`;
   const be = P.cases.map(c => c.best_eur); $("#pofRange").textContent = `${eur(Math.min(...be))}–${eur(Math.max(...be))}, and ${P.cases.filter(c => c.best === "NO_ACTION").length} of ${P.cases.length} say no action`;
@@ -1137,8 +1283,8 @@ function renderDevices() {
   const {devs, lifts: ls} = filtered();
   $("#scopeLine").textContent = scopeText(devs.length, ls.length);
   const tc = F.tier_counts;
-  $("#tierBox").innerHTML = `<div class="grid3" style="gap:.5rem;grid-template-columns:repeat(3,minmax(0,1fr))">${[["T1 ready", tc.T1, "tickets for ≥50% of lifts"], ["T0 only", tc.T0, "few or no tickets"], ["No weight in dataset", tc.none, "dataset artefact: every SMART machine can run T0"]].map(([a, b, c]) => `<div style="background:var(--surface-2);border:1px solid var(--line);border-radius:.5rem;padding:.5rem"><b style="font-family:var(--f-title);font-size:1.3rem;color:var(--head)">${b}</b><div style="font-size:.75rem">${a}<br><span class="howcalc">${c}</span></div></div>`).join("")}</div><p class="howcalc" style="margin-top:.4rem">${chip("ESTIMATED")} Whole fleet; T2 platforms are not in the dataset. <span class="scopetag">fleet, not filtered</span></p>`;
-  $("#driftTbl").innerHTML = `<thead><tr><th>Detector</th><th class="r">Caught</th><th class="r">Lead days</th><th class="r">Before fix</th><th class="r">False alarms /dy</th></tr></thead><tbody>${D.drift.map(r => `<tr><td>${r.detector === "T_ticket" ? "Ticket-confirmed" : "Ticket-free watch"}</td><td class="r">${r.detected} of ${r.episodes_with_obs}</td><td class="r">${nf(r.median_lead_days)}</td><td class="r">${nf(r.median_days_before_fix, 1)}</td><td class="r">${nf(r.false_alarm_episodes_per_device_year, 2)}</td></tr>`).join("")}</tbody>`;
+  $("#tierBox").innerHTML = `<div class="grid3" style="gap:8px;grid-template-columns:repeat(3,minmax(0,1fr))">${[["T1 ready", tc.T1, "tickets for ≥50% of lifts"], ["T0 only", tc.T0, "few or no tickets"], ["No weight in dataset", tc.none, "dataset artefact: every SMART machine can run T0"]].map(([a, b, c]) => `<div style="background:var(--surface-2);border:1px solid var(--line);border-radius:3px;padding:8px"><b style="font-family:var(--f-title);font-size:22px;font-weight:500;color:var(--head)">${b}</b><div style="font-size:12px">${a}<br><span class="howcalc">${c}</span></div></div>`).join("")}</div><p class="howcalc" style="margin-top:.4rem">${chip("ESTIMATED")} Whole fleet; T2 platforms are not in the dataset. <span class="scopetag">fleet, not filtered</span></p>`;
+  $("#driftTbl").innerHTML = `<thead><tr><th>Detector</th><th class="r">Caught</th><th class="r">Lead days</th><th class="r">Before fix</th><th class="r">False alarms /<br>device-yr</th></tr></thead><tbody>${D.drift.map(r => `<tr><td>${r.detector === "T_ticket" ? "Ticket-confirmed" : "Ticket-free watch"}</td><td class="r">${r.detected} of ${r.episodes_with_obs}</td><td class="r">${nf(r.median_lead_days)}</td><td class="r">${nf(r.median_days_before_fix, 1)}</td><td class="r">${nf(r.false_alarm_episodes_per_device_year, 2)}</td></tr>`).join("")}</tbody>`;
   renderDevCard();
   renderDevTbl();
 }
@@ -1167,7 +1313,7 @@ function renderDevCard() {
     : [["Weighed", `${nf(d.t_dev, 1)} t`, `${d.lifts} lifts, 10 months, no tickets`], ["Ticket coverage", "0%", "the compactor is the only mass"]];
   $("#devCard").innerHTML = `<div class="row"><h3>${d.id} · ${STREAM(d.stream)} · ${d.m3} m³ ${esc(d.cls)} · ${esc(hn(d.op))} · ${STREAM(d.policy).toLowerCase()}</h3><span class="howcalc">SMART device card · <b>Verified Weight strip</b> <b class="newtag">NEW</b></span></div>
     <div class="strip">${strip.map(([a, b, c]) => `<div>${a}<b>${b}</b><span class="howcalc">${c}</span></div>`).join("")}</div>
-    <h4 class="mt">Pickup history</h4><div class="tbl" style="max-height:300px;overflow:auto"><table class="sticky-h"><thead><tr><th>Date</th><th>Lift</th><th class="r vwc">Weighed (device) <b class="newtag">NEW</b></th><th class="r vwc">Ticket</th><th class="r vwc">Invoiced</th><th class="vwc">Weighed status</th></tr></thead><tbody>${ls.slice(0, 12).map(i => { const s = liftStats(i); return `<tr class="click" tabindex="0" data-lift="${i}"><td>${dayStr(LF.day[i])}</td><td>${colId(i)}</td><td class="r vwc">${nf(s.dv)} <span class="howcalc">±${nf(2 * s.sd)}</span></td><td class="r vwc">${nf(s.wb)} <span class="howcalc">${TARE[LF.tare[i]] === "STORED" ? "stored" : "weighed"}</span></td><td class="r vwc">${s.inv == null ? "–" : nf(s.inv)}</td><td class="vwc">${statusOf(s, i)}</td></tr>`; }).join("") || '<tr><td colspan="6" class="howcalc">No lifts with a ticket for this device.</td></tr>'}</tbody></table></div>
+    <h4 class="mt">Pickup history</h4><div class="tbl" style="max-height:300px;overflow:auto"><table class="sticky-h"><thead><tr><th>Date</th><th>Lift</th><th class="r vwc">Weighed (device) <b class="newtag">NEW</b></th><th class="r vwc">Ticket</th><th class="r vwc">Invoiced</th><th class="vwc">Weighed status</th></tr></thead><tbody>${ls.slice(0, 12).map(i => { const s = liftStats(i); return `<tr class="click" tabindex="0" data-lift="${i}"><td>${dayStr(LF.day[i])}</td><td>${colId(i)}</td><td class="r vwc">${nf(s.dv)} <span class="howcalc">±${nf(2 * s.sd)}</span></td><td class="r vwc">${nf(s.wb)} <span class="howcalc">${TARE[LF.tare[i]] === "STORED" ? "stored" : "weighed"}</span></td><td class="r vwc">${s.inv == null ? "–" : nf(s.inv)}</td><td class="vwc">${statusHtml(s, i)}</td></tr>`; }).join("") || '<tr><td colspan="6" class="howcalc">No lifts with a ticket for this device.</td></tr>'}</tbody></table></div>
     <p class="howcalc">Columns marked NEW are what Verified Weight adds to SMART's existing pickup history. Showing the latest ${Math.min(12, ls.length)} lifts with a ticket. Click one to open it in the reconciliation view. ${chip("OBSERVED")} ${chip("ESTIMATED")}</p>`;
 }
 $("#devCard").addEventListener("click", e => { const tr = e.target.closest("tr[data-lift]"); if (tr) { const i = +tr.dataset.lift; traceState.dev = DEV[LF.dev[i]].id; traceState.lift = i; $("#tDev").value = traceState.dev; location.hash = "trace"; } });
@@ -1222,7 +1368,7 @@ function renderInbox() {
   $("#inboxCnt").textContent = waiting;
   $("#scopeLine").textContent = "Proposals are pre-computed on the whole dataset; filters do not apply in the approval lane.";
   $("#inboxHero").textContent = waiting ? `${waiting} proposal${waiting > 1 ? "s are" : " is"} open. Nothing is sent without your approval.` : "All proposals decided. Every decision is in the outbox and the audit log.";
-  $("#plist").innerHTML = PROPS.map(p => `<li><button class="pbtn" type="button" data-p="${p.id}" aria-pressed="${st.sel === p.id}"><span class="row" style="justify-content:flex-start"><span class="sev sev-${p.sev}">${p.sev}</span><span style="font:700 .7rem var(--f-body);letter-spacing:.04em">${ACTION_LBL[p.action]}</span><span class="st st-${st.status[p.id]}">${STL[st.status[p.id]]}</span></span><span class="t">${esc(p.title)}</span><span class="m">${esc(p.id)} · ${esc(p.rule)} · ${p.value.p50 == null ? "no € claimed" : eur(p.value.p50) + " " + esc(p.value.unit.split("(")[0])}</span></button></li>`).join("");
+  $("#plist").innerHTML = PROPS.map(p => `<li><button class="pbtn" type="button" data-p="${p.id}" aria-pressed="${st.sel === p.id}"><span class="row" style="justify-content:flex-start"><span class="sev sev-${p.sev}">${p.sev}</span><span style="font:500 11px var(--f-body);letter-spacing:.04em">${ACTION_LBL[p.action]}</span><span class="st st-${st.status[p.id]}">${STL[st.status[p.id]]}</span></span><span class="t">${esc(p.title)}</span><span class="m">${esc(p.id)} · ${esc(p.rule)} · ${p.value.p50 == null ? "no € claimed" : eur(p.value.p50) + " " + esc(p.value.unit.split("(")[0])}</span></button></li>`).join("");
   const p = PROPS.find(x => x.id === st.sel), s = st.status[p.id], v = p.value, open = s === "waiting" || s === "more";
   const sample = LLM_SAMPLE[p.id], mode = sample ? draftMode : "tpl", text = mode === "llm" ? sample + (badDraft ? BAD_ADD : "") : draft(p), gd = mode === "llm" ? guard(p, text) : null;
   const decide = open ? `<div class="decide"><label class="check"><input type="checkbox" id="chk" ${st.reviewed[p.id] ? "checked" : ""}> I have reviewed the ${p.evidence.length} evidence rows and the limits below.</label>
@@ -1235,8 +1381,8 @@ function renderInbox() {
     <p style="margin:.3rem 0"><b>${v.p50 == null ? "No € claimed" : eur(v.p50, Math.abs(v.p50) < 1000 ? 2 : 0)}</b> <span class="howcalc">${esc(v.unit)}</span> ${chip(v.tag)} · <span class="howcalc">To: ${esc(p.to)} · confidence ${p.conf}</span></p>
     ${lifeHtml(p)}${decide}
     <h4 class="mt">Why</h4><ul class="clean">${p.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
-    <h4>Evidence rows</h4><div class="ev">${p.evidence.map(e => `<span>${chip(e[2])} <code>${esc(e[0])}</code> ${esc(e[1])}</span>`).join("")}</div>
-    <h4 class="mt">Expected value ${chip(v.tag)}</h4><div class="vrange">${["p10", "p50", "p90"].map(k => `<div>${k}<b>${v[k] == null ? "–" : eur(v[k], Math.abs(v[k]) < 1000 ? 2 : 0)}</b></div>`).join("")}<div style="flex:1;min-width:12rem">unit<b style="font-size:.85rem;font-family:var(--f-body)">${esc(v.unit)}</b></div></div>
+    <h4>Evidence rows</h4><div class="ev">${p.evidence.map(e => `<span><code>${esc(e[0])}</code> ${esc(e[1])} ${chip(e[2])}</span>`).join("")}</div>
+    <h4 class="mt">Expected value ${chip(v.tag)}</h4><div class="vrange">${["p10", "p50", "p90"].map(k => `<div>${k}<b>${v[k] == null ? "–" : eur(v[k], Math.abs(v[k]) < 1000 ? 2 : 0)}</b></div>`).join("")}<div style="flex:1;min-width:12rem">unit<b style="font-size:13px;font-family:var(--f-body)">${esc(v.unit)}</b></div></div>
     ${v.label_eur ? `<p class="howcalc">Dataset label on the ticket basis: €${nf(v.label_eur, 2)}. Our range uses the combined device + ticket mass.</p>` : ""}
     <div class="wrong"><h4>What could make this wrong</h4>${esc(p.limits)}</div>
     <h4 class="mt">Draft</h4>${sample ? `<div class="seg" role="group" aria-label="Draft source"><button type="button" data-dm="tpl" aria-pressed="${mode === "tpl"}">Rule template (used)</button><button type="button" data-dm="llm" aria-pressed="${mode === "llm"}">Sample LLM draft</button></div>` : ""}
@@ -1276,14 +1422,14 @@ function simCurve(sb, se, st, n, k) { const post = 1 / (1 / sb ** 2 + k / (se **
 function drawSim() {
   const sb = +$("#rB").value / 100, se = +$("#rE").value / 100, n = +$("#rN").value, stt = D.sim.params.sig_t;
   $("#oB").textContent = nf(sb * 100, 1) + "%"; $("#oE").textContent = nf(se * 100, 1) + "%"; $("#oN").textContent = n;
-  const W = cw(640), Hh = 280, L = 48, R = 16, T = 18, B = 40, pw = W - L - R, ph = Hh - T - B, KM = 40;
+  const W = cw(640, $("#simChart")), Hh = 280, L = 48, R = 16, T = 18, B = 40, pw = W - L - R, ph = Hh - T - B, KM = 40;
   const ymax = Math.max(16, Math.ceil(simCurve(sb, se, stt, n, 0)[0] * 100 / 4) * 4 + 2);
   const x = k => L + Math.sqrt(k / KM) * pw, y = v => T + ph - v / ymax * ph;
   let g = "";
   ticksLin(0, ymax, 5).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v}%</text>`);
   [0, 1, 3, 5, 10, 20, 40].forEach(k => g += `<line class="ax2" x1="${x(k)}" x2="${x(k)}" y1="${T + ph}" y2="${T + ph + 4}"/><text x="${x(k)}" y="${T + ph + 17}" text-anchor="middle" font-size="11">${k}</text>`);
   g += `<text x="${L + pw / 2}" y="${Hh - 4}" text-anchor="middle" font-size="11">clean calibration tickets per machine (√ scale)</text>`;
-  [[12, 15, "T0 claim per lift"], [5, 6, "T0 claim monthly"]].forEach(([a, b, t]) => { if (b < ymax) g += `<rect x="${L}" y="${y(b)}" width="${pw}" height="${y(a) - y(b)}" fill="var(--amber)" opacity=".14"/><text x="${W - R - 4}" y="${y(b) + 12}" text-anchor="end" font-size="10.5">${t} ${a}–${b}%</text>`; });
+  [[12, 15, "T0 claim per lift"], [5, 6, "T0 claim monthly"]].forEach(([a, b, t]) => { if (b < ymax) g += `<rect x="${L}" y="${y(b)}" width="${pw}" height="${y(a) - y(b)}" fill="var(--amber)" opacity=".14"/><text x="${W - R - 4}" y="${y(b) + 12}" text-anchor="end" font-size="11">${t} ${a}–${b}%</text>`; });
   let p1 = "", p2 = "";
   for (let i = 0; i <= 80; i++) { const k = KM * (i / 80) ** 2, [a, b] = simCurve(sb, se, stt, n, k); p1 += (i ? "L" : "M") + x(k).toFixed(1) + " " + y(a * 100).toFixed(1); p2 += (i ? "L" : "M") + x(k).toFixed(1) + " " + y(b * 100).toFixed(1); }
   g += `<path d="${p1}" fill="none" stroke="var(--head)" stroke-width="3"/><path d="${p2}" fill="none" stroke="var(--head)" stroke-width="3" stroke-dasharray="6 4"/>`;
@@ -1328,8 +1474,8 @@ const refresh = () => { RENDER[cur](); renderInboxCount(); };
 function renderInboxCount() { $("#inboxCnt").textContent = PROPS.filter(p => st.status[p.id] === "waiting" || st.status[p.id] === "more").length; }
 function route() { const h = location.hash.slice(1), t = TABS.includes(h) ? h : ALIAS[h]; if (t) showTab(t, true); else if (h === "h-outbox") { /* in-page anchor inside Recommendations */ } }
 window.addEventListener("hashchange", route);
-let lastNarrow = NARROW(), rt = 0;
-window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (NARROW() !== lastNarrow) { lastNarrow = NARROW(); fleetChartsDone = false; RENDER[cur](); } }, 200); });
+let lastW = window.innerWidth, rt = 0;   // charts are sized to their container: re-render the active chart view when the width changes
+window.addEventListener("resize", () => { clearTimeout(rt); rt = setTimeout(() => { if (window.innerWidth !== lastW) { lastW = window.innerWidth; fleetChartsDone = false; if (["trace", "causes", "fullness", "method"].includes(cur)) RENDER[cur](); } }, 150); });
 renderInboxCount();
 { const h = location.hash.slice(1), t = TABS.includes(h) ? h : ALIAS[h]; showTab(t || "overview", false); }
 </script>
