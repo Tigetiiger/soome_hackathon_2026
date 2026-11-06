@@ -71,3 +71,17 @@
 **Caveat:** at T0, rule R1 flags 17 lines instead of 25 at T2. Some of the 17 are lifts where only the wide T0 band makes device and ticket "agree" (e.g. COL-00255-0013, −21% side waste). This is shown honestly, live.
 
 Verified: node syntax check, JSDOM click-through of all 8 views with 0 errors, Playwright screenshots `prod_v2*.png` (1280 light, 400 light, dark trace, 400 inbox, method) with 0 console errors. Not published.
+
+## v3: SMART-portal skin, then v4 utilitarian re-palette (designer, 2026-11-06)
+
+Visual/structural only. All content, data, filters, views, insight cards, grid, approval lane, Method & limits and JS unchanged; `build_data.py` still inlines between the same `<script id="data">` markers (untouched). Written atomically (temp file, rename).
+
+**v3 (portal look):** tokens replaced with the real smart.europressgroup.com `:root` set (navy `#214269` chrome, cool-blue actions, ice greys, tangerine notice, its `html.dark-mode` values); Poppins/Roboto; 4 px radii; side nav on navy with a blue active bar; portal-style buttons and tables.
+
+**v4 (utilitarian, user feedback):** re-palette from scratch, see `sites/design/DESIGN_SYSTEM.md` v2.
+- One neutral ramp (`#f1f4f6 / #fff / #e3e8ec / #c2cbd3 / #8a95a0 / #626c76 / #3d4750 / #1f2429`), **one action colour** `#1f6fc4` (primary buttons, links, active nav bar, count badge, device series), navy only as chrome; status colours only (ok `#1a7f4b`, warning `#8a5a00`/`#e9b949` incl. the SYNTHETIC badge and simulated chips, serious `#b4432a`). Dark theme on the portal's dark base with `#5aa0ea` actions.
+- Series: device action blue, ticket ink `#1f2429`, invoice grey `#8a95a0` — never red/orange for ticket or operator. Cause ramp = blue/grey lightness order + existing hatches.
+- Evidence chips neutral, shape/border coded (observed ink, estimated blue, simulated amber dashed, hypothetical grey dotted).
+- Flat: no shadows, 3 px radii, hairlines; dense: body 13 px, h1 18 px, KPI 1.2 rem, card padding .7 rem, table cells .32 rem, top bar 44 px, grid gaps .5–.7 rem.
+- One font: Roboto, tabular numerals; licence row updated.
+- Verified: Playwright 1280 light (#overview, #trace, #inbox, #method, #causes), 400 light (#overview, #trace), 1280 dark (#trace, #inbox), 400 dark (#inbox); 0 console errors in all.

@@ -7,50 +7,50 @@
 <meta name="description" content="SMART Verified Weight: a module inside the Europress SMART portal. An independent compactor weight with an uncertainty band, reconciled against weighbridge tickets and invoices. Hackathon prototype on synthetic data.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
 <!--
   SMART Verified Weight (working title): an add-on module inside the SMART portal. Europress x Since AI Hackathon 2026 prototype.
   Single file. Data: inlined JSON built by build_data.py from the synthetic competition dataset v1.0.1 (read-only).
-  Charts: hand-built inline SVG (no chart library). Fonts: Archivo + Open Sans (SIL OFL 1.1) via Google Fonts, system fallbacks.
+  Charts: hand-built inline SVG (no chart library). Font: Roboto via Google Fonts, system fallbacks. Look: utilitarian SMART portal skin (navy chrome, one action blue, neutral greys, status colours only), see sites/design/DESIGN_SYSTEM.md.
   Styling is token-based (:root custom properties) so a portal theme (sites/design/theme.css) can override it.
   No Europress logo or image is copied. Hauler names are the dataset's fictional names. All prices hypothetical.
 -->
 <style>
 :root{
-  --navy:#000d61; --navy-hi:#001494; --ice:#e0f1f5; --mint-wash:#ddf8ee; --mint:#54dea9; --mint-hover:#87e8c3; --mint-press:#29d694;
-  --pink:#ff2962; --pink-ink:#d1003f; --pink-wash:#fff0f4; --autumn:#b95041; --autumn-ink:#9c3a2c; --amber:#fabe69; --amber-wash:#fff4dc; --amber-ink:#6b4100;
-  --forest:#235041; --wave:#4b5ac3; --wave-ink:#3a47a8; --g5:#f7f9fc; --g15:#ecf0f6; --g20:#dee5f0; --g30:#c9d1de; --g100:#323d4e; --muted:#5b6577;
-  --bg:#eef2f7; --surface:#fff; --surface-2:var(--g5); --text:#0d1430; --text-2:var(--g100); --head:var(--navy); --line:var(--g20); --line-strong:#8a93a3;
-  --focus:#3a47a8; --side-bg:#fff; --top-bg:var(--navy); --top-fg:#fff;
-  --c-dev:#4b5ac3; --c-tk:#008f8c; --c-inv:#a86f00; --c-band-dev:rgba(75,90,195,.16); --c-band-tk:rgba(0,143,140,.16);
-  --cz-side:#00789e; --cz-tare:#b86e00; --cz-comb:#b95041; --cz-agree:#9aa3b2; --cz-small:#5b6577; --cz-dev:#4b5ac3;
-  --chip-obs-fg:#235041; --chip-obs-bg:#ddf8ee; --chip-est-fg:#3a47a8; --chip-est-bg:#e0f1f5; --chip-sim-fg:#6b4100; --chip-sim-bg:#fff4dc; --chip-hyp-fg:#323d4e; --chip-hyp-bg:#ecf0f6;
-  --sev-warn-bg:#fff0f4; --sev-warn-fg:#9c3a2c; --code-bg:#f3f6fb;
-  --shadow:0 2px 8px rgba(0,13,97,.07);
-  --f-title:"Archivo","Montserrat","Segoe UI",Helvetica,Arial,sans-serif; --f-body:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --navy:#214269; --navy-hi:#1a3554; --ice:#f1f4f6; --mint-wash:#e3f1e8; --mint:#1f6fc4; --mint-hover:#185ca6; --mint-press:#134a86;
+  --pink:#1f6fc4; --pink-ink:#185ca6; --pink-wash:#e8f0fb; --autumn:#b4432a; --autumn-ink:#9a3a24; --amber:#e9b949; --amber-wash:#f6ecd6; --amber-ink:#8a5a00;
+  --forest:#14603a; --wave:#1f6fc4; --wave-ink:#185ca6; --g5:#f7f9fa; --g15:#f1f4f6; --g20:#e3e8ec; --g30:#c2cbd3; --g100:#3d4750; --muted:#626c76;
+  --bg:#f1f4f6; --surface:#fff; --surface-2:var(--g5); --text:#1f2429; --text-2:var(--g100); --head:#1f2429; --line:var(--g20); --line-strong:#c2cbd3;
+  --focus:#1f6fc4; --side-bg:#214269; --top-bg:#214269; --top-fg:#fff;
+  --c-dev:#1f6fc4; --c-tk:#1f2429; --c-inv:#8a95a0; --c-band-dev:rgba(31,111,196,.14); --c-band-tk:rgba(31,36,41,.10);
+  --cz-side:#1f6fc4; --cz-tare:#7fa8dc; --cz-comb:#3d4750; --cz-agree:#c5ccd3; --cz-small:#8a95a0; --cz-dev:#214269;
+  --chip-obs-fg:#1f2429; --chip-obs-bg:#eef1f3; --chip-est-fg:#185ca6; --chip-est-bg:#e8f0fb; --chip-sim-fg:#8a5a00; --chip-sim-bg:#f6ecd6; --chip-hyp-fg:#626c76; --chip-hyp-bg:#f7f9fa;
+  --sev-warn-bg:#f7e4df; --sev-warn-fg:#9a3a24; --code-bg:#f7f9fa;
+  --shadow:none;
+  --f-title:"Roboto",Helvetica,Arial,sans-serif; --f-body:"Roboto",Helvetica,Arial,sans-serif; --f-data:"Roboto",Helvetica,Arial,sans-serif;
   --fs-xs:.75rem; --fs-s:.875rem; --fs-m:1rem; --fs-l:1.125rem;
-  --r-card:.75rem; --r-pill:9999px; --top-h:56px; color-scheme:light;
+  --r-card:3px; --r-pill:3px; --top-h:48px; color-scheme:light;
 }
 @media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
-  --bg:#060b2e; --surface:#0f1640; --surface-2:#141c4d; --text:#e8ecf6; --text-2:#c4cbe0; --head:#ffffff; --line:#26306a; --line-strong:#5a6597; --muted:#a3abc6;
-  --ice:#16205a; --mint-wash:#0f3a33; --pink-wash:#3a1426; --amber-wash:#3a2a0c; --g15:#1b2457; --g5:#121a48; --g30:#3a4475;
-  --focus:#9aa6ff; --side-bg:#0b1238; --top-bg:#0b1238;
-  --c-dev:#9aa6ff; --c-tk:#3fd0cb; --c-inv:#f0b44c; --c-band-dev:rgba(154,166,255,.2); --c-band-tk:rgba(63,208,203,.2);
-  --cz-side:#47b9e0; --cz-tare:#f0a640; --cz-comb:#ef8a78; --cz-agree:#59627f; --cz-small:#9aa3c0; --cz-dev:#9aa6ff;
-  --chip-obs-fg:#9ff0cf; --chip-obs-bg:#0f3a33; --chip-est-fg:#c3cbff; --chip-est-bg:#1e2a6e; --chip-sim-fg:#ffd890; --chip-sim-bg:#3a2a0c; --chip-hyp-fg:#d6dbea; --chip-hyp-bg:#262f5c;
-  --sev-warn-bg:#3a1426; --sev-warn-fg:#ffb3a6; --code-bg:#0a1035; --pink-ink:#ff6f93; --autumn-ink:#ffb3a6; --wave-ink:#c3cbff; --forest:#9ff0cf; --amber-ink:#ffd890;
-  --shadow:0 2px 10px rgba(0,0,0,.4); color-scheme:dark;
+  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#ffffff; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
+  --ice:#262b30; --mint-wash:#163626; --pink-wash:#1b2c40; --amber-wash:#3a2f14; --g15:#262b30; --g5:#1e2226; --g30:#4d555d;
+  --focus:#5aa0ea; --side-bg:#111417; --top-bg:#111417; --navy:#5aa0ea; --navy-hi:#7fb5f0; --mint:#5aa0ea; --mint-hover:#7fb5f0;
+  --c-dev:#5aa0ea; --c-tk:#eef1f3; --c-inv:#8a95a0; --c-band-dev:rgba(90,160,234,.2); --c-band-tk:rgba(238,241,243,.12);
+  --cz-side:#5aa0ea; --cz-tare:#9cc3f0; --cz-comb:#cfd5da; --cz-agree:#3a4147; --cz-small:#7c868f; --cz-dev:#2c5a8e;
+  --chip-obs-fg:#eef1f3; --chip-obs-bg:#2d3338; --chip-est-fg:#9cc3f0; --chip-est-bg:#1b2c40; --chip-sim-fg:#e8bd5a; --chip-sim-bg:#3a2f14; --chip-hyp-fg:#a4adb5; --chip-hyp-bg:#262b30;
+  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#9cc3f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
+  --shadow:none; color-scheme:dark;
 }}
-/* same dark tokens for the explicit theme switch (kept in sync with the block above) */
+/* same dark tokens for the explicit theme switch (kept in sync with the block above). Values = the SMART portal's own html.dark-mode set. */
 :root[data-theme="dark"]{
-  --bg:#060b2e; --surface:#0f1640; --surface-2:#141c4d; --text:#e8ecf6; --text-2:#c4cbe0; --head:#ffffff; --line:#26306a; --line-strong:#5a6597; --muted:#a3abc6;
-  --ice:#16205a; --mint-wash:#0f3a33; --pink-wash:#3a1426; --amber-wash:#3a2a0c; --g15:#1b2457; --g5:#121a48; --g30:#3a4475;
-  --focus:#9aa6ff; --side-bg:#0b1238; --top-bg:#0b1238;
-  --c-dev:#9aa6ff; --c-tk:#3fd0cb; --c-inv:#f0b44c; --c-band-dev:rgba(154,166,255,.2); --c-band-tk:rgba(63,208,203,.2);
-  --cz-side:#47b9e0; --cz-tare:#f0a640; --cz-comb:#ef8a78; --cz-agree:#59627f; --cz-small:#9aa3c0; --cz-dev:#9aa6ff;
-  --chip-obs-fg:#9ff0cf; --chip-obs-bg:#0f3a33; --chip-est-fg:#c3cbff; --chip-est-bg:#1e2a6e; --chip-sim-fg:#ffd890; --chip-sim-bg:#3a2a0c; --chip-hyp-fg:#d6dbea; --chip-hyp-bg:#262f5c;
-  --sev-warn-bg:#3a1426; --sev-warn-fg:#ffb3a6; --code-bg:#0a1035; --pink-ink:#ff6f93; --autumn-ink:#ffb3a6; --wave-ink:#c3cbff; --forest:#9ff0cf; --amber-ink:#ffd890;
-  --shadow:0 2px 10px rgba(0,0,0,.4); color-scheme:dark;
+  --bg:#16191c; --surface:#1e2226; --surface-2:#262b30; --text:#eef1f3; --text-2:#cfd5da; --head:#ffffff; --line:#343a40; --line-strong:#4d555d; --muted:#a4adb5;
+  --ice:#262b30; --mint-wash:#163626; --pink-wash:#1b2c40; --amber-wash:#3a2f14; --g15:#262b30; --g5:#1e2226; --g30:#4d555d;
+  --focus:#5aa0ea; --side-bg:#111417; --top-bg:#111417; --navy:#5aa0ea; --navy-hi:#7fb5f0; --mint:#5aa0ea; --mint-hover:#7fb5f0;
+  --c-dev:#5aa0ea; --c-tk:#eef1f3; --c-inv:#8a95a0; --c-band-dev:rgba(90,160,234,.2); --c-band-tk:rgba(238,241,243,.12);
+  --cz-side:#5aa0ea; --cz-tare:#9cc3f0; --cz-comb:#cfd5da; --cz-agree:#3a4147; --cz-small:#7c868f; --cz-dev:#2c5a8e;
+  --chip-obs-fg:#eef1f3; --chip-obs-bg:#2d3338; --chip-est-fg:#9cc3f0; --chip-est-bg:#1b2c40; --chip-sim-fg:#e8bd5a; --chip-sim-bg:#3a2f14; --chip-hyp-fg:#a4adb5; --chip-hyp-bg:#262b30;
+  --sev-warn-bg:#3d1f19; --sev-warn-fg:#f08a73; --code-bg:#111417; --pink-ink:#7fb5f0; --autumn-ink:#f08a73; --wave-ink:#9cc3f0; --forest:#5fc48d; --amber-ink:#e8bd5a; --amber:#c9962a; --pink:#5aa0ea;
+  --shadow:none; color-scheme:dark;
 }
 *{box-sizing:border-box}
 html{-webkit-text-size-adjust:100%}
@@ -264,6 +264,89 @@ footer.site{color:var(--muted);padding:1rem 1.25rem;font-size:var(--fs-xs);borde
 }
 @media (max-width:640px){.topbar{position:static}nav.side{top:0}.panel{scroll-margin-top:60px}.drawer{top:60px}.grid2,.grid4{grid-template-columns:1fr}main{padding:.75rem .7rem 1.5rem}.insights{grid-template-columns:1fr}.topbar{gap:.45rem;padding:.4rem .7rem}.topbar label span{display:none}.flow{flex-direction:column}.flow .ar{transform:rotate(90deg)}}
 @media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+/* ===== SMART portal skin: smart.europressgroup.com look (navy chrome, cool-blue actions, ice-blue greys, 4 px radii). Tokens above; structure here. See sites/design/DESIGN_SYSTEM.md ===== */
+body{font-size:14px}
+h1,h2,h3,h4,.brand,.herosent,.kpi .val,.ins .ins-n,.tiers .acc,.pbtn .t{font-stretch:normal}
+h1,h2,h3,h4{font-weight:600}
+h1{font-size:1.3rem} h2{font-size:1.1rem}
+.herosent{font-weight:600;font-size:1.2rem}
+.kpi .val,.ins .ins-n,.tiers .acc,.strip>div b,.vrange div b,td.r,.num,.ctrl output,.chain div .v{font-family:var(--f-data);font-weight:500}
+.ins .ins-n{font-size:1.55rem}
+table{font-family:var(--f-data);font-size:.85rem}
+th{font-family:var(--f-body);font-weight:600;background:var(--surface-2);border-bottom:1px solid var(--line);font-size:.66rem;letter-spacing:.06em}
+caption{font-family:var(--f-body)}
+.topbar{box-shadow:0 1px 0 rgba(255,255,255,.06)}
+.brand{font-weight:700;letter-spacing:.04em;display:inline-flex;align-items:center;gap:.5rem}
+.brand::before{content:"S";display:inline-grid;place-items:center;width:24px;height:24px;border-radius:4px;background:#fff;color:#214269;font-size:13px;font-weight:800;letter-spacing:0}
+.pn{font-weight:500;border-radius:4px}
+.topbar select{border-radius:4px;background:rgba(255,255,255,.08);border-color:rgba(255,255,255,.18)}
+.theme-btn{border-radius:4px;border-color:rgba(255,255,255,.25);font-weight:500}
+.badge-syn{border-radius:4px;background:#ff9800;color:#1c2020}
+.newtag{border-radius:3px;background:#ff9800;color:#1c2020;font-weight:700}
+nav.side{border-right:0;padding:.75rem .5rem}
+nav.side a{color:#fff;font-weight:500;border-radius:4px;border-left:3px solid transparent;padding:.5rem .6rem}
+nav.side a:hover{background:rgba(255,255,255,.08)}
+nav.side a[aria-current="page"]{background:rgba(255,255,255,.10);box-shadow:none;border-left-color:var(--mint)}
+nav.side .grp{color:#bfcfde}
+.cnt{background:#ff9800;color:#1c2020;border-radius:999px;font-family:var(--f-data);font-weight:600}
+@media (max-width:820px){nav.side a[aria-current="page"]{box-shadow:inset 0 -3px 0 var(--mint);border-left-color:transparent}}
+.filterbar,.card,.pbtn,.strip>div,.verdict div,.chain div,.steps>div,.flow .fn,.vrange div,.evt,.decide,.draft,.wrong,details.math,pre,.ev span,.done,.life li{border-radius:var(--r-card)}
+.life li{border-radius:0}
+.btn{font-weight:500;letter-spacing:0;font-size:.82rem;padding:.6rem 1rem;border:1px solid transparent}
+.btn-primary{background:var(--navy);color:#fff} .btn-primary:hover:not(:disabled){background:var(--navy-hi)}
+.btn-secondary{border-color:var(--line-strong);color:var(--head);background:var(--surface)}
+.btn-ghost{border-color:var(--line-strong)}
+.btn-sm{padding:.42rem .75rem}
+:root[data-theme="dark"] .btn-primary{background:var(--mint);color:#0b1a2b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .btn-primary{background:var(--mint);color:#0b1a2b}}
+.seg{border-radius:4px;border-width:1px} .seg button{font-weight:500}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{background:var(--mint);color:#0b1a2b}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{background:var(--mint);color:#0b1a2b}}
+.chip,.sev,.tagact,.scopetag,.copy{border-radius:4px}
+.chip{border-width:1px;font-weight:600}
+.tagact{font-family:var(--f-body);font-weight:600}
+select,input[type=search],input[type=text]{border-radius:4px;border-width:1px}
+tr.sel td{background:var(--chip-est-bg)}
+tr.click:hover td{background:var(--g5)}
+.tiers .card{border-top-color:var(--c-dev)} .tiers .card.t1{border-top-color:var(--c-tk)} .tiers .card.t2{border-top-color:var(--navy)}
+:root[data-theme="dark"] .tiers .card.t2{border-top-color:var(--mint)}
+.pbtn{border-width:1px} .pbtn[aria-pressed="true"]{border-color:var(--mint);border-width:1px;box-shadow:0 0 0 1px var(--mint)}
+.copy.ok{border-color:var(--forest)}
+.done{background:var(--chip-obs-bg);color:var(--chip-obs-fg)}
+.evt.new{background:var(--chip-est-bg)}
+.life li.on{background:var(--chip-obs-bg);color:var(--chip-obs-fg)}
+.skip{border-radius:4px}
+.vwc{background:var(--chip-est-bg)}
+/* ===== v4 utilitarian pass: one neutral palette, one action colour (#1f6fc4), navy chrome, status colours only; flat, dense ===== */
+body{font-size:13px;line-height:1.45;font-variant-numeric:tabular-nums}
+h1{font-size:1.15rem} h2{font-size:1rem} h3{font-size:.9rem} h4{font-size:.8rem}
+.herosent{font-size:1.05rem;font-weight:500}
+.sub{font-size:.8rem}
+main{padding:.75rem 1rem 1.5rem}
+.card{padding:.7rem .8rem}
+.filterbar{padding:.5rem .7rem;margin-bottom:.7rem;gap:.5rem}
+.grid2,.grid3{gap:.7rem} .grid4{gap:.5rem} .insights{gap:.6rem;grid-template-columns:repeat(auto-fill,minmax(290px,1fr))}
+.kpi .val{font-size:1.2rem;margin:.05rem 0} .kpi .lbl{font-size:.64rem}
+.ins .ins-n{font-size:1.3rem} .ins .ins-f{font-size:.88rem}
+.btn{padding:.45rem .8rem;font-size:.78rem} .btn-sm{padding:.35rem .6rem;font-size:.72rem}
+.badge-syn{background:var(--amber);color:#1f2429}
+.newtag{background:#fff;color:#214269;border-radius:2px}
+.cnt{background:var(--mint);color:#fff}
+.brand::before{color:#214269;width:22px;height:22px}
+.topbar{min-height:44px;padding:.35rem .9rem;box-shadow:none}
+nav.side a{padding:.4rem .6rem;font-size:.82rem}
+.pbtn[aria-pressed="true"]{box-shadow:none;border-color:var(--mint);border-left:3px solid var(--mint)}
+.tiers .card{border-top-width:3px;border-top-color:var(--line-strong)} .tiers .card.t1{border-top-color:var(--c-dev)} .tiers .card.t2{border-top-color:var(--navy)}
+.wrong{background:var(--surface-2);border:1px solid var(--line);border-left:3px solid var(--amber-ink)}
+.evt.new{background:var(--pink-wash)}
+th{font-size:.62rem} td,th{padding:.32rem .45rem} table{font-size:.8rem}
+.strip>div{padding:.35rem .5rem} .strip>div b{font-size:.95rem}
+.done{background:var(--mint-wash);color:var(--forest)}
+.life li.on{background:var(--mint-wash);color:var(--forest)}
+.copy.ok{border-color:var(--forest);background:var(--mint-wash);color:var(--forest)}
+tr.sel td{background:var(--pink-wash)}
+.vwc{background:var(--pink-wash)}
 </style>
 </head>
 <body>
@@ -607,7 +690,7 @@ footer.site{color:var(--muted);padding:1rem 1.25rem;font-size:var(--fs-xs);borde
 
     <div class="card mt"><h3>Third-party material and licences</h3><div class="tbl"><table>
       <thead><tr><th>Item</th><th>Use</th><th>Licence / terms</th></tr></thead><tbody>
-      <tr><td>Archivo (Omnibus-Type), Open Sans</td><td>Headings, body text</td><td>SIL OFL 1.1</td></tr>
+      <tr><td>Roboto (Google)</td><td>All text and figures</td><td>SIL OFL 1.1 (static builds: Apache 2.0)</td></tr>
       <tr><td>Google Fonts CSS API</td><td>Font delivery; the browser contacts fonts.googleapis.com (IP address). Production would self-host for GDPR.</td><td>Google service terms</td></tr>
       <tr><td>Since AI × Europress synthetic dataset v1.0.1</td><td>All data (read-only, extracted by build_data.py)</td><td>Competition terms; <code>baselines/</code> licence unstated, so none of it is imported</td></tr>
       <tr><td>pandas, NumPy, PyArrow</td><td>Data extraction (build time only)</td><td>BSD-3 / BSD-3 / Apache-2.0</td></tr>

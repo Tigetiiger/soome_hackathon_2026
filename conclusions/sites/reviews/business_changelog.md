@@ -44,3 +44,26 @@
 - Full removal of inline styles: only partly done, to keep the diff safe.
 - Gate labels G0/G1 crowd each other at 400px (they are 4 months apart). Left as is.
 - Changes to BUSINESS_PLAN.md (T1 accuracy, the 96% figure, the ⅓ rule): this page follows the reviews and the data, but the plan file itself is not edited.
+
+## v3: redesign to the Europress corporate look (designer, 2026-11-06)
+
+Visual/structural only; all content, diagrams, tooltips, calculator logic and the reference-data loop are unchanged. Source of the look: europressgroup.com (WordPress Uncode theme) — see `sites/design/DESIGN_SYSTEM.md` and `theme.css`.
+
+- **Tokens** (light + dark) re-mapped: page white, bands `#f7f7f7`, hairlines `#eaeaea`, text `#303133`, headings/strong navy `#0d426e`, accent cyan `#03b4e0` (fills, rules, TOC marker; text uses `#077a98`, 4.9:1), links `#1c6fc2`, "good" fills seafoam `#72c1a1` (their palette), radii 2–4 px, no card shadows. Dark theme uses the SMART portal's own charcoal set (`#141618 / #1c2022 / #e4e6e6`).
+- **Type:** Montserrat (Uncode's declared fallback for bio-sans) for headings, Poppins body; h1 and section h2 UPPERCASE with the short cyan rule, as on europressgroup.com. Archivo/Open Sans removed; footer note updated.
+- **Chrome:** white sticky top bar with uppercase brand + "a Europress SMART concept · internal", outlined 2 px-radius theme button; flat TOC with hairline and cyan active marker; sections become hairline-bordered bands that alternate white / `#f7f7f7`; charcoal footer band.
+- **Hero:** navy gradient (`#0d426e → #214269`) with the Uncode dark overlay; triangle SVG recoloured (cyan / blue-grey / amber edges, navy boxes); numbered steps cyan.
+- **Controls:** segmented control, presets and pills are 2 px-radius uppercase buttons; table headers uppercase 12 px grey.
+- **Fixes while restyling:** `.big` stat numbers no longer collide in 3-column grids; theme button no longer overflows at 400 px.
+- Verified: Playwright 1280 light and 400 dark, 0 console errors; smooth scroll disabled only in the capture script.
+
+## v4: utilitarian re-palette (designer, 2026-11-06, after user feedback)
+
+User: "rethink the colours and design, and have it more utilitarian." Visual only; content, diagrams, tooltips, calculator and reference-data loop unchanged.
+
+- One neutral cool-grey ramp (`#f1f4f6` page, white surfaces, `#e3e8ec` hairlines, text `#1f2429`), **one action colour** `#1f6fc4` (links, TOC marker, heading rule, blue data series), navy `#214269` only for the wordmark square, the opening section's 3 px top rule and step counters; status colours only (ok green, warning amber, serious red-brown). Dark theme on the SMART portal's dark base.
+- Removed: hero gradient and overlay, Montserrat, cyan accent, mint, shadows; radii 3 px; denser spacing (section padding 22 px, cards 12 px, TOC 4 px rows); body 14 px, section titles 16 px uppercase.
+- One font: Roboto with tabular numerals.
+- Triangle diagram recoloured for a white surface: device edge action blue, no-ticket edge grey, billing-errors edge serious; **ticket box stroke neutral** (not red); boxes 4 px radius.
+- Weighbridge-side cause bars are neutral ink, not red; bracket rule neutral. Red remains only for "bad" values (negative NPV, €0 median).
+- Verified: 1280 light (hero, §2), 400 dark; 0 console errors.
