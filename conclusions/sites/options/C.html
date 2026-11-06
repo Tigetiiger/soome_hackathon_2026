@@ -1,0 +1,366 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>C · Embedded Verified Weight in SMART (concept mock)</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<style>
+:root{--navy:#000d61;--navy2:#1a2680;--mint:#54dea9;--mintd:#1f9e6e;--ice:#e0f1f5;--ink:#0d1433;--mut:#5b6383;--line:#d5dbe8;--bg:#f4f7fa;--warn:#c2410c;--warnbg:#fff1e6;--bad:#b42318;--badbg:#fdecea;--ok:#0f7a52;--okbg:#e3f7ef;--new:#54dea9}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font:14px/1.45 "Open Sans",system-ui,sans-serif;color:var(--ink);background:var(--bg)}
+h1,h2,h3,h4,.btn,.nav a,.kpi b{font-family:Archivo,system-ui,sans-serif}
+h1{font-size:20px;margin:0 0 2px;font-weight:700}
+h2{font-size:16px;margin:0 0 8px;font-weight:700}
+h3{font-size:14px;margin:0 0 6px;font-weight:700}
+.mut{color:var(--mut)} .sm{font-size:12px} .num{font-variant-numeric:tabular-nums}
+.disc{background:#111a4f;color:#fff;font-size:12px;padding:6px 14px;display:flex;flex-wrap:wrap;gap:6px 14px;align-items:center}
+.disc b{color:var(--mint)}
+.disc label{margin-left:auto;display:flex;gap:6px;align-items:center;cursor:pointer}
+.top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:14px;padding:10px 16px}
+.logo{font:800 18px Archivo;letter-spacing:.06em}
+.logo span{font-weight:500;opacity:.7;letter-spacing:0;margin-left:6px;font-size:13px}
+.top .org{margin-left:auto;font-size:12px;opacity:.85;text-align:right}
+.wrap{display:flex;min-height:calc(100vh - 90px)}
+.nav{width:206px;background:#fff;border-right:1px solid var(--line);padding:12px 0;flex:none}
+.nav a{display:flex;align-items:center;gap:8px;padding:9px 16px;color:var(--ink);text-decoration:none;font-weight:600;font-size:14px;border-left:3px solid transparent}
+.nav a.on{background:var(--ice);border-left-color:var(--navy)}
+.nav a:hover{background:#eef3f8}
+.nav .sec{font:600 11px Archivo;text-transform:uppercase;letter-spacing:.08em;color:var(--mut);padding:12px 16px 4px}
+main{flex:1;min-width:0;padding:16px 20px 40px}
+.crumb{font-size:12px;color:var(--mut);margin-bottom:6px}
+.card{background:#fff;border:1px solid var(--line);border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.row{display:flex;flex-wrap:wrap;gap:14px}
+.grow{flex:1 1 260px;min-width:0}
+.kv{display:grid;grid-template-columns:repeat(auto-fill,minmax(130px,1fr));gap:10px 16px}
+.kv div span{display:block;font-size:11px;color:var(--mut);text-transform:uppercase;letter-spacing:.04em}
+.kv div b{font:600 15px Archivo}
+.gauge{height:10px;background:#e8edf3;border-radius:6px;overflow:hidden;margin-top:4px}
+.gauge i{display:block;height:100%;background:var(--navy2)}
+/* NEW additions */
+.vw{position:relative;outline:2px dashed var(--mint);outline-offset:3px;border-radius:10px}
+.tag{display:inline-block;font:700 10px Archivo;letter-spacing:.06em;text-transform:uppercase;background:var(--mint);color:var(--navy);padding:2px 7px;border-radius:4px;vertical-align:middle;white-space:nowrap}
+.vw>.tag.corner{position:absolute;top:-10px;right:10px}
+th .tag,td .tag{font-size:9px;padding:1px 5px}
+body.base .vw, body.base .vwc{display:none!important}
+.strip{background:linear-gradient(180deg,#f2fbf7,#fff);border:1px solid #bfeedd;border-radius:10px;padding:14px 16px;margin-bottom:14px}
+.strip .big{font:800 26px Archivo;color:var(--navy)}
+.strip .big small{font:600 14px Archivo;color:var(--mut)}
+.concl{margin-top:10px;background:var(--navy);color:#fff;border-radius:8px;padding:10px 12px;display:flex;gap:10px;align-items:flex-start;flex-wrap:wrap}
+.concl p{margin:0;flex:1 1 240px}
+.concl a{color:var(--navy)}
+.badge{display:inline-block;white-space:normal;font:700 11px Archivo;padding:2px 8px;border-radius:999px;}
+.b-ok{background:var(--okbg);color:var(--ok)} .b-warn{background:var(--warnbg);color:var(--warn)} .b-bad{background:var(--badbg);color:var(--bad)} .b-mut{background:#eef0f5;color:var(--mut)}
+.chip{display:inline-block;font:700 9px Archivo;letter-spacing:.05em;padding:1px 5px;border-radius:3px;border:1px solid currentColor;vertical-align:middle;margin-left:4px}
+.c-OBSERVED{color:#0f5f8a} .c-ESTIMATED{color:#7a4fb3} .c-SIMULATED{color:#b45309} .c-HYPOTHETICAL{color:#9a3412}
+.btn{border:0;border-radius:6px;padding:8px 14px;font-weight:700;font-size:13px;cursor:pointer}
+.btn-p{background:var(--mint);color:var(--navy)} .btn-s{background:#fff;color:var(--navy);border:1px solid var(--navy)} .btn-g{background:#eef0f5;color:var(--ink)}
+.btn:focus-visible,a:focus-visible,select:focus-visible{outline:3px solid var(--navy);outline-offset:2px}
+select{font:600 14px "Open Sans";padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:#fff;max-width:100%}
+table{border-collapse:collapse;width:100%;font-size:13px}
+th{font:600 11px Archivo;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);text-align:left;padding:8px 8px;border-bottom:2px solid var(--line);white-space:nowrap}
+td{padding:7px 8px;white-space:nowrap;border-bottom:1px solid #edf0f5;vertical-align:top}
+th.n,td.n{text-align:right}
+th.vwc,td.vwc{background:#f2fbf7}
+thead th.vwc{border-bottom-color:var(--mint)}
+tr.hl td{background:#fff7d6}
+tr.click{cursor:pointer} tr.click:hover td{background:#f1f5fb}
+.tblwrap{overflow-x:auto}
+.detail{white-space:normal}
+.legend{display:flex;flex-wrap:wrap;gap:10px;font-size:12px;color:var(--mut);margin:6px 0}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:50%;margin-right:4px;vertical-align:-1px}
+.q{border:1px solid var(--line);border-radius:10px;padding:12px 14px;margin-bottom:10px;background:#fff}
+.q.done{opacity:.6}
+.q .hd{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.q .ttl{font:700 15px Archivo;margin:6px 0 2px}
+.q ul{margin:6px 0 6px 18px;padding:0}
+.q .act{display:flex;gap:8px;flex-wrap:wrap;margin-top:8px}
+.ev{font:12px ui-monospace,Menlo,Consolas,monospace;background:#0b1240;color:#d8f7ea;border-radius:8px;padding:10px 12px;white-space:pre-wrap;word-break:break-word;margin:8px 0 0}
+.tabs{display:flex;gap:6px;flex-wrap:wrap;margin:8px 0 12px}
+.tabs button{border:1px solid var(--line);background:#fff;border-radius:999px;padding:5px 12px;font:600 12px Archivo;cursor:pointer}
+.tabs button.on{background:var(--navy);color:#fff;border-color:var(--navy)}
+.bar{height:8px;border-radius:4px;background:var(--navy2);display:inline-block;vertical-align:middle}
+.detail{background:var(--ice);border-radius:8px;padding:10px 12px;margin:6px 0}
+.foot{font-size:11px;color:var(--mut);margin-top:24px;border-top:1px solid var(--line);padding-top:10px}
+svg text{font-family:"Open Sans",sans-serif}
+@media (max-width:760px){
+ .wrap{display:block}
+ .nav{width:auto;display:flex;overflow-x:auto;padding:0;border-right:0;border-bottom:1px solid var(--line)}
+ .nav .sec{display:none}
+ .nav a{border-left:0;border-bottom:3px solid transparent;padding:10px 12px;white-space:nowrap;font-size:13px}
+ .nav a.on{border-bottom-color:var(--navy)}
+ main{padding:12px 10px 30px}
+ .opt{display:none}
+ .top .org{display:none}
+ .strip .big{font-size:22px}
+ th .tag{display:none} td{font-size:12px} td .mut.sm{display:block}
+ td,th{padding:6px 5px}
+}
+</style>
+</head>
+<body>
+<div class="disc"><span><b>SYNTHETIC DATA</b> · Europress SMART Material Value Engine v1.0.1 (competition, synthetic) · € are hypothetical tariffs</span><span><b>Concept mock, not the real SMART UI</b> · our own drawing, no SMART screenshots or logos</span>
+<label><input type="checkbox" id="tog" checked> Show <span class="tag">NEW · Verified Weight</span> additions</label></div>
+<div class="top"><div class="logo">SMART<span>portal · concept</span></div><div class="org">Customer: Demo retail chain (synthetic)<br>Role: site manager / SMART Center</div></div>
+<div class="wrap">
+<nav class="nav" id="nav">
+ <div class="sec">Existing SMART</div>
+ <a href="#device" data-s="device">Devices</a>
+ <a href="#history" data-s="history">Emptyings</a>
+ <a href="#report" data-s="report">Reports</a>
+ <a href="#center" data-s="center">SMART Center</a>
+ <a href="#api" data-s="api">Operator API</a>
+</nav>
+<main id="main"></main>
+</div>
+<script id="data" type="application/json">{"meta":{"dataset":"Europress SMART Material Value Engine v1.0.1 (competition/public, synthetic)","window":["2025-10-01","2026-08-01"],"d0":"2025-10-01","sigma_dev_rel":0.014,"sigma_dev_kg":15.0,"hauler":{"OP-A":"Hauler Alpha","OP-B":"Hauler Beta","OP-C":"Hauler Gamma","OP-D":"Hauler Delta","OP-E":"Hauler Epsilon"},"causes":["agree","side_waste","stored_tare","combined_load","small_load","device"],"pm":["FIXED_PER_LIFT","HYBRID","HYBRID_MIN","PER_TONNE"]},"bands":{"STORED|SINGLE":{"robust_sd_rel":0.0772,"n":3876},"STORED|COMBINED":{"robust_sd_rel":0.2886,"n":163},"WEIGHED|SINGLE":{"robust_sd_rel":0.0397,"n":4824},"WEIGHED|COMBINED":{"robust_sd_rel":0.3344,"n":199}},"devcols":["id","stream","policy","op","weight","cls","m3","lifts","t_dev","tk_share","pairs","gap_med_pct","outside","unjust","unjust_eur","overcharge_eur","dy","sector"],"devices":[["CMP-00392","mixed_waste","HYBRID","OP-E",true,"COMBI",12.0,67,212.5,0.97,57,-2.1,18,7,2541,112,0.83,"grocery_retail"],["CMP-00010","mixed_waste","HYBRID","OP-B",true,"COMBI",10.0,38,97.2,0.921,32,-1.6,2,3,446,83,0.83,"manufacturing"],["CMP-00070","mixed_waste","ON_CALL","OP-E",true,"COMBI",8.0,27,69.5,0.926,23,-3.5,2,0,0,256,0.83,"food_processing"],["CMP-00195","cardboard","ON_CALL","OP-A",true,"DUO",20.0,52,197.1,0.923,43,-2.7,2,1,129,9,0.83,"logistics_warehouse"],["CMP-00183","biowaste","FIXED_SCHEDULE","OP-E",true,"COMBI",3.0,123,80.4,0.943,95,-4.8,25,69,12562,277,0.83,"grocery_retail"],["CMP-00364","cardboard","ON_CALL","OP-A",true,"COMBI",10.0,51,79.7,1.0,44,-3.0,9,1,96,240,0.83,"grocery_retail"],["CMP-00430","mixed_waste","FIXED_SCHEDULE","OP-D",true,"DUO",8.0,87,98.1,0.0,0,null,0,45,14702,442,0.83,"hospitality_hotel"]],"vehicles":["OP-A-V01","OP-A-V02","OP-A-V03","OP-A-V04","OP-A-V05","OP-A-V06","OP-A-V07","OP-A-V08","OP-A-V09","OP-A-V10","OP-A-V11","OP-A-V12","OP-A-V13","OP-A-V14","OP-A-V15","OP-A-V16","OP-A-V17","OP-B-V01","OP-B-V02","OP-B-V03","OP-B-V04","OP-B-V05","OP-B-V06","OP-B-V07","OP-B-V08","OP-B-V09","OP-B-V10","OP-B-V11","OP-B-V12","OP-B-V13","OP-B-V14","OP-B-V15","OP-B-V16","OP-B-V17","OP-B-V18","OP-C-V01","OP-C-V02","OP-C-V03","OP-C-V04","OP-C-V05","OP-C-V06","OP-C-V07","OP-C-V08","OP-C-V09","OP-C-V10","OP-C-V11","OP-C-V12","OP-C-V13","OP-C-V14","OP-C-V15","OP-C-V16","OP-E-V01","OP-E-V02","OP-E-V03","OP-E-V04","OP-E-V05","OP-E-V06","OP-E-V07","OP-E-V08","OP-E-V09","OP-E-V10","OP-E-V11","OP-E-V12","OP-E-V13","OP-E-V14","OP-E-V15","OP-E-V16","OP-E-V17","OP-E-V18","OP-E-V19"],"lifts":{"CMP-00392":[[2,6,3600,2940,2940,1,2,56,3,1,-83.7,0],[3,6,805,2940,2940,1,2,56,3,1,270.76,1],[7,16,3795,3860,3860,0,1,68,0,1,8.25,0],[10,27,4130,5480,5480,0,1,56,1,1,171.2,1],[11,27,580,700,700,1,1,61,4,1,15.21,0],[13,34,4460,2840,2840,0,2,66,3,1,-205.45,1],[14,34,135,2860,2860,0,2,66,3,1,345.59,0],[16,39,4510,4520,4520,0,1,61,0,1,1.27,0],[18,44,3700,4520,4520,0,1,61,1,1,104.0,1],[19,48,4310,4400,4400,0,1,66,0,1,11.42,0],[20,51,3185,2140,2140,0,2,62,3,1,-132.53,1],[24,62,4400,4460,4460,0,1,65,0,1,7.61,0],[25,62,310,5280,5280,0,1,57,1,1,630.3,1],[26,65,2780,2840,2840,0,1,55,0,1,7.61,0],[29,75,4475,4480,4480,1,1,51,0,1,0.63,0],[30,76,595,2000,2000,0,1,67,1,1,178.18,1],[31,80,4195,5100,5100,0,1,55,1,1,114.77,1],[32,83,4125,4200,5080,1,1,65,0,1,9.51,0],[33,87,1925,2000,2000,0,1,56,0,1,9.51,0],[34,90,3125,3120,3120,1,1,60,0,1,-0.63,0],[35,94,2990,2960,2960,0,1,51,0,1,-3.98,0],[36,98,3070,3060,3060,0,1,56,0,1,-1.32,0],[38,104,4145,4180,4180,0,1,53,0,1,4.65,0],[40,111,4495,5340,5340,1,1,62,1,1,112.19,1],[43,118,4260,2680,2680,0,2,62,3,1,-209.78,0],[44,118,290,2680,2680,0,2,62,3,1,317.32,1],[45,121,3340,3360,3360,1,1,68,0,1,2.66,0],[46,125,3030,3040,3040,1,1,69,0,1,1.33,0],[48,132,2975,3240,3240,1,1,59,0,1,35.18,0],[50,139,4375,4560,4560,0,1,69,0,1,24.56,1],[52,146,4445,4900,4900,0,1,67,0,1,60.41,1],[53,147,1430,1440,1440,1,1,68,0,1,1.33,0],[55,153,4340,4400,4400,0,1,59,0,1,7.97,0],[57,160,4105,5820,5820,1,1,64,1,1,227.7,1],[59,168,4200,5880,5880,0,1,53,1,1,223.06,1],[61,175,4320,5340,5340,0,1,60,1,1,135.42,1],[63,181,4385,4620,4620,0,1,55,0,1,31.2,1],[65,188,3605,3680,3680,0,1,55,0,1,9.95,0],[67,194,4015,5720,5720,0,1,61,1,1,226.37,1],[69,197,4160,5860,5860,1,1,58,1,1,225.71,1],[71,200,4295,6660,6660,1,1,54,1,1,314.0,1],[72,202,3200,3200,3200,0,1,51,0,1,0.0,0],[74,209,4300,5500,5500,1,1,69,1,1,159.33,1],[75,213,2685,2840,2840,0,1,69,0,1,20.58,0],[77,219,4485,2880,2880,1,2,55,3,1,-213.09,1],[78,223,2685,2900,2900,0,1,60,0,1,28.54,1],[79,226,2170,2180,2180,1,1,63,0,1,1.33,0],[80,230,3030,3420,3420,1,1,56,2,1,51.78,0],[82,235,3675,3640,3640,1,1,67,0,1,-4.65,0],[84,241,3320,3320,3320,0,1,64,0,1,0.0,0],[85,244,2695,2860,2860,1,1,64,0,1,21.9,0],[86,247,3095,3100,3100,0,1,66,0,1,0.67,0],[87,251,3495,3700,3700,0,1,54,0,1,27.22,0],[89,257,4335,4600,4600,1,1,52,0,1,35.18,1],[91,263,4370,4460,4460,0,1,69,0,1,11.95,1],[93,268,4270,4300,4300,0,1,56,0,1,3.98,0],[94,272,3645,3640,3640,1,1,65,0,1,-0.67,0]],"CMP-00010":[[3,9,4140,4260,4260,1,1,18,0,2,15.37,0],[5,16,2595,2340,2340,0,2,31,3,2,-32.67,1],[7,24,4015,4080,4080,0,1,21,0,2,8.33,0],[9,30,2815,2980,2980,1,1,20,0,2,21.14,0],[11,37,3650,3640,3640,0,1,28,0,2,-1.28,0],[13,45,2880,2840,2840,0,1,22,0,2,-5.13,0],[15,51,3535,2480,2480,1,2,34,3,2,-135.16,0],[17,58,2695,2720,2720,1,1,24,0,2,3.21,0],[19,65,2150,1700,1700,1,2,31,3,2,-57.66,0],[21,72,2570,2020,2020,0,2,31,3,2,-70.47,0],[23,79,2420,2460,2460,1,1,31,0,2,5.13,0],[25,87,1095,1160,1160,0,1,33,0,2,8.33,0],[28,99,2770,2800,2800,0,1,28,0,2,3.94,0],[31,107,3155,3260,3260,0,1,25,0,2,13.79,0],[33,114,2940,3260,3260,1,1,27,0,2,42.04,0],[35,121,1830,1920,1920,1,1,29,0,2,11.83,0],[37,129,3295,3340,3340,0,1,27,0,2,5.91,0],[39,135,1940,2220,2220,1,1,27,2,2,36.79,0],[42,146,3915,4000,4634,0,1,32,0,2,11.17,0],[45,156,3340,3300,3300,1,1,34,0,2,-5.25,0],[48,167,2910,3000,3000,1,1,17,0,2,11.83,1],[53,185,1675,1700,1700,1,1,32,0,2,3.28,0],[59,205,3025,2920,2920,1,1,19,0,2,-13.79,0],[61,213,2235,2500,2500,0,1,24,5,2,34.82,0],[63,219,2245,1980,1980,1,1,23,2,2,-34.82,0],[65,226,2985,3240,3240,1,1,18,0,2,33.5,1],[66,230,810,880,880,1,1,17,0,2,9.19,1],[68,238,3690,3760,3760,1,1,20,0,2,9.2,0],[71,247,3410,3420,3420,0,1,26,0,2,1.31,0],[73,254,2565,2600,2600,0,1,33,0,2,4.59,0],[75,263,1795,2600,2600,1,1,31,1,2,105.76,1],[77,266,1160,1240,1240,0,1,27,0,2,10.51,0]],"CMP-00070":[[2,19,2500,2660,2660,0,1,59,0,1,20.28,0],[3,30,3095,3460,3460,1,1,66,2,1,46.25,0],[4,38,2235,2580,2580,0,1,65,1,1,43.72,1],[5,48,2375,2460,2460,0,1,53,0,1,10.77,0],[6,58,2390,2500,2500,0,1,56,0,1,13.94,0],[7,68,3010,3020,3020,0,1,61,0,1,1.26,0],[8,71,470,520,520,1,1,57,0,1,6.33,0],[9,79,2675,3100,3100,1,1,56,2,1,53.85,0],[10,91,2550,2200,2200,1,1,52,2,1,-44.36,0],[11,105,2575,2920,2920,1,1,62,2,1,44.91,0],[12,118,2535,2500,2500,0,1,51,0,1,-4.56,0],[13,131,2500,2560,2560,0,1,59,0,1,7.81,0],[14,142,2535,2200,2200,1,1,52,2,1,-43.61,0],[15,154,2890,2800,2800,0,1,61,0,1,-11.71,0],[16,163,3050,3300,3300,1,1,69,0,1,32.54,1],[17,177,2685,2660,2660,0,1,57,0,1,-3.25,0],[18,188,2145,2160,2160,0,1,51,0,1,1.96,0],[19,197,2385,2500,2500,0,1,59,0,1,14.97,1],[20,209,2575,2600,2600,1,1,64,0,1,3.26,0],[22,236,2810,2740,2740,0,1,67,0,1,-9.11,0],[23,249,3175,3440,3440,0,1,64,0,1,34.49,1],[24,260,3130,3700,3700,1,1,56,2,1,74.19,1],[25,271,2380,2420,2420,0,1,56,0,1,5.21,0]],"CMP-00195":[[1,5,3385,3480,3480,1,1,3,0,1,-8.45,0],[2,8,2935,3100,3100,1,1,5,0,1,-12.47,0],[3,15,4500,4500,4500,1,1,7,0,1,0.0,0],[4,19,2340,2420,2420,0,1,13,0,1,-6.05,0],[5,20,405,460,460,0,1,15,0,1,-4.9,0],[6,27,3310,3340,3340,0,1,3,0,1,-2.67,0],[7,33,2785,2960,2960,0,1,6,0,1,-12.81,0],[8,36,4350,4440,4440,0,1,3,0,1,-7.75,0],[9,40,3920,4060,4060,0,1,5,0,1,-12.06,0],[11,50,5215,6480,6480,1,1,2,1,1,-108.97,1],[12,55,3595,3760,3760,0,1,2,0,1,-12.08,0],[13,58,5045,5200,5200,0,1,6,0,1,-13.35,0],[14,63,3780,3560,3560,1,1,11,0,1,19.8,0],[15,68,3405,3540,3540,0,1,6,0,1,-12.14,0],[16,72,3875,3860,3860,0,1,11,0,1,1.35,0],[17,76,2705,2860,2860,1,1,16,0,1,-13.94,0],[19,90,3045,3160,3160,1,1,3,0,1,-10.35,1],[20,96,3045,3040,3040,0,1,9,0,1,0.44,0],[21,103,3400,3540,3540,0,1,11,0,1,-12.35,0],[22,110,2945,3080,3080,1,1,9,0,1,-10.12,0],[23,117,3710,3460,3460,1,1,1,0,1,22.06,0],[24,122,3150,3120,3120,1,1,4,0,1,2.64,0],[25,128,4040,4060,4060,0,1,1,0,1,-0.82,0],[27,138,5310,5460,5460,0,1,3,0,1,-3.68,0],[30,157,5375,6220,6220,0,1,11,1,1,-33.99,1],[31,161,3135,3160,3160,0,1,1,0,1,-1.01,0],[32,167,3115,3220,3220,1,1,14,0,1,-4.22,0],[33,173,3570,3680,3680,1,1,16,0,1,-4.43,0],[34,180,4230,4380,4380,0,1,0,0,1,-6.04,0],[35,188,4205,4260,4260,1,1,14,0,1,-1.83,0],[36,194,4410,4640,4640,0,1,9,0,1,-9.04,0],[37,201,4930,4900,4900,0,1,10,0,1,1.18,0],[38,205,3785,3900,3900,0,1,9,0,1,-4.52,0],[39,210,2990,3060,3060,0,1,6,0,1,-2.33,0],[40,217,3030,3180,3180,0,1,4,0,1,-9.16,1],[41,228,5625,5580,5580,0,1,15,0,1,2.33,0],[42,236,4830,4780,4780,1,1,14,0,1,3.06,0],[43,240,3355,3280,3280,1,1,3,0,1,4.58,1],[44,245,3265,3160,3160,0,1,2,0,1,8.34,0],[45,250,2995,3080,3080,0,1,10,0,1,-5.74,0],[46,254,3680,3460,3460,0,1,0,0,1,17.47,0],[47,260,3490,3300,3300,0,1,16,0,1,12.83,0],[48,268,3765,3260,3260,1,1,11,2,1,40.09,1]],"CMP-00183":[[1,0,405,400,null,1,1,57,0,0,0.0,0],[2,2,650,680,null,0,1,69,0,0,0.0,0],[3,5,485,540,null,1,1,63,0,0,0.0,0],[4,7,445,480,null,0,1,60,0,0,0.0,0],[5,9,525,520,null,0,1,62,0,0,0.0,0],[7,14,455,460,null,0,1,52,0,0,0.0,0],[8,16,550,540,null,1,1,61,0,0,0.0,0],[10,21,1390,1420,null,0,1,65,0,0,0.0,0],[12,23,640,680,null,0,1,68,0,0,0.0,0],[13,26,1260,1360,null,0,1,61,0,0,0.0,0],[14,28,535,560,null,0,1,68,0,0,0.0,0],[15,30,665,740,null,0,1,57,0,0,0.0,0],[16,33,530,560,null,0,1,57,0,0,0.0,0],[17,35,440,400,null,0,1,56,0,0,0.0,0],[18,40,1265,1460,null,1,1,59,2,0,0.0,0],[19,42,685,680,null,0,1,65,0,0,0.0,0],[20,44,725,1180,null,0,2,55,3,0,0.0,0],[21,47,205,280,null,0,1,67,0,0,0.0,0],[22,49,1105,900,null,1,1,54,2,0,0.0,0],[23,51,485,480,null,0,1,64,0,0,0.0,0],[24,54,1485,1500,null,0,1,65,0,0,0.0,0],[25,56,495,540,null,0,1,61,0,0,0.0,0],[26,58,705,700,null,1,1,60,0,0,0.0,0],[27,61,680,1820,null,1,2,53,3,0,0.0,0],[28,63,260,340,null,0,1,65,0,0,0.0,0],[29,65,1225,1300,null,0,1,58,0,0,0.0,0],[30,68,720,760,null,0,1,55,0,0,0.0,0],[31,70,300,280,null,1,1,68,0,0,0.0,0],[32,72,705,1600,null,1,2,62,3,0,0.0,0],[33,75,810,860,null,1,1,57,0,0,0.0,0],[34,77,610,380,null,1,1,54,2,0,0.0,0],[35,79,1200,1180,null,1,1,68,0,0,0.0,0],[36,82,1320,1320,null,0,1,65,0,0,0.0,0],[37,87,1460,1520,null,1,1,53,0,0,0.0,0],[38,89,580,940,null,1,1,56,2,0,0.0,0],[39,91,1165,1560,null,1,1,66,2,0,0.0,0],[40,93,845,840,null,0,1,64,0,0,0.0,0],[41,96,475,1200,null,1,2,62,3,0,0.0,0],[42,98,295,300,null,0,1,62,0,0,0.0,0],[43,100,510,620,null,1,1,60,4,0,0.0,0],[47,110,630,400,null,1,1,54,2,0,0.0,0],[48,113,655,1100,null,0,2,65,3,0,0.0,0],[49,114,135,580,null,1,1,62,2,0,0.0,0],[50,117,685,680,null,0,1,65,0,0,0.0,0],[52,121,245,380,null,1,1,55,4,0,0.0,0],[53,124,895,1060,null,1,1,53,1,0,0.0,1],[54,126,480,480,null,1,1,61,0,0,0.0,0],[55,128,505,540,null,1,1,57,0,0,0.0,0],[57,133,1315,1320,null,0,1,68,0,0,0.0,0],[58,135,495,520,null,0,1,56,0,0,0.0,0],[60,141,830,860,null,1,1,63,0,0,0.0,0],[61,142,170,600,null,1,1,66,2,0,0.0,0],[62,145,1075,880,null,1,1,54,2,0,0.0,0],[63,147,505,500,null,0,1,53,0,0,0.0,0],[64,149,770,760,null,0,1,68,0,0,0.0,0],[65,152,735,820,null,0,1,58,0,0,0.0,0],[66,154,450,520,null,1,1,63,0,0,0.0,0],[67,156,510,540,null,0,1,68,0,0,0.0,0],[69,161,730,840,null,1,1,59,2,0,0.0,0],[72,168,465,440,null,0,1,57,0,0,0.0,0],[74,173,1705,1700,null,0,1,58,0,0,0.0,0],[75,175,765,1100,null,1,1,56,2,0,0.0,0],[76,177,375,780,null,1,1,56,2,0,0.0,0],[77,180,605,580,null,1,1,58,0,0,0.0,0],[80,188,630,1120,null,0,2,69,3,0,0.0,0],[82,191,620,740,null,1,1,55,4,0,0.0,0],[83,194,480,480,null,1,1,67,0,0,0.0,0],[84,196,560,620,null,0,1,59,0,0,0.0,0],[85,198,620,580,null,0,1,51,0,0,0.0,0],[86,201,765,780,null,0,1,62,0,0,0.0,0],[89,208,960,940,null,1,1,60,0,0,0.0,0],[91,213,655,680,null,1,1,53,0,0,0.0,0],[92,215,335,300,null,0,1,62,0,0,0.0,0],[93,217,695,660,null,1,1,67,0,0,0.0,0],[94,219,515,1000,null,1,1,66,2,0,0.0,0],[96,224,945,980,null,0,1,60,0,0,0.0,0],[97,226,410,460,null,1,1,60,0,0,0.0,0],[98,229,525,540,null,0,1,58,0,0,0.0,0],[99,231,500,500,null,0,1,52,0,0,0.0,0],[100,234,970,600,null,1,1,52,2,0,0.0,0],[101,236,115,140,null,0,1,63,0,0,0.0,0],[102,238,435,620,null,1,1,61,1,0,0.0,1],[103,240,305,380,null,0,1,59,0,0,0.0,0],[104,243,510,660,null,1,1,59,2,0,0.0,0],[105,245,810,820,null,0,1,54,0,0,0.0,0],[106,248,930,1000,null,0,1,61,0,0,0.0,0],[107,250,710,680,null,0,1,53,0,0,0.0,0],[108,253,910,940,null,0,1,57,0,0,0.0,0],[109,254,640,760,null,1,1,59,2,0,0.0,0],[111,258,1215,1600,null,1,1,62,2,0,0.0,0],[112,259,10,140,null,0,1,53,4,0,0.0,0],[113,264,1795,2100,null,1,1,63,1,0,0.0,1],[114,266,810,800,null,1,1,68,0,0,0.0,0],[115,268,515,540,null,0,1,65,0,0,0.0,0],[116,271,865,920,null,1,1,61,0,0,0.0,0]],"CMP-00364":[[1,5,1425,1460,1460,1,1,13,0,1,-2.41,0],[2,9,1350,1300,1300,0,1,12,0,1,3.44,0],[3,15,1280,1220,1220,0,1,14,0,1,4.13,1],[4,19,1565,1500,1500,1,1,10,0,1,3.15,0],[5,26,1580,1400,1400,1,1,1,2,1,12.39,0],[7,40,1905,1920,null,1,1,12,0,1,-1.0,0],[8,44,1365,1320,1320,1,1,0,0,1,2.12,0],[9,51,1540,1600,1600,1,1,5,0,1,-4.7,0],[10,56,1340,1380,1380,0,1,8,0,1,-2.66,0],[11,65,2300,2540,2540,1,1,10,0,1,-16.7,1],[12,70,1330,1240,1240,1,1,0,0,1,6.27,0],[13,75,1760,1900,1900,0,1,14,0,1,-9.74,0],[14,79,1910,2040,2040,1,1,14,0,1,-6.39,0],[15,83,1430,1620,1620,1,1,15,5,1,-15.56,0],[16,89,1610,1700,1700,0,1,2,0,1,-7.37,0],[17,93,1305,1480,1480,0,1,0,5,1,-14.05,0],[18,99,1065,1180,1180,1,1,0,0,1,-7.85,0],[19,104,1175,1320,1320,0,1,16,5,1,-9.9,0],[20,111,1100,1220,1220,1,1,14,0,1,-8.19,0],[21,117,1020,1140,1140,1,1,7,5,1,-8.19,0],[22,125,1940,2380,2380,0,1,7,5,1,-9.82,0],[23,133,1860,2680,2680,0,1,3,1,1,-25.93,1],[24,138,1125,1420,1420,1,1,8,5,1,-9.33,0],[25,145,1195,1580,1580,0,1,4,5,1,-12.17,0],[26,152,1150,1500,1500,1,1,13,5,1,-10.89,0],[27,159,2025,2020,2020,0,1,13,0,1,0.11,0],[28,170,2055,2020,2020,0,1,4,0,1,1.28,0],[29,178,1675,1660,1660,0,1,2,0,1,0.47,0],[30,181,710,680,680,1,1,13,0,1,0.94,0],[31,188,2225,2160,2160,1,1,0,0,1,1.98,0],[32,194,1675,1720,1720,0,1,14,0,1,-1.61,0],[33,202,2170,2300,2300,1,1,3,0,1,-3.95,1],[34,210,2080,2160,2160,1,1,15,0,1,-1.71,0],[35,216,1765,1760,1760,0,1,7,0,1,0.24,0],[36,222,1765,1740,1740,0,1,12,0,1,1.18,0],[37,226,1380,1400,1400,0,1,15,0,1,-0.95,0],[38,231,1430,1480,1480,0,1,0,0,1,-1.67,0],[39,237,2075,1960,1960,1,1,4,0,1,3.83,0],[40,243,1705,1760,1760,0,1,6,0,1,-3.38,0],[41,246,1005,1040,1040,0,1,9,0,1,-2.15,0],[42,252,1540,1320,1320,1,1,1,2,1,13.51,0],[43,257,1875,1820,1820,0,1,0,0,1,3.37,0],[45,266,2270,2660,2660,0,1,13,1,1,-28.18,1],[46,271,1750,1780,1780,0,1,8,0,1,-1.3,0]],"CMP-00430":[]},"heroes":{"H1":{"job":"OP-E-003920032","collection_id":"COL-00392-0032","device":"CMP-00392","date":"2025-12-23","time":"10:18","op":"OP-E","stream":"mixed_waste","policy":"HYBRID","fill_before":96.0,"mass_before":4200,"mass_after":75,"dev_kg":4125,"ticket":{"id":"WB-OP-E-00392-0032","vehicle":"OP-E-V15","gross":15960,"tare":11760,"tare_method":"STORED","net":4200,"alloc":4200,"loads":1,"facility":"FAC-E4","published":"2025-12-24"},"contract_version":"CTR-00392-V1","contract":{"pricing_model":"HYBRID","lift_fee_cents":8431,"processing_fee_cents_per_t":12682,"haul_fee_cents_per_t":0,"min_charge_cents":0,"credit_share_bp":0,"default_weight_kg":3670,"fuel_surcharge_bp":750},"ref_billing_kg":4200,"ref_basis":"WEIGHBRIDGE_NET","ref_invoice_eur":936.31,"ref_eur_t":222.93,"obs_mass_source":"WEIGHBRIDGE_PUBLISHED","lines":[{"id":"INV-00392-202512-L041","type":"LIFT_FEE","qty":1.0,"unit":"lift","price":84.31,"eur":84.31,"invoice":"INV-00392-202512"},{"id":"INV-00392-202512-L042","type":"TRANSPORT","qty":183.0,"unit":"km","price":1.4,"eur":256.2,"invoice":"INV-00392-202512"},{"id":"INV-00392-202512-L043","type":"REMOTE_SURCHARGE","qty":1.0,"unit":"lift","price":35.0,"eur":35.0,"invoice":"INV-00392-202512"},{"id":"INV-00392-202512-L044","type":"FUEL_SURCHARGE","qty":7.5,"unit":"pct_of_base","price":375.51,"eur":28.16,"invoice":"INV-00392-202512"},{"id":"INV-00392-202512-L045","type":"PROCESSING","qty":5.08,"unit":"t","price":126.82,"eur":644.25,"invoice":"INV-00392-202512"}],"labels":[{"entity":"INV-00392-202512-L045","family":"WEIGHT_BASIS_MISMATCH","code":"WEIGHT_BASIS_MISMATCH","eur":111.61,"sev":"clear"}],"trace":[[-71.4,215,15,6.7],[-70.3,275,15,9.6],[-69.3,275,15,10.9],[-68.4,425,15,15.2],[-67.3,450,15,16.2],[-66.3,630,15,18.3],[-65.3,645,15,18.7],[-64.4,635,15,24.6],[-63.4,685,15,23.7],[-62.3,685,15,26.4],[-61.3,705,15,21.9],[-60.3,700,15,18.7],[-59.3,680,15,19.6],[-58.3,700,15,23.4],[-57.3,720,15,19.6],[-56.4,695,15,18.3],[-55.3,720,15,25.4],[-54.4,700,15,21.8],[-53.4,695,15,20.9],[-52.3,845,15,28.4],[-51.3,855,15,26.9],[-50.3,900,15,26.2],[-49.3,980,15,26.9],[-48.3,1115,16,32.7],[-47.3,1160,16,33.3],[-46.4,1250,18,36.0],[-45.3,1265,18,38.0],[-44.3,1335,19,38.8],[-43.3,1355,19,39.6],[-42.3,1380,19,36.1],[-41.3,1390,19,39.5],[-40.4,1485,21,43.5],[-39.4,1565,22,42.0],[-38.3,1680,24,43.0],[-37.4,1660,23,45.4],[-36.3,1635,23,42.2],[-35.3,1650,23,43.2],[-34.3,1650,23,42.3],[-33.4,1670,23,36.3],[-32.3,1655,23,41.6],[-31.4,1660,23,42.5],[-30.4,1615,23,42.6],[-29.4,1640,23,42.4],[-28.3,1725,24,44.5],[-27.4,2040,29,50.9],[-26.3,2200,31,50.5],[-25.3,2380,33,56.0],[-24.3,2585,36,63.1],[-23.3,2755,39,65.2],[-22.3,2820,39,66.7],[-21.3,2895,41,68.5],[-20.3,2915,41,69.4],[-19.3,3040,43,72.2],[-18.3,2980,42,73.6],[-17.3,3115,44,75.9],[-16.3,3195,45,74.7],[-15.3,3190,45,78.2],[-14.3,3380,47,77.9],[-13.3,3330,47,84.8],[-12.4,3375,47,86.7],[-11.3,3435,48,83.7],[-10.3,3340,47,84.4],[-9.3,3260,46,85.2],[-8.4,3320,46,78.2],[-7.3,3375,47,81.6],[-6.3,3320,46,82.3],[-5.3,3405,48,81.3],[-4.3,3445,48,84.4],[-3.3,3775,53,90.9],[-2.3,3930,55,91.9],[-1.3,4005,56,97.3],[-0.3,4200,59,96.0],[0.7,75,15,0.0],[1.7,85,15,0.8],[2.7,145,15,6.7],[3.7,225,15,8.5],[4.7,350,15,4.8],[5.7,410,15,6.3],[6.6,460,15,6.2],[7.7,570,15,14.4],[8.7,595,15,14.3],[9.6,660,15,16.1],[10.7,660,15,17.2],[11.6,675,15,12.7],[12.7,675,15,18.8],[13.7,660,15,20.7],[14.7,640,15,24.9],[15.7,655,15,19.6],[16.6,665,15,18.4],[17.6,655,15,18.0],[18.7,680,15,19.9],[19.7,725,15,21.3],[20.6,825,15,23.1],[21.6,835,15,22.5],[22.7,930,15,27.0],[23.6,1040,15,27.1],[24.6,1105,15,28.8],[25.6,1140,16,30.0],[26.7,1125,16,30.2],[27.7,1160,16,26.2],[28.7,1145,16,29.3],[29.6,1150,16,29.7],[30.7,1140,16,31.2],[31.7,1145,16,33.9],[32.6,1105,15,33.1],[33.7,1150,16,34.8],[34.7,1125,16,30.0],[35.7,1160,16,30.8],[36.7,1140,16,38.1],[37.7,1125,16,35.1],[38.6,1150,16,32.5],[39.7,1140,16,27.2],[40.6,1135,16,32.1],[41.7,1145,16,27.6],[42.6,1175,16,30.9],[43.6,1140,16,29.2],[44.7,1155,16,29.0],[45.7,1130,16,25.2],[46.7,1110,16,24.0],[47.7,1140,16,27.2],[48.7,1160,16,32.1],[49.7,1140,16,30.1],[50.6,1145,16,30.1],[51.7,1130,16,31.0],[52.6,1140,16,30.2],[53.7,1155,16,26.1],[54.7,1150,16,25.3],[55.7,1160,16,29.6],[56.7,1150,16,28.8],[57.7,1135,16,34.2],[58.7,1145,16,33.6],[59.6,1160,16,33.0],[60.7,1140,16,26.3],[61.6,1140,16,25.4],[62.6,1150,16,31.4],[63.7,1130,16,23.9],[64.7,1145,16,28.4],[65.7,1160,16,34.4],[66.7,1155,16,32.7],[67.7,1285,18,32.8],[68.7,1410,20,32.8],[69.7,1480,21,39.6],[70.7,1480,21,43.8],[71.7,1705,24,46.9]]},"H1b":{"job":"OP-B-000100042","collection_id":"COL-00010-0042","device":"CMP-00010","date":"2026-02-24","time":"10:46","op":"OP-B","stream":"mixed_waste","policy":"HYBRID","fill_before":85.2,"mass_before":3920,"mass_after":5,"dev_kg":3915,"ticket":{"id":"WB-OP-B-00010-0042","vehicle":"OP-B-V16","gross":16660,"tare":12660,"tare_method":"WEIGHED","net":4000,"alloc":4000,"loads":1,"facility":"FAC-B1","published":"2026-03-05"},"contract_version":"CTR-00010-V2","contract":{"pricing_model":"HYBRID_MIN","lift_fee_cents":12614,"processing_fee_cents_per_t":13139,"haul_fee_cents_per_t":0,"min_charge_cents":25795,"credit_share_bp":0,"default_weight_kg":2660,"fuel_surcharge_bp":600},"ref_billing_kg":4000,"ref_basis":"WEIGHBRIDGE_NET","ref_invoice_eur":710.15,"ref_eur_t":177.54,"obs_mass_source":"WEIGHBRIDGE_PUBLISHED","lines":[{"id":"INV-00010-202602-L009","type":"LIFT_FEE","qty":1.0,"unit":"lift","price":126.14,"eur":126.14,"invoice":"INV-00010-202602"},{"id":"INV-00010-202602-L010","type":"TRANSPORT","qty":24.0,"unit":"km","price":2.0,"eur":48.0,"invoice":"INV-00010-202602"},{"id":"INV-00010-202602-L011","type":"FUEL_SURCHARGE","qty":6.0,"unit":"pct_of_base","price":174.14,"eur":10.45,"invoice":"INV-00010-202602"},{"id":"INV-00010-202602-L012","type":"PROCESSING","qty":4.634,"unit":"t","price":131.39,"eur":608.86,"invoice":"INV-00010-202602"}],"labels":[{"entity":"INV-00010-202602-L012","family":"WEIGHT_BASIS_MISMATCH","code":"WEIGHT_BASIS_MISMATCH","eur":83.3,"sev":"clear"}]},"V06":{"job":"OP-E-000700009","collection_id":"COL-00070-0009","device":"CMP-00070","date":"2025-12-19","time":"13:23","op":"OP-E","stream":"mixed_waste","policy":"ON_CALL","fill_before":96.7,"mass_before":2705,"mass_after":30,"dev_kg":2675,"ticket":{"id":"WB-OP-E-00070-0009","vehicle":"OP-E-V06","gross":19060,"tare":15960,"tare_method":"STORED","net":3100,"alloc":3100,"loads":1,"facility":"FAC-E2","published":"2025-12-19"},"contract_version":"CTR-00070-V1","contract":{"pricing_model":"HYBRID","lift_fee_cents":10303,"processing_fee_cents_per_t":12672,"haul_fee_cents_per_t":0,"min_charge_cents":0,"credit_share_bp":0,"default_weight_kg":2340,"fuel_surcharge_bp":0},"ref_billing_kg":3100,"ref_basis":"WEIGHBRIDGE_NET","ref_invoice_eur":538.95,"ref_eur_t":173.85,"obs_mass_source":"WEIGHBRIDGE_PUBLISHED","lines":[{"id":"INV-00070-202512-L007","type":"LIFT_FEE","qty":1.0,"unit":"lift","price":103.03,"eur":103.03,"invoice":"INV-00070-202512"},{"id":"INV-00070-202512-L008","type":"TRANSPORT","qty":31.0,"unit":"km","price":1.39,"eur":43.09,"invoice":"INV-00070-202512"},{"id":"INV-00070-202512-L009","type":"PROCESSING","qty":3.1,"unit":"t","price":126.72,"eur":392.83,"invoice":"INV-00070-202512"}],"labels":[{"entity":"COL-00070-0009","family":"WEIGHT_DISCREPANCY","code":"WEIGHBRIDGE_TARE_ERROR","eur":null,"sev":"borderline"}]},"V12":{"job":"OP-A-001950014","collection_id":"COL-00195-0014","device":"CMP-00195","date":"2025-12-03","time":"09:40","op":"OP-A","stream":"cardboard","policy":"ON_CALL","fill_before":78.1,"mass_before":3875,"mass_after":95,"dev_kg":3780,"ticket":{"id":"WB-OP-A-00195-0014","vehicle":"OP-A-V12","gross":19700,"tare":16140,"tare_method":"STORED","net":3560,"alloc":3560,"loads":1,"facility":"FAC-A1","published":"2025-12-06"},"contract_version":"CTR-00195-V1","contract":{"pricing_model":"HYBRID","lift_fee_cents":14126,"processing_fee_cents_per_t":0,"haul_fee_cents_per_t":0,"min_charge_cents":0,"credit_share_bp":8900,"default_weight_kg":3280,"fuel_surcharge_bp":0},"ref_billing_kg":3560,"ref_basis":"WEIGHBRIDGE_NET","ref_invoice_eur":-174.69,"ref_eur_t":-49.07,"obs_mass_source":"WEIGHBRIDGE_PUBLISHED","lines":[{"id":"INV-00195-202512-L001","type":"LIFT_FEE","qty":1.0,"unit":"lift","price":141.26,"eur":141.26,"invoice":"INV-00195-202512"},{"id":"INV-00195-202512-L002","type":"TRANSPORT","qty":2.0,"unit":"km","price":2.17,"eur":4.34,"invoice":"INV-00195-202512"},{"id":"INV-00195-202512-L003","type":"MATERIAL_CREDIT","qty":3.56,"unit":"t","price":-89.97,"eur":-320.29,"invoice":"INV-00195-202512"}],"labels":[]},"NO":{"job":"OP-E-001830075","collection_id":"COL-00183-0075","device":"CMP-00183","date":"2026-03-25","time":"16:15","op":"OP-E","stream":"biowaste","policy":"FIXED_SCHEDULE","fill_before":30.7,"mass_before":765,"mass_after":0,"dev_kg":765,"ticket":{"id":"WB-OP-E-00183-0075","vehicle":"OP-E-V06","gross":17060,"tare":15960,"tare_method":"STORED","net":1100,"alloc":1100,"loads":1,"facility":"FAC-E3","published":"2026-03-26"},"contract_version":"CTR-00183-V2","contract":{"pricing_model":"FIXED_PER_LIFT","lift_fee_cents":20796,"processing_fee_cents_per_t":0,"haul_fee_cents_per_t":0,"min_charge_cents":0,"credit_share_bp":0,"default_weight_kg":1130,"fuel_surcharge_bp":450},"ref_billing_kg":1100,"ref_basis":"WEIGHBRIDGE_NET","ref_invoice_eur":278.17,"ref_eur_t":252.88,"obs_mass_source":"WEIGHBRIDGE_PUBLISHED","lines":[{"id":"INV-00183-202603-L037","type":"LIFT_FEE","qty":1.0,"unit":"lift","price":207.96,"eur":207.96,"invoice":"INV-00183-202603"},{"id":"INV-00183-202603-L038","type":"TRANSPORT","qty":33.0,"unit":"km","price":1.31,"eur":43.23,"invoice":"INV-00183-202603"},{"id":"INV-00183-202603-L039","type":"REMOTE_SURCHARGE","qty":1.0,"unit":"lift","price":15.0,"eur":15.0,"invoice":"INV-00183-202603"},{"id":"INV-00183-202603-L040","type":"FUEL_SURCHARGE","qty":4.5,"unit":"pct_of_base","price":266.19,"eur":11.98,"invoice":"INV-00183-202603"}],"labels":[{"entity":"COL-00183-0075","family":"PREMATURE_UNJUSTIFIED","code":"OVER_SERVICING","eur":148.86,"sev":"borderline"},{"entity":"COL-00183-0075","family":"WEIGHT_DISCREPANCY","code":"WEIGHBRIDGE_TARE_ERROR","eur":null,"sev":"clear"}],"band_kg":176}},"props":[{"id":"P-001","rule":"R1 INVOICE_MASS_VS_TWO_MASSES","action":"DISPUTE_INVOICE","sev":"warning","to":"Customer finance (then Hauler Epsilon)","subject":"INV-00392-202512-L045","device":"CMP-00392","op":"OP-E","title":"Invoice bills 0.88 t more processing than both independent masses","why":["Invoice line INV-00392-202512-L045 bills PROCESSING 5.080 t at \u20ac126.82/t = \u20ac644.25.","Weighbridge ticket WB-OP-E-00392-0032: net 4,200 kg (stored tare, single load).","Compactor: 4,200 kg before, 75 kg after, so 4,125 kg collected (\u22121.8% vs ticket, inside the \u00b1660 kg band).","Combined mass estimate 4128 \u00b1 60 kg (1\u03c3). The invoice is 16\u03c3 above it."],"evidence":[["collection_events","COL-00392-0032","OBSERVED"],["weighbridge_tickets","WB-OP-E-00392-0032","OBSERVED"],["invoice_lines","INV-00392-202512-L045","OBSERVED"],["contract_versions","CTR-00392-V1","OBSERVED"]],"value":{"p10":110.96,"p50":120.78,"p90":130.61,"label_eur":111.61,"unit":"one-off","tag":"ESTIMATED"},"reverse":"Withdraw the query before the hauler replies; nothing is credited until the hauler issues a credit note.","limits":"A late contract amendment or a re-weigh we have not seen would explain it. The ticket uses a stored tare; the device agrees with it, so a tare error does not explain 0.88 t.","conf":"High"},{"id":"P-002","rule":"R2 STORED_TARE_OFFSET","action":"FIX_VEHICLE_TARE","sev":"notice","to":"Hauler Epsilon weighbridge team (operator first)","subject":"OP-E-V06","device":null,"op":"OP-E","title":"Vehicle OP-E-V06: stored tare is 360 kg below its weighed tare","why":["Stored tare 15,960 kg on 174 tickets; weighed tare median 16,320 kg on 209 tickets.","So every stored-tare net is about 360 kg too high.","Split-half check: offset -360 kg (first half) vs -360 kg (second half), so it is stable, not a one-off.","Device vs ticket on its stored-tare single loads: median -19.3% (n=102)."],"evidence":[["weighbridge_tickets","OP-E-V06 STORED \u00d7174","OBSERVED"],["weighbridge_tickets","OP-E-V06 WEIGHED \u00d7209","OBSERVED"],["collection_events","102 paired lifts","OBSERVED"]],"value":{"p10":963,"p50":978,"p90":993,"unit":"in window, 137 stored-tare lifts (+ = customers overpaid)","tag":"ESTIMATED"},"reverse":"Share privately with the operator first. If the operator re-weighs and the offset disappears, close the item; no customer-facing claim is made.","limits":"The weighed tare varies with fuel, crew and equipment. A vehicle fitted with heavier equipment after its tare was stored would also look like this. This is a weighbridge-hygiene finding, not intent.","conf":"High"},{"id":"P-003","rule":"R2 STORED_TARE_OFFSET","action":"FIX_VEHICLE_TARE","sev":"notice","to":"Hauler Alpha weighbridge team (operator first)","subject":"OP-A-V12","device":null,"op":"OP-A","title":"Vehicle OP-A-V12: stored tare is 280 kg above its weighed tare","why":["Stored tare 16,140 kg on 59 tickets; weighed tare median 15,860 kg on 95 tickets.","So every stored-tare net is about 280 kg too low.","Split-half check: offset 280 kg (first half) vs 280 kg (second half), so it is stable, not a one-off.","Device vs ticket on its stored-tare single loads: median 10.6% (n=18)."],"evidence":[["weighbridge_tickets","OP-A-V12 STORED \u00d759","OBSERVED"],["weighbridge_tickets","OP-A-V12 WEIGHED \u00d795","OBSERVED"],["collection_events","18 paired lifts","OBSERVED"]],"value":{"p10":-254,"p50":-248,"p90":-242,"unit":"in window, 44 stored-tare lifts (+ = customers overpaid)","tag":"ESTIMATED"},"reverse":"Share privately with the operator first. If the operator re-weighs and the offset disappears, close the item; no customer-facing claim is made.","limits":"The weighed tare varies with fuel, crew and equipment. A vehicle fitted with heavier equipment after its tare was stored would also look like this. This is a weighbridge-hygiene finding, not intent.","conf":"High"},{"id":"P-004","rule":"R3 PROOF_OF_FULLNESS","action":"REDUCE_FREQUENCY","sev":"notice","to":"Site manager ORG-0049 (then Hauler Delta schedule change)","subject":"CMP-00430","device":"CMP-00430","op":"OP-D","title":"Fixed schedule: 45 of 78 lifts were not needed","why":["Fixed schedule 2 lifts/week, 8 m\u00b3 mixed waste. Median fill at lift 27.9%, median 1,058 kg collected.","45 lifts labelled unjustified, \u20ac14,702 in the window (hypothetical tariff).","Hauler Delta shares no tickets, so the compactor's weight is the only tonnage evidence for the schedule change.","Simulated 56-day horizon: reduce frequency \u20ac3,750 benefit; switching to on-call or a mass trigger is not permissible (overflow 71.3 h)."],"evidence":[["collection_events","78 lifts CMP-00430","OBSERVED"],["telemetry_daily_summary","CMP-00430 fill/mass","OBSERVED"],["decision_outcomes","DC-00430-01351","SIMULATED"]],"value":{"p10":3651,"p50":3750,"p90":3849,"unit":"per 56 days (simulated)","tag":"SIMULATED"},"reverse":"Schedule change is reversible at the next schedule review; SMART watches fill daily and raises an overflow alarm if the new schedule is too thin.","limits":"The benefit is a simulated counterfactual, not a measured saving. The p10\u2013p90 above is simulation error only; across the device's 9 decision cases the best benefit ranges \u20ac0\u20133,951, and 2 of 9 cases say no action (seasonal peaks).","conf":"Medium"},{"id":"P-005","rule":"R4 CONTRACT_VALUE_DEVICE_ONLY_MASS","action":"RENEGOTIATE_CONTRACT","sev":"info","to":"Customer procurement (discussion with Hauler Delta)","subject":"CTR-00184","device":"CMP-00184","op":"OP-D","title":"\u20ac49/t vs a \u20ac24/t peer median, and only the compactor weighs it","why":["Device-weight net cost \u20ac49.1/t vs the cardboard peer median \u20ac23.5/t in the same region (+108%, n=21 peers).","111.0 t over 35 lifts, ticket share 0%, no invoice tonnage: the compactor is the only mass behind that \u20ac/t.","Dataset valuation rules price RENEGOTIATE at \u20ac3,620 and TENDER at \u20ac4,205 on \u20ac7,023 annual cost.","Tendering is the last step and is gated: it needs procurement sign-off and the 'talk to the operator first' step."],"evidence":[["contracts","CTR-00184","OBSERVED"],["collection_events","35 lifts CMP-00184","OBSERVED"],["operator_action_values","OC-00184","SIMULATED"]],"value":{"p10":null,"p50":3619.93,"p90":null,"unit":"per year (valuation rules, point value)","tag":"HYPOTHETICAL"},"reverse":"A discussion request commits to nothing; it can be closed without contacting the operator.","limits":"Value comes from the dataset's hypothetical tariff rules. The \u20ac/t rests on device weight at T0 accuracy (\u00b15\u20136% on monthly totals), which is far smaller than a +108% gap but would matter for a gap under ~10%. Peers differ in credit terms.","conf":"Medium"},{"id":"P-006","rule":"R5 DRIFT_WATCH_CONFIRMED","action":"VERIFY_WEIGHT_SENSOR","sev":"warning","to":"SMART Center service planning","subject":"CMP-00364","device":"CMP-00364","op":null,"title":"CMP-00364: weight sensor drift confirmed by tickets","why":["Ticket-free watch (kg per fill vs the device's own baseline) raised a watch; clean ticket pairs confirmed a shift above 6%.","Confirmed 27 days after the episode started, 65 days before today's fix.","Fleet-wide: ticket-confirmed alarm caught 7 of 10 episodes that had clean pairs, 0.30 false-alarm episodes per device-year."],"evidence":[["telemetry_hourly","CMP-00364 mass/fill","OBSERVED"],["weighbridge_tickets","clean pairs","OBSERVED"],["maintenance_work_orders","SENSOR_RECALIBRATION","OBSERVED"]],"value":{"p10":null,"p50":null,"p90":null,"unit":"no \u20ac claimed (visit cost is an assumption)","tag":"HYPOTHETICAL"},"reverse":"Cancel the work order before the visit; the device keeps its current calibration.","limits":"Drift and a real change in material density look alike for weeks. That is why the watch needs ticket confirmation before a visit.","conf":"Medium"},{"id":"P-007","rule":"R6 GAP_WITHOUT_MONEY","action":"NO_ACTION","sev":"info","to":"Nobody (logged only)","subject":"COL-00183-0075","device":"CMP-00183","op":"OP-E","title":"335 kg gap on COL-00183-0075: real, but worth \u20ac0","why":["Device 765 kg vs ticket 1,100 kg (stored tare): outside the \u00b1176 kg band.","The contract is fixed price per lift. No invoice line depends on mass, so re-pricing on the device weight changes \u20ac0.00.","Logged for the vehicle-tare report; no dispute, no letter."],"evidence":[["collection_events","COL-00183-0075","OBSERVED"],["weighbridge_tickets","WB-OP-E-00183-0075","OBSERVED"],["contract_versions","CTR-00183-V2","OBSERVED"]],"value":{"p10":0,"p50":0,"p90":0,"unit":"on this invoice","tag":"ESTIMATED"},"reverse":"Nothing to reverse.","limits":"Affects reported \u20ac/t only, not the invoice.","conf":"High"},{"id":"P-008","rule":"R7 NO_TICKETS_SHARED","action":"REQUEST_WEIGHBRIDGE_DATA","sev":"info","to":"Hauler Delta (operator API invitation)","subject":"OP-D","device":null,"op":"OP-D","title":"Hauler Delta shares 0% of tickets: invite to the ticket feed","why":["2,394 lifts in the window, 0% with a ticket.","Give-to-get: shared tickets return a reconciliation receipt and a private tare-hygiene report to the operator.","The dataset's valuation rules give this request \u2212\u20ac20 (admin cost) per contract, so it is offered as a service, not as savings."],"evidence":[["operators","OP-D weighbridge_data_shared=false","OBSERVED"],["collection_events","OP-D lifts","OBSERVED"]],"value":{"p10":null,"p50":-20,"p90":null,"unit":"per contract (admin cost, valuation rules)","tag":"HYPOTHETICAL"},"reverse":"Invitation can be withdrawn; no data flows until the operator opts in.","limits":"Operators may decline; nothing in this product depends on it.","conf":"High"}],"pof":{"device":"CMP-00430","lifts":[[1,3.5,6.5,430,1,384.82,472.77,1],[5,5.0,31.0,1205,0,0.0,472.77,2],[9,5.8,30.8,1310,0,0.0,472.77,3],[12,3.1,21.1,950,1,288.01,472.77,4],[15,4.4,23.4,945,1,275.22,472.77,5],[19,3.8,96.4,1280,0,0.0,472.77,6],[22,9.6,96.4,790,1,304.73,472.77,7],[26,6.6,35.7,1270,0,0.0,472.77,8],[29,8.0,28.1,1055,1,262.58,472.77,9],[33,12.6,27.7,1060,1,267.6,472.77,10],[36,6.3,17.0,615,1,325.25,472.77,11],[40,10.8,52.8,1725,0,0.0,472.77,12],[43,7.8,7.0,600,1,364.7,472.77,13],[48,5.2,24.4,1125,1,262.12,472.77,14],[50,7.4,7.5,525,1,364.98,472.77,15],[54,11.5,50.4,1625,0,0.0,472.77,16],[57,5.0,12.5,605,1,345.09,472.77,17],[61,8.4,72.8,2070,0,0.0,472.77,18],[64,4.0,18.8,810,1,330.54,472.77,19],[68,6.9,58.0,1925,0,0.0,472.77,20],[71,8.3,19.4,940,1,302.89,472.77,21],[75,6.7,28.8,1285,0,0.0,472.77,22],[78,4.1,33.3,1150,0,0.0,472.77,23],[82,6.2,39.5,1350,0,0.0,472.77,24],[87,4.5,62.3,2020,0,0.0,472.77,25],[90,9.4,17.7,790,1,310.03,472.77,26],[93,10.6,14.0,735,1,362.3,493.9,27],[96,5.4,10.3,565,1,375.51,493.9,28],[99,7.5,16.3,745,1,344.44,493.9,29],[103,11.3,49.5,1665,0,0.0,493.9,30],[106,12.9,26.5,985,1,293.48,493.9,31],[111,5.5,40.4,1430,0,0.0,493.9,32],[114,5.5,35.1,1125,0,0.0,493.9,33],[117,5.2,28.8,1060,1,286.88,493.9,34],[120,12.7,21.6,985,1,301.33,493.9,35],[124,6.5,34.4,1275,0,0.0,493.9,36],[127,12.1,29.2,1075,1,274.2,493.9,37],[131,7.6,29.4,1115,1,269.56,493.9,38],[134,5.0,15.0,485,1,374.66,493.9,39],[138,4.8,33.5,1175,0,0.0,493.9,40],[141,6.4,12.2,515,1,380.05,493.9,41],[145,8.3,48.9,1545,0,0.0,493.9,42],[148,5.3,11.4,515,1,383.57,493.9,43],[153,15.8,48.8,1660,0,0.0,493.9,45],[155,7.3,9.9,460,1,393.37,493.9,46],[159,7.3,36.4,1275,0,0.0,493.9,47],[162,3.8,7.0,640,1,366.79,493.9,48],[166,4.2,38.5,1455,0,0.0,493.9,49],[169,12.7,28.0,970,1,290.29,493.9,50],[175,5.3,57.3,1915,0,0.0,493.9,51],[176,6.7,5.1,275,1,439.2,493.9,52],[180,11.0,27.7,845,1,306.71,493.9,53],[183,7.2,17.4,530,1,341.21,493.9,54],[188,6.6,61.1,1820,0,0.0,493.9,55],[190,11.8,14.4,725,1,343.79,493.9,56],[194,6.9,35.5,1190,0,0.0,493.9,57],[197,4.8,19.5,735,1,341.87,493.9,58],[201,4.3,22.9,935,1,309.32,493.9,59],[204,6.6,16.8,785,1,330.5,493.9,60],[208,11.2,39.5,1415,0,0.0,493.9,61],[211,2.1,24.7,890,1,312.1,493.9,62],[215,4.5,56.2,1770,0,0.0,493.9,63],[219,4.6,21.7,940,1,284.46,493.9,64],[222,3.2,24.5,920,1,301.45,493.9,65],[226,6.1,56.2,1810,0,0.0,493.9,66],[229,3.2,21.0,770,1,329.27,493.9,67],[232,4.3,20.8,695,1,335.56,493.9,68],[236,11.4,57.3,1690,0,0.0,493.9,69],[239,5.1,16.8,475,1,388.93,493.9,70],[243,3.3,97.0,1505,0,0.0,493.9,71],[246,6.1,24.6,955,1,308.55,493.9,72],[250,5.1,34.5,1105,0,0.0,493.9,73],[253,7.6,19.0,760,1,351.36,493.9,74],[257,12.2,49.0,1595,0,0.0,493.9,75],[260,2.7,22.8,735,1,320.58,493.9,76],[265,5.2,61.6,2090,0,0.0,493.9,78],[267,4.4,34.0,1085,0,0.0,493.9,79],[271,4.8,27.1,1075,1,272.53,493.9,80]],"n_lifts":78,"n_unjust":45,"eur_unjust":14702.38,"fill_med":27.9,"kg_med":1058,"eur_t":436.0,"peer_eur_t":193.6,"per_week":2.0},"fleet":{"devices":447,"pairs":9062,"pairs_within":7540,"ticket_share":0.743,"tk_share_by_op":{"OP-A":0.965,"OP-B":0.883,"OP-C":0.529,"OP-D":0.0,"OP-E":0.945}},"causes_share":{"agree":0.1347,"side_waste":0.3427,"stored_tare":0.304,"combined_load":0.1204,"small_load":0.0596,"device":0.0387},"weighbridge_side":0.7671,"drift":[{"detector":"T_ticket","th":0.06,"episodes":19,"episodes_with_obs":10,"detected":7,"median_lead_days":47.0,"median_days_before_fix":33.0,"false_alarm_episodes_per_device_year":0.296},{"detector":"F_ticketfree","th":0.06,"episodes":19,"episodes_with_obs":19,"detected":12,"median_lead_days":20.0,"median_days_before_fix":42.5,"false_alarm_episodes_per_device_year":2.82}],"liftcols":["seq","day","dev_kg","wb_kg","inv_kg","tare","loads","veh","cause","pm","d_eur","sw"]}</script>
+<script>
+"use strict";
+const D=JSON.parse(document.getElementById('data').textContent);
+const $=s=>document.querySelector(s);
+const esc=s=>String(s==null?'':s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+const fmt=(v,dp=0)=>v==null||isNaN(v)?'—':Number(v).toLocaleString('en-GB',{minimumFractionDigits:dp,maximumFractionDigits:dp});
+const eur=(v,dp=0)=>v==null?'—':(v<0?'−':'')+'€'+fmt(Math.abs(v),dp);
+const D0=new Date(D.meta.d0+'T00:00:00Z');
+const dayStr=d=>{const x=new Date(D0.getTime()+d*864e5);return x.toISOString().slice(0,10)};
+const STREAM={mixed_waste:'Mixed waste',cardboard:'Cardboard',biowaste:'Bio-waste',paper:'Paper',plastic_film:'Plastic film',mixed_plastic:'Mixed plastic'};
+const POL={ON_CALL:'On call (~80% fill)',FIXED_SCHEDULE:'Fixed schedule',HYBRID:'Hybrid'};
+const CAUSE={agree:'Agrees',side_waste:'Side waste on same truck',stored_tare:'Stale stored tare (weighbridge)',combined_load:'Combined load 50/50 split',small_load:'Small load / timing noise',device:'Device sensor (drift/calibration)'};
+const devRow=id=>{const r=D.devices.find(x=>x[0]===id);const o={};D.devcols.forEach((c,i)=>o[c]=r[i]);return o};
+const HERO={'CMP-00392':'H1','CMP-00010':'H1b','CMP-00070':'V06','CMP-00195':'V12','CMP-00183':'NO'};
+const PROP_FOR={'CMP-00392':'P-001','CMP-00070':'P-002','CMP-00195':'P-003','CMP-00430':'P-004','CMP-00364':'P-006','CMP-00183':'P-007'};
+const LC=D.liftcols; const li=n=>LC.indexOf(n);
+const sdDev=kg=>Math.max(D.meta.sigma_dev_kg,D.meta.sigma_dev_rel*kg);
+function lifts(id){
+ return (D.lifts[id]||[]).map(r=>{
+  const o={};LC.forEach((c,i)=>o[c]=r[i]);
+  const key=(o.tare===1?'STORED':'WEIGHED')+'|'+(o.loads>1?'COMBINED':'SINGLE');
+  const rsd=(D.bands[key]||D.bands['STORED|SINGLE']).robust_sd_rel;
+  o.devBand=Math.round(2*sdDev(o.dev_kg));
+  o.band=Math.round(2*Math.sqrt(Math.pow(rsd*o.wb_kg,2)+Math.pow(sdDev(o.dev_kg),2)));
+  o.diff=o.dev_kg-o.wb_kg; o.within=Math.abs(o.diff)<=o.band;
+  o.cause=D.meta.causes[o.cause]; o.vehicle=o.veh>=0?D.vehicles[o.veh]:'—';
+  o.col='COL-'+id.slice(4)+'-'+String(o.seq).padStart(4,'0'); o.date=dayStr(o.day);
+  return o});
+}
+let state={dev:'CMP-00392',filter:'all',decided:{},events:[]};
+function chip(t){return `<span class="chip c-${t}">${t}</span>`}
+function newTag(cls){return `<span class="tag ${cls||''}">NEW · Verified Weight</span>`}
+function devSelect(){
+ const opts=D.devices.map(r=>`<option value="${r[0]}" ${r[0]===state.dev?'selected':''}>${r[0]} · ${STREAM[r[1]]||r[1]} · ${D.meta.hauler[r[3]]}</option>`).join('');
+ return `<label class="sm mut" for="dsel">Device </label><select id="dsel" onchange="state.dev=this.value;render()">${opts}</select>`;
+}
+function heroOf(id){return HERO[id]?D.heroes[HERO[id]]:null}
+function procKg(h){const l=(h.lines||[]).find(x=>x.type==='PROCESSING');return l?Math.round(l.qty*1000):null}
+/* ---------- conclusion sentence per device ---------- */
+function conclusion(id){
+ const p=D.props.find(x=>x.id===PROP_FOR[id]);
+ if(p) return {txt:p.title+'. '+p.why[0],p};
+ const h=heroOf(id);
+ if(h){const ik=procKg(h);return {txt:`Lift ${h.collection_id}: invoice ${fmt(ik)} kg vs ticket ${fmt(h.ticket.net)} kg vs compactor ${fmt(h.dev_kg)} kg. ${h.labels[0]?'Labelled '+h.labels[0].code.replace(/_/g,' ').toLowerCase()+' worth '+eur(h.labels[0].eur,2)+'.':''}`}}
+ return {txt:'All recent lifts agree with tickets within their bands. Nothing to do.'};
+}
+/* ---------- screen: device card ---------- */
+function screenDevice(){
+ const id=state.dev, v=devRow(id), h=heroOf(id), L=lifts(id);
+ const pofDev=id===D.pof.device;
+ const last=pofDev?null:L[L.length-1];
+ let fill, nowKg, nowBand, asof, nowLabel;
+ if(id==='CMP-00392'){const tr=h.trace.filter(x=>x[0]<0);const t=tr[tr.length-1];fill=t[3];nowKg=t[1];nowBand=t[2]*2;asof=h.date+' '+h.time+' (replay, just before emptying)';nowLabel='In container now';}
+ else if(pofDev){const pl=D.pof.lifts[D.pof.lifts.length-1];fill=pl[2];nowKg=pl[3];nowBand=Math.round(2*sdDev(pl[3]));asof=dayStr(pl[0])+' last emptying';nowLabel='Last emptying collected';}
+ else if(h){fill=h.fill_before;nowKg=h.dev_kg;nowBand=Math.round(2*sdDev(h.dev_kg));asof=h.date+' '+h.time+' last verified emptying';nowLabel='Last emptying collected';}
+ else{fill=null;nowKg=last.dev_kg;nowBand=last.devBand;asof=last.date+' last emptying';nowLabel='Last emptying collected';}
+ const nPairs=L.length, nIn=L.filter(x=>x.within).length;
+ const eurT=pofDev?D.pof.eur_t:(h?h.ref_eur_t:null);
+ const lastTk=pofDev?null:(h?h.ticket:null);
+ const c=conclusion(id);
+ const agreeBadge=pofDev?`<span class="badge b-mut">No tickets shared by ${esc(D.meta.hauler[v.op])}</span>`:
+   `<span class="badge ${nIn/nPairs>=.85?'b-ok':nIn/nPairs>=.7?'b-warn':'b-bad'}">${nIn}/${nPairs} lifts agree with ticket</span>`;
+ return `
+ <div class="crumb">Devices › ${esc(v.sector.replace(/_/g,' '))} site › ${esc(id)}</div>
+ <div class="row" style="align-items:center;justify-content:space-between;margin-bottom:10px"><h1>${esc(id)} · ${esc(v.cls)} compactor</h1><div>${devSelect()}</div></div>
+ <div class="card">
+  <h3>Device status <span class="mut sm">(existing SMART)</span></h3>
+  <div class="kv">
+   <div><span>Material</span><b>${STREAM[v.stream]||v.stream}</b></div>
+   <div><span>Container</span><b>${fmt(v.m3)} m³</b></div>
+   <div><span>Emptying policy</span><b>${POL[v.policy]||v.policy}</b></div>
+   <div><span>Waste operator</span><b>${esc(D.meta.hauler[v.op])}</b></div>
+   <div><span>Fill level</span><b>${fill==null?'—':fmt(fill,0)+' %'}</b><div class="gauge"><i style="width:${fill||0}%"></i></div></div>
+   <div><span>Status</span><b style="color:var(--ok)">Running · no faults</b></div>
+   <div><span>Emptyings in window</span><b>${fmt(v.lifts)}</b></div>
+  </div>
+ </div>
+ <div class="strip vw">${newTag('corner')}
+  <div class="row" style="justify-content:space-between;align-items:flex-end">
+   <div><div class="sm mut">${nowLabel} · ${esc(asof)}</div>
+    <div class="big num">${fmt(nowKg)} kg <small>± ${fmt(nowBand)} kg</small>${chip('ESTIMATED')}</div>
+    <div class="sm mut">Virtual scale from ram back-pressure (T0, €0 hardware). Band = 2σ, ballpark by design.</div></div>
+   <div class="kv" style="flex:1 1 320px;max-width:560px">
+    <div><span>Fill → weight</span><b>${fill==null?'—':fmt(fill)+' % → '+fmt(nowKg/1000,2)+' t'}</b></div>
+    <div><span>€/t last verified lift</span><b>${eurT==null?'—':eur(eurT,0)+'/t'}</b>${pofDev?`<div class="sm mut">peer median €${fmt(D.pof.peer_eur_t)}/t</div>`:''}${eurT!=null?chip('HYPOTHETICAL'):''}</div>
+    <div><span>Agreement</span><b>${agreeBadge}</b></div>
+    <div><span>Last ticket</span><b class="sm">${lastTk?esc(lastTk.id)+' · '+fmt(lastTk.net)+' kg ('+lastTk.tare_method.toLowerCase()+' tare)':'—'}</b></div>
+   </div>
+  </div>
+  ${chartDevice(id,L)}
+  <div class="concl"><span class="tag">Conclusion</span><p>${esc(c.txt)}</p>${c.p?`<a class="btn btn-p" href="#center" onclick="state.focus='${c.p.id}'">Open in SMART Center queue</a>`:''}</div>
+ </div>
+ <div class="card"><h3>Service history <span class="mut sm">(existing SMART)</span></h3><div class="sm mut">Last service visit, maintenance work orders and fault log stay as today. ${id==='CMP-00364'?'<span class="vwc"><span class="tag">NEW</span> Weight-drift watch adds a sensor check to the next planned visit (see SMART Center).</span>':''}</div></div>`;
+}
+function chartDevice(id,L){
+ const W=1000,H=150,pad=40;
+ if(id===D.pof.device){
+  const P=D.pof.lifts, mx=Math.max(...P.map(x=>x[3]))*1.1, n=P.length, bw=(W-pad-6)/n;
+  const bars=P.map((x,i)=>{const h=(x[3]/mx)*(H-30);return `<rect x="${pad+i*bw}" y="${H-18-h}" width="${Math.max(bw-1,1)}" height="${h}" fill="${x[4]?'#c2410c':'#1a2680'}"><title>${dayStr(x[0])}: ${x[3]} kg at ${x[2]}% fill${x[4]?' · not needed':''}</title></rect>`}).join('');
+  return `<div class="legend"><span><i style="background:#1a2680"></i>emptying needed</span><span><i style="background:#c2410c"></i>not needed (${D.pof.n_unjust} of ${D.pof.n_lifts}) ${chip('OBSERVED')}</span><span>kg collected per emptying, ${D.pof.per_week}×/week schedule</span></div>
+  <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="kg per emptying">${bars}<text x="2" y="12" font-size="10" fill="#5b6383">${fmt(mx)} kg</text><line x1="${pad}" x2="${W}" y1="${H-18}" y2="${H-18}" stroke="#d5dbe8"/></svg>`;
+ }
+ if(!L.length) return '';
+ const mx=Math.max(...L.map(x=>Math.max(x.dev_kg,x.wb_kg)))*1.1, n=L.length, step=(W-pad-10)/Math.max(n-1,1);
+ const y=v=>H-18-(v/mx)*(H-30);
+ const els=L.map((x,i)=>{const X=pad+i*step;return `<line x1="${X}" x2="${X}" y1="${y(x.dev_kg+x.band)}" y2="${y(Math.max(0,x.dev_kg-x.band))}" stroke="#bfeedd" stroke-width="4"/><circle cx="${X}" cy="${y(x.wb_kg)}" r="3" fill="${x.within?'#5b6383':'#b42318'}"><title>${x.date} ticket ${x.wb_kg} kg</title></circle><circle cx="${X}" cy="${y(x.dev_kg)}" r="2.6" fill="#000d61"><title>${x.date} device ${x.dev_kg} kg</title></circle>`}).join('');
+ return `<div class="legend"><span><i style="background:#000d61"></i>compactor kg</span><span><i style="background:#bfeedd;border-radius:2px"></i>agreement band</span><span><i style="background:#5b6383"></i>ticket in band</span><span><i style="background:#b42318"></i>ticket outside band</span></div>
+ <svg viewBox="0 0 ${W} ${H}" width="100%" role="img" aria-label="device vs ticket per emptying">${els}<text x="2" y="12" font-size="10" fill="#5b6383">${fmt(mx)} kg</text><line x1="${pad}" x2="${W}" y1="${H-18}" y2="${H-18}" stroke="#d5dbe8"/><text x="${pad}" y="${H-4}" font-size="10" fill="#5b6383">${L[0].date}</text><text x="${W-70}" y="${H-4}" font-size="10" fill="#5b6383">${L[L.length-1].date}</text></svg>`;
+}
+/* ---------- screen: emptying history ---------- */
+function screenHistory(){
+ const id=state.dev, v=devRow(id), h=heroOf(id);
+ let body='',head='',extra='';
+ if(id===D.pof.device){
+  head=`<tr><th>Date</th><th class="opt">Emptying</th><th class="n">Fill before</th><th class="opt">Trigger</th><th class="vwc n">Device kg ${newTag()}</th><th class="vwc">Ticket</th><th class="vwc">Needed? ${newTag()}</th><th class="vwc n">€ at stake</th></tr>`;
+  body=D.pof.lifts.slice().reverse().map(x=>`<tr><td class="num">${dayStr(x[0])}</td><td class="num sm opt">COL-00430-${String(x[7]).padStart(4,'0')}</td><td class="n num">${fmt(x[2])} %</td><td class="opt">Schedule</td><td class="vwc n num">${fmt(x[3])} ± ${fmt(2*sdDev(x[3]))}</td><td class="vwc sm mut">not shared</td><td class="vwc">${x[4]?'<span class="badge b-warn">Not needed</span>':'<span class="badge b-ok">Needed</span>'}</td><td class="vwc n num">${x[4]?eur(x[5],0):'—'}</td></tr>`).join('');
+  extra=`<div class="concl vw" style="margin-bottom:12px">${newTag('corner')}<span class="tag">Conclusion</span><p>${D.pof.n_unjust} of ${D.pof.n_lifts} scheduled emptyings collected a median ${fmt(D.pof.kg_med)} kg at ${fmt(D.pof.fill_med)}% fill. The compactor weight is the only tonnage evidence: ${esc(D.meta.hauler['OP-D'])} shares no tickets. ${eur(D.pof.eur_unjust)} in the window ${chip('HYPOTHETICAL')}</p><a class="btn btn-p" href="#center" onclick="state.focus='P-004'">Proof of Fullness → queue</a></div>`;
+ } else {
+  let L=lifts(id).slice().reverse();
+  const hcol=h?h.collection_id:null;
+  if(state.filter==='out') L=L.filter(x=>!x.within||x.inv_kg!=null&&Math.abs(x.inv_kg-x.wb_kg)>x.band);
+  head=`<tr><th>Date</th><th class="opt">Emptying</th><th class="opt">Vehicle</th><th class="opt">Trigger</th><th class="vwc n">Device kg ${newTag()}</th><th class="vwc n">Ticket kg</th><th class="vwc n">Invoice kg</th><th class="vwc">Weighed ${newTag()}</th><th class="vwc opt">Likely cause</th><th class="vwc n opt">€ effect</th></tr>`;
+  body=L.map(x=>{
+   const invBad=x.inv_kg!=null&&Math.abs(x.inv_kg-x.wb_kg)>x.band&&Math.abs(x.inv_kg-x.dev_kg)>x.band;
+   const st=invBad?'<span class="badge b-bad">Invoice above both</span>':x.within?'<span class="badge b-ok">Agrees</span>':'<span class="badge b-warn">Outside ±'+fmt(x.band)+'</span>';
+   const isH=x.col===hcol;
+   return `<tr class="click ${isH?'hl':''}" onclick="toggleRow(this,'${x.col}')"><td class="num">${x.date}</td><td class="num sm opt">${x.col}</td><td class="opt sm">${esc(x.vehicle)}</td><td class="opt sm">${v.policy==='FIXED_SCHEDULE'?'Schedule':'Fill call'}</td>
+   <td class="vwc n num">${fmt(x.dev_kg)} <span class="mut sm">±${fmt(x.devBand)}</span></td><td class="vwc n num">${fmt(x.wb_kg)} <span class="mut sm">${x.tare===1?'stored':'weighed'}${x.loads>1?' ·×'+x.loads:''}</span></td><td class="vwc n num">${x.inv_kg==null?'<span class="mut">—</span>':fmt(x.inv_kg)}</td><td class="vwc">${st}</td><td class="vwc opt sm">${x.within&&!invBad?'—':esc(CAUSE[x.cause]||x.cause)}</td><td class="vwc n opt num">${x.d_eur?eur(x.d_eur,2):'€0'}</td></tr>`}).join('');
+  const all=lifts(id), nIn=all.filter(x=>x.within).length;
+  extra=`<div class="concl vw" style="margin-bottom:12px">${newTag('corner')}<span class="tag">Conclusion</span><p>${nIn} of ${all.length} emptyings agree with the weighbridge ticket. ${esc(conclusion(id).txt)}</p></div>
+  <div class="tabs vw" style="outline:0">${['all','out'].map(f=>`<button class="${state.filter===f?'on':''}" onclick="state.filter='${f}';render()">${f==='all'?'All emptyings':'Only disagreements'}</button>`).join('')}</div>`;
+ }
+ return `<div class="crumb">Emptyings › ${esc(id)}</div>
+ <div class="row" style="align-items:center;justify-content:space-between;margin-bottom:10px"><div><h1>Emptying history</h1><div class="sm mut">Existing log of every lift SMART called. Green columns are added by Verified Weight.</div></div><div>${devSelect()}</div></div>
+ ${extra}
+ <div class="card tblwrap"><table><thead>${head}</thead><tbody>${body}</tbody></table></div>
+ <div class="sm mut">Device kg = compactor mass before − after (virtual scale, ${chip('ESTIMATED')}). Ticket = operator weighbridge net (${chip('OBSERVED')}). Band = 2σ of device + ticket error for that tare method and load type. Click a row for the trace.</div>`;
+}
+function toggleRow(tr,col){
+ const nx=tr.nextElementSibling;
+ if(nx&&nx.classList.contains('dr')){nx.remove();return}
+ const x=lifts(state.dev).find(r=>r.col===col);
+ const h=heroOf(state.dev);
+ let more='';
+ if(h&&h.collection_id===col){
+  more=`<div><b>Ticket</b> ${esc(h.ticket.id)} · vehicle ${esc(h.ticket.vehicle)} · gross ${fmt(h.ticket.gross)} − tare ${fmt(h.ticket.tare)} (${h.ticket.tare_method.toLowerCase()}) = net ${fmt(h.ticket.net)} kg ${chip('OBSERVED')}</div>
+  <div><b>Invoice lines</b> ${h.lines.map(l=>`${esc(l.id)} ${esc(l.type)} ${fmt(l.qty,2)} ${esc(l.unit)} = ${eur(l.eur,2)}`).join(' · ')}</div>`;
+ }
+ const dr=document.createElement('tr');dr.className='dr';
+ dr.innerHTML=`<td colspan="10"><div class="detail sm"><div><b>Trace</b> compactor ${fmt(x.dev_kg)} kg ± ${fmt(x.devBand)} · ticket ${fmt(x.wb_kg)} kg (${x.tare===1?'stored':'weighed'} tare, ${x.loads} load${x.loads>1?'s':''} on truck) · gap ${fmt(x.diff)} kg vs band ±${fmt(x.band)} kg → <b>${x.within?'agrees':'outside band'}</b>${x.within?'':' · attributed: '+esc(CAUSE[x.cause]||x.cause)}${x.sw?' · driver reported side waste':''}</div>${more}<div class="mut">Pricing model ${esc(D.meta.pm[x.pm])}: re-pricing on device weight changes the invoice by ${eur(x.d_eur,2)}.</div></div></td>`;
+ tr.after(dr);
+}
+/* ---------- screen: monthly report ---------- */
+function screenReport(){
+ const id=state.dev, v=devRow(id);
+ const pofDev=id===D.pof.device;
+ const by={};
+ if(pofDev){D.pof.lifts.forEach(x=>{const m=dayStr(x[0]).slice(0,7);(by[m]=by[m]||{n:0,dev:0,wb:0,inv:0,ni:0,in:0,np:0,fill:0,un:0});by[m].n++;by[m].dev+=x[3];by[m].fill+=x[2];by[m].un+=x[4]})}
+ else lifts(id).forEach(x=>{const m=x.date.slice(0,7);const b=(by[m]=by[m]||{n:0,dev:0,wb:0,inv:0,ni:0,in:0,np:0,fill:0,un:0});b.n++;b.dev+=x.dev_kg;b.wb+=x.wb_kg;if(x.inv_kg!=null){b.inv+=x.inv_kg;b.ni++}b.in+=x.within?1:0});
+ const months=Object.keys(by).sort();
+ const mx=Math.max(...months.map(m=>Math.max(by[m].dev,by[m].wb)));
+ const rows=months.map(m=>{const b=by[m];return `<tr><td>${m}</td><td class="n num">${b.n}</td>
+  <td class="vwc n num">${fmt(b.dev/1000,2)} t <span class="bar" style="width:${Math.round(60*b.dev/mx)}px;background:#000d61"></span></td>
+  <td class="vwc n num">${pofDev?'<span class="mut">not shared</span>':fmt(b.wb/1000,2)+' t'}</td>
+  <td class="vwc n num opt">${b.ni?fmt(b.inv/1000,2)+' t':'—'}</td>
+  <td class="vwc n num">${pofDev?(b.un+' not needed'):fmt(100*(b.dev-b.wb)/b.wb,1)+' %'}</td>
+  <td class="vwc n num opt">${pofDev?'—':b.in+'/'+b.n}</td></tr>`}).join('');
+ const tot=months.reduce((a,m)=>({dev:a.dev+by[m].dev,wb:a.wb+by[m].wb}),{dev:0,wb:0});
+ return `<div class="crumb">Reports › Monthly report › ${esc(id)}</div>
+ <div class="row" style="align-items:center;justify-content:space-between;margin-bottom:10px"><div><h1>Monthly report</h1><div class="sm mut">Existing PDF / Excel / e-mail report. Verified Weight adds one page.</div></div><div>${devSelect()}</div></div>
+ <div class="row">
+  <div class="card grow"><h3>Page 1 · Emptyings and fill <span class="mut sm">(existing)</span></h3><div class="kv"><div><span>Emptyings in window</span><b>${fmt(v.lifts)}</b></div><div><span>Policy</span><b>${POL[v.policy]}</b></div><div><span>Material</span><b>${STREAM[v.stream]}</b></div></div></div>
+  <div class="card grow"><h3>Page 2 · Service and faults <span class="mut sm">(existing)</span></h3><div class="sm mut">Run hours, e-stops, work orders: unchanged.</div></div>
+ </div>
+ <div class="card vw">${newTag('corner')}<h2>Page 3 · Verified weight</h2>
+  <div class="concl" style="margin:0 0 10px"><span class="tag">Summary</span><p>${pofDev?`Compactor weight: ${fmt(tot.dev/1000,1)} t over ${D.pof.n_lifts} emptyings. ${D.pof.n_unjust} were not needed. Use this page as tonnage evidence for a schedule change.`:`Compactor ${fmt(tot.dev/1000,1)} t vs tickets ${fmt(tot.wb/1000,1)} t (${fmt(100*(tot.dev-tot.wb)/tot.wb,1)} %). Monthly totals are ballpark-grade: good for ESG and CSRD tonnage and for checking invoices, not for trade.`}</p></div>
+  <div class="tblwrap"><table><thead><tr><th>Month</th><th class="n">Emptyings</th><th class="vwc n">Device</th><th class="vwc n">Ticket</th><th class="vwc n opt">Invoice</th><th class="vwc n">${pofDev?'Needed?':'Dev vs ticket'}</th><th class="vwc n opt">Agree</th></tr></thead><tbody>${rows}</tbody></table></div>
+  <div class="sm mut" style="margin-top:6px">Every row links back to its lifts in Emptyings. Export: PDF, Excel, CSRD/BDO mass export (planned).</div>
+ </div>`;
+}
+/* ---------- screen: SMART Center queue ---------- */
+const SEVR={warning:0,notice:1,info:2};
+function screenCenter(){
+ const P=D.props.slice().sort((a,b)=>SEVR[a.sev]-SEVR[b.sev]);
+ const open=P.filter(p=>!state.decided[p.id]).length;
+ const cards=P.map(p=>{
+  const dec=state.decided[p.id];const val=p.value||{};
+  const vtxt=val.p50==null?'no € claimed':(val.p10!=null&&val.p90!=null?`${eur(val.p10)} – ${eur(val.p90)} (p50 ${eur(val.p50)})`:eur(val.p50));
+  const isF=state.focus===p.id;
+  return `<div class="q ${dec?'done':''}" id="q-${p.id}" ${isF?'style="border-color:#54dea9;box-shadow:0 0 0 3px #bfeedd"':''}>
+   <div class="hd"><span class="badge ${p.sev==='warning'?'b-bad':p.sev==='notice'?'b-warn':'b-mut'}">${p.sev}</span><span class="sm mut">${esc(p.id)} · ${esc(p.rule)}</span>${p.device?`<a class="sm" href="#device" onclick="state.dev='${p.device}'">${esc(p.device)}</a>`:''}</div>
+   <div class="ttl">${esc(p.title)}</div>
+   <div class="sm"><b>Action:</b> ${esc(p.action.replace(/_/g,' ').toLowerCase())} · <b>To:</b> ${esc(p.to)} · <b>Value:</b> ${vtxt} ${val.unit?'<span class="mut">'+esc(val.unit)+'</span>':''} ${val.tag?chip(val.tag):''}</div>
+   <details ${isF?'open':''}><summary class="sm" style="cursor:pointer;margin-top:6px">Why, evidence, limits</summary>
+    <ul class="sm">${p.why.map(w=>`<li>${esc(w)}</li>`).join('')}</ul>
+    <div class="sm">${(p.evidence||[]).map(e=>`<span class="badge b-mut" style="margin:2px">${esc(e[0])}: ${esc(e[1])}</span>${chip(e[2])}`).join(' ')}</div>
+    <div class="sm" style="margin-top:6px"><b>Limits:</b> ${esc(p.limits||'—')}</div>
+    <div class="sm"><b>Reversal:</b> ${esc(p.reverse||'—')}</div>
+   </details>
+   <div class="act">${dec?`<span class="badge ${dec==='approved'?'b-ok':'b-mut'}">${dec}</span><button class="btn btn-g" onclick="undo('${p.id}')">Undo</button>`:
+    `<button class="btn btn-p" onclick="decide('${p.id}','approved')">Approve &amp; send</button><button class="btn btn-s" onclick="decide('${p.id}','held')">Hold</button><button class="btn btn-g" onclick="decide('${p.id}','rejected')">Reject</button>`}</div>
+  </div>`}).join('');
+ return `<div class="crumb">SMART Center › Work queue</div>
+ <h1>SMART Center work queue</h1><div class="sm mut" style="margin-bottom:10px">The existing remote-support queue (fault tickets, service requests) gets a second lane. Rules decide, Claude drafts the text, a person approves before anything leaves.</div>
+ <div class="row">
+  <div class="card grow" style="flex:1 1 200px"><h3>Fault &amp; service tickets <span class="mut sm">(existing)</span></h3><div class="sm mut">SMARTwaste app requests, remote fixes, technician dispatch. Unchanged.</div></div>
+  <div class="card grow vw" style="flex:2 1 320px">${newTag('corner')}<h3>Weight recommendations · ${open} open</h3><div class="sm mut">Weighbridge-side causes explain ${fmt(D.weighbridge_side*100)}% of large gaps; the device itself only ${fmt(D.causes_share.device*100,1)}%. So the operator hears it first, and customers see neutral wording.</div></div>
+ </div>
+ <div class="vw" style="outline:0">${cards}</div>
+ <div class="card vw">${newTag('corner')}<h3>Outbox (events sent to SMART integrations)</h3>${state.events.length?state.events.map(e=>`<pre class="ev">${esc(JSON.stringify(e,null,1))}</pre>`).join(''):'<div class="sm mut">Approve a recommendation to emit an <code>approval.decided</code> CloudEvent.</div>'}</div>`;
+}
+function decide(id,d){
+ state.decided[id]=d;const p=D.props.find(x=>x.id===id);
+ state.events.unshift({specversion:'1.0',type:'fi.europress.smart.vw.approval.decided',source:'smart-center/queue',id:'evt-'+id+'-'+(state.events.length+1),time:new Date().toISOString(),subject:p.subject,data:{proposal:id,action:p.action,decision:d,to:p.to,value:p.value,evidence:(p.evidence||[]).map(e=>e[1])}});
+ state.focus=id;render();
+}
+function undo(id){delete state.decided[id];render()}
+/* ---------- screen: operator API receipt ---------- */
+function screenApi(){
+ const h=D.heroes.H1;
+ const req={ticket_id:h.ticket.id,operator_job_ref:h.job,vehicle:h.ticket.vehicle,gross_kg:h.ticket.gross,tare_kg:h.ticket.tare,tare_method:h.ticket.tare_method,net_kg:h.ticket.net,loads_on_vehicle:h.ticket.loads,facility:h.ticket.facility};
+ const band=Math.round(2*Math.sqrt(Math.pow(D.bands['STORED|SINGLE'].robust_sd_rel*h.ticket.net,2)+Math.pow(sdDev(h.dev_kg),2)));
+ const rec={receipt_id:'RCPT-'+h.ticket.id,matched_collection:h.collection_id,device:h.device,device_kg:h.dev_kg,device_band_kg:Math.round(2*sdDev(h.dev_kg)),ticket_net_kg:h.ticket.net,gap_kg:h.dev_kg-h.ticket.net,agreement_band_kg:band,status:Math.abs(h.dev_kg-h.ticket.net)<=band?'AGREES':'OUTSIDE_BAND',invoice_check:{line:'INV-00392-202512-L045',invoice_kg:procKg(h),status:'ABOVE_BOTH_MASSES',note:'Sent to customer finance only after SMART Center approval'},tare_hygiene:{vehicle:h.ticket.vehicle,stored_tare_offset_kg:null,note:'Private to operator'}};
+ return `<div class="crumb">Integrations › Operator API</div><h1>Operator API</h1>
+ <div class="sm mut" style="margin-bottom:10px">Operators can already pull data and receive emptying calls through the SMART interface. Verified Weight adds one endpoint: push a weighbridge ticket, get a reconciliation receipt back.</div>
+ <div class="row">
+  <div class="card grow"><h3>Existing: emptying call → operator</h3><pre class="ev">POST operator-system/orders
+{ "device": "${h.device}", "fill_pct": ${h.fill_before}, "reason": "FILL_CALL" }</pre></div>
+  <div class="card grow vw">${newTag('corner')}<h3>New: ticket → receipt</h3><pre class="ev">POST /v1/weight/tickets
+${esc(JSON.stringify(req,null,1))}</pre><pre class="ev">201 Created
+${esc(JSON.stringify(rec,null,1))}</pre><div class="sm mut">Give-to-get: operators who share tickets get receipts and a private tare-hygiene report. Ticket share today: ${Object.entries(D.fleet.tk_share_by_op).map(([k,v])=>esc(D.meta.hauler[k])+' '+fmt(v*100)+'%').join(' · ')} ${chip('OBSERVED')}</div></div>
+ </div>`;
+}
+const SCREENS={device:screenDevice,history:screenHistory,report:screenReport,center:screenCenter,api:screenApi};
+function render(){
+ const s=(location.hash||'#device').slice(1);const fn=SCREENS[s]||screenDevice;
+ document.querySelectorAll('#nav a').forEach(a=>{a.classList.toggle('on',a.dataset.s===(SCREENS[s]?s:'device'));
+  if(!a.querySelector('.tag')) a.insertAdjacentHTML('beforeend',' <span class="tag vwc" style="font-size:9px;padding:1px 5px;margin-left:auto">NEW</span>')});
+ $('#main').innerHTML=fn()+`<div class="foot">Concept mock drawn by the hackathon team to show where Verified Weight would sit inside the existing SMART portal. It is not the real SMART UI and uses no SMART screenshots or logos. All data is synthetic (${esc(D.meta.dataset)}); € use hypothetical tariffs. Tags: ${['OBSERVED','ESTIMATED','SIMULATED','HYPOTHETICAL'].map(chip).join(' ')}</div>`;
+ if(state.focus&&s==='center'){const el=document.getElementById('q-'+state.focus);if(el)el.scrollIntoView({block:'center'});}
+}
+$('#tog').addEventListener('change',e=>{document.body.classList.toggle('base',!e.target.checked)});
+window.addEventListener('hashchange',()=>{render();window.scrollTo(0,0);if(location.hash==='#center'&&state.focus){const el=document.getElementById('q-'+state.focus);if(el)el.scrollIntoView({block:'center'})}});
+render();
+</script>
+</body>
+</html>

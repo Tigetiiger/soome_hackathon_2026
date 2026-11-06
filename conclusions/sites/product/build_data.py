@@ -317,12 +317,17 @@ pof["eur_dy_by_policy"] = seg[seg.segment == "collection_policy"][["value", "eur
 if pof["n_unjust"] != 45 or pof["n_lifts"] != 78:
     notes.append(f"CMP-00430: {pof['n_unjust']} of {pof['n_lifts']} lifts unjustified (docs: 45 of 78)")
 
-# ---------------------------------------------------------------- CTR-00142 contract hero
+# ---------------------------------------------------------------- contract hero (v2: CTR-00184)
+# v2: CTR-00142 (used in v1) is 37% BELOW its peer median, so a "renegotiate" hero there invites "why renegotiate a cheap
+# contract?". CTR-00184 is the device-weight-only contract (0% tickets, no invoice tonnage) with a positive renegotiate value
+# that sits ABOVE its peer median: EUR 49.1/t vs 23.5/t (stream+region peers, n=21).
+CH = "00184"
 oa = rd("labels_dev/operator_action_values.parquet")
-o142 = oa[oa.case_id == "OC-00142"]
-g142 = g30[g30.contract_id == "CTR-00142"].iloc[0]
-L142 = LW[LW.device_id == "CMP-00142"]
-ctr142 = {"contract": "CTR-00142", "device": "CMP-00142", "op": "OP-D", "stream": "cardboard", "pricing": "HYBRID_MIN",
+o142 = oa[oa.case_id == f"OC-{CH}"]
+g142 = g30[g30.contract_id == f"CTR-{CH}"].iloc[0]
+L142 = LW[LW.device_id == f"CMP-{CH}"]
+ctr142 = {"contract": f"CTR-{CH}", "device": f"CMP-{CH}", "op": g142.operator_id, "stream": g142.material_stream, "pricing": g142.pricing_model,
+          "peer_level": g142.peer_level, "peer_n": int(g142.peer_n), "sector": g142.primary_sector, "policy": g142.collection_policy,
           "t": r(L142.device_estimated_collected_kg.sum() / 1000, 1), "lifts": int(len(L142)), "tk_share": r(L142.ticket_id.notna().mean(), 3),
           "eur_t": r(g142.net_cost_eur_t, 1), "peer_eur_t": r(g142.peer_med_eur_t, 1), "gap_pct": r(g142.gap_pct, 1),
           "annual_cost": r(o142.annual_contract_cost_eur.iloc[0], 2),
@@ -330,7 +335,7 @@ ctr142 = {"contract": "CTR-00142", "device": "CMP-00142", "op": "OP-D", "stream"
           "renegotiated_annual": r(o142[o142.action == "RENEGOTIATE_CONTRACT"].renegotiated_annual_cost_eur.iloc[0], 2),
           "alt_op": o142[o142.action == "TENDER_OR_SWITCH_OPERATOR"].best_alternative_operator.iloc[0]}
 if ctr142["gap_pct"] < 0:
-    notes.append(f"CTR-00142 device-weight EUR/t {ctr142['eur_t']} is {ctr142['gap_pct']}% vs peer median {ctr142['peer_eur_t']} (below peer); "
+    notes.append(f"{ctr142['contract']} device-weight EUR/t {ctr142['eur_t']} is {ctr142['gap_pct']}% vs peer median {ctr142['peer_eur_t']} (below peer); "
                  "the C2 renegotiate/tender value is tariff-driven, not an above-peer price")
 
 # ---------------------------------------------------------------- recommendations (rules decide)
@@ -397,21 +402,21 @@ props.append({"id": "P-004", "rule": "R3 PROOF_OF_FULLNESS", "action": "REDUCE_F
                            ["decision_outcomes", c0["case"], "SIMULATED"]],
               "value": {"p10": r(rf["eur"] - z * rf["se"], 0), "p50": rf["eur"], "p90": r(rf["eur"] + z * rf["se"], 0), "unit": "per 56 days (simulated)", "tag": "SIMULATED"},
               "reverse": "Schedule change is reversible at the next schedule review; SMART watches fill daily and raises an overflow alarm if the new schedule is too thin.",
-              "limits": "The benefit is a simulated counterfactual, not a measured saving. Seasonal peaks could need the old frequency; 2 of 9 later cases say no action.",
+              "limits": "The benefit is a simulated counterfactual, not a measured saving. The p10–p90 above is simulation error only; across the device's 9 decision cases the best benefit ranges €0–3,951, and 2 of 9 cases say no action (seasonal peaks).",
               "conf": "Medium"})
-# R4 contract (CTR-00142)
+# R4 contract (hero contract above)
 props.append({"id": "P-005", "rule": "R4 CONTRACT_VALUE_DEVICE_ONLY_MASS", "action": "RENEGOTIATE_CONTRACT", "sev": "info",
-              "to": "Customer procurement (discussion with Hauler Delta)", "subject": "CTR-00142", "device": "CMP-00142", "op": "OP-D",
-              "title": "Contract review: the only tonnage evidence is the compactor's",
-              "why": [f"{ctr142['t']} t over {ctr142['lifts']} lifts, ticket share {int((ctr142['tk_share'] or 0)*100)}%: device weight is the only mass.",
-                      f"Device-weight net cost €{ctr142['eur_t']}/t vs stream peer median €{ctr142['peer_eur_t']}/t ({ctr142['gap_pct']}%).",
+              "to": f"Customer procurement (discussion with {HAULER[ctr142['op']]})", "subject": ctr142["contract"], "device": ctr142["device"], "op": ctr142["op"],
+              "title": f"€{ctr142['eur_t']:.0f}/t vs a €{ctr142['peer_eur_t']:.0f}/t peer median, and only the compactor weighs it",
+              "why": [f"Device-weight net cost €{ctr142['eur_t']}/t vs the {ctr142['stream'].replace('_', ' ')} peer median €{ctr142['peer_eur_t']}/t in the same region (+{ctr142['gap_pct']:.0f}%, n={ctr142['peer_n']} peers).",
+                      f"{ctr142['t']} t over {ctr142['lifts']} lifts, ticket share {int((ctr142['tk_share'] or 0)*100)}%, no invoice tonnage: the compactor is the only mass behind that €/t.",
                       f"Dataset valuation rules price RENEGOTIATE at €{ctr142['actions']['RENEGOTIATE_CONTRACT']['eur']:,.0f} and TENDER at €{ctr142['actions']['TENDER_OR_SWITCH_OPERATOR']['eur']:,.0f} on €{ctr142['annual_cost']:,.0f} annual cost.",
                       "Tendering is the last step and is gated: it needs procurement sign-off and the 'talk to the operator first' step."],
-              "evidence": [["contracts", "CTR-00142", "OBSERVED"], ["collection_events", f"{ctr142['lifts']} lifts CMP-00142", "OBSERVED"],
-                           ["operator_action_values", "OC-00142", "SIMULATED"]],
+              "evidence": [["contracts", ctr142["contract"], "OBSERVED"], ["collection_events", f"{ctr142['lifts']} lifts {ctr142['device']}", "OBSERVED"],
+                           ["operator_action_values", f"OC-{CH}", "SIMULATED"]],
               "value": {"p10": None, "p50": ctr142["actions"]["RENEGOTIATE_CONTRACT"]["eur"], "p90": None, "unit": "per year (valuation rules, point value)", "tag": "HYPOTHETICAL"},
               "reverse": "A discussion request commits to nothing; it can be closed without contacting the operator.",
-              "limits": "Value comes from the dataset's hypothetical tariff rules. The contract is already below the peer median €/t, so the case rests on contract terms, not on a high price.",
+              "limits": "Value comes from the dataset's hypothetical tariff rules. The €/t rests on device weight at T0 accuracy (±5–6% on monthly totals), which is far smaller than a +108% gap but would matter for a gap under ~10%. Peers differ in credit terms.",
               "conf": "Medium"})
 # R5 drift watch + ticket confirmation
 ep = pd.read_csv(A_OUT / "50_drift_episodes_T06.csv")
@@ -499,5 +504,7 @@ idx = HERE / "index.html"
 if idx.exists():
     html = idx.read_text()
     new = re.sub(r'(<script id="data" type="application/json">)(.*?)(</script>)', lambda m: m.group(1) + txt.replace("</", "<\\/") + m.group(3), html, count=1, flags=re.S)
-    idx.write_text(new)
+    tmp = idx.with_suffix(".html.tmp")
+    tmp.write_text(new)
+    tmp.replace(idx)          # atomic: the page is live-served from this file
     print("inlined into index.html", len(new) // 1024, "KB")

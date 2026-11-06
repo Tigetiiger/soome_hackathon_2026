@@ -21,7 +21,7 @@ Europress × Since AI Hackathon 2026. This is the merged conclusion of 4 competi
 | "The operator only has the information about the weight… who owns the data is the holy grail" | Weight decides charges and credits (challenge brief) [F]. In the data, 21% of retail lifts have **no ticket**, and one operator shares **0%** of its tickets [D] |
 | Customers "never even trust" the operator's figures | **77%** of large device-vs-ticket gaps are on the weighbridge side: side waste 34%, stale stored tare 30%, combined loads 12%. **Only 3.9% are sensor faults** [D]. Stored-tare tickets scatter about 2× more than weighed-tare ones (robust SD 7.5% vs 3.8%) [D] |
 | SMART already makes machines as full as possible | So we **do not** sell pickup timing. On **fixed and hybrid schedules** (Poland, Central Europe), 30–32% of lifts are unjustified, worth about €2.5–2.7k per device-year [D] |
-| "Cheapest wins"; ballpark accuracy is fine | T0 has €0 BOM. Uncalibrated, it is only ±12–15% (1σ) per lift, but **monthly totals reach ±5–6%**. Over 10 months, a +5% invoice inflation is caught 96% of the time [D + science lens] |
+| "Cheapest wins"; ballpark accuracy is fine | T0 has €0 BOM. It is only ±12–15% (1σ) per lift, and ticket calibration does not shrink that per-lift error [D]. Its value is removing *bias*: monthly totals go from ≈11% off uncalibrated to ≈5–6% after ~20 clean tickets [D]. At σ≈10% a +10% overbilling is caught 62% of the time per quarter [D]. The 96%/10-month figure only holds for the dataset's simulated precise sensor (±1.4%), not for T0 |
 | Bio-waste is hard; humidity changes weight | Bio-waste gets wider uncertainty bands. Moisture becomes a money story: under EN 643, recovered paper above 10% moisture can be claimed back [F, from the Sonnet science lens] |
 | "Recognise material that doesn't fit" | Our density proxy **fails** on this data (~1% precision) [D]. This goes on the roadmap because it needs pressure-curve shape from new firmware. It is not a demo claim |
 
@@ -35,7 +35,7 @@ Europress × Since AI Hackathon 2026. This is the merged conclusion of 4 competi
 | Tier | What it is | BOM per unit | Accuracy (honest) | Existing Europress asset it reuses |
 |---|---|---|---|---|
 | **T0 Virtual scale** | Ram back-pressure per stroke, plus cycles and fill → kg ± band | **€0.** Firmware only: 10–20 Hz logging, delivered over the air | ±12–15% per lift uncalibrated; ±5–6% on monthly totals [E] | 0–200 bar pressure sensor, fill algorithm, Vincit ML pipeline, "waste volume calculator" |
-| **T1 Ticket-calibrated** | Clean tickets (weighed tare, single load) update a per-machine gain via a Kalman/robust update. A CUSUM alarm flags drift | €0 | Target ±7–10% per lift, ±3–5% monthly [E, untested] | Existing operator API and emptying calls |
+| **T1 Ticket-calibrated** | Clean tickets (weighed tare, single load) update a per-machine gain via a Kalman/robust update. A CUSUM alarm flags drift | €0 | Per lift still ≈ ±12% [D]; monthly bias ≈ ±5–6% after ~20 clean tickets [D]; plus a drift alarm | Existing operator API and emptying calls |
 | **T2 Measured** | 4-corner load-cell platform | €1.0–1.9k [E]. Sold **inside the lease**, which is ≈ €14–26/month over 72 months | ≈ ±1.4% [E]; verification grade | **The Scale Solutions platform, already a product** |
 | **Golden cohort** | T2 on 2–5% of the fleet, used as ground truth for the fleet model | €10–19k for about 10 machines [E] | A fleet model trained on 25 scale-fitted machines reached 4.96% error on unscaled ones (Mansouri 2025, via the Sonnet science lens) | Kerava manufacturing and the existing platform |
 
@@ -72,7 +72,7 @@ This is a managed service that SMART Center can run without hiring a data team.
 
 This replaces the €10–25 spread between the agent plans with one consistent set.
 
-- **Rule.** The fee is at most ⅓ of the value the customer can realise [A, from the dataset's business-case template].
+- **Rule.** The fee is at most ⅓ of the value the customer can realise. This is **our own assumption**: the dataset's business-case template uses a softer 2× value-to-price condition [A].
 - **€15/month (€180/year).** The customer must realise about €540 per year. That is plausible for the top-value segments (chains, fixed schedules) but not for the median contract. **So the median customer is not charged; they get the free teaser.**
 - **Integrated +€25.** Justified only by compliance/reporting value plus the contract benchmark. The ESG lens puts realisable value at ≈ €545 per device-year, only 1.8× the fee, which is borderline. Offer a **chain licence** instead whenever it is cheaper for the customer.
 - **Gain-share.** It removes the price objection in Poland ("cheapest wins"), and converts to a subscription once the value is proven.
