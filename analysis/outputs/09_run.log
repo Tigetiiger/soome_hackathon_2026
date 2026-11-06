@@ -1,0 +1,13 @@
+cases with a MASS_TARGET_TRIGGER option (devices with weight): 3573 of 3946
+mean best-permissible benefit per 56-day case: EUR 171.9 | without mass option: EUR 131.6 | increment from mass option: EUR 40.2 (23% of the best)
+share of cases where the mass option adds > EUR 25: 0.203 ; > EUR 100: 0.117
+cases where MASS_TARGET_TRIGGER is the best action: 0.255 ; and no fill-based action and not NO_ACTION is within tolerance ('mass needed'): 0.125
+MASS_TARGET_TRIGGER: permissible 0.592 ; mean benefit (permissible) EUR 143.7 ; hidden-cost traps 0.108 ; mean benefit if best EUR 283.7
+
+share mass-best by policy:
+{'FIXED_SCHEDULE': 0.221, 'HYBRID': 0.154, 'ON_CALL': 0.274}
+share mass-best by stream:
+{'biowaste': 0.093, 'cardboard': 0.277, 'mixed_plastic': 0.495, 'mixed_waste': 0.191, 'paper': 0.257, 'plastic_film': 0.429}
+mean increment EUR/case by stream: {'biowaste': 16.8, 'cardboard': 29.1, 'mixed_plastic': 104.2, 'mixed_waste': 40.9, 'paper': 31.3, 'plastic_film': 73.6}
+indicative per weighted device-year (policy persists, benefits per 56-day horizon scaled to 365 d): EUR 262
+cases with an active hidden weight-sensor issue at decision time: 0.045 (n=160)

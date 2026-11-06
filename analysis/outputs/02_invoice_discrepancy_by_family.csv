@@ -1,0 +1,8 @@
+family,n,net_eur,overcharge_eur,undercharge_eur,mean_abs,needs_independent_weight
+DUPLICATE_LINE,133,18352.83,18352.83,0.0,137.99,no (same job+line twice)
+MISSING_LINE,119,-3290.05,9160.6,-12450.65,181.61,no to flag; mass to value credit
+OUTDATED_TARIFF,381,-1651.48,7.35,-1658.83,4.37,no (contract version)
+UNINVOICED_COLLECTION,54,-13029.94,422.47,-13452.41,256.94,no (event without invoice)
+UNMATCHED_LINE,138,13562.58,13562.58,0.0,98.28,no (phantom job)
+WEIGHT_BASIS_MISMATCH,77,728.64,1392.08,-663.44,26.7,YES independent mass
+WRONG_SURCHARGE,150,2708.19,2708.19,0.0,18.05,no (contract km/fuel)

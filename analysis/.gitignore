@@ -1,0 +1,3 @@
+__pycache__/
+outputs/telemetry_dedup.parquet
+baseline_run/data

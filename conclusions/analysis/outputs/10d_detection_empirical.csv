@@ -1,0 +1,4 @@
+,units,median_lifts_per_unit,sd_r_pct,iqr_sd_pct,tau_pct,detect_+3pct,detect_+5pct,detect_+10pct
+per_lift,4776.0,1.0,35.82,4.09,39.64,0.03,0.035,0.046
+device_month,2380.0,2.0,9.51,3.6,27.13,0.032,0.044,0.077
+device_quarter,972.0,4.0,23.89,3.16,20.0,0.043,0.06,0.119

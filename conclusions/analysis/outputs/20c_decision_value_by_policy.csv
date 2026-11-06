@@ -1,0 +1,4 @@
+collection_policy,cases,mean_best_eur_y,median_best_eur_y,mean_nonweight_eur_y,mean_weight_increment_eur_y,share_best_is_mass_trigger
+FIXED_SCHEDULE,470,2778.93,406.62,2461.94,316.99,0.19
+HYBRID,378,1734.57,263.58,1657.19,77.38,0.15
+ON_CALL,3098,763.83,183.51,518.89,244.94,0.25

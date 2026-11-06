@@ -1,0 +1,116 @@
+devices calibrated: 375 of 404 with weight
+lifts in eval window: 7734  with fill+mass+calibration: 6582
+                           n       eur  fill_med  massfill_med  gap_med   has
+cat                                                                          
+FILL_SENSOR_FALSE_HIGH   167  32215.62     88.30         16.63    49.18  0.81
+OTHER                   6655      0.00     75.00         76.12    -1.88  0.86
+OVER_SERVICING           712  99462.09     25.60         25.23    -1.23  0.79
+PRECAUTIONARY_ORDER      200  28943.54     28.55         29.35     0.45  0.86
+
+== rule performance on lift level (eval window)
+                                                     rule             target  tp   fp  fn  precision  recall    f1
+                               FILL-ONLY: fill_before<30%     S40 false-high  55  697  81      0.073   0.404 0.124
+                               FILL-ONLY: fill_before<30%  S39 precautionary  95  657  76      0.126   0.556 0.206
+                               FILL-ONLY: fill_before<30% S01 over-servicing 392  360 174      0.521   0.693 0.595
+                               FILL-ONLY: fill_before<30%    ANY unjustified 542  210 331      0.721   0.621 0.667
+                               FILL-ONLY: fill_before<40%     S40 false-high  64 1117  72      0.054   0.471 0.097
+                               FILL-ONLY: fill_before<40%  S39 precautionary 148 1033  23      0.125   0.865 0.219
+                               FILL-ONLY: fill_before<40% S01 over-servicing 515  666  51      0.436   0.910 0.590
+                               FILL-ONLY: fill_before<40%    ANY unjustified 727  454 146      0.616   0.833 0.708
+                               FILL-ONLY: fill_before<50%     S40 false-high  65 1551  71      0.040   0.478 0.074
+                               FILL-ONLY: fill_before<50%  S39 precautionary 170 1446   1      0.105   0.994 0.190
+                               FILL-ONLY: fill_before<50% S01 over-servicing 557 1059   9      0.345   0.984 0.511
+                               FILL-ONLY: fill_before<50%    ANY unjustified 792  824  81      0.490   0.907 0.636
+                         MASS-ONLY: mass-implied fill<30%     S40 false-high 117  581  19      0.168   0.860 0.281
+                         MASS-ONLY: mass-implied fill<30%  S39 precautionary  90  608  81      0.129   0.526 0.207
+                         MASS-ONLY: mass-implied fill<30% S01 over-servicing 358  340 208      0.513   0.633 0.566
+                         MASS-ONLY: mass-implied fill<30%    ANY unjustified 565  133 308      0.809   0.647 0.719
+                         MASS-ONLY: mass-implied fill<40%     S40 false-high 130 1015   6      0.114   0.956 0.203
+                         MASS-ONLY: mass-implied fill<40%  S39 precautionary 154  991  17      0.134   0.901 0.234
+                         MASS-ONLY: mass-implied fill<40% S01 over-servicing 513  632  53      0.448   0.906 0.600
+                         MASS-ONLY: mass-implied fill<40%    ANY unjustified 797  348  76      0.696   0.913 0.790
+                         MASS-ONLY: mass-implied fill<50%     S40 false-high 136 1474   0      0.084   1.000 0.156
+                         MASS-ONLY: mass-implied fill<50%  S39 precautionary 167 1443   4      0.104   0.977 0.188
+                         MASS-ONLY: mass-implied fill<50% S01 over-servicing 553 1057  13      0.343   0.977 0.508
+                         MASS-ONLY: mass-implied fill<50%    ANY unjustified 856  754  17      0.532   0.981 0.689
+                   MASS-vs-FILL: mass-fill<40% (any fill)     S40 false-high 130 1015   6      0.114   0.956 0.203
+                   MASS-vs-FILL: mass-fill<40% (any fill)  S39 precautionary 154  991  17      0.134   0.901 0.234
+                   MASS-vs-FILL: mass-fill<40% (any fill) S01 over-servicing 513  632  53      0.448   0.906 0.600
+                   MASS-vs-FILL: mass-fill<40% (any fill)    ANY unjustified 797  348  76      0.696   0.913 0.790
+                   MASS-vs-FILL: mass-fill<50% (any fill)     S40 false-high 136 1474   0      0.084   1.000 0.156
+                   MASS-vs-FILL: mass-fill<50% (any fill)  S39 precautionary 167 1443   4      0.104   0.977 0.188
+                   MASS-vs-FILL: mass-fill<50% (any fill) S01 over-servicing 553 1057  13      0.343   0.977 0.508
+                   MASS-vs-FILL: mass-fill<50% (any fill)    ANY unjustified 856  754  17      0.532   0.981 0.689
+                   MASS-vs-FILL: mass-fill<60% (any fill)     S40 false-high 136 2044   0      0.062   1.000 0.117
+                   MASS-vs-FILL: mass-fill<60% (any fill)  S39 precautionary 167 2013   4      0.077   0.977 0.142
+                   MASS-vs-FILL: mass-fill<60% (any fill) S01 over-servicing 553 1627  13      0.254   0.977 0.403
+                   MASS-vs-FILL: mass-fill<60% (any fill)    ANY unjustified 856 1324  17      0.393   0.981 0.561
+MASS-vs-FILL gap: fill>=80 & mass-fill<50 (S40 signature)     S40 false-high  70   16  66      0.814   0.515 0.631
+MASS-vs-FILL gap: fill>=80 & mass-fill<50 (S40 signature)  S39 precautionary   0   86 171      0.000   0.000 0.000
+MASS-vs-FILL gap: fill>=80 & mass-fill<50 (S40 signature) S01 over-servicing   7   79 559      0.081   0.012 0.021
+MASS-vs-FILL gap: fill>=80 & mass-fill<50 (S40 signature)    ANY unjustified  77    9 796      0.895   0.088 0.161
+           COMBINED: fill<40 OR (fill>=80 & mass-fill<50)     S40 false-high 134 1133   2      0.106   0.985 0.191
+           COMBINED: fill<40 OR (fill>=80 & mass-fill<50)  S39 precautionary 148 1119  23      0.117   0.865 0.206
+           COMBINED: fill<40 OR (fill>=80 & mass-fill<50) S01 over-servicing 522  745  44      0.412   0.922 0.570
+           COMBINED: fill<40 OR (fill>=80 & mass-fill<50)    ANY unjustified 804  463  69      0.635   0.921 0.751
+                       COMBINED2: fill<40 OR mass-fill<40     S40 false-high 130 1191   6      0.098   0.956 0.178
+                       COMBINED2: fill<40 OR mass-fill<40  S39 precautionary 161 1160  10      0.122   0.942 0.216
+                       COMBINED2: fill<40 OR mass-fill<40 S01 over-servicing 538  783  28      0.407   0.951 0.570
+                       COMBINED2: fill<40 OR mass-fill<40    ANY unjustified 829  492  44      0.628   0.950 0.756
+
+S40 lifts: fill_before median 88.2 (p10 7.0), mass-implied fill median 16.6 (p90 31.7)
+normal 'OTHER' lifts: fill median 75.3, mass-fill median 76.1
+FILL_SENSOR_FALSE_HIGH: n=136 EUR=25,331 | caught by fill<40: 0.47 (EUR 12,244) | caught by mass-aware: 0.99 (EUR 25,023) | mass-only-extra EUR 12,780
+PRECAUTIONARY_ORDER: n=171 EUR=23,446 | caught by fill<40: 0.87 (EUR 21,110) | caught by mass-aware: 0.90 (EUR 21,592) | mass-only-extra EUR 1,446
+OVER_SERVICING: n=566 EUR=84,541 | caught by fill<40: 0.91 (EUR 78,416) | caught by mass-aware: 0.91 (EUR 77,856) | mass-only-extra EUR 2,482
+explained-justified lifts flagged: fill<40: 0.943 | mass-aware: 0.804 (n=296)
+
+S40 episodes in eval window: 163  duration h median: 72.0
+hour-level: P(sig | in S40 episode)=0.778  P(sig | not in episode)=0.0001 ; hours in episode 9527
+episodes alerted by persistence rule: 0.890; median hours to alert 3.0
+false alert episodes: 9 over 187.4 device-years -> 0.048 per device-year; devices involved: 9 of 375
+
+== label-window pool (304 d), device-years all=365.4 weighted=330.9
+                           n       eur  eur_per_device_year(weighted devices)  eur_per_device_year(all devices)
+explanation_code                                                                                               
+FILL_SENSOR_FALSE_HIGH   295   53328.2                                  161.1                             145.9
+OVER_SERVICING          1216  171036.8                                  516.8                             468.0
+PRECAUTIONARY_ORDER      343   50395.0                                  152.3                             137.9
+collection_policy       FIXED_SCHEDULE  HYBRID  ON_CALL
+explanation_code                                       
+FILL_SENSOR_FALSE_HIGH               0       0      295
+OVER_SERVICING                     647     569        0
+PRECAUTIONARY_ORDER                  0       0      343
+has_weight_measurement  False  True 
+explanation_code                    
+FILL_SENSOR_FALSE_HIGH     23    272
+OVER_SERVICING            161   1055
+PRECAUTIONARY_ORDER        31    312
+
+== S39: trigger-type + fill rule (no weight)
+                           rule target  tp  fp  fn  precision  recall    f1
+     CUSTOMER_REQUEST & fill<40    S39 147  57  24      0.721   0.860 0.784
+CUSTOMER_REQUEST & mass-fill<40    S39 153  53  18      0.743   0.895 0.812
+     CUSTOMER_REQUEST & fill<50    S39 169 112   2      0.601   0.988 0.748
+CUSTOMER_REQUEST & mass-fill<50    S39 166 107   5      0.608   0.971 0.748
+     CUSTOMER_REQUEST & fill<60    S39 170 161   1      0.514   0.994 0.677
+CUSTOMER_REQUEST & mass-fill<60    S39 166 160   5      0.509   0.971 0.668
+trigger types among S39: {'CUSTOMER_REQUEST': 170, 'RESCHEDULED': 1}
+
+== S40 hourly alert sweep (persistence k of 6 h, mass-implied fill threshold)
+ mass_fill_thr  k_of_6  episode_recall  median_h_to_alert  false_alert_episodes_per_device_year
+            40       3           0.853                3.0                                 0.048
+            40       4           0.853                4.0                                 0.021
+            40       5           0.853                5.0                                 0.027
+            50       3           0.890                3.0                                 0.048
+            50       4           0.890                4.0                                 0.027
+            50       5           0.883                5.0                                 0.027
+S40 lifts with an order time: 167; alert (3-of-6 rule) fires BEFORE the order in 44.3% of them; median lead 31.0 h
+
+== order-time guard (fill>=80 & mass-implied fill<50 at the hour before the order), orders with telemetry: 4734
+  FILL_SENSOR_FALSE_HIGH: n=136, guard fires on 0.507, EUR at stake caught 13,242 of 25,132
+  PRECAUTIONARY_ORDER: n=171, guard fires on 0.000, EUR at stake caught 0 of 23,446
+  OVER_SERVICING: n=13, guard fires on 0.000, EUR at stake caught 0 of 2,075
+  OTHER: n=4414, guard fires on 0.001
+  on-call fill-triggered orders: n=3235, guard fires 0.022; of firing orders 95.8% are S40 (precision)
+  S40 orders caught at order time: 50.7% (EUR 13242 of 25132)

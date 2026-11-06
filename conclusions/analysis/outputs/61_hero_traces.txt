@@ -1,0 +1,96 @@
+
+#### job OP-E-003920032 | COL-00392-0032 | device CMP-00392 (mixed_waste, HYBRID, OP-E) | date 2025-12-23
+ device mass before/after 4200.0/75.0 -> est 4125.0 kg; fill before 96.0
+ ticket WB-OP-E-00392-0032 vehicle OP-E-V15 gross 15960.0 tare 11760.0 (STORED) net 4200.0 alloc 4200.0 loads 1.0; grade nan
+ contract version CTR-00392-V1: pricing_model=HYBRID, lift_fee_cents=8431, haul_fee_cents_per_t=0, processing_fee_cents_per_t=12682, min_charge_cents=0, credit_share_bp=0, default_weight_kg=3670
+ reference: billing mass 4200.0 (WEIGHBRIDGE_NET) expected invoice EUR 936.31 total cost EUR/t 222.93
+      invoice_line_id        line_type  quantity        unit  unit_price_eur  amount_eur
+INV-00392-202512-L041         LIFT_FEE      1.00        lift           84.31       84.31
+INV-00392-202512-L042        TRANSPORT    183.00          km            1.40      256.20
+INV-00392-202512-L043 REMOTE_SURCHARGE      1.00        lift           35.00       35.00
+INV-00392-202512-L044   FUEL_SURCHARGE      7.50 pct_of_base          375.51       28.16
+INV-00392-202512-L045       PROCESSING      5.08           t          126.82      644.25
+ invoice total for job EUR 1047.92 | reference lines: [['LIFT_FEE', 1.0, 84.31], ['TRANSPORT', 183.0, 256.2], ['REMOTE_SURCHARGE', 1.0, 35.0], ['FUEL_SURCHARGE', 7.5, 28.16], ['PROCESSING', 4.2, 532.64]]
+ labels: [['INV-00392-202512-L045', 'WEIGHT_BASIS_MISMATCH', 'WEIGHT_BASIS_MISMATCH', 111.61, 'clear']]
+
+#### job OP-B-000100042 | COL-00010-0042 | device CMP-00010 (mixed_waste, HYBRID, OP-B) | date 2026-02-24
+ device mass before/after 3920.0/5.0 -> est 3915.0 kg; fill before 85.2
+ ticket WB-OP-B-00010-0042 vehicle OP-B-V16 gross 16660.0 tare 12660.0 (WEIGHED) net 4000.0 alloc 4000.0 loads 1.0; grade nan
+ contract version CTR-00010-V2: pricing_model=HYBRID_MIN, lift_fee_cents=12614, haul_fee_cents_per_t=0, processing_fee_cents_per_t=13139, min_charge_cents=25795, credit_share_bp=0, default_weight_kg=2660
+ reference: billing mass 4000.0 (WEIGHBRIDGE_NET) expected invoice EUR 710.15 total cost EUR/t 177.54
+      invoice_line_id      line_type  quantity        unit  unit_price_eur  amount_eur
+INV-00010-202602-L009       LIFT_FEE     1.000        lift          126.14      126.14
+INV-00010-202602-L010      TRANSPORT    24.000          km            2.00       48.00
+INV-00010-202602-L011 FUEL_SURCHARGE     6.000 pct_of_base          174.14       10.45
+INV-00010-202602-L012     PROCESSING     4.634           t          131.39      608.86
+ invoice total for job EUR 793.45 | reference lines: [['LIFT_FEE', 1.0, 126.14], ['TRANSPORT', 24.0, 48.0], ['FUEL_SURCHARGE', 6.0, 10.45], ['PROCESSING', 4.0, 525.56]]
+ labels: [['INV-00010-202602-L012', 'WEIGHT_BASIS_MISMATCH', 'WEIGHT_BASIS_MISMATCH', 83.3, 'clear']]
+
+OP-E-V06: stored-tare single loads n=124, median device/ticket-1 -0.197; pricing mix {'FIXED_PER_LIFT': 37, 'HYBRID': 36, 'PER_TONNE': 18, 'HYBRID_MIN': 11}
+
+#### job OP-E-000700009 | COL-00070-0009 | device CMP-00070 (mixed_waste, ON_CALL, OP-E) | date 2025-12-19
+ device mass before/after 2705.0/30.0 -> est 2675.0 kg; fill before 96.7
+ ticket WB-OP-E-00070-0009 vehicle OP-E-V06 gross 19060.0 tare 15960.0 (STORED) net 3100.0 alloc 3100.0 loads 1.0; grade nan
+ contract version CTR-00070-V1: pricing_model=HYBRID, lift_fee_cents=10303, haul_fee_cents_per_t=0, processing_fee_cents_per_t=12672, min_charge_cents=0, credit_share_bp=0, default_weight_kg=2340
+ reference: billing mass 3100.0 (WEIGHBRIDGE_NET) expected invoice EUR 538.95 total cost EUR/t 173.85
+      invoice_line_id  line_type  quantity unit  unit_price_eur  amount_eur
+INV-00070-202512-L007   LIFT_FEE       1.0 lift          103.03      103.03
+INV-00070-202512-L008  TRANSPORT      31.0   km            1.39       43.09
+INV-00070-202512-L009 PROCESSING       3.1    t          126.72      392.83
+ invoice total for job EUR 538.95 | reference lines: [['LIFT_FEE', 1.0, 103.03], ['TRANSPORT', 31.0, 43.09], ['PROCESSING', 3.1, 392.83]]
+ labels: [['COL-00070-0009', 'WEIGHT_DISCREPANCY', 'WEIGHBRIDGE_TARE_ERROR', nan, 'borderline']]
+
+OP-A-V12: stored-tare single loads n=27, median device/ticket-1 0.120; pricing mix {'HYBRID': 9, 'HYBRID_MIN': 4, 'FIXED_PER_LIFT': 3, 'PER_TONNE': 2}
+
+#### job OP-A-001950014 | COL-00195-0014 | device CMP-00195 (cardboard, ON_CALL, OP-A) | date 2025-12-03
+ device mass before/after 3875.0/95.0 -> est 3780.0 kg; fill before 78.1
+ ticket WB-OP-A-00195-0014 vehicle OP-A-V12 gross 19700.0 tare 16140.0 (STORED) net 3560.0 alloc 3560.0 loads 1.0; grade A
+ contract version CTR-00195-V1: pricing_model=HYBRID, lift_fee_cents=14126, haul_fee_cents_per_t=0, processing_fee_cents_per_t=0, min_charge_cents=0, credit_share_bp=8900, default_weight_kg=3280
+ reference: billing mass 3560.0 (WEIGHBRIDGE_NET) expected invoice EUR -174.69 total cost EUR/t -49.07
+      invoice_line_id       line_type  quantity unit  unit_price_eur  amount_eur
+INV-00195-202512-L001        LIFT_FEE      1.00 lift          141.26      141.26
+INV-00195-202512-L002       TRANSPORT      2.00   km            2.17        4.34
+INV-00195-202512-L003 MATERIAL_CREDIT      3.56    t          -89.97     -320.29
+ invoice total for job EUR -174.69 | reference lines: [['LIFT_FEE', 1.0, 141.26], ['TRANSPORT', 2.0, 4.34], ['MATERIAL_CREDIT', 3.56, -320.29]]
+ labels: []
+
+#### CMP-00430 {'customer_id': 'ORG-0049', 'collection_policy': 'FIXED_SCHEDULE', 'fixed_schedule_per_week': 2.0, 'material_stream': 'mixed_waste', 'container_volume_m3': 8.0, 'operator_id': 'OP-D', 'contract_id': 'CTR-00430', 'has_weight_measurement': True}
+ lifts in window 78 unjustified 45 EUR 14702.38 | median fill before 27.85 median device kg 1057.5 | ticket share 0.0 | obs mass source {'DEVICE_ESTIMATE_ONLY': 78}
+ median cost per lift EUR 493.9 | EUR/t median 470.41999999999996
+       case_id               decision_at  horizon_days      best_action  best_benefit_cents acceptable_actions
+DC-00430-01351 2025-11-26 04:00:00+00:00            56 REDUCE_FREQUENCY              375007   REDUCE_FREQUENCY
+DC-00430-02023 2025-12-24 04:00:00+00:00            56 REDUCE_FREQUENCY              385128   REDUCE_FREQUENCY
+DC-00430-02695 2026-01-21 04:00:00+00:00            56 REDUCE_FREQUENCY              392674   REDUCE_FREQUENCY
+DC-00430-03367 2026-02-18 04:00:00+00:00            56 REDUCE_FREQUENCY              395120   REDUCE_FREQUENCY
+DC-00430-04039 2026-03-18 04:00:00+00:00            56 REDUCE_FREQUENCY              382406   REDUCE_FREQUENCY
+DC-00430-04710 2026-04-15 03:00:00+00:00            56 REDUCE_FREQUENCY              375562   REDUCE_FREQUENCY
+DC-00430-05382 2026-05-13 03:00:00+00:00            56 REDUCE_FREQUENCY              381273   REDUCE_FREQUENCY
+DC-00430-06054 2026-06-10 03:00:00+00:00            56        NO_ACTION                   0          NO_ACTION
+DC-00430-06726 2026-07-08 03:00:00+00:00            56        NO_ACTION                   0          NO_ACTION
+             action  benefit_vs_no_action_cents  permissible  n_completed_lifts  overflow_open_hours  hidden_cost_trap
+ INCREASE_FREQUENCY                     -320442         True              22.50                 0.00             False
+MASS_TARGET_TRIGGER                      425548        False               6.00                49.00             False
+          NO_ACTION                           0         True              15.83                 0.00             False
+   REDUCE_FREQUENCY                      375007         True               8.00                 0.17             False
+  SWITCH_TO_ON_CALL                      422666        False               6.00                71.33             False
+
+#### job OP-D-004300011 | COL-00430-0011 | device CMP-00430 (mixed_waste, FIXED_SCHEDULE, OP-D) | date 2025-11-06
+ device mass before/after 710.0/95.0 -> est 615.0 kg; fill before 17.0
+ ticket nan vehicle OP-D-V08 gross nan tare nan (nan) net nan alloc nan loads nan; grade nan
+ contract version CTR-00430-V1: pricing_model=FIXED_PER_LIFT, lift_fee_cents=40906, haul_fee_cents_per_t=0, processing_fee_cents_per_t=0, min_charge_cents=0, credit_share_bp=0, default_weight_kg=1810
+ reference: billing mass 700.0 (WEIGHBRIDGE_NET) expected invoice EUR 472.77 total cost EUR/t 675.39
+      invoice_line_id      line_type  quantity        unit  unit_price_eur  amount_eur
+INV-00430-202511-L004       LIFT_FEE       1.0        lift          409.06      409.06
+INV-00430-202511-L005      TRANSPORT      22.0          km            2.27       49.94
+INV-00430-202511-L006 FUEL_SURCHARGE       3.0 pct_of_base          459.00       13.77
+ invoice total for job EUR 472.77 | reference lines: [['LIFT_FEE', 1.0, 409.06], ['TRANSPORT', 22.0, 49.94], ['FUEL_SURCHARGE', 3.0, 13.77]]
+ labels: [['COL-00430-0011', 'COST_PER_T_HIGH', 'PREMATURE_UNJUSTIFIED', 320.4, 'clear'], ['COL-00430-0011', 'PREMATURE_UNJUSTIFIED', 'OVER_SERVICING', 325.25, 'borderline']]
+ case_id contract_id device_id operator_id material_stream  pricing_model                    action  value_eur  annual_contract_cost_eur best_alternative_operator  net_cost_eur_t  peer_med_eur_t    gap_pct      t  lifts
+OC-00138   CTR-00138 CMP-00138        OP-C       cardboard FIXED_PER_LIFT TENDER_OR_SWITCH_OPERATOR   29498.57                  30083.66                      OP-E       49.273647       49.536480  -0.530585 453.54     64
+OC-00142   CTR-00142 CMP-00142        OP-D       cardboard     HYBRID_MIN TENDER_OR_SWITCH_OPERATOR   16071.71                  13093.89                      OP-E       33.791130       53.777657 -37.165112 287.50     42
+OC-00142   CTR-00142 CMP-00142        OP-D       cardboard     HYBRID_MIN      RENEGOTIATE_CONTRACT    9953.07                  13093.89                       NaN       33.791130       53.777657 -37.165112 287.50     42
+OC-00072   CTR-00072 CMP-00072        OP-D       cardboard         HYBRID TENDER_OR_SWITCH_OPERATOR    7429.10                   8592.74                      OP-A       43.964596       53.777657 -18.247467 132.19     39
+OC-00072   CTR-00072 CMP-00072        OP-D       cardboard         HYBRID      RENEGOTIATE_CONTRACT    4877.41                   8592.74                       NaN       43.964596       53.777657 -18.247467 132.19     39
+OC-00184   CTR-00184 CMP-00184        OP-D       cardboard         HYBRID TENDER_OR_SWITCH_OPERATOR    4204.64                   7022.60                      OP-A       49.051926       23.526095 108.500073 105.92     32
+OC-00184   CTR-00184 CMP-00184        OP-D       cardboard         HYBRID      RENEGOTIATE_CONTRACT    3619.93                   7022.60                       NaN       49.051926       23.526095 108.500073 105.92     32
+OC-00430   CTR-00430 CMP-00430        OP-D     mixed_waste FIXED_PER_LIFT TENDER_OR_SWITCH_OPERATOR    3536.44                  51618.07                      OP-E      435.991045      193.616581 125.182700  87.10     78

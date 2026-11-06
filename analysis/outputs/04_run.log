@@ -1,0 +1,55 @@
+lifts with usable fill+mass: 12269
+                  count   mean    25%    50%    75%  typical_assumption
+material_stream                                                        
+biowaste         2247.0  676.0  614.0  684.0  745.0                 620
+cardboard        4684.0  215.0  186.0  212.0  240.0                 190
+mixed_plastic     293.0  118.0  105.0  114.0  127.0                 115
+mixed_waste      3159.0  381.0  325.0  383.0  436.0                 380
+paper             353.0  345.0  314.0  345.0  380.0                 330
+plastic_film     1533.0  136.0  117.0  133.0  152.0                 140
+between-device spread of median density (CV):  {'biowaste': 0.261, 'cardboard': 0.238, 'mixed_plastic': 0.253, 'mixed_waste': 0.239, 'paper': 0.284, 'plastic_film': 0.219}
+within-device density MAD (log, %): 6.4
+
+== MOISTURE (S28): eligible lifts (cardboard/paper, labelled window) 3792, labelled wet 34
+  all cardboard/paper: n=3792 wet=34 AUC(z)=0.606  AUC(rel density)=0.610
+  outdoor-staged only: n=1306 wet=34 AUC(z)=0.607  AUC(rel density)=0.611
+ z_threshold  flagged  tp  fp  fn  precision  recall
+         1.5       78   5  73  29      0.064   0.147
+         2.0       27   0  27  34      0.000   0.000
+         2.5        8   0   8  34      0.000   0.000
+         3.0        4   0   4  34      0.000   0.000
+         4.0        2   0   2  34      0.000   0.000
+labelled wet loads: extra water mass 14.1% median (device-implied density excess median 2.7%)
+normal outdoor loads: density excess median -0.1%, p95 12.1%
+wet loads: extra water kg total 17283, extra per-tonne fees (haul+processing) EUR 144 on 34 loads; mean EUR 4.24
+wet loads with operator remark WET_MATERIAL: 3 of 21 with a grade
+region-days (>=2 outdoor cardboard/paper lifts): 468; with a wet label: 15; AUC(median z -> any wet) = 0.576
+
+== CONTAMINATION (S07/S38): density vs operator grade (credit-eligible, graded lifts n=4697)
+          n  z_med  rel_med  contam_med
+grade                                  
+A      2479   0.00     0.00         2.0
+B      1370   0.00     0.00         6.0
+C       743   0.01     0.03        12.0
+R       105   0.03     0.20        21.0
+  AUC density z -> grade C: 0.514; -> grade in (B,C,R): 0.504
+  AUC density z -> grade R: 0.520; -> grade in (B,C,R): 0.504
+  lifts inside/after a CONTAMINATION_INCIDENT episode: 60 of 4887; AUC(z)=0.507; median density excess in-incident -0.0% vs other 0.0%
+                                           count       sum
+label_family             explanation_code                 
+CONTAMINATION_VALUE_LOSS GRADE_B             591   27716.0
+                         GRADE_C             921  123891.0
+REJECTED_LOAD            GRADE_R             116   47808.0
+
+== mixed waste devices: median implied density / assumed 380 kg/m3 by whether site also has a recyclable stream
+                       count   mean    25%    50%    75%
+has_recyclable_stream                                   
+False                    5.0  384.0  333.0  404.0  417.0
+True                   106.0  387.0  340.0  399.0  444.0
+devices with |across-device z|>3 : 20 of 393
+lift-level |z|>3 (device-relative): share 0.029; z>3 share 0.005, z<-3 share 0.024
+
+== moisture via kg per compaction cycle: n=1494 wet=46 AUC=0.698
+   z>1.5: flagged 93, tp 15, precision 0.161, recall 0.326
+   z>2: flagged 45, tp 5, precision 0.111, recall 0.109
+   z>3: flagged 16, tp 0, precision 0.000, recall 0.000

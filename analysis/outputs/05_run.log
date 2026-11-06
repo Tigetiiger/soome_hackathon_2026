@@ -1,0 +1,44 @@
+== operator scorecard (truth, dev months, lift-weighted)
+      on_time_rate  missed_visit_rate  weighbridge_shared_7d_rate  median_share_lag_days  billing_overcharge_pct  billing_undercharge_pct  discrepant_line_rate  weight_bias_pct  median_order_to_lift_hours    jobs  billed_eur
+OP-A         0.680              0.007                       0.911                  1.779                   0.532                    0.240                 0.010           -1.102                      31.385  2136.0   567816.70
+OP-B         0.531              0.014                       0.407                  7.436                   1.164                    0.938                 0.020           -0.017                      33.081  2441.0   734349.04
+OP-C         0.427              0.021                       0.000                 28.007                   2.288                    0.968                 0.032            0.187                      36.482  1619.0   518154.12
+OP-D         0.566              0.013                       0.000                    NaN                   1.771                    1.569                 0.024           -0.742                      35.905  2245.0   549300.43
+OP-E         0.622              0.007                       0.894                  0.276                   0.847                    0.422                 0.014            0.702                      30.469  5812.0  1571881.02
+
+== cause attribution of >10% device-vs-ticket gaps, by operator (neutral view)
+              pairs  gt10_share  of_gt10: tare(operator)  of_gt10: side waste  of_gt10: combined  of_gt10: device fault  of_gt10: noise/small/no label  stored_tare_share  tare_error_rate_per_ticket
+operator_id                                                                                                                                                                                          
+OP-A         1749.0       0.195                    0.229                0.317              0.088                  0.044                          0.323              0.424                       0.045
+OP-B         1869.0       0.248                    0.266                0.354              0.127                  0.073                          0.179              0.440                       0.066
+OP-C          775.0       0.289                    0.321                0.424              0.071                  0.062                          0.121              0.449                       0.093
+OP-E         4669.0       0.262                    0.336                0.331              0.136                  0.020                          0.178              0.455                       0.088
+
+vehicles with tare-error lifts: 19 of 70  | top-10 vehicles hold 79.4% of tare-error lifts
+{'count': 70.0, 'mean': 0.064, 'std': 0.108, 'min': 0.0, '25%': 0.0, '50%': 0.0, '75%': 0.132, 'max': 0.3}
+vehicles with tare_err rate >50% among tickets>=20: 0 of 70
+
+== C2 dev cases: 207  (40% of customers, as of 2026-07-01); sum of annual contract cost EUR 2786004
+                           cases  positive  sum_positive_eur  mean_positive_eur
+action                                                                         
+DISPUTE_INVOICE              207        22            2645.5              120.2
+RENEGOTIATE_CONTRACT         204        55          114606.2             2083.7
+REQUEST_WEIGHBRIDGE_DATA      63         7             620.1               88.6
+TENDER_OR_SWITCH_OPERATOR    165        57          176809.0             3101.9
+best-set value: total EUR 220229, mean per contract EUR 1064 (=7.9% of annual contract cost)
+
+best-set decomposition EUR: {'dispute': 2645.0, 'request_weighbridge': 620.0, 'renegotiate (chosen over tender)': 46872.0, 'tender/switch (chosen)': 170092.0}  total 220229.0
+weight/verification-related actions (dispute + request) share of best-set value: 1.5%
+
+best-set value by current operator:
+               cases       cost     best  pct_of_cost
+operator_id_c                                        
+OP-A              13   108694.7   6554.2          6.0
+OP-B              38   457195.2  63786.5         14.0
+OP-C              18   218218.1  35644.8         16.3
+OP-D              38   390353.2  53581.8         13.7
+OP-E             100  1611543.3  60662.1          3.8
+
+per active device-year: EUR 1064 (dev cases mean); extrapolated to 437 active public devices: EUR 464929 (assumes dev cases are representative: 40% of customers)
+dispute: recoverable overbilling total EUR 4936 over 207 cases, cases >0: 45
+request candidates: 63  by operator: {'OP-B': 7, 'OP-C': 18, 'OP-D': 38}  positive: 7  of which with device weight: 5

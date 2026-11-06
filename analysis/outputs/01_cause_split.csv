@@ -1,0 +1,7 @@
+cause_g,lifts,share_of_pairs,gt3.3pct,gt10pct,median_diff_kg,median_rel_pct,actionable_label,share_of_gt10,share_of_gt3.3
+combined load (50/50 split),271,0.0299,271,271,-340.0,-16.2698,False,0.1204,0.0566
+device sensor fault/drift/calibration,87,0.0096,87,87,295.0,12.218,True,0.0387,0.0182
+no label (agree or small diff),7115,0.7851,2839,303,-25.0,-1.4286,False,0.1347,0.5932
+noise/timing (small loads),134,0.0148,134,134,-170.0,-12.7568,False,0.0596,0.028
+side waste on same truck,771,0.0851,771,771,-840.0,-19.5719,False,0.3427,0.1611
+stale/wrong tare (operator side),684,0.0755,684,684,-255.0,-11.9819,True,0.304,0.1429

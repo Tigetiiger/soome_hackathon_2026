@@ -1,0 +1,6 @@
+.venv/
+__pycache__/
+analysis/outputs/telemetry_dedup.parquet
+analysis/baseline_run/
+*.png
+node_modules/

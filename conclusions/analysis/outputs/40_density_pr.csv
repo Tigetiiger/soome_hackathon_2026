@@ -1,0 +1,21 @@
+target,thr,tp,fp,fn,precision,recall,grade_loss_eur_on_flagged_true
+moisture (z>+thr),0.1,6,863,31,0.007,0.162,1945.0
+contamination (|z|>thr),0.1,11,1909,44,0.006,0.2,2274.0
+contamination (z>+thr),0.1,4,865,51,0.005,0.073,436.0
+any density anomaly (|z|>thr) vs moist|cont,0.1,21,1899,70,0.011,0.231,6221.0
+moisture (z>+thr),0.15,3,302,34,0.01,0.081,51.0
+contamination (|z|>thr),0.15,5,798,50,0.006,0.091,797.0
+contamination (z>+thr),0.15,1,304,54,0.003,0.018,162.0
+any density anomaly (|z|>thr) vs moist|cont,0.15,10,793,81,0.012,0.11,960.0
+moisture (z>+thr),0.2,1,107,36,0.009,0.027,0.0
+contamination (|z|>thr),0.2,1,403,54,0.002,0.018,84.0
+contamination (z>+thr),0.2,0,108,55,0.0,0.0,0.0
+any density anomaly (|z|>thr) vs moist|cont,0.2,4,400,87,0.01,0.044,196.0
+moisture (z>+thr),0.25,1,51,36,0.019,0.027,0.0
+contamination (|z|>thr),0.25,1,270,54,0.004,0.018,84.0
+contamination (z>+thr),0.25,0,52,55,0.0,0.0,0.0
+any density anomaly (|z|>thr) vs moist|cont,0.25,4,267,87,0.015,0.044,196.0
+moisture (z>+thr),0.3,1,28,36,0.034,0.027,0.0
+contamination (|z|>thr),0.3,0,206,55,0.0,0.0,0.0
+contamination (z>+thr),0.3,0,29,55,0.0,0.0,0.0
+any density anomaly (|z|>thr) vs moist|cont,0.3,3,203,88,0.015,0.033,112.0

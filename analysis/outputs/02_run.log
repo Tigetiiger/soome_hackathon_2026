@@ -1,0 +1,95 @@
+== (2a) invoice discrepancy EUR by family, label window (10 months)
+                         n  net_eur  overcharge_eur  undercharge_eur  mean_abs          needs_independent_weight
+family                                                                                                          
+DUPLICATE_LINE         133  18352.8         18352.8              0.0     138.0          no (same job+line twice)
+MISSING_LINE           119  -3290.1          9160.6         -12450.6     181.6  no to flag; mass to value credit
+OUTDATED_TARIFF        381  -1651.5             7.4          -1658.8       4.4             no (contract version)
+UNINVOICED_COLLECTION   54 -13029.9           422.5         -13452.4     256.9        no (event without invoice)
+UNMATCHED_LINE         138  13562.6         13562.6              0.0      98.3                  no (phantom job)
+WEIGHT_BASIS_MISMATCH   77    728.6          1392.1           -663.4      26.7              YES independent mass
+WRONG_SURCHARGE        150   2708.2          2708.2              0.0      18.1             no (contract km/fuel)
+total over-charge eur 45606.1 total under -28225.3 billed total in window 4347210.0
+
+== WEIGHT_BASIS_MISMATCH lines (n=77): invoice tonnage vs weighbridge reference
+       inv_qty_over_ref_pct  value_at_stake_eur
+count                 76.00               77.00
+mean                  16.28                9.46
+std                    5.41               37.68
+min                    8.00              -93.00
+25%                   11.21              -12.37
+50%                   15.70                5.00
+75%                   21.01               29.54
+max                   25.00              133.95
+ticket shared: 0.636  device weight on device: 0.895  device est present: 0.844
+by operator: {'OP-A': {'n': 4, 'eur': 121.01, 'shared': 0.75}, 'OP-B': {'n': 13, 'eur': 160.01, 'shared': 0.85}, 'OP-C': {'n': 16, 'eur': -43.72, 'shared': 0.56}, 'OP-D': {'n': 17, 'eur': 193.22, 'shared': 0.0}, 'OP-E': {'n': 27, 'eur': 298.12, 'shared': 0.96}}
+device est vs invoice qty: median -17.1%, |dev/inv-1|>10%: 0.675; >3.3%: 0.844
+
+== share of reference charge lines (gross abs EUR) that depend on mass: 0.46
+                        count        sum  <lambda_0>
+line_type                                           
+CANCELLATION_FEE           15      776.0       776.0
+CONTAMINATION_PENALTY     921    73973.0     73973.0
+EMERGENCY_SURCHARGE       775    77894.0     77894.0
+FUEL_SURCHARGE          10137   111464.0    111464.0
+HAUL_PER_TONNE           1851   152532.0    152532.0
+LIFT_FEE                11983  1749902.0   1749902.0
+MATERIAL_CREDIT          5798  -822290.0    822290.0
+MIN_CHARGE_TOPUP         1916   143815.0    143815.0
+PROCESSING               5176  1342114.0   1342114.0
+REJECTION_REPROCESSING    116    40150.0     40150.0
+REMOTE_SURCHARGE         2716    56120.0     56120.0
+SIDE_WASTE_FEE           2665   208137.0    208137.0
+TRANSPORT               11504   638718.0    638718.0
+WASTED_TRIP_FEE           243    21928.0     21928.0
+
+== (3) observable mass source in label window (lifts n=13840)
+src
+WEIGHBRIDGE_PUBLISHED    10283
+INVOICE_TONNAGE           2605
+DEVICE_ESTIMATE_ONLY       909
+NONE                        43
+Name: count, dtype: int64
+               lifts  ticket_published  invoice_tonnage_only  device_only   none
+operator_id                                                                     
+OP-A          2071.0             0.964                 0.029        0.006  0.001
+OP-B          2382.0             0.885                 0.081        0.032  0.002
+OP-C          1565.0             0.532                 0.367        0.096  0.004
+OP-D          2160.0             0.000                 0.698        0.288  0.014
+OP-E          5662.0             0.944                 0.047        0.008  0.000
+ALL          13840.0             0.743                 0.188        0.066  0.003
+no published ticket (EUR/t unverified): lifts 0.257 spend share 0.262 (EUR 821,018)
+EUR/t NULL today (device only or none): lifts 0.069 spend share 0.111 (EUR 348,521)
+invoice tonnage only (unverifiable): lifts 0.188 spend share 0.151 (EUR 472,497)
+lifts w/o published ticket: 3557  with device est: 3158 (0.888)  device-sensor devices: 0.911
+device_estimated_collected_kg  False  True 
+src                                        
+DEVICE_ESTIMATE_ONLY               0    909
+INVOICE_TONNAGE                  356   2249
+NONE                              43      0
+EUR/t NULL today: 952 lifts (6.88% of lifts); recovered by device estimate: 909 (95.5%)
+
+ticket sharing lag days (published - weighing): median 0.59, p90 23.20
+              count    50%   mean
+operator_id                      
+OP-A         1996.0   1.79   4.88
+OP-B         2108.0   7.43   9.98
+OP-C          832.0  27.93  29.46
+OP-D            0.0    NaN    NaN
+OP-E         5347.0   0.27   3.17
+invoice issue lag after month end: median 8.0 d
+ticket available within 2 d after lift: 0.447
+ticket available within 7 d after lift: 0.572
+ticket available within 30 d after lift: 0.685
+device mass available at lift time (device_est present): 0.884
+
+EUR/t from device mass vs reference EUR/t (lifts >=300 kg, n=11797): median err 3.4%, within 5%: 0.605, within 10%: 0.757, within 20%: 0.873
+                                count  median  <lambda_0>
+cause                                                    
+COMBINED_LOAD_ALLOCATION          270   0.292       0.067
+DEVICE_SENSOR_CALIBRATION_GAIN      1   0.108       0.000
+DEVICE_SENSOR_DEGRADED              5   0.144       0.000
+DEVICE_SENSOR_DRIFT                81   0.157       0.136
+MEASUREMENT_NOISE_OR_TIMING       122   0.145       0.107
+NO_LABEL                         9887   0.026       0.892
+SIDE_WASTE_ON_SAME_TRUCK          770   0.231       0.031
+WEIGHBRIDGE_TARE_ERROR            661   0.216       0.059

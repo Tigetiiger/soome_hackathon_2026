@@ -1,0 +1,24 @@
+{
+ "contracts": 446,
+ "excess_total_eur_y": 746982.4903760953,
+ "excess_per_contract_y_mean": 1674.8486331302586,
+ "excess_per_contract_y_p50_of_positive": 1920.1071040696206,
+ "share_contracts_gap_ge_12": 0.4080717488789238,
+ "share_contracts_gap_ge_25": 0.3475336322869955,
+ "c2_cases": 207,
+ "c2_best_set_value_total": 220229.32999999996,
+ "c2_best_set_value_per_case_mean": 1063.909806763285,
+ "c2_annual_contract_cost_mean": 13458.95850241546,
+ "c2_pos_value_by_action": {
+  "DISPUTE_INVOICE": 2645.0,
+  "RENEGOTIATE_CONTRACT": 114606.0,
+  "REQUEST_WEIGHBRIDGE_DATA": 620.0,
+  "TENDER_OR_SWITCH_OPERATOR": 176809.0
+ },
+ "c2_pos_value_device_only_mass": {
+  "DISPUTE_INVOICE": 673.0,
+  "RENEGOTIATE_CONTRACT": 18708.0,
+  "REQUEST_WEIGHBRIDGE_DATA": 0.0,
+  "TENDER_OR_SWITCH_OPERATOR": 64209.0
+ }
+}

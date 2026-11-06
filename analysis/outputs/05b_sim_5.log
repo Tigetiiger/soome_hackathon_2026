@@ -1,0 +1,29 @@
+sim:5 mass basis: {'SIM_DEVICE': 13840, 'DEVICE_ESTIMATE': 4103, 'NOT_A_LIFT': 2457, 'UNKNOWN': 534}
+{
+ "mode": "sim:5",
+ "mass_basis": {
+  "SIM_DEVICE": 13840,
+  "DEVICE_ESTIMATE": 4103,
+  "NOT_A_LIFT": 2457,
+  "UNKNOWN": 534
+ },
+ "n_cases": 207,
+ "mean_regret_eur": 269.74,
+ "value_captured_eur": 164393.52,
+ "best_possible_value_eur": 220229.33,
+ "value_capture_share": 0.7465,
+ "cases_with_invalid_actions": 0,
+ "reference_no_action_regret_eur": 1063.91,
+ "DISPUTE_INVOICE:precision": 0.1184,
+ "DISPUTE_INVOICE:recall": 0.8182,
+ "DISPUTE_INVOICE:n_positive": 22,
+ "REQUEST_WEIGHBRIDGE_DATA:precision": 1.0,
+ "REQUEST_WEIGHBRIDGE_DATA:recall": 0.2857,
+ "REQUEST_WEIGHBRIDGE_DATA:n_positive": 7,
+ "RENEGOTIATE_CONTRACT:precision": 0.8519,
+ "RENEGOTIATE_CONTRACT:recall": 0.4182,
+ "RENEGOTIATE_CONTRACT:n_positive": 55,
+ "TENDER_OR_SWITCH_OPERATOR:precision": 0.7714,
+ "TENDER_OR_SWITCH_OPERATOR:recall": 0.4737,
+ "TENDER_OR_SWITCH_OPERATOR:n_positive": 57
+}

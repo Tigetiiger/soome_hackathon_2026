@@ -1,0 +1,55 @@
+device-years all 365.4, weighted 330.9; label-window lifts 13840
+reference total customer cost (all events, label window): EUR 3795233 ; collection cost EUR 3138581 ; processing EUR 1382264 ; credit EUR 822290
+lifts: with ticket 0.743 ; with device est 0.884 ; with at least one independent measure (ticket or device) 0.971 ; neither 0.0288
+invoice-tonnage-only lifts 2605: device est present 2249 (16.2% of all lifts become verifiable)
+pricing model mix (latest version): {'HYBRID': 0.374, 'FIXED_PER_LIFT': 0.291, 'HYBRID_MIN': 0.188, 'PER_TONNE': 0.148}
+                           n        eur  eur_per_device_year(weighted devices)  eur_per_device_year(all devices)
+explanation_code                                                                                                
+FILL_SENSOR_FALSE_HIGH   295   53328.25                                 161.14                            145.93
+OVER_SERVICING          1216  171036.80                                 516.81                            468.02
+PRECAUTIONARY_ORDER      343   50395.03                                 152.27                            137.90
+{'order_guard_s40_recall': 0.5073529411764706, 'order_guard_precision_on_call': 0.9583333333333334, 'order_guard_eur_caught': 13242.470000000001, 's40_orders_eur': 25131.770000000004}
+S40 guard EUR per weighted device-year: 66.7
+   eval window (Feb-Jul) weighted device-years 198.2 -> EUR per weighted device-year 66.8 (order guard, S40 only)
+   all S40 orders EUR in eval window 25132 -> per weighted device-year 126.8
+C2 none         capture 0.4998 captured EUR 110072 regret 532.2
+C2 no_weight    capture 0.5541 captured EUR 122039 regret 474.4
+C2 no_device    capture 0.7214 captured EUR 158881 regret 296.4
+C2 default      capture 0.7743 captured EUR 170534 regret 240.1
+C2 device_only  capture 0.7326 captured EUR 161339 regret 284.5
+C2 oracle       capture 0.7747 captured EUR 170603 regret 239.7
+C2 sim_0.5      capture 0.7494 captured EUR 165034 regret 266.6
+C2 sim_1        capture 0.7491 captured EUR 164976 regret 266.9
+C2 sim_1.5      capture 0.7486 captured EUR 164856 regret 267.5
+C2 sim_3        capture 0.7478 captured EUR 164696 regret 268.3
+C2 sim_5        capture 0.7465 captured EUR 164394 regret 269.7
+C2 sim_10       capture 0.7425 captured EUR 163514 regret 274.0
+C2 per-contract-year increments (EUR/contract): device_only - no_weight = 190 ; default - no_device = 56 ; device_only - none = 248
+{
+ "task_A": {
+  "B1_calculator": {
+   "validation": {
+    "n_reference_events": 3510,
+    "n_predicted": 3510,
+    "coverage": 1.0,
+    "collection_cost_eur:exact_to_cent_share": 0.9983,
+    "collection_cost_eur:mae_eur": 0.046,
+    "processing_cost_eur:exact_to_cent_share": 0.9972,
+    "processing_cost_eur:mae_eur": 0.053,
+    "penalties_eur:exact_to_cent_share": 0.9997,
+    "penalties_eur:mae_eur": 0.032,
+    "material_credit_eur:exact_to_cent_share": 0.9658,
+    "material_credit_eur:mae_eur": 0.721,
+    "net_material_contribution_eur:exact_to_cent_share": 0.9635,
+    "net_material_contribution_eur:mae_eur": 0.837,
+    "per_t:coverage": 0.9967,
+    "per_t:median_ape": 0.0,
+    "per_t:within_5pct_share": 0.9755,
+    "per_t:fabricated_where_reference_null": 3,
+    "per_t:reported_where_no_observable_mass": 0,
+    "per_t:n_no_observable_mass": 10,
+    "per_t:within_5pct_share[WEIGHBRIDGE
+{'macro_f1': 0.7309, 'macro_f1_detection_only': 0.7035}
+B4_gradient_boosting {'macro_f1': 0.3518, 'macro_f1_detection_only': 0.3341}
+hybrid_ml_plus_rules {'macro_f1': 0.7818, 'macro_f1_detection_only': 0.7513}
+['PREMATURE_UNJUSTIFIED', 'COST_PER_T_HIGH', 'DELAYED_COLLECTION', 'WEIGHT_DISCREPANCY', 'CONTAMINATION_VALUE_LOSS', 'REJECTED_LOAD', 'OUTDATED_TARIFF', 'DUPLICATE_LINE', 'WRONG_SURCHARGE', 'WEIGHT_BASIS_MISMATCH', 'UNMATCHED_LINE', 'MISSING_LINE', 'UNINVOICED_COLLECTION', 'macro_f1', 'macro_f1_detection_only']

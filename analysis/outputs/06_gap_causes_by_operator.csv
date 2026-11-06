@@ -1,0 +1,5 @@
+operator_id,pairs,gt10_share,of_gt10: tare(operator),of_gt10: side waste,of_gt10: combined,of_gt10: device fault,of_gt10: noise/small/no label,stored_tare_share,tare_error_rate_per_ticket
+OP-A,1749.0,0.195,0.2287,0.3167,0.088,0.044,0.3226,0.4242,0.0446
+OP-B,1869.0,0.2477,0.2657,0.3542,0.1274,0.0734,0.1793,0.4403,0.0658
+OP-C,775.0,0.289,0.3214,0.4241,0.0714,0.0625,0.1205,0.449,0.0929
+OP-E,4669.0,0.2617,0.3363,0.3306,0.1358,0.0196,0.1776,0.4553,0.088

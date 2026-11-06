@@ -1,0 +1,445 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMART Material Value - Invoice check (SYNTHETIC mock)</title>
+<!--
+  Standalone static mock. One file, no external requests (no CDN, no web fonts, no images, no map tiles).
+  Fonts: stacks fall back to system fonts offline. In the real build, self-host @fontsource/montserrat,
+  @fontsource/open-sans, @fontsource/source-sans-3 (all SIL OFL 1.1). Loos Wide Bold (SMART headings) is commercial: NOT used.
+  Wordmark is plain text. No Europress logo or image is copied.
+  Numbers: rows from the Since AI synthetic quickstart v1.0.1 (customer ORG-0004, site SITE-00013, device CMP-00038,
+  contract CTR-00038, fictional "Hauler Gamma"); band widths and the 0.9 / EUR 60 dispute rule are ILLUSTRATIVE assumptions.
+-->
+<style>
+:root{
+  /* brand (read from epsmart.fi theme.css custom properties) */
+  --navy:#000d61; --navy-2:#001494; --wave:#4b5ac3; --signal:#ff2962; --mint:#54dea9; --mint-hover:#87e8c3;
+  --ice:#e0f1f5; --pink-wash:#fff0f4; --mint-wash:#ddf8ee; --amber:#fabe69; --forest:#235041;
+  --canvas:#f7f9fc; --line:#dee5f0; --ink-2:#323d4e;
+  /* derived for WCAG AA text (ratios on white): */
+  --muted:#5b6577;        /* 5.88 */
+  --wave-ink:#3a49b0;     /* 7.61 */
+  --signal-ink:#c4003f;   /* 6.14 */
+  --mint-ink:#0b7a57;     /* 5.34 */
+  --amber-wash:#fff4dc; --amber-ink:#7a5000; /* 6.78+ */
+  --line-strong:#8a93a3;  /* 3.10 non-text boundary */
+  /* data sources (validated: CVD + normal-vision separation, >=3:1 on white) */
+  --src-device:#4b5ac3; --src-wb:#009a98; --src-inv:#b07400;
+  --teal-ink:#006b69; --ochre-ink:#7a5000;
+  /* shape + type */
+  --r-sm:.25rem; --r-md:.5rem; --r-card:1rem; --r-media:1.5rem; --r-pill:9999px;
+  --shadow-card:0 4px 8px rgba(0,0,0,.1); --shadow-pop:0 6px 4px rgba(0,13,97,.2); --glow:0 6px 30px 0 rgba(51,214,255,.5);
+  --f-title:"Loos wide","Montserrat","Segoe UI","Helvetica Neue",Arial,sans-serif;
+  --f-body:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --f-label:"Source Sans 3","Source Sans Pro","Segoe UI",Helvetica,Arial,sans-serif;
+}
+*{box-sizing:border-box}
+html{font-size:100%;-webkit-font-smoothing:antialiased}
+body{margin:0;background:var(--canvas);color:#000;font-family:var(--f-body);font-size:1rem;line-height:1.5}
+h1,h2,h3,h4{font-family:var(--f-title);color:var(--navy);font-weight:700;line-height:1.1;margin:0}
+a{color:var(--navy);text-decoration:underline;text-decoration-color:var(--signal);text-decoration-thickness:.12em;text-underline-offset:.15em}
+:focus-visible{outline:3px solid var(--wave);outline-offset:2px}
+.skip{position:absolute;left:-999px;top:0;background:#fff;padding:.5rem 1rem;z-index:10}
+.skip:focus{left:0}
+.num{font-variant-numeric:tabular-nums}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0)}
+
+/* top bar + synthetic banner */
+.top{background:var(--navy);color:#fff;display:flex;align-items:center;gap:1.5rem;padding:.75rem 1.5rem}
+.wordmark{font-family:var(--f-title);font-weight:700;letter-spacing:.02em;font-size:1.25rem}
+.wordmark b{color:var(--signal)}
+.top .mod{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.08em;font-size:.875rem;opacity:.9}
+.top .who{margin-left:auto;font-size:.875rem}
+.syn{background:var(--pink-wash);color:var(--navy);border-bottom:2px dashed var(--signal);padding:.5rem 1.5rem;font-size:.875rem;display:flex;gap:.75rem;align-items:center;flex-wrap:wrap}
+.syn strong{font-family:var(--f-title);text-transform:uppercase;letter-spacing:.03em;background:var(--navy);color:#fff;border-radius:var(--r-pill);padding:.2rem .75rem;font-size:.75rem}
+
+.shell{display:grid;grid-template-columns:232px minmax(0,1fr);min-height:calc(100vh - 100px)}
+nav.side{background:#fff;border-right:1px solid var(--line);padding:1rem .75rem}
+nav.side h2{font-family:var(--f-label);font-size:.75rem;text-transform:uppercase;letter-spacing:.08em;color:var(--muted);margin:.5rem .75rem}
+nav.side ul{list-style:none;margin:0 0 1rem;padding:0}
+nav.side a,nav.side span.nav{display:flex;align-items:center;gap:.6rem;padding:.55rem .75rem;border-radius:var(--r-md);font-family:var(--f-label);font-weight:700;font-size:1rem;color:var(--navy);text-decoration:none}
+nav.side a[aria-current="page"]{background:var(--mint-wash);box-shadow:inset 3px 0 0 var(--mint)}
+nav.side span.nav{color:var(--muted);font-weight:600}
+nav.side .tag{margin-left:auto;font-size:.6875rem;border:1px dashed var(--line-strong);border-radius:var(--r-pill);padding:0 .45rem;color:var(--muted)}
+.ico{width:20px;height:20px;flex:none;stroke:currentColor;fill:none;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ico-bubble{width:30px;height:30px;border-radius:50%;background:var(--mint);display:inline-flex;align-items:center;justify-content:center;color:var(--navy)}
+
+main{padding:1.5rem 2rem 3rem;max-width:1280px;width:100%}
+.crumb{font-size:.875rem;color:var(--muted);margin-bottom:.5rem}
+h1{font-size:2rem}
+.sub{color:var(--ink-2);margin:.5rem 0 1rem;max-width:62ch}
+.ctx{display:flex;flex-wrap:wrap;gap:.5rem 1.25rem;font-size:.875rem;color:var(--ink-2);margin-bottom:1.25rem}
+.ctx span b{color:var(--navy)}
+
+/* badges: icon + text, never colour alone */
+.badge{display:inline-flex;align-items:center;gap:.35rem;font-family:var(--f-label);font-weight:700;font-size:.75rem;letter-spacing:.04em;text-transform:uppercase;border-radius:var(--r-pill);padding:.2rem .6rem;border:1.5px solid transparent;white-space:nowrap}
+.badge .ico{width:14px;height:14px}
+.b-measured{background:var(--navy);color:#fff}
+.b-reported{background:var(--ice);color:var(--navy);border-color:var(--navy)}
+.b-estimate{background:#fff;color:var(--wave-ink);border:1.5px dashed var(--wave-ink)}
+.b-assume{background:var(--amber-wash);color:var(--amber-ink);border:1.5px dashed var(--amber-ink)}
+.b-alert{background:var(--pink-wash);color:var(--signal-ink);border-color:var(--signal-ink)}
+.b-ok{background:var(--mint-wash);color:var(--forest);border-color:var(--forest)}
+.b-watch{background:var(--amber-wash);color:var(--amber-ink);border-color:var(--amber-ink)}
+.b-none{background:#fff;color:var(--muted);border-color:var(--line-strong)}
+.tag-hi{background:var(--signal);color:var(--navy)} /* navy on pink-red = 4.67:1 */
+
+/* cards, tiles */
+.card{background:#fff;border:2px solid #fff;border-radius:var(--r-card);box-shadow:var(--shadow-card);padding:1.25rem}
+.tiles{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem;margin-bottom:1.5rem}
+.tile .lbl{font-family:var(--f-label);font-size:.875rem;color:var(--muted);text-transform:uppercase;letter-spacing:.05em;font-weight:700}
+.tile .val{font-family:var(--f-title);font-size:2rem;color:var(--navy);margin:.25rem 0;font-variant-numeric:tabular-nums}
+.tile .val small{font-size:1rem;font-weight:600}
+.tile .note{font-size:.8125rem;color:var(--ink-2);margin-top:.5rem}
+.tile.alert{background:var(--pink-wash);border-color:var(--pink-wash)}
+
+.grid{display:grid;grid-template-columns:340px minmax(0,1fr);gap:1.5rem;align-items:start}
+h2.sec{font-size:1.125rem;margin-bottom:.75rem}
+ul.cases{list-style:none;margin:0;padding:0;display:grid;gap:.75rem}
+button.case{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:#fff;border:2px solid var(--line);border-radius:var(--r-card);padding:.9rem 1rem;transition:border-color .3s ease,box-shadow .3s ease}
+button.case:hover{border-color:var(--signal)}
+button.case:hover .ct{color:var(--signal-ink)}
+button.case[aria-pressed="true"]{border-color:var(--navy);box-shadow:var(--shadow-card)}
+button.case:focus-visible{outline:3px solid var(--wave);outline-offset:2px}
+.case .row{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap}
+.case .ct{font-family:var(--f-title);font-size:.95rem;color:var(--navy);margin:.45rem 0 .25rem;line-height:1.2}
+.case .meta{font-size:.8125rem;color:var(--ink-2)}
+.case .eur{margin-left:auto;font-family:var(--f-title);font-size:.95rem;color:var(--navy);font-variant-numeric:tabular-nums}
+
+.detail h2{font-size:1.5rem;margin:.25rem 0 .5rem}
+.detail .chips{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0 1rem}
+.why{margin:0 0 1rem;padding-left:1.1rem}
+.why li{margin:.35rem 0}
+.src{font-size:.8125rem;color:var(--muted)}
+details{border-top:1px solid var(--line);padding:.6rem 0}
+details summary{cursor:pointer;font-family:var(--f-label);font-weight:700;color:var(--navy)}
+details p,details pre{font-size:.875rem;color:var(--ink-2);margin:.5rem 0}
+pre{background:var(--canvas);border-radius:var(--r-md);padding:.75rem;overflow:auto;font-size:.8125rem}
+figure{margin:1rem 0}
+figcaption{font-size:.8125rem;color:var(--muted);margin-top:.25rem}
+svg.chart{width:100%;height:auto;display:block;background:#fff;border-radius:var(--r-md)}
+svg text{font-family:var(--f-body)}
+
+table{border-collapse:collapse;width:100%;font-size:.875rem}
+caption{text-align:left;font-family:var(--f-label);font-weight:700;color:var(--navy);padding-bottom:.4rem}
+th{font-family:var(--f-label);text-transform:uppercase;letter-spacing:.04em;font-size:.75rem;color:var(--muted);text-align:left;border-bottom:2px solid var(--line);padding:.4rem .5rem}
+td{border-bottom:1px solid var(--line);padding:.45rem .5rem;vertical-align:top}
+td.r,th.r{text-align:right;font-variant-numeric:tabular-nums}
+tr.flag td{background:var(--pink-wash)}
+
+/* approval */
+.approve{margin-top:1.25rem;background:var(--canvas);border:2px solid var(--line);border-radius:var(--r-card);padding:1rem 1.25rem}
+.approve h3{font-size:1.125rem;margin-bottom:.25rem}
+.approve fieldset{border:0;padding:0;margin:.75rem 0}
+.approve legend{font-family:var(--f-label);font-weight:700;color:var(--navy);padding:0}
+.opt{display:flex;gap:.6rem;align-items:flex-start;padding:.5rem .6rem;border-radius:var(--r-md);border:1.5px solid transparent}
+.opt:has(input:checked){background:#fff;border-color:var(--navy)}
+.opt input{margin-top:.3rem;accent-color:var(--navy);width:1.1rem;height:1.1rem}
+.opt .t{font-family:var(--f-label);font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--navy)}
+.opt .d{font-size:.8125rem;color:var(--ink-2)}
+.opt.off{color:var(--muted)}
+.btns{display:flex;gap:.75rem;flex-wrap:wrap;align-items:center;margin-top:.75rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.5rem;border:0;border-radius:var(--r-pill);font-family:var(--f-label);font-weight:700;font-size:1rem;letter-spacing:.05em;line-height:1;padding:1rem 1.5rem;text-transform:uppercase;color:var(--navy);cursor:pointer;transition:background .18s ease,box-shadow .18s ease,border-color .18s ease}
+.btn-primary{background:var(--mint)}
+.btn-primary:hover:not(:disabled){background:var(--mint-hover);box-shadow:var(--glow)}
+.btn-secondary{background:#fff;border:2px solid var(--mint)}
+.btn-secondary:hover{border-color:var(--mint-hover);box-shadow:var(--glow)}
+.btn:disabled{background:#e9edf3;color:var(--muted);cursor:not-allowed}
+.hint{font-size:.8125rem;color:var(--muted)}
+.audit{margin-top:1rem;font-size:.8125rem}
+.audit ol{margin:.25rem 0 0;padding-left:1.1rem}
+.done{margin-top:.75rem;background:var(--mint-wash);color:var(--forest);border-radius:var(--r-md);padding:.6rem .9rem;font-weight:600;display:none}
+footer.note{margin-top:2rem;font-size:.8125rem;color:var(--muted);border-top:1px solid var(--line);padding-top:1rem}
+@media (max-width:1100px){.grid{grid-template-columns:1fr}.tiles{grid-template-columns:repeat(2,minmax(0,1fr))}.shell{grid-template-columns:1fr}nav.side{display:none}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+
+<!-- inline icon sprite (2px stroke, round caps - matches SMART site arrow/accordion icons; Lucide-style, ISC) -->
+<svg width="0" height="0" style="position:absolute" aria-hidden="true">
+  <symbol id="i-gauge" viewBox="0 0 24 24"><path d="M12 14l4-4"/><path d="M3.3 17a9 9 0 1117.4 0"/></symbol>
+  <symbol id="i-tilde" viewBox="0 0 24 24"><path d="M3 9c3-4 6-4 9 0s6 4 9 0"/><path d="M3 16c3-4 6-4 9 0s6 4 9 0"/></symbol>
+  <symbol id="i-file" viewBox="0 0 24 24"><path d="M14 3H7a2 2 0 00-2 2v14a2 2 0 002 2h10a2 2 0 002-2V8z"/><path d="M14 3v5h5"/><path d="M9 13h6M9 17h6"/></symbol>
+  <symbol id="i-q" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M9.5 9.5a2.5 2.5 0 114 2c-.8.6-1.5 1-1.5 2"/><path d="M12 17h.01"/></symbol>
+  <symbol id="i-alert" viewBox="0 0 24 24"><path d="M12 3l10 18H2z"/><path d="M12 10v5M12 18h.01"/></symbol>
+  <symbol id="i-check" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><path d="M8 12.5l3 3 5-6"/></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2 12s4-7 10-7 10 7 10 7-4 7-10 7S2 12 2 12z"/><circle cx="12" cy="12" r="3"/></symbol>
+  <symbol id="i-home" viewBox="0 0 24 24"><path d="M3 11l9-8 9 8"/><path d="M5 10v10h14V10"/></symbol>
+  <symbol id="i-receipt" viewBox="0 0 24 24"><path d="M6 3h12v18l-3-2-3 2-3-2-3 2z"/><path d="M9 8h6M9 12h6"/></symbol>
+  <symbol id="i-scale" viewBox="0 0 24 24"><path d="M12 3v18M5 21h14"/><path d="M5 7h14"/><path d="M5 7l-3 7a3 3 0 006 0zM19 7l-3 7a3 3 0 006 0z"/></symbol>
+  <symbol id="i-pulse" viewBox="0 0 24 24"><path d="M3 12h4l3-8 4 16 3-8h4"/></symbol>
+  <symbol id="i-users" viewBox="0 0 24 24"><circle cx="9" cy="8" r="3.5"/><path d="M2.5 20a6.5 6.5 0 0113 0"/><path d="M16 4.5a3.5 3.5 0 010 7M18 14a6 6 0 013.5 6"/></symbol>
+  <symbol id="i-doc" viewBox="0 0 24 24"><path d="M4 4h16v16H4z"/><path d="M8 9h8M8 13h8M8 17h5"/></symbol>
+  <symbol id="i-report" viewBox="0 0 24 24"><path d="M4 20V4"/><path d="M4 20h16"/><path d="M8 16v-4M12 16V8M16 16v-6"/></symbol>
+</svg>
+
+<header class="top">
+  <span class="wordmark" aria-label="SMART wordmark placeholder">EP<b>·</b>SMART</span>
+  <span class="mod">Material value</span>
+  <span class="who">Facility manager &middot; Fictional Manufacturing Customer 0004</span>
+</header>
+<div class="syn" role="note">
+  <strong>Synthetic data</strong>
+  <span>Fictional customer, site and hauler; prices are hypothetical; Europress is not a party to the hauler contract. This view <b>advises</b>: nothing is sent or changed until you approve it.</span>
+</div>
+
+<div class="shell">
+<nav class="side" aria-label="Main">
+  <h2>Material value</h2>
+  <ul>
+    <li><span class="nav"><svg class="ico"><use href="#i-home"/></svg>Overview<span class="tag">wireframe</span></span></li>
+    <li><a href="#main" aria-current="page"><svg class="ico"><use href="#i-receipt"/></svg>Invoice check</a></li>
+    <li><span class="nav"><svg class="ico"><use href="#i-scale"/></svg>Weight &amp; material<span class="tag">wireframe</span></span></li>
+    <li><span class="nav"><svg class="ico"><use href="#i-pulse"/></svg>Fleet &amp; sensor trust<span class="tag">wireframe</span></span></li>
+    <li><span class="nav"><svg class="ico"><use href="#i-users"/></svg>Hauler scorecard<span class="tag">wireframe</span></span></li>
+    <li><span class="nav"><svg class="ico"><use href="#i-doc"/></svg>Contract &amp; actions<span class="tag">wireframe</span></span></li>
+    <li><span class="nav"><svg class="ico"><use href="#i-report"/></svg>Monthly report<span class="tag">wireframe</span></span></li>
+  </ul>
+  <h2>Legend</h2>
+  <ul style="padding:0 .75rem;display:grid;gap:.4rem">
+    <li><span class="badge b-measured"><svg class="ico"><use href="#i-gauge"/></svg>Measured</span></li>
+    <li><span class="badge b-reported"><svg class="ico"><use href="#i-file"/></svg>Reported</span></li>
+    <li><span class="badge b-estimate"><svg class="ico"><use href="#i-tilde"/></svg>Estimate</span></li>
+    <li><span class="badge b-assume"><svg class="ico"><use href="#i-q"/></svg>Assumption</span></li>
+  </ul>
+</nav>
+
+<main id="main">
+  <div class="crumb">Material value / Kuusamo site 5 / Compactor CMP-00038</div>
+  <h1>Invoice check</h1>
+  <p class="sub">We compare what the hauler invoiced with what your compactor measured, what the weighbridge ticket says and what the contract allows. Each finding shows its evidence and its uncertainty. You decide.</p>
+  <div class="ctx">
+    <span><b>Device</b> CMP-00038 &middot; COMBI 10 m&sup3; &middot; mixed waste</span>
+    <span><b>Hauler</b> Gamma (fictional) &middot; contract CTR-00038 &middot; fixed price per lift</span>
+    <span><b>Period</b> Jul-Sep 2026 &middot; 3 invoices &middot; amounts excl. VAT</span>
+    <span><b>As of</b> 2026-10-13 09:00 UTC</span>
+  </div>
+
+  <section class="tiles" aria-label="Summary">
+    <div class="card tile"><div class="lbl">Invoiced Q3</div><div class="val num">EUR 4,195.42</div>
+      <span class="badge b-reported"><svg class="ico"><use href="#i-file"/></svg>Reported</span>
+      <div class="note">3 invoices, 23 lines, 4 lifts in the collection log</div></div>
+    <div class="card tile alert"><div class="lbl">Questionable</div><div class="val num">EUR 1,252.55</div>
+      <span class="badge b-alert"><svg class="ico"><use href="#i-alert"/></svg>5 lines flagged</span>
+      <div class="note">4 lines for 2 lifts that did not happen + 1 surcharge rate error</div></div>
+    <div class="card tile"><div class="lbl">Expected value if disputed</div><div class="val num">EUR 1,067</div>
+      <span class="badge b-assume"><svg class="ico"><use href="#i-q"/></svg>Assumption</span>
+      <div class="note">0.9 recovery &times; 1,252.55 &minus; 60 admin (hypothetical rule)</div></div>
+    <div class="card tile"><div class="lbl">Weight data coverage</div><div class="val num">93% <small>valid hours</small></div>
+      <span class="badge b-measured"><svg class="ico"><use href="#i-gauge"/></svg>Measured</span>
+      <div class="note">Hauler tickets shared for 2 of 4 lifts &middot; 2 sensor faults shown as gaps (15 h in Aug, 96 h in Sep)</div></div>
+  </section>
+
+  <div class="grid">
+    <section aria-labelledby="qh">
+      <h2 class="sec" id="qh">Findings (4)</h2>
+      <ul class="cases" id="caseList"></ul>
+    </section>
+    <section class="card detail" id="detail" aria-live="polite"></section>
+  </div>
+
+  <footer class="note">
+    SYNTHETIC. Source rows: Since AI quickstart v1.0.1 (CMP-00038 / CTR-00038 / OP-C, invoices INV-00038-202607..09, collections COL-00038-0001..0004, tickets WB-OP-C-00038-0002/0003).
+    Mass trace is the deduplicated hourly telemetry, median of 4-hour bins. Weighbridge tare band (stored tare, 1 sigma ~104 kg) is an estimate from the pooled quickstart tickets, not a measurement of this vehicle.
+    All EUR values are hypothetical.
+  </footer>
+</main>
+</div>
+
+<script>
+"use strict";
+/* ---------- data (synthetic; see footer) ---------- */
+const TRACE=[[2.5,820],[6.5,820],[10.5,850],[14.5,835],[18.5,835],[22.5,840],[26.5,820],[31,825],[34.5,840],[38.5,820],[42.6,825],[46.5,820],[50.5,850],[54.5,885],[58.5,900],[62.5,990],[66.5,1070],[70.5,1085],[74.5,1100],[78.5,1110],[82.5,1120],[86.5,1205],[90.5,1210],[94.5,1210],[98.5,1215],[102.5,1270],[106.5,1340],[110.5,1440],[114.5,1550],[118.5,1590],[122.5,1610],[126.5,1630],[130.5,1645],[134.5,1635],[138.5,1680],[142.5,1690],[146.5,1660],[150.5,1665],[154.5,1750],[158.5,1720],[162.5,1740],[166.5,1740],[170.5,1765],[174.5,1760],[178.5,1740],[182.5,1750],[187,1745],[190.5,1765],[194.5,1750],[198.5,1760],[202.5,1770],[206.5,1740],[210.5,1745],[214.5,1720],[218.5,1760],[222.5,1790],[226.5,1830],[230.5,1890],[234.5,10],[238.5,10],[242.5,10],[247,25],[250.5,150],[254.5,200],[258.5,220],[262.5,230],[266.5,240],[270.5,260],[274.5,370],[278.5,410],[282.5,390],[286.5,390],[290.5,400],[294.5,460],[298.5,510],[302.5,690],[306.5,795],[310.5,805],[314.5,810],[318.5,795],[322.5,800],[326.5,790],[330.5,870],[334.5,900],[338.5,880],[342.5,890],[346.5,900],[350.5,900],[354.5,910],[358.5,890],[362.5,875],[366.5,900],[370.5,910],[374.5,900],[378.5,885],[382.5,905],[386.5,890],[390.5,1030],[394.5,1135],[398.5,1265],[402.5,1265],[406.5,1275],[410.5,1265],[414.5,1375],[418.5,1445],[422.5,1455],[426.5,1530],[430.4,1540],[434.5,1535],[438.5,1530],[442.5,1600],[446.5,1750],[450.4,1840],[454.5,1855],[458.5,1840],[462.5,1870],[466.5,1975],[470.5,1990],[474.5,2010],[478.5,2010],[482.5,2000],[486.5,2000],[490.5,2035],[494.5,2130],[498.5,2150],[502.5,2155],[506.5,2150],[510.5,2140],[514.5,2175],[518.5,2150],[522.5,2160],[526.5,2180],[530.5,2160],[534.5,2165],[538.5,2155],[542.5,2120],[546.5,2180],[550.5,2170],[554.5,2130],[558.5,2160],[562.5,2265],[566.5,2300],[570.5,2445],[574.5,2440],[578.5,2440],[582.5,2470],[586.3,2470],[606.5,2635],[610.5,2600],[614.5,2610],[618.3,2630],[622.4,2650],[626.5,2700],[630.5,2660],[634.5,0],[638.5,30],[642.5,70],[646.5,75],[650.5,70],[654.5,65],[658.5,100],[662.5,185],[666.5,290],[670.5,320],[674.5,330],[678.4,315],[682.4,325],[686.5,310],[690.5,330],[694.5,330],[698.5,310],[702.5,330],[706.5,330],[710.5,320],[714.4,325],[718.5,325],[722.5,320],[726.5,360],[730.5,435],[734.5,480],[738.5,570],[742.5,570]];
+const fmt=n=>n.toLocaleString("en-US",{minimumFractionDigits:2,maximumFractionDigits:2});
+const kg=n=>Math.round(n).toLocaleString("en-US");
+
+const BADGE={
+  measured:'<span class="badge b-measured"><svg class="ico"><use href="#i-gauge"/></svg>Measured</span>',
+  reported:'<span class="badge b-reported"><svg class="ico"><use href="#i-file"/></svg>Reported</span>',
+  estimate:'<span class="badge b-estimate"><svg class="ico"><use href="#i-tilde"/></svg>Estimate</span>',
+  assume:'<span class="badge b-assume"><svg class="ico"><use href="#i-q"/></svg>Assumption</span>',
+  alert:t=>`<span class="badge b-alert"><svg class="ico"><use href="#i-alert"/></svg>${t}</span>`,
+  ok:t=>`<span class="badge b-ok"><svg class="ico"><use href="#i-check"/></svg>${t}</span>`,
+  watch:t=>`<span class="badge b-watch"><svg class="ico"><use href="#i-eye"/></svg>${t}</span>`,
+  none:t=>`<span class="badge b-none">${t}</span>`
+};
+
+/* ---------- charts (inline SVG) ---------- */
+function traceChart(){
+  const W=760,H=270,L=52,R=14,T=44,B=34,pw=W-L-R,ph=H-T-B,HRS=744,YMAX=3000;
+  const x=h=>L+h/HRS*pw, y=m=>T+ph-(Math.max(0,m)/YMAX)*ph;
+  let d="",prev=null;
+  for(const [h,m] of TRACE){ d+=(prev===null||h-prev>12?"M":"L")+x(h).toFixed(1)+" "+y(m).toFixed(1)+" "; prev=h; }
+  const grid=[0,1000,2000,3000].map(v=>`<line x1="${L}" x2="${W-R}" y1="${y(v)}" y2="${y(v)}" stroke="#dee5f0"/><text x="${L-8}" y="${y(v)+4}" text-anchor="end" font-size="11" fill="#5b6577">${kg(v)}</text>`).join("");
+  const ticks=[[0,"1 Aug"],[168,"8 Aug"],[336,"15 Aug"],[504,"22 Aug"],[672,"29 Aug"]].map(([h,t])=>`<line x1="${x(h)}" x2="${x(h)}" y1="${T+ph}" y2="${T+ph+4}" stroke="#8a93a3"/><text x="${x(h)}" y="${T+ph+18}" text-anchor="middle" font-size="11" fill="#5b6577">${t}</text>`).join("");
+  const real=(h,label,anchor,row)=>`<line x1="${x(h)}" x2="${x(h)}" y1="${T-6+row*0}" y2="${T+ph}" stroke="#009a98" stroke-dasharray="4 3" stroke-width="2"/><text x="${x(h)+(anchor==="end"?-6:6)}" y="${row}" text-anchor="${anchor}" font-size="11.5" font-weight="700" fill="#006b69">&#10003; ${label}</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="t1 d1">
+    <title id="t1">Container mass during August with invoiced lift dates</title>
+    <desc id="d1">Mass rises from 820 kg to 2,700 kg with two real emptyings on 10 and 27 August. On 24 August the invoice bills a lift but mass stays between 2,130 and 2,445 kg. A sensor fault on 25 to 26 August leaves a gap.</desc>
+    <defs><pattern id="hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#8a93a3" stroke-width="2"/></pattern></defs>
+    ${grid}${ticks}
+    <rect x="${x(552)}" y="${T}" width="${x(576)-x(552)}" height="${ph}" fill="#fff0f4" stroke="#ff2962" stroke-width="2"/>
+    <rect x="${x(588.95)}" y="${T}" width="${x(603.97)-x(588.95)}" height="${ph}" fill="url(#hatch)" opacity=".35"/>
+    <path d="${d}" fill="none" stroke="#4b5ac3" stroke-width="2.5" stroke-linejoin="round"/>
+    ${real(231.1,"10 Aug: invoiced lift matches mass drop","start",14)}
+    ${real(632,"27 Aug: matches","start",14)}
+    <text x="${x(552)-8}" y="30" text-anchor="end" font-size="11.5" font-weight="700" fill="#c4003f">&#9888; 24 Aug: invoiced lift, container not emptied</text>
+    <path d="M${x(564)} ${T-8} l6 8 l-6 8 l-6 -8z" fill="#ff2962" stroke="#fff" stroke-width="1.5" transform="translate(0,0)"/>
+    <text x="${x(588)}" y="${y(1300)}" text-anchor="end" font-size="10.5" fill="#5b6577">sensor fault 15 h (gap)</text>
+    <text x="${x(556)}" y="${y(2780)}" text-anchor="end" font-size="10.5" fill="#c4003f">mass 2,130-2,445 kg</text>
+    <text x="14" y="${T+ph/2}" transform="rotate(-90 14 ${T+ph/2})" text-anchor="middle" font-size="11" fill="#5b6577">container mass (kg)</text>
+  </svg>`;
+}
+function bandChart(){
+  /* COL-00038-0002: device vs weighbridge, +-2 sigma whiskers */
+  const W=760,H=170,L=150,R=24,T=18,B=34,pw=W-L-R,MAX=2400;
+  const x=v=>L+v/MAX*pw;
+  const rows=[
+    {n:"Compactor (device)",v:1975,s:42,c:"#4b5ac3",t:"1,975 kg",k:"measured"},
+    {n:"Weighbridge ticket",v:1640,s:208,c:"#009a98",t:"1,640 kg",k:"stored tare"},
+    {n:"Invoice",v:null,c:"#b07400",t:"not billed by weight (fixed price per lift)"}
+  ];
+  let g="";
+  [0,600,1200,1800,2400].forEach(v=>{g+=`<line x1="${x(v)}" x2="${x(v)}" y1="${T}" y2="${H-B}" stroke="#dee5f0"/><text x="${x(v)}" y="${H-B+16}" text-anchor="middle" font-size="11" fill="#5b6577">${kg(v)}</text>`});
+  rows.forEach((r,i)=>{
+    const yy=T+22+i*38;
+    g+=`<text x="${L-10}" y="${yy+4}" text-anchor="end" font-size="12" font-weight="700" fill="#000d61">${r.n}</text>`;
+    if(r.v===null){ g+=`<text x="${L+4}" y="${yy+4}" font-size="12" fill="#7a5000">${r.t}</text>`; return; }
+    g+=`<line x1="${x(r.v-r.s)}" x2="${x(r.v+r.s)}" y1="${yy}" y2="${yy}" stroke="${r.c}" stroke-width="3"/><line x1="${x(r.v-r.s)}" x2="${x(r.v-r.s)}" y1="${yy-6}" y2="${yy+6}" stroke="${r.c}" stroke-width="2"/><line x1="${x(r.v+r.s)}" x2="${x(r.v+r.s)}" y1="${yy-6}" y2="${yy+6}" stroke="${r.c}" stroke-width="2"/>`;
+    g+= i===0 ? `<circle cx="${x(r.v)}" cy="${yy}" r="6" fill="${r.c}" stroke="#fff" stroke-width="2"/>` : `<rect x="${x(r.v)-6}" y="${yy-6}" width="12" height="12" fill="${r.c}" stroke="#fff" stroke-width="2"/>`;
+    g+=`<text x="${x(r.v+r.s)+10}" y="${yy+4}" font-size="12" fill="#323d4e">${r.t} &plusmn;${r.s} (2&sigma;)</text>`;
+  });
+  const gx1=x(1640), gx2=x(1975), gy=T+22+19;
+  g+=`<path d="M${gx1} ${gy-10} v-6 H${gx2} v6" fill="none" stroke="#c4003f" stroke-width="2"/><text x="${(gx1+gx2)/2}" y="${gy-2}" text-anchor="middle" font-size="11.5" font-weight="700" fill="#c4003f">gap 335 kg</text>`;
+  return `<svg class="chart" viewBox="0 0 ${W} ${H}" role="img" aria-labelledby="t2 d2">
+    <title id="t2">Device versus weighbridge mass for lift COL-00038-0002 with uncertainty</title>
+    <desc id="d2">Device 1,975 kg plus or minus 42. Weighbridge ticket 1,640 kg plus or minus 208 because the tare was stored, not weighed. The 335 kg gap is larger than the combined uncertainty of 212 kg. The invoice is not priced by weight.</desc>${g}</svg>`;
+}
+
+/* ---------- findings ---------- */
+const F=[
+ {id:"F1",title:"Two invoiced lifts did not happen",action:"DISPUTE_INVOICE",eur:1215.20,level:"HIGH",badge:BADGE.alert("Dispute"),
+  meta:"INV-00038-202607 + 202608 &middot; 4 lines &middot; OP-C-P260755315, OP-C-P260843061",
+  head:"Two invoiced lifts have no matching collection, and the container was never emptied on those days",
+  chips:()=>[BADGE.alert("Recommended: dispute invoice"),BADGE.ok("Evidence: high (3 of 3 independent checks)"),BADGE.measured,BADGE.reported],
+  why:[
+   "<b>Not in the collection log.</b> Job refs OP-C-P260755315 (16 Jul) and OP-C-P260843061 (24 Aug) match none of the 4 logged lifts (21 Jul, 10 Aug, 27 Aug, 16 Sep). A date fallback of &plusmn;3 days also finds none, so a typo in the job ref is unlikely. "+BADGE.reported,
+   "<b>The compactor never emptied.</b> Largest 1-hour mass drop: &minus;45 kg on 16 Jul and &minus;105 kg on 24 Aug, against &minus;310 to &minus;2,885 kg on the four real lifts. Status VALID in 47 of 47 hourly messages in the 48 h around each date. "+BADGE.measured,
+   "<b>Same lump sum as a real lift.</b> Each pair is exactly lift fee EUR 581.32 + transport EUR 26.28 = EUR 607.60. "+BADGE.reported
+  ],
+  limits:"What could make this wrong: an unlogged lift on a day the sensor stayed above 2,000 kg (very unlikely at 1-hour resolution), or a billing-reference convention we do not know. The 25-26 Aug sensor fault starts after the disputed date and does not affect the check.",
+  chart:traceChart, cap:"Container mass, August 2026. Teal dashed lines: invoiced lifts that match a mass drop. Pink box: invoiced date with no drop. Hatched: sensor fault, shown as a gap, never interpolated.",
+  table:{cap:"Flagged invoice lines",head:["Line","Date","Job ref","Type","EUR","Finding"],rows:[
+    ["INV-00038-202607-L005","16 Jul","OP-C-P260755315","Lift fee","581.32","No lift"],
+    ["INV-00038-202607-L006","16 Jul","OP-C-P260755315","Transport 18 km","26.28","No lift"],
+    ["INV-00038-202608-L009","24 Aug","OP-C-P260843061","Lift fee","581.32","No lift"],
+    ["INV-00038-202608-L010","24 Aug","OP-C-P260843061","Transport 18 km","26.28","No lift"]],flag:[1,1,1,1]},
+  value:"Value at stake: 4 lines = <b>EUR 1,215.20</b>. With the surcharge error (F4, EUR 37.35) the bundle is EUR 1,252.55, and the expected value of one dispute = 0.9 &times; 1,252.55 &minus; 60 = <b>EUR 1,067.30</b> "+BADGE.assume,
+  how:"Rule (transparent, no ML): flag an invoice line when its operator_job_ref has no collection_event for the device within &plusmn;3 days of service_date AND the device mass shows no emptying (a drop of more than half the last reading within an hour; threshold illustrative) in the 24 h window. Contract fuel rate comes from contract_versions.fuel_surcharge_bp (600 = 6.00%) valid on the service date."},
+ {id:"F2",title:"Weight gap on 10 Aug lift: no money at stake",action:"NO_ACTION",eur:0,level:"MEDIUM",badge:BADGE.watch("No action"),
+  meta:"COL-00038-0002 &middot; device 1,975 kg vs ticket 1,640 kg",
+  head:"Compactor and hauler ticket disagree by 335 kg (20%), but your price is per lift, so the invoice does not change",
+  chips:()=>[BADGE.watch("Recommended: no action, note tare"),BADGE.estimate,BADGE.measured,BADGE.reported],
+  why:[
+   "<b>The gap is real, not noise.</b> 335 kg is larger than the combined 2&sigma; uncertainty of 212 kg (device &plusmn;42, ticket &plusmn;208). "+BADGE.estimate,
+   "<b>Most likely cause: stored tare.</b> The ticket uses a stored vehicle tare of 12,660 kg, not a weighed one. In the pooled quickstart tickets, stored-tare tickets differ from the device by more than 10% in 44% of single loads, versus 11% when the tare was weighed. "+BADGE.reported,
+   "<b>No cost impact.</b> Contract CTR-00038 is fixed price per lift (no per-tonne line), so EUR 0 changes on the invoice. It only changes your reported EUR/t: EUR 402/t on the ticket vs EUR 334/t on the device."
+  ],
+  limits:"We do not assume the hauler is at fault. Other causes: device calibration offset, loose side waste on the same truck, combined loads. Sensor trust for CMP-00038 is amber: 93% valid hours, two fault episodes (25-26 Aug, 10-14 Sep) shown as gaps.",
+  chart:bandChart, cap:"Whiskers show &plusmn;2&sigma;. The ticket band is wide because the tare was stored. Illustrative band width, estimated from pooled quickstart tickets.",
+  value:"Value at stake: <b>EUR 0.00</b> on the invoice. Reporting effect: EUR/t 402 (ticket) vs 334 (device). Benchmark EUR 179.86/t (contract target).",
+  how:"Combined band = 2 &times; sqrt(sigma_device&sup2; + sigma_ticket&sup2;). sigma_device = sqrt(15&sup2; + 15&sup2;) = 21 kg (net of two readings, reported mass_uncertainty_kg). sigma_ticket = 104 kg for STORED tare, 44 kg for WEIGHED tare (robust SD of ticket minus device, pooled single loads in the quickstart; n = 122 / 117). Combined 2 sigma = 212 kg."},
+ {id:"F3",title:"Hauler tickets missing for 2 of 4 lifts",action:"REQUEST_WEIGHBRIDGE_DATA",eur:null,level:"LOW",badge:BADGE.watch("Request data"),
+  meta:"COL-00038-0001 and -0004 &middot; no ticket, no tonnage",
+  head:"No weighbridge ticket for the 21 Jul and 16 Sep lifts, so EUR/t for those lifts rests on your own compactor only",
+  chips:()=>[BADGE.watch("Optional: request weighbridge data"),BADGE.estimate,BADGE.measured],
+  why:[
+   "<b>The hauler does share tickets, but late.</b> Hauler Gamma published 2 of 4 tickets, each 40 days after the lift; the missing ones are 21 Jul and 16 Sep. "+BADGE.reported,
+   "<b>Your compactor measured 310 kg and 2,885 kg.</b> EUR/t is EUR 2,129/t for 21 Jul (a 5.9% full container, collected by the max-interval hygiene rule: explained, not a fault) and EUR 229/t for 16 Sep. Both are device estimates, not billing weights. "+BADGE.estimate,
+   "<b>Worth a request only if you want measured tonnes.</b> A request costs little (EUR 20 admin, hypothetical rule) but changes no invoice on this contract."
+  ],
+  limits:"Never fill a missing weight with a default. The contract default weight (2,980 kg) would show 21 Jul at EUR 221/t, which the compactor shows is wrong by a factor of 10.",
+  value:"Value at stake: <b>not computable in EUR</b> on this fixed-price contract; improves tonnage evidence for the next renegotiation. "+BADGE.assume,
+  how:"Status comes from collection_events.weight_reconciliation_status = WEIGHBRIDGE_NOT_AVAILABLE joined to weighbridge_tickets.operator_job_ref."},
+ {id:"F4",title:"Fuel surcharge rate 12% instead of 6%",action:"DISPUTE_INVOICE",eur:37.35,level:"HIGH",badge:BADGE.alert("Dispute"),
+  meta:"INV-00038-202608-L008 &middot; bundle with F1",
+  head:"One surcharge line uses twice the contract fuel rate",
+  chips:()=>[BADGE.alert("Recommended: bundle with F1"),BADGE.ok("Evidence: high (rule vs contract)"),BADGE.reported],
+  why:[
+   "<b>Contract says 6.00%.</b> contract_versions CTR-00038-V1: fuel_surcharge_bp = 600, valid since 2023-06-24. "+BADGE.reported,
+   "<b>Invoice applied 12%.</b> Base EUR 622.60 &times; 12% = 74.71. At 6% = 37.36. Difference EUR 37.35. All other lifts bill 6%. "+BADGE.reported
+  ],
+  limits:"A contract amendment we have not been given would explain this. Check with procurement before sending.",
+  value:"Value at stake: <b>EUR 37.35</b>. Included in the EUR 1,252.55 total of F1.",
+  how:"expected = round(base x fuel_surcharge_bp / 10000, 2) where base = lift + transport + remote surcharge of the same job."}
+];
+
+/* ---------- render ---------- */
+const list=document.getElementById("caseList"), detail=document.getElementById("detail");
+let current="F1"; const audit=[];
+function renderList(){
+  list.innerHTML=F.map(f=>`<li><button class="case" data-id="${f.id}" aria-pressed="${f.id===current}">
+    <span class="row">${f.badge}<span class="eur">${f.eur===null?"n/a":"EUR "+fmt(f.eur)}</span></span>
+    <span class="ct" style="display:block">${f.id} &middot; ${f.title}</span>
+    <span class="meta" style="display:block">${f.meta}</span></button></li>`).join("");
+  list.querySelectorAll("button").forEach(b=>b.addEventListener("click",()=>{current=b.dataset.id;renderList();renderDetail();b.focus();}));
+}
+const ACTIONS=[
+ ["DISPUTE_INVOICE","Dispute invoice","Send the hauler a documented request for a credit note."],
+ ["REQUEST_WEIGHBRIDGE_DATA","Request weighbridge data","Ask the hauler to share missing tickets."],
+ ["RENEGOTIATE_CONTRACT","Renegotiate contract","Not evaluated here: needs peer terms (see Contract &amp; actions).",true],
+ ["TENDER_OR_SWITCH_OPERATOR","Tender or switch hauler","Not evaluated here: notice period is 60 days (see Contract &amp; actions).",true]
+];
+function renderDetail(){
+  const f=F.find(x=>x.id===current);
+  const tbl=f.table?`<table><caption>${f.table.cap}</caption><thead><tr>${f.table.head.map((h,i)=>`<th class="${i===4?"r":""}">${h}</th>`).join("")}</tr></thead><tbody>${f.table.rows.map((r,ri)=>`<tr class="${f.table.flag[ri]?"flag":""}">${r.map((c,i)=>`<td class="${i===4?"r":""}">${c}</td>`).join("")}</tr>`).join("")}</tbody></table>`:"";
+  detail.innerHTML=`
+   <div class="chips">${f.chips().join("")}</div>
+   <h2>${f.head}</h2>
+   <h3 style="font-size:1rem;margin:1rem 0 .25rem">Why we think so</h3>
+   <ol class="why">${f.why.map(w=>`<li>${w}</li>`).join("")}</ol>
+   <p class="src"><b>What could make this wrong.</b> ${f.limits}</p>
+   ${f.chart?`<figure>${f.chart()}<figcaption>${f.cap}</figcaption></figure>`:""}
+   ${tbl}
+   <p style="margin:1rem 0 0">${f.value}</p>
+   <details><summary>How was this computed?</summary><p>${f.how}</p></details>
+   <section class="approve" aria-labelledby="ah">
+     <h3 id="ah">Your decision</h3>
+     <p class="hint">Nothing is sent, changed or booked until you approve. Approval is logged with your name and the evidence shown above.</p>
+     <fieldset><legend>Action</legend>
+       ${ACTIONS.map(a=>`<label class="opt ${a[3]?"off":""}"><input type="radio" name="act" value="${a[0]}" ${a[3]?"disabled":""} ${a[0]===f.action?"checked":""}><span><span class="t">${a[1]}</span><br><span class="d">${a[2]}</span>${a[0]===f.action?` <span class="badge b-ok">recommended</span>`:""}</span></label>`).join("")}
+       ${f.action==="NO_ACTION"?`<label class="opt"><input type="radio" name="act" value="NO_ACTION" checked><span><span class="t">No action</span> <span class="badge b-ok">recommended</span><br><span class="d">Keep the finding on file and watch the next 3 lifts.</span></span></label>`:""}
+     </fieldset>
+     <label style="display:flex;gap:.6rem;align-items:flex-start;margin:.5rem 0"><input type="checkbox" id="ack" style="margin-top:.3rem;width:1.1rem;height:1.1rem;accent-color:#000d61"><span>I have read the evidence and the limits above.</span></label>
+     <div class="btns">
+       <button class="btn btn-primary" id="approve" disabled>Approve and prepare draft</button>
+       <button class="btn btn-secondary" id="reject">Not now</button>
+       <span class="hint">Creates a draft dispute pack on your screen (demo: nothing leaves this page).</span>
+     </div>
+     <div class="done" id="done" role="status"></div>
+     <div class="audit"><b>Audit log</b> (this session)<ol id="log">${audit.length?audit.map(a=>`<li>${a}</li>`).join(""):"<li>No decisions yet.</li>"}</ol></div>
+   </section>`;
+  const ack=document.getElementById("ack"), ap=document.getElementById("approve"), done=document.getElementById("done");
+  ack.addEventListener("change",()=>{ap.disabled=!ack.checked;});
+  const act=()=>detail.querySelector('input[name="act"]:checked').value;
+  const log=msg=>{audit.unshift(msg);document.getElementById("log").innerHTML=audit.map(a=>`<li>${a}</li>`).join("");};
+  ap.addEventListener("click",()=>{
+    const stamp=new Date().toISOString().slice(0,19).replace("T"," ")+" UTC";
+    const a=act(); const txt=a==="NO_ACTION"?"Finding kept on file, no action":"Draft prepared for "+a.replace(/_/g," ").toLowerCase();
+    done.style.display="block"; done.textContent=txt+" (nothing sent). Logged "+stamp+".";
+    log(`${stamp} &middot; ${f.id} &middot; ${a} &middot; APPROVED by facility manager (demo user) &middot; evidence snapshot ${f.id}-v1`);
+  });
+  document.getElementById("reject").addEventListener("click",()=>{
+    const stamp=new Date().toISOString().slice(0,19).replace("T"," ")+" UTC";
+    done.style.display="block"; done.textContent="Dismissed for now. We will show it again if new evidence arrives.";
+    log(`${stamp} &middot; ${f.id} &middot; DEFERRED by facility manager (demo user)`);
+  });
+}
+renderList(); renderDetail();
+</script>
+</body>
+</html>

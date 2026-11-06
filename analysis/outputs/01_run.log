@@ -1,0 +1,78 @@
+{'lifts_all': 18477, 'lifts_in_label_window': 13840, 'pairs_all_year': 11955, 'pairs_label_window': 9062}
+
+== Overall rates (all pairs, whole year, no labels)
+n                 11955.0000
+gt3.3pct              0.5312
+gt10pct               0.2517
+gt100kg               0.3645
+median_abs_rel        0.0367
+median_rel           -0.0203
+dtype: float64
+
+== Overall rates (label window)
+n                 9062.0000
+gt3.3pct             0.5281
+gt10pct              0.2483
+gt100kg              0.3644
+median_abs_rel       0.0364
+median_rel          -0.0204
+dtype: float64
+
+== 'Clean' lifts (no label, single load, no side waste) rates
+n                 6232.0000
+gt3.3pct             0.3596
+gt10pct              0.0456
+gt100kg              0.1406
+median_abs_rel       0.0236
+median_rel          -0.0114
+dtype: float64
+by tare_method
+                  n  gt3.3pct  gt10pct  gt100kg  median_abs_rel  median_rel
+tare_method                                                                
+STORED       2422.0    0.4377   0.0533   0.1920          0.0284     -0.0114
+WEIGHED      3810.0    0.3100   0.0407   0.1079          0.0207     -0.0115
+clean lifts with |rel|>10% (unlabelled, probably small loads where abs<threshold): 284  of which |diff|<=100kg: 284
+
+== Cause split (label window)
+                                       lifts  share_of_pairs  gt3.3pct  gt10pct  median_diff_kg  median_rel_pct  actionable_label  share_of_gt10  share_of_gt3.3
+cause_g                                                                                                                                                         
+combined load (50/50 split)              271           0.030       271      271          -340.0         -16.270             False          0.120           0.057
+device sensor fault/drift/calibration     87           0.010        87       87           295.0          12.218              True          0.039           0.018
+no label (agree or small diff)          7115           0.785      2839      303           -25.0          -1.429             False          0.135           0.593
+noise/timing (small loads)               134           0.015       134      134          -170.0         -12.757             False          0.060           0.028
+side waste on same truck                 771           0.085       771      771          -840.0         -19.572             False          0.343           0.161
+stale/wrong tare (operator side)         684           0.075       684      684          -255.0         -11.982              True          0.304           0.143
+unlabelled >10% in label window: 303
+
+== operator sharing
+              lifts  ticket_share  device_est_share   pairs  gt10_of_pairs
+operator_id                                                               
+OP-A         2071.0         0.964             0.881  1749.0          0.195
+OP-B         2382.0         0.885             0.884  1869.0          0.248
+OP-C         1565.0         0.532             0.934   775.0          0.289
+OP-D         2160.0         0.000             0.878     0.0          0.000
+OP-E         5662.0         0.944             0.874  4669.0          0.262
+
+reprice check vs reference expected_invoice_amount: max abs diff = 0.0
+                   n   mean_abs        nz
+pricing_model                            
+FIXED_PER_LIFT  2523   5.017249  0.381292
+HYBRID          3614  17.914051  0.943830
+HYBRID_MIN      1619  13.608493  0.798641
+PER_TONNE       1306  23.863308  0.777182
+
+== EUR effect by cause (device basis vs weighbridge basis), label window; device-years = 365.4
+                                          n      net      pos      neg    gross  pos_per_device_year
+cause_g                                                                                             
+combined load (50/50 split)             271   -133.7   8748.8  -8882.4  17631.2                 23.9
+device sensor fault/drift/calibration    87    -56.4   1998.9  -2055.4   4054.3                  5.5
+no label (agree or small diff)         7115   7430.9  20405.0 -12974.1  33379.2                 55.8
+noise/timing (small loads)              134   -193.1    990.1  -1183.2   2173.3                  2.7
+side waste on same truck                771  18324.1  38944.8 -20620.7  59565.5                106.6
+stale/wrong tare (operator side)        684   2907.0   8350.5  -5443.5  13794.0                 22.9
+TOTAL: net 28278.8 pos 79438.2 neg -51159.4 gross 130597.5 | total billed (expected invoice) in pairs 2584412.3
+flag |rel|>0.033: n=4786, gross share captured=0.919, pos share=0.923
+flag |rel|>0.100: n=2250, gross share captured=0.750, pos share=0.748
+
+2.5-3.5 t loads: all pairs n=1254 within 100 kg 0.498 | clean (no label, single load, no side-waste flag) n=742 within 100 kg 0.776 | clean median |diff| 55.0 kg
+clean 2.5-3.5t: signed median diff -30.0 kg (device lower than ticket => material added between last reading and pickup / resolution)

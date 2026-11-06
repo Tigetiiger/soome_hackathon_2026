@@ -1,0 +1,14 @@
+operator x region x month rows with >=10 lifts: 108
+naive            MAE vs truth 5.54 pp ; bias +5.51 pp ; rank corr 0.464
+adjusted         MAE vs truth 1.59 pp ; bias +1.14 pp ; rank corr 0.589
+adjusted_median  MAE vs truth 1.23 pp ; bias +1.19 pp ; rank corr 0.543
+truth: mean -0.04 pp, sd 0.88 pp
+
+by operator (mean over months), pp:
+             truth  naive  adjusted  adjusted_median
+operator_id                                         
+OP-A         -1.07   3.52      0.15             0.66
+OP-B         -0.06   4.97      0.94             1.02
+OP-C          0.15   5.69     -0.26             1.06
+OP-E          0.67   7.22      2.62             1.67
+share of rows wrongly flagged (|bias|>3.3% while truth within 3.3%): naive 0.741 ; adjusted 0.009 ; truth beyond 3.3%: 0.000

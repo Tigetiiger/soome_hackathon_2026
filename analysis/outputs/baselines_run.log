@@ -1,0 +1,74 @@
+B1/B2 done 22s
+Task B done 135s
+Tasks B2/C2 done 642s
+{
+ "A/B1_calculator": {
+  "validation": {
+   "net_material_contribution_eur:exact_to_cent_share": 0.9635,
+   "per_t:coverage": 0.9967,
+   "per_t:within_5pct_share": 0.9755
+  }
+ },
+ "B/B2_rules": {
+  "validation": 0.7309
+ },
+ "B/B4_gradient_boosting": {
+  "validation": 0.3518
+ },
+ "B/hybrid_ml_plus_rules": {
+  "validation": 0.7818
+ },
+ "C/always_no_action": {
+  "validation": {
+   "best_action_share": 0.3961,
+   "acceptable_share": 0.6301,
+   "mean_regret_eur": 166.74,
+   "impermissible_share": 0.0
+  }
+ },
+ "C/naive_aggressive_saver": {
+  "validation": {
+   "best_action_share": 0.2295,
+   "acceptable_share": 0.5582,
+   "mean_regret_eur": 191.86,
+   "impermissible_share": 0.2717
+  }
+ },
+ "C/B3_rules": {
+  "validation": {
+   "best_action_share": 0.21,
+   "acceptable_share": 0.5811,
+   "mean_regret_eur": 150.36,
+   "impermissible_share": 0.1027
+  }
+ },
+ "C/B4_gradient_boosting": {
+  "validation": {
+   "best_action_share": 0.5205,
+   "acceptable_share": 0.7226,
+   "mean_regret_eur": 100.08,
+   "impermissible_share": 0.1347
+  }
+ },
+ "B2/B5_public_records": {
+  "validation": 67.75
+ },
+ "C2/no_action": {
+  "dev": {
+   "mean_regret_eur": 1063.91,
+   "value_capture_share": 0.0
+  }
+ },
+ "C2/act_on_everything": {
+  "dev": {
+   "mean_regret_eur": 658.05,
+   "value_capture_share": 0.3815
+  }
+ },
+ "C2/B6_rules": {
+  "dev": {
+   "mean_regret_eur": 240.07,
+   "value_capture_share": 0.7743
+  }
+ }
+}

@@ -1,0 +1,7 @@
+material_stream,combined load (50/50 split),device sensor fault/drift/calibration,no label (agree or small diff),noise/timing (small loads),side waste on same truck,stale/wrong tare (operator side)
+biowaste,76,26,131,44,251,170
+cardboard,112,19,34,48,331,183
+mixed_plastic,2,0,19,2,10,19
+mixed_waste,60,31,45,32,160,178
+paper,6,3,16,2,4,21
+plastic_film,15,8,58,6,15,113

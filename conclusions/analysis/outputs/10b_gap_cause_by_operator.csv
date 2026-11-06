@@ -1,0 +1,5 @@
+operator_id,combined load (50/50 split),device sensor fault/drift/calibration,no label (agree or small diff),noise/timing (small loads),side waste on same truck,stale/wrong tare (operator side),total_gt10
+OP-A,30,15,92,18,108,78,341
+OP-B,59,34,53,30,164,123,463
+OP-C,16,14,19,8,95,72,224
+OP-E,166,24,139,78,404,411,1222

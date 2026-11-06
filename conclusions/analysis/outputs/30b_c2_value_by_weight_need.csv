@@ -1,0 +1,4 @@
+weight_needed,DISPUTE_INVOICE,RENEGOTIATE_CONTRACT,REQUEST_WEIGHBRIDGE_DATA,TENDER_OR_SWITCH_OPERATOR,cases
+device weight is the only mass,673.0,18708.0,0.0,64209.0,13
+invoice tonnage (operator-reported),246.0,10977.0,388.0,11348.0,29
+ticket shared (weight not needed),1726.0,84921.0,232.0,101252.0,164

@@ -1,0 +1,48 @@
+-- (1) device vs weighbridge disagreement, label window (lifts with reference economics), shares of paired lifts
+ pairs  gt_3_3pct  gt_10pct  gt_100kg
+  9062     0.5281    0.2483    0.3644
+
+-- (1b) cause split of WEIGHT_DISCREPANCY labels (|diff|>100 kg and >10 %)
+              explanation_code  is_actionable   n
+      SIDE_WASTE_ON_SAME_TRUCK          False 771
+        WEIGHBRIDGE_TARE_ERROR           True 684
+      COMBINED_LOAD_ALLOCATION          False 271
+   MEASUREMENT_NOISE_OR_TIMING          False 134
+           DEVICE_SENSOR_DRIFT           True  81
+        DEVICE_SENSOR_DEGRADED           True   5
+DEVICE_SENSOR_CALIBRATION_GAIN           True   1
+
+-- (3) EUR/t mass source at extraction (lifts in label window)
+observable_mass_source  lifts  share  collection_cost_eur
+ WEIGHBRIDGE_PUBLISHED  10283 0.7430            2317564.0
+       INVOICE_TONNAGE   2605 0.1882             472497.0
+  DEVICE_ESTIMATE_ONLY    909 0.0657             332123.0
+                  NONE     43 0.0031              16398.0
+
+-- (3b) by operator: share of lifts with a published ticket / invoice-tonnage only / device-only
+operator_id  lifts  ticket  invoice_only  eurt_null
+       OP-A   2071   0.964         0.029      0.007
+       OP-B   2382   0.885         0.081      0.034
+       OP-C   1565   0.532         0.367      0.101
+       OP-D   2160   0.000         0.698      0.302
+       OP-E   5662   0.944         0.047      0.008
+
+-- (2) invoice-line discrepancy EUR by family (value_at_stake_eur = billed - expected, + = overcharge)
+         label_family   n  net_eur  overcharge_eur
+       DUPLICATE_LINE 133  18353.0         18353.0
+       UNMATCHED_LINE 138  13563.0         13563.0
+      WRONG_SURCHARGE 150   2708.0          2708.0
+WEIGHT_BASIS_MISMATCH  77    729.0          1392.0
+      OUTDATED_TARIFF 381  -1651.0             7.0
+         MISSING_LINE 119  -3290.0          9161.0
+UNINVOICED_COLLECTION  54 -13030.0           422.0
+
+-- (4) unnecessary-lift pools (illustrative avoidable logistics cost)
+      explanation_code  lifts      eur
+        OVER_SERVICING   1216 171037.0
+FILL_SENSOR_FALSE_HIGH    295  53328.0
+   PRECAUTIONARY_ORDER    343  50395.0
+
+-- mass-linked share of the correct charges
+ mass_linked_share  mass_linked_gross_eur
+           0.45974             2500900.39

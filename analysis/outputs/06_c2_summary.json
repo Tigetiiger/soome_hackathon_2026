@@ -1,0 +1,11 @@
+{
+ "best_total_eur": 220229.32999999996,
+ "n_cases": 207,
+ "annual_cost": 2786004.41,
+ "decomposition": {
+  "dispute": 2645.46,
+  "request_weighbridge": 620.09,
+  "renegotiate (chosen over tender)": 46871.96000000001,
+  "tender/switch (chosen)": 170091.80999999997
+ }
+}

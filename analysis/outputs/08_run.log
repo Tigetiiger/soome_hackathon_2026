@@ -1,0 +1,46 @@
+train pairs 7050 (T1 1494, T2 582) | validation pairs 2012 (T1 453, T2 189)
+                                                                                                detector             type                      target  precision  recall    f1  tp  fp  fn
+                                 R1 B2 rule: |diff|>100kg & |rel|>10% & single load & no side-waste flag transparent rule any label (incl. explained)      1.000   0.439 0.610 199   0 254
+                                 R1 B2 rule: |diff|>100kg & |rel|>10% & single load & no side-waste flag transparent rule    actionable (tare+device)      0.864   0.910 0.887 172  27  17
+                R2 rule + as-of vehicle/device history attribution (size test, explained causes removed) transparent rule any label (incl. explained)      1.000   0.439 0.610 199   0 254
+                R2 rule + as-of vehicle/device history attribution (size test, explained causes removed) transparent rule    actionable (tare+device)      0.864   0.910 0.887 172  27  17
+R2c evidence-first rule: size test & single load & (no side-waste flag OR biased vehicle/device history) transparent rule any label (incl. explained)      1.000   0.547 0.708 248   0 205
+R2c evidence-first rule: size test & single load & (no side-waste flag OR biased vehicle/device history) transparent rule    actionable (tare+device)      0.762   1.000 0.865 189  59   0
+                            R2d tier ACT only: size test & single load & vehicle/device history evidence transparent rule any label (incl. explained)      1.000   0.448 0.619 203   0 250
+                            R2d tier ACT only: size test & single load & vehicle/device history evidence transparent rule    actionable (tare+device)      0.793   0.852 0.821 161  42  28
+                                              R2b size test only: |diff|>100 & |rel|>10% (no exclusions) transparent rule any label (incl. explained)      1.000   1.000 1.000 453   0   0
+                                              R2b size test only: |diff|>100 & |rel|>10% (no exclusions) transparent rule    actionable (tare+device)      0.417   1.000 0.589 189 264   0
+                                                                   ML1 gradient boosting, basic features    supervised ML any label (incl. explained)      0.998   0.993 0.996 450   1   3
+                                                                   ML1 gradient boosting, basic features    supervised ML    actionable (tare+device)      0.933   0.884 0.908 167  12  22
+                                             ML2 gradient boosting, basic + as-of vehicle/device history    supervised ML any label (incl. explained)      0.998   0.989 0.993 448   1   5
+                                             ML2 gradient boosting, basic + as-of vehicle/device history    supervised ML    actionable (tare+device)      0.955   0.899 0.926 170   8  19
+                                  ML3 isolation forest (unsupervised, contamination=train anomaly share)  unsupervised ML any label (incl. explained)      0.663   0.656 0.659 297 151 156
+                                  ML3 isolation forest (unsupervised, contamination=train anomaly share)  unsupervised ML    actionable (tare+device)      0.102   0.095 0.098  18 159 171
+
+cause attribution accuracy on labelled validation anomalies (n=453): rule 0.852 | GBM 0.918
+rule confusion (rows=true, cols=rule):
+rule_cause  combined  device  side_waste  tare  unexplained
+cause_g                                                    
+combined          70       0           0     0            0
+device             0      19           3     3            8
+noise              0       6           6     4           17
+side_waste         0       0         161     0            0
+tare               0       3          14   119           20
+GBM confusion (rows=true, cols=ML):
+ml_cause    combined  device  noise  side_waste  tare
+cause_g                                              
+combined          70       0      0           0     0
+device             0      23      6           1     3
+noise              0       5     20           5     3
+side_waste         0       1      2         156     2
+tare               0       0      4           5   147
+r1: |EUR basis effect| of actionable anomalies caught 4,234 of 4,870; false flags 27
+r2: |EUR basis effect| of actionable anomalies caught 4,234 of 4,870; false flags 27
+
+share of validation tare-error lifts with enough vehicle history (>=3 prior stored lifts): 0.8974358974358975
+bootstrap F1 R1: 0.886  95% CI [0.851, 0.918]
+bootstrap F1 R2c: 0.865  95% CI [0.829, 0.897]
+bootstrap F1 ML2: 0.926  95% CI [0.896, 0.953]
+ML2 - R1 F1 diff: mean 0.040, 95% CI [0.003, 0.079], P(ML2>R1)=0.98
+
+Note: T2 labels come from simulator truth; in production they do not exist, so only R1/R2c/ML3 are deployable on day 1; ML1/ML2 need confirmed cases from human review.

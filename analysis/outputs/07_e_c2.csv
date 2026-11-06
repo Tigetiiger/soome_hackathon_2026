@@ -1,0 +1,13 @@
+mass source,mean_regret_eur,value_capture_share
+no mass source at all,532.16,0.4998
+"invoice tonnage only (no tickets, no device)",474.35,0.5541
+"tickets+invoice, no device",296.37,0.7214
+default B1 chain (ticket>invoice>device),240.07,0.7743
+"device (real, as simulated), nothing else",284.5,0.7326
+hypothetical device sigma=0.5%,266.64,0.7494
+hypothetical device sigma=1%,266.93,0.7491
+hypothetical device sigma=1.5%,267.5,0.7486
+hypothetical device sigma=3%,268.28,0.7478
+hypothetical device sigma=5%,269.74,0.7465
+hypothetical device sigma=10%,273.99,0.7425
+oracle billing mass,239.74,0.7747

@@ -1,0 +1,4 @@
+explanation_code,n,eur,eur_per_device_year(weighted devices),eur_per_device_year(all devices)
+FILL_SENSOR_FALSE_HIGH,295,53328.25,161.14,145.93
+OVER_SERVICING,1216,171036.8,516.81,468.02
+PRECAUTIONARY_ORDER,343,50395.03,152.27,137.9

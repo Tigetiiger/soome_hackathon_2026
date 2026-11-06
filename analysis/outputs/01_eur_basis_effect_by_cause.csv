@@ -1,0 +1,7 @@
+cause_g,n,net,pos,neg,gross,pos_per_device_year
+combined load (50/50 split),271,-133.66,8748.78,-8882.44,17631.22,23.94
+device sensor fault/drift/calibration,87,-56.42,1998.93,-2055.35,4054.28,5.47
+no label (agree or small diff),7115,7430.9,20405.04,-12974.14,33379.18,55.84
+noise/timing (small loads),134,-193.12,990.1,-1183.22,2173.32,2.71
+side waste on same truck,771,18324.1,38944.81,-20620.71,59565.52,106.57
+stale/wrong tare (operator side),684,2906.97,8350.49,-5443.52,13794.01,22.85

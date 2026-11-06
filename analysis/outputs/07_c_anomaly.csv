@@ -1,0 +1,7 @@
+sigma_pct,emulated,recall_actionable(tare+drift),precision_actionable,flags_per_1000_clean_lifts,flag_share_of_explained(side waste/combined)
+0.5,observed,0.93,0.8723,0.0,0.0893
+1.0,observed,0.93,0.8723,0.0,0.0893
+1.5,observed,0.93,0.8723,0.0,0.0893
+3.0,observed+noise,0.8716,0.8106,10.3772,0.0706
+5.0,observed+noise,0.8106,0.6876,29.4489,0.0629
+10.0,observed+noise,0.7341,0.3194,160.2861,0.0536

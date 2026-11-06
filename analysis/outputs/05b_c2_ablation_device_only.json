@@ -1,0 +1,24 @@
+{
+ "mode": "device_only",
+ "score": {
+  "n_cases": 207,
+  "mean_regret_eur": 284.5,
+  "value_captured_eur": 161338.54,
+  "best_possible_value_eur": 220229.33,
+  "value_capture_share": 0.7326,
+  "cases_with_invalid_actions": 0,
+  "reference_no_action_regret_eur": 1063.91,
+  "DISPUTE_INVOICE:precision": 0.1224,
+  "DISPUTE_INVOICE:recall": 0.8182,
+  "DISPUTE_INVOICE:n_positive": 22,
+  "REQUEST_WEIGHBRIDGE_DATA:precision": 1.0,
+  "REQUEST_WEIGHBRIDGE_DATA:recall": 0.2857,
+  "REQUEST_WEIGHBRIDGE_DATA:n_positive": 7,
+  "RENEGOTIATE_CONTRACT:precision": 0.8462,
+  "RENEGOTIATE_CONTRACT:recall": 0.4,
+  "RENEGOTIATE_CONTRACT:n_positive": 55,
+  "TENDER_OR_SWITCH_OPERATOR:precision": 0.7297,
+  "TENDER_OR_SWITCH_OPERATOR:recall": 0.4737,
+  "TENDER_OR_SWITCH_OPERATOR:n_positive": 57
+ }
+}

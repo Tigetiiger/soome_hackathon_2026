@@ -1,0 +1,871 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMART Verified Weight</title>
+<meta name="description" content="SMART Verified Weight: an independent weight estimate with an uncertainty band for every Europress compactor. Hackathon concept on synthetic data.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@100..125,600..800&family=Open+Sans:wght@400;600;700&display=swap" rel="stylesheet">
+<!--
+  SMART Verified Weight (working title). Europress x Since AI Hackathon 2026 product page + demo.
+  Single file. Data: inlined JSON built by build_data.py from the synthetic competition dataset v1.0.1 (read-only).
+  Charts: hand-built inline SVG (no chart library). Fonts: Archivo + Open Sans (SIL OFL 1.1) via Google Fonts, system fallbacks.
+  No Europress logo or image is copied. Hauler names are the dataset's fictional names. All prices hypothetical.
+-->
+<style>
+:root{
+  --navy:#000d61; --navy-hi:#001494; --ice:#e0f1f5; --mint-wash:#ddf8ee; --mint:#54dea9; --mint-hover:#87e8c3; --mint-press:#29d694;
+  --pink:#ff2962; --pink-ink:#d1003f; --pink-wash:#fff0f4; --autumn:#b95041; --autumn-ink:#9c3a2c; --amber:#fabe69; --amber-wash:#fff4dc; --amber-ink:#6b4100;
+  --forest:#235041; --wave:#4b5ac3; --wave-ink:#3a47a8; --g5:#f7f9fc; --g15:#ecf0f6; --g20:#dee5f0; --g30:#c9d1de; --g100:#323d4e; --muted:#5b6577;
+  --bg:var(--ice); --surface:#fff; --surface-2:var(--g5); --text:#0d1430; --text-2:var(--g100); --head:var(--navy); --line:var(--g20); --line-strong:#8a93a3;
+  --c-dev:#4b5ac3; --c-tk:#008f8c; --c-inv:#a86f00; --c-band-dev:rgba(75,90,195,.16); --c-band-tk:rgba(0,143,140,.16);
+  --cz-side:#00789e; --cz-tare:#b86e00; --cz-comb:#b95041; --cz-agree:#9aa3b2; --cz-small:#5b6577; --cz-dev:#4b5ac3;
+  --chip-obs-fg:#235041; --chip-obs-bg:#ddf8ee; --chip-est-fg:#3a47a8; --chip-est-bg:#e0f1f5; --chip-sim-fg:#6b4100; --chip-sim-bg:#fff4dc; --chip-hyp-fg:#323d4e; --chip-hyp-bg:#ecf0f6;
+  --sev-warn-bg:#fff0f4; --sev-warn-fg:#9c3a2c; --nav-bg:#fff; --code-bg:#f3f6fb;
+  --shadow:0 4px 12px rgba(0,13,97,.08); --glow:0 6px 30px rgba(51,214,255,.5);
+  --f-title:"Archivo","Montserrat","Segoe UI",Helvetica,Arial,sans-serif; --f-body:"Open Sans","Segoe UI",Helvetica,Arial,sans-serif;
+  --r-card:1rem; --r-block:1.5rem; --r-pill:9999px; color-scheme:light;
+}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){
+  --bg:#060b2e; --surface:#0f1640; --surface-2:#141c4d; --text:#e8ecf6; --text-2:#c4cbe0; --head:#ffffff; --line:#26306a; --line-strong:#5a6597; --muted:#a3abc6;
+  --ice:#16205a; --mint-wash:#0f3a33; --pink-wash:#3a1426; --amber-wash:#3a2a0c; --g15:#1b2457; --g5:#121a48;
+  --c-dev:#9aa6ff; --c-tk:#3fd0cb; --c-inv:#f0b44c; --c-band-dev:rgba(154,166,255,.2); --c-band-tk:rgba(63,208,203,.2);
+  --cz-side:#47b9e0; --cz-tare:#f0a640; --cz-comb:#ef8a78; --cz-agree:#59627f; --cz-small:#9aa3c0; --cz-dev:#9aa6ff;
+  --chip-obs-fg:#9ff0cf; --chip-obs-bg:#0f3a33; --chip-est-fg:#c3cbff; --chip-est-bg:#1e2a6e; --chip-sim-fg:#ffd890; --chip-sim-bg:#3a2a0c; --chip-hyp-fg:#d6dbea; --chip-hyp-bg:#262f5c;
+  --sev-warn-bg:#3a1426; --sev-warn-fg:#ffb3a6; --nav-bg:#0b1238; --code-bg:#0a1035; --pink-ink:#ff6f93; --autumn-ink:#ffb3a6; --wave-ink:#c3cbff; --forest:#9ff0cf; --amber-ink:#ffd890;
+  --shadow:0 4px 14px rgba(0,0,0,.4); color-scheme:dark;
+}}
+:root[data-theme="dark"]{
+  --bg:#060b2e; --surface:#0f1640; --surface-2:#141c4d; --text:#e8ecf6; --text-2:#c4cbe0; --head:#ffffff; --line:#26306a; --line-strong:#5a6597; --muted:#a3abc6;
+  --ice:#16205a; --mint-wash:#0f3a33; --pink-wash:#3a1426; --amber-wash:#3a2a0c; --g15:#1b2457; --g5:#121a48;
+  --c-dev:#9aa6ff; --c-tk:#3fd0cb; --c-inv:#f0b44c; --c-band-dev:rgba(154,166,255,.2); --c-band-tk:rgba(63,208,203,.2);
+  --cz-side:#47b9e0; --cz-tare:#f0a640; --cz-comb:#ef8a78; --cz-agree:#59627f; --cz-small:#9aa3c0; --cz-dev:#9aa6ff;
+  --chip-obs-fg:#9ff0cf; --chip-obs-bg:#0f3a33; --chip-est-fg:#c3cbff; --chip-est-bg:#1e2a6e; --chip-sim-fg:#ffd890; --chip-sim-bg:#3a2a0c; --chip-hyp-fg:#d6dbea; --chip-hyp-bg:#262f5c;
+  --sev-warn-bg:#3a1426; --sev-warn-fg:#ffb3a6; --nav-bg:#0b1238; --code-bg:#0a1035; --pink-ink:#ff6f93; --autumn-ink:#ffb3a6; --wave-ink:#c3cbff; --forest:#9ff0cf; --amber-ink:#ffd890;
+  --shadow:0 4px 14px rgba(0,0,0,.4); color-scheme:dark;
+}
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--text);font:16px/1.55 var(--f-body);-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--f-title);font-stretch:125%;font-weight:700;line-height:1.1;color:var(--head);margin:0}
+h1{font-size:clamp(2rem,5vw,3.25rem)} h2{font-size:clamp(1.45rem,3.2vw,2.3rem)} h3{font-size:1.15rem} h4{font-size:1rem}
+p{margin:.5rem 0} a{color:inherit;text-decoration:underline;text-decoration-color:var(--pink);text-decoration-thickness:.12em;text-underline-offset:.15em}
+a:hover{color:var(--pink-ink)}
+:focus-visible{outline:3px solid var(--wave);outline-offset:2px}
+.num,td.r,.kpi{font-variant-numeric:tabular-nums}
+.wrap{max-width:1200px;margin:0 auto;padding:0 1.25rem}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.skip{position:absolute;left:-999px;top:0;background:var(--surface);padding:.5rem 1rem;z-index:50}.skip:focus{left:0}
+/* banner + nav */
+.syn{background:var(--pink-wash);border-bottom:2px dashed var(--pink);font-size:.85rem;color:var(--text)}
+.syn .wrap{display:flex;gap:.6rem;align-items:center;flex-wrap:wrap;padding:.45rem 1.25rem}
+.syn b.tagx{font-family:var(--f-title);text-transform:uppercase;letter-spacing:.04em;background:var(--navy);color:#fff;border-radius:var(--r-pill);padding:.15rem .7rem;font-size:.72rem}
+header.nav{background:var(--nav-bg);position:sticky;top:0;z-index:20;border-bottom:1px solid var(--line)}
+header.nav .wrap{display:flex;align-items:center;gap:1rem;min-height:64px;flex-wrap:wrap}
+.wordmark{font-family:var(--f-title);font-stretch:125%;font-weight:800;color:var(--head);text-decoration:none;font-size:1.05rem;letter-spacing:.01em}
+.wordmark span{color:var(--pink-ink)}
+nav.top{display:flex;gap:.2rem;flex-wrap:wrap;margin-left:auto;align-items:center}
+nav.top a{font-weight:700;font-size:.88rem;text-decoration:none;padding:.35rem .6rem;border-radius:var(--r-pill);color:var(--head)}
+nav.top a:hover{background:var(--ice)}
+.theme-btn{border:1.5px solid var(--line-strong);background:transparent;color:var(--head);border-radius:var(--r-pill);padding:.3rem .7rem;font:700 .78rem var(--f-body);cursor:pointer}
+/* sections */
+section.blk{padding:3.5rem 0}
+section.blk.alt{background:var(--surface)}
+.eyebrow{display:inline-block;font:700 .75rem var(--f-body);letter-spacing:.08em;text-transform:uppercase;color:var(--pink-ink);margin-bottom:.6rem}
+.lead{font-size:1.12rem;color:var(--text-2);max-width:68ch}
+.hero{background:linear-gradient(180deg,var(--navy-hi),var(--navy));color:#fff;padding:4rem 0 3.5rem}
+.hero h1{color:#fff;max-width:20ch}
+.hero .lead{color:#dfe5ff}
+.hero .eyebrow{color:#ff9db6}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.25fr) minmax(0,1fr);gap:2rem;align-items:center}
+.hero-card{background:rgba(255,255,255,.07);border:1px solid rgba(255,255,255,.18);border-radius:var(--r-block);padding:1.25rem}
+.hero-card .row{display:flex;justify-content:space-between;gap:1rem;padding:.45rem 0;border-bottom:1px solid rgba(255,255,255,.12)}
+.hero-card .row:last-child{border-bottom:0}
+.hero-card .v{font-family:var(--f-title);font-stretch:125%;font-weight:700;font-size:1.15rem;white-space:nowrap}
+.hero .chipline{display:flex;gap:.5rem;flex-wrap:wrap;margin-top:1rem}
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:.45rem;border:0;border-radius:var(--r-pill);font:700 .9rem/1 var(--f-body);letter-spacing:.05em;text-transform:uppercase;padding:.95rem 1.4rem;cursor:pointer;color:var(--navy);text-decoration:none;transition:background .2s,box-shadow .2s}
+.btn-primary{background:var(--mint)} .btn-primary:hover:not(:disabled){background:var(--mint-hover);box-shadow:var(--glow);color:var(--navy)} .btn-primary:active{background:var(--mint-press)}
+.btn-secondary{background:var(--surface);color:var(--head);border:2px solid var(--mint)} .btn-secondary:hover{box-shadow:var(--glow);color:var(--head)}
+.btn-ghost{background:transparent;color:inherit;border:2px solid currentColor}
+.btn-sm{padding:.55rem .9rem;font-size:.75rem}
+.btn:disabled{background:var(--g15);color:var(--muted);cursor:not-allowed;border-color:transparent}
+.ctas{display:flex;gap:.75rem;flex-wrap:wrap;margin-top:1.5rem}
+/* cards, grids */
+.card{background:var(--surface);border-radius:var(--r-card);box-shadow:var(--shadow);padding:1.25rem;border:1px solid var(--line);min-width:0}
+.alt .card{background:var(--surface-2)}
+.grid2{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:1rem}
+.grid3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:1rem}
+.grid4{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:1rem}
+.split{display:grid;grid-template-columns:minmax(0,1.5fr) minmax(0,1fr);gap:1rem;align-items:start}
+.mt{margin-top:1rem}.mt2{margin-top:2rem}
+.tile .lbl{font:700 .75rem var(--f-body);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+.tile .val{font-family:var(--f-title);font-stretch:125%;font-weight:700;font-size:1.8rem;color:var(--head);margin:.25rem 0;line-height:1.1}
+.tile .val small{font-size:.95rem;font-weight:600}
+.tile .note{font-size:.82rem;color:var(--text-2)}
+.tile .top{display:flex;justify-content:space-between;gap:.5rem;align-items:flex-start}
+/* chips */
+.chip{display:inline-flex;align-items:center;gap:.3rem;font:700 .68rem/1 var(--f-body);letter-spacing:.05em;text-transform:uppercase;border-radius:var(--r-pill);padding:.28rem .55rem;border:1.5px solid;white-space:nowrap;vertical-align:middle}
+.chip i{display:inline-block;width:.6rem;height:.6rem;flex:none}
+.c-obs{color:var(--chip-obs-fg);background:var(--chip-obs-bg);border-style:solid} .c-obs i{border-radius:50%;background:currentColor}
+.c-est{color:var(--chip-est-fg);background:var(--chip-est-bg);border-style:solid} .c-est i{border-radius:50%;background:linear-gradient(90deg,currentColor 50%,transparent 50%);border:1.5px solid currentColor}
+.c-sim{color:var(--chip-sim-fg);background:var(--chip-sim-bg);border-style:dashed} .c-sim i{background:currentColor;transform:rotate(45deg) scale(.8)}
+.c-hyp{color:var(--chip-hyp-fg);background:var(--chip-hyp-bg);border-style:dotted;font-style:italic} .c-hyp i{border-radius:50%;border:1.5px solid currentColor}
+.c-tpl{color:var(--chip-hyp-fg);background:transparent;border-style:solid}
+.sev{display:inline-flex;align-items:center;gap:.3rem;font:700 .68rem/1 var(--f-body);letter-spacing:.05em;text-transform:uppercase;border-radius:var(--r-pill);padding:.28rem .55rem}
+.sev-info{background:var(--ice);color:var(--wave-ink)} .sev-notice{background:var(--amber-wash);color:var(--amber-ink)} .sev-warning{background:var(--sev-warn-bg);color:var(--sev-warn-fg)}
+.tagpink{background:var(--pink);color:var(--navy);font:700 .7rem var(--f-title);border-radius:var(--r-pill);padding:.2rem .6rem;text-transform:uppercase;letter-spacing:.04em}
+/* tables */
+.tbl{overflow-x:auto;-webkit-overflow-scrolling:touch}
+table{border-collapse:collapse;width:100%;font-size:.86rem}
+caption{text-align:left;font-weight:700;color:var(--head);padding-bottom:.4rem}
+th{font:700 .7rem var(--f-body);text-transform:uppercase;letter-spacing:.05em;color:var(--muted);text-align:left;border-bottom:2px solid var(--line);padding:.45rem .5rem;white-space:nowrap}
+th button{all:unset;cursor:pointer} th button:focus-visible{outline:2px solid var(--wave)}
+td{border-bottom:1px solid var(--line);padding:.45rem .5rem;vertical-align:top}
+td.r,th.r{text-align:right}
+tr.click{cursor:pointer} tr.click:hover td{background:var(--ice)}
+tr.sel td{background:var(--mint-wash)}
+/* demo app */
+.app{background:var(--surface);border-radius:var(--r-block);box-shadow:var(--shadow);border:1px solid var(--line);overflow:hidden}
+.app-bar{display:flex;align-items:center;gap:.75rem;flex-wrap:wrap;padding:.7rem 1rem;background:var(--navy);color:#fff}
+.app-bar .wm{font-family:var(--f-title);font-stretch:125%;font-weight:800}
+.app-bar .wm span{color:#ff9db6}
+.app-bar .ctx{font-size:.8rem;opacity:.9;margin-left:auto}
+.tabs{display:flex;gap:.25rem;overflow-x:auto;padding:.5rem .75rem 0;border-bottom:1px solid var(--line);background:var(--surface-2)}
+.tabs a{flex:none;text-decoration:none;font-weight:700;font-size:.88rem;padding:.6rem .9rem;border-radius:.6rem .6rem 0 0;color:var(--head);border:1px solid transparent;border-bottom:0}
+.tabs a[aria-current="page"]{background:var(--surface);border-color:var(--line);box-shadow:inset 0 3px 0 var(--mint)}
+.tabs a .cnt{background:var(--pink);color:var(--navy);border-radius:var(--r-pill);font-size:.7rem;padding:.05rem .45rem;margin-left:.3rem}
+.panel{padding:1.25rem}
+.panel[hidden]{display:none}
+.herosent{font-family:var(--f-title);font-stretch:112%;font-weight:700;font-size:clamp(1.15rem,2.4vw,1.6rem);color:var(--head);line-height:1.2;margin:.2rem 0 .5rem;max-width:44ch}
+.sub{color:var(--text-2);font-size:.92rem;max-width:80ch}
+.wrong{border-left:4px solid var(--amber);background:var(--amber-wash);border-radius:.5rem;padding:.75rem 1rem;font-size:.86rem;color:var(--text)}
+.wrong h4{font-size:.85rem;margin-bottom:.25rem;color:var(--amber-ink)}
+.howcalc{font-size:.84rem;color:var(--text-2)}
+details{border-top:1px solid var(--line);padding:.55rem 0}
+details summary{cursor:pointer;font-weight:700;color:var(--head);font-size:.9rem}
+pre,code{font-family:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;font-size:.78rem}
+pre{background:var(--code-bg);border:1px solid var(--line);border-radius:.6rem;padding:.75rem;overflow:auto;max-height:340px;margin:.5rem 0;white-space:pre}
+.filters{display:flex;gap:.6rem;flex-wrap:wrap;align-items:flex-end;margin:.75rem 0}
+label.f{display:flex;flex-direction:column;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);gap:.2rem}
+select,input[type=search],input[type=text]{font:400 .9rem var(--f-body);padding:.45rem .6rem;border-radius:.5rem;border:1.5px solid var(--line-strong);background:var(--surface);color:var(--text);min-width:0}
+.seg{display:inline-flex;border:1.5px solid var(--line-strong);border-radius:var(--r-pill);overflow:hidden}
+.seg button{border:0;background:transparent;color:var(--text);font:700 .75rem var(--f-body);padding:.45rem .75rem;cursor:pointer}
+.seg button[aria-pressed="true"]{background:var(--navy);color:#fff}
+:root[data-theme="dark"] .seg button[aria-pressed="true"]{background:var(--mint);color:var(--navy)}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]) .seg button[aria-pressed="true"]{background:var(--mint);color:var(--navy)}}
+svg.chart{width:100%;height:auto;display:block}
+svg text{font-family:var(--f-body);fill:var(--text-2)}
+svg .ax{stroke:var(--line)} svg .ax2{stroke:var(--line-strong)}
+svg .lbl-h{fill:var(--head);font-weight:700}
+.s-dev{stroke:var(--c-dev);fill:var(--c-dev)} .s-tk{stroke:var(--c-tk);fill:var(--c-tk)} .s-inv{stroke:var(--c-inv);fill:var(--c-inv)}
+.t-dev{fill:var(--c-dev)} .t-tk{fill:var(--c-tk)} .t-inv{fill:var(--c-inv)}
+.legend{display:flex;gap:1rem;flex-wrap:wrap;font-size:.8rem;color:var(--text-2);margin:.3rem 0}
+.legend span{display:inline-flex;align-items:center;gap:.35rem}
+.sw{display:inline-block;width:14px;height:10px;border-radius:2px}
+figure{margin:.5rem 0} figcaption{font-size:.78rem;color:var(--muted);margin-top:.3rem}
+.verdict{display:grid;gap:.5rem;margin:.75rem 0}
+.verdict div{padding:.6rem .8rem;border-radius:.6rem;background:var(--surface-2);border:1px solid var(--line);font-size:.9rem}
+.verdict b.ok{color:var(--forest)} .verdict b.look{color:var(--autumn-ink)}
+.chain{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:.5rem;margin:.75rem 0}
+.chain div{background:var(--surface-2);border:1px solid var(--line);border-radius:.7rem;padding:.6rem;font-size:.8rem;position:relative}
+.chain div b{display:block;font-size:.68rem;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
+.chain div .v{font-weight:700;color:var(--head);word-break:break-all}
+/* inbox */
+.inbox{display:grid;grid-template-columns:minmax(0,.95fr) minmax(0,1.35fr);gap:1rem;align-items:start}
+.plist{list-style:none;margin:0;padding:0;display:grid;gap:.6rem}
+.pbtn{all:unset;box-sizing:border-box;display:block;width:100%;cursor:pointer;background:var(--surface);border:2px solid var(--line);border-radius:var(--r-card);padding:.75rem .9rem}
+.pbtn:hover{border-color:var(--pink)} .pbtn[aria-pressed="true"]{border-color:var(--navy);box-shadow:var(--shadow)}
+:root[data-theme="dark"] .pbtn[aria-pressed="true"]{border-color:var(--mint)}
+.pbtn:focus-visible{outline:3px solid var(--wave);outline-offset:2px}
+.pbtn .t{font-family:var(--f-title);font-stretch:110%;font-weight:700;color:var(--head);font-size:.95rem;margin:.35rem 0 .2rem;line-height:1.2;display:block}
+.pbtn .m{font-size:.78rem;color:var(--text-2);display:block}
+.pbtn .row{display:flex;gap:.4rem;flex-wrap:wrap;align-items:center}
+.pbtn .st{margin-left:auto;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em}
+.st-approved{color:var(--forest)} .st-rejected{color:var(--muted)} .st-waiting{color:var(--wave-ink)} .st-more{color:var(--amber-ink)}
+.drawer{position:sticky;top:80px}
+.vrange{display:flex;gap:.5rem;flex-wrap:wrap;margin:.5rem 0}
+.vrange div{background:var(--surface-2);border:1px solid var(--line);border-radius:.6rem;padding:.4rem .7rem;font-size:.8rem}
+.vrange div b{display:block;font-family:var(--f-title);font-stretch:115%;font-size:1.05rem;color:var(--head)}
+.draft{background:var(--code-bg);border:1px dashed var(--line-strong);border-radius:.6rem;padding:.75rem;font-size:.85rem;white-space:pre-wrap}
+.ev{display:flex;flex-wrap:wrap;gap:.35rem;margin:.4rem 0}
+.ev span{font-size:.74rem;border:1px solid var(--line);border-radius:.4rem;padding:.15rem .4rem;background:var(--surface-2)}
+.check{display:flex;gap:.5rem;align-items:flex-start;font-size:.86rem;margin:.6rem 0}
+.check input{width:1.1rem;height:1.1rem;margin-top:.2rem;accent-color:var(--navy)}
+.done{background:var(--mint-wash);color:var(--forest);border-radius:.5rem;padding:.55rem .8rem;font-weight:600;font-size:.86rem;margin-top:.6rem}
+.outbox{margin-top:1rem}
+.evt{border:1px solid var(--line);border-radius:.6rem;padding:.5rem .7rem;margin:.4rem 0;background:var(--surface-2)}
+.evt .h{display:flex;gap:.5rem;align-items:center;flex-wrap:wrap;font-size:.8rem}
+.evt code{font-weight:700;color:var(--head)}
+.copy{border:1.5px solid var(--line-strong);background:var(--surface);color:var(--head);border-radius:var(--r-pill);font:700 .7rem var(--f-body);padding:.25rem .6rem;cursor:pointer;margin-left:auto}
+.copy.ok{border-color:var(--mint);background:var(--mint-wash);color:var(--forest)}
+.audit ol{margin:.25rem 0;padding-left:1.2rem;font-size:.82rem}
+/* tiers */
+.tier{position:relative;border-top:6px solid var(--mint)}
+.tier.t1{border-top-color:var(--wave)} .tier.t2{border-top-color:var(--navy)}
+:root[data-theme="dark"] .tier.t2{border-top-color:#9aa6ff}
+.tier .acc{font-family:var(--f-title);font-stretch:125%;font-weight:700;font-size:1.5rem;color:var(--head)}
+.tier ul{padding-left:1.1rem;margin:.5rem 0;font-size:.9rem}
+.price{font-family:var(--f-title);font-stretch:125%;font-weight:700;font-size:1.6rem;color:var(--head)}
+.price small{font-size:.85rem;font-weight:600;color:var(--text-2)}
+.ctrl{display:flex;gap:1rem;flex-wrap:wrap;margin:.5rem 0}
+.ctrl label{font-size:.8rem;display:flex;flex-direction:column;gap:.2rem;min-width:180px;flex:1}
+.ctrl output{font-weight:700;color:var(--head)}
+input[type=range]{accent-color:var(--navy);width:100%}
+ul.clean{padding-left:1.1rem} ul.clean li{margin:.3rem 0}
+footer.site{background:var(--navy);color:#cfd6ff;padding:2rem 0;font-size:.85rem}
+footer.site a{color:#fff}
+@media (max-width:1000px){.hero-grid,.split,.inbox{grid-template-columns:1fr}.grid4{grid-template-columns:repeat(2,minmax(0,1fr))}.grid3{grid-template-columns:1fr}.chain{grid-template-columns:repeat(2,minmax(0,1fr))}.drawer{position:static}}
+@media (max-width:640px){.grid2,.grid4{grid-template-columns:1fr}nav.top{margin-left:0}.panel{padding:.9rem}section.blk{padding:2.5rem 0}.wrap{padding:0 .9rem}.app-bar .ctx{margin-left:0}}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;scroll-behavior:auto!important}}
+</style>
+</head>
+<body>
+<a class="skip" href="#demo">Skip to the demo</a>
+<div class="syn" role="note"><div class="wrap"><b class="tagx">Synthetic data</b><span>Hackathon concept on the Since&nbsp;AI synthetic dataset v1.0.1. Customers, haulers, contracts and prices are invented; all € are hypothetical tariffs, not savings. Not a Europress product announcement.</span></div></div>
+<header class="nav"><div class="wrap">
+  <a class="wordmark" href="#top">SMART <span>Verified Weight</span></a>
+  <nav class="top" aria-label="Page">
+    <a href="#how">How it works</a><a href="#demo">Demo</a><a href="#integration">SMART integration</a><a href="#pricing">Pricing</a><a href="#limits">Limits</a>
+    <button class="theme-btn" id="themeBtn" type="button" aria-label="Colour theme">Theme: auto</button>
+  </nav>
+</div></header>
+
+<main>
+<!-- 1 HERO -->
+<section class="hero" id="top"><div class="wrap hero-grid">
+  <div>
+    <span class="eyebrow">A SMART add-on · working title</span>
+    <h1>Weigh at source. Check at the invoice.</h1>
+    <p class="lead">Your compactor already knows how full it is. Verified Weight gives it a weight estimate with an honest ± band, puts it next to the weighbridge ticket and the invoice, and explains any gap without blame. You approve every action.</p>
+    <div class="ctas"><a class="btn btn-primary" href="#trace">See one lift traced</a><a class="btn btn-ghost" href="#how" style="color:#fff">How the weight works</a></div>
+    <div class="chipline"><span class="chip c-obs"><i></i>Observed</span><span class="chip c-est"><i></i>Estimated</span><span class="chip c-sim"><i></i>Simulated</span><span class="chip c-hyp"><i></i>Hypothetical</span><span style="font-size:.8rem;color:#dfe5ff">Every number on this page carries one of these.</span></div>
+  </div>
+  <div class="hero-card" aria-label="Example lift">
+    <div style="font-size:.78rem;text-transform:uppercase;letter-spacing:.06em;color:#ff9db6;font-weight:700">One lift, three masses · 23 Dec 2025</div>
+    <div class="row"><span>Compactor (device)</span><span class="v" id="hcDev">4.125 t</span></div>
+    <div class="row"><span>Weighbridge ticket</span><span class="v">4.20 t</span></div>
+    <div class="row"><span>Invoice processing line</span><span class="v">5.08 t</span></div>
+    <div class="row"><span>Billed above both masses</span><span class="v" style="color:#ff9db6">€111.61</span></div>
+    <p style="font-size:.8rem;color:#c9d1ff;margin:.6rem 0 0">INV-00392-202512-L045 · Hauler Epsilon (fictional) · hypothetical tariff. The draft query goes to the customer's finance team first; nothing is sent automatically.</p>
+  </div>
+</div></section>
+
+<!-- 2 HOW IT WORKS -->
+<section class="blk" id="how"><div class="wrap">
+  <span class="eyebrow">How it works</span>
+  <h2>Start free. Add accuracy only where it pays.</h2>
+  <p class="lead">Three accuracy levels on things Europress already sells. Tommi's rule applies: ballpark is enough for most decisions, so the default costs €0 in hardware.</p>
+  <div class="grid3 mt">
+    <div class="card tier"><span class="chip c-est"><i></i>Estimated</span>
+      <h3 class="mt">T0 · Virtual scale</h3><div class="acc">±12–15% <small style="font-size:.9rem">per lift</small></div>
+      <p style="margin:0"><b>±5–6% on monthly totals</b> (if a fleet model leaves ~3% machine bias)</p>
+      <ul><li>Ram back-pressure per stroke + cycles + fill → kg</li><li><b>€0 BOM</b>: firmware logging at 10–20 Hz, over the air</li><li>Upgrade of the existing waste-volume calculator</li></ul>
+      <p class="howcalc">Good enough for: monthly tonnage, Proof of Fullness, €/t trends.</p></div>
+    <div class="card tier t1"><span class="chip c-hyp"><i></i>Target, untested</span>
+      <h3 class="mt">T1 · Ticket-calibrated</h3><div class="acc">±3–5% <small style="font-size:.9rem">monthly</small></div>
+      <p style="margin:0">Clean tickets (weighed tare, single load) update each machine's gain</p>
+      <ul><li>Kalman update per ticket; CUSUM drift alarm</li><li><b>€0 BOM</b>: uses the existing operator API</li><li>Per-lift error stays near ±12% until pressure-curve features exist (see chart)</li></ul>
+      <p class="howcalc">Good enough for: quarterly invoice assurance against +10% inflation.</p></div>
+    <div class="card tier t2"><span class="chip c-est"><i></i>Estimated</span>
+      <h3 class="mt">T2 · Scale platform</h3><div class="acc">≈ ±1.4% <small style="font-size:.9rem">per lift</small></div>
+      <p style="margin:0">Europress Scale Solutions 4-corner platform: <b>an existing product</b></p>
+      <ul><li>€1.0–1.9k BOM, sold inside the lease (≈ €14–26/month)</li><li>2–5% of the fleet as a golden cohort trains the fleet model</li><li>Verification, not a billing basis (NAWI 2014/31/EU)</li></ul>
+      <p class="howcalc">Good enough for: per-lift disputes, tenant billing.</p></div>
+  </div>
+
+  <div class="split mt2">
+    <div class="card">
+      <div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3>Error vs number of calibration tickets</h3><span class="chip c-sim"><i></i>Simulated</span></div>
+      <p class="sub">Closed-form Kalman model; dots are a seeded Monte Carlo from <code>build_data.py</code> at the default settings. Change the assumptions and watch which error falls.</p>
+      <div class="ctrl">
+        <label>Machine bias before calibration <output id="oB">3.4%</output><input type="range" id="rB" min="1" max="15" step=".2" value="3.4"></label>
+        <label>Per-lift random error <output id="oE">12%</output><input type="range" id="rE" min="4" max="20" step=".5" value="12"></label>
+        <label>Lifts per month <output id="oN">8</output><input type="range" id="rN" min="2" max="30" step="1" value="8"></label>
+      </div>
+      <figure><div id="simChart"></div><figcaption id="simCap"></figcaption></figure>
+      <div class="legend"><span><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" class="s-dev" stroke-width="3"/></svg>Per lift</span><span><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" class="s-tk" stroke-width="3" stroke-dasharray="5 3"/></svg>Monthly total</span><span>Ticket noise 4% (weighed tare)</span></div>
+    </div>
+    <div class="card">
+      <h3>What the data says about each level</h3>
+      <p class="sub">Robust detection power on clean pairs (single load, weighed tare), 2.5% false-alarm rate. Ratio of ticket to device mass, median per unit.</p>
+      <div class="tbl"><table id="detTbl"><thead><tr><th>Level</th><th class="r">Robust σ</th><th class="r">Catch +5%</th><th class="r">Catch +10%</th></tr></thead><tbody></tbody></table></div>
+      <p class="howcalc mt"><span class="chip c-obs"><i></i>Observed</span> on the dataset's simulated integrated scale (σ 1.4% + 15 kg), i.e. T2-grade. At Tommi's ±10% ballpark, a +10% overbilling is caught 17% per lift, 62% per quarter <span class="chip c-sim"><i></i>Simulated</span>.</p>
+      <div class="wrong mt"><h4>What could make this wrong</h4>No peer-reviewed study shows mass-from-pressure on compactors. The weighbridge reference itself is only ±40–80 kg (OIML R76). The T0 figures are a literature-based error budget until a 10-machine pilot measures them (Bland-Altman, leave-one-machine-out, ticket-count ablation; accept if monthly error ≤6% and per-lift p90 ≤20%).</div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 3 DEMO -->
+<section class="blk alt" id="demo"><div class="wrap">
+  <span class="eyebrow">Working demo · real synthetic dataset</span>
+  <h2>Verified Weight inside SMART</h2>
+  <p class="lead">Five screens on the competition dataset: <span id="metaLine"></span>. Rules decide. Drafts are templates filled from cited rows; no language model runs on this page.</p>
+  <div class="app mt" id="app">
+    <div class="app-bar"><span class="wm">SMART <span>Verified Weight</span></span><span class="chip c-sim" style="background:#fff4dc;color:#6b4100"><i></i>Synthetic v1.0.1</span><span class="ctx">Role: customer facility manager · window 1 Oct 2025 – 31 Jul 2026</span></div>
+    <nav class="tabs" aria-label="Demo screens">
+      <a href="#fleet" data-tab="fleet">1 Fleet overview</a><a href="#trace" data-tab="trace">2 Lift trace</a><a href="#causes" data-tab="causes">3 Cause attribution</a><a href="#fullness" data-tab="fullness">4 Proof of fullness</a><a href="#inbox" data-tab="inbox">5 Actions<span class="cnt" id="inboxCnt">0</span></a>
+    </nav>
+
+    <!-- FLEET -->
+    <div class="panel" id="p-fleet" data-panel="fleet">
+      <p class="herosent" id="fleetHero"></p>
+      <p class="sub">Every lift with both a device mass and a weighbridge ticket is checked against an expected band: 2 × √(device σ² + ticket σ²), where the ticket σ comes from the data for its tare method (stored tares scatter about twice as much as weighed ones).</p>
+      <div class="grid4 mt" id="fleetTiles"></div>
+      <div class="split mt">
+        <div class="card"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3>Device vs ticket gap, single loads</h3><span class="chip c-obs"><i></i>Observed</span></div>
+          <figure><div id="gapHist"></div><figcaption>Gap = device ÷ ticket − 1, 2.5-point bins, clipped at ±60%. Lines, not bars, so the two tare methods can overlap.</figcaption></figure>
+          <div class="legend"><span><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" class="s-dev" stroke-width="3"/></svg>Weighed tare</span><span><svg width="22" height="10"><line x1="0" y1="5" x2="22" y2="5" class="s-inv" stroke-width="3" stroke-dasharray="5 3"/></svg>Stored tare</span></div></div>
+        <div class="card"><h3>Ticket sharing by hauler</h3><p class="sub" style="font-size:.8rem">Alphabetical, not a ranking. Without tickets, the compactor is the only mass.</p><div id="tkBars"></div>
+          <h3 class="mt">Tier each device could run today</h3><div id="tierBox"></div>
+          <div class="wrong mt"><h4>What could make this wrong</h4>The dataset's device weight is a simulated future integrated scale (σ 1.4%). A real T0 virtual scale would be about 9× noisier per lift, so fewer gaps would be "outside the band" and more would be "needs a look". Switch tiers on the Lift trace screen to see this.</div></div>
+      </div>
+      <div class="card mt">
+        <div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap;align-items:center"><h3>Devices</h3><span class="howcalc" id="devCount"></span></div>
+        <div class="filters">
+          <label class="f">Hauler<select id="fOp"><option value="">All</option></select></label>
+          <label class="f">Stream<select id="fSt"><option value="">All</option></select></label>
+          <label class="f">Schedule<select id="fPol"><option value="">All</option></select></label>
+          <label class="f">Search<input type="search" id="fQ" placeholder="CMP-00392"></label>
+        </div>
+        <div class="tbl" style="max-height:420px;overflow:auto"><table id="devTbl"><thead></thead><tbody></tbody></table></div>
+        <p class="howcalc">Click a row to trace its lifts. € columns are hypothetical tariffs on labelled lifts and invoice lines <span class="chip c-hyp"><i></i>Hypothetical</span>.</p>
+      </div>
+    </div>
+
+    <!-- TRACE -->
+    <div class="panel" id="p-trace" data-panel="trace" hidden>
+      <p class="herosent" id="traceHero"></p>
+      <div class="filters">
+        <label class="f">Device<input type="text" id="tDev" list="devList" value="CMP-00392" style="width:9rem"></label><datalist id="devList"></datalist>
+        <div><span class="f" style="display:block;font-size:.72rem;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted);margin-bottom:.2rem">Device accuracy</span>
+          <div class="seg" role="group" aria-label="Device accuracy tier"><button type="button" data-tier="T0">T0 ±13%</button><button type="button" data-tier="T1">T1 ±8%</button><button type="button" data-tier="DS" aria-pressed="true">Dataset ±1.4%</button></div></div>
+        <div class="seg" role="group" aria-label="Jump to example"><button type="button" data-jump="H1">Invoice gap</button><button type="button" data-jump="NO">Says no</button><button type="button" data-jump="V06">Stored tare</button></div>
+      </div>
+      <div class="card"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3 id="stripTitle">Lifts</h3><span class="chip c-obs"><i></i>Observed</span></div>
+        <figure><div id="strip"></div><figcaption>Each dot is one lift with a ticket: device ÷ ticket − 1, with the ±2σ expected band for the chosen device tier. Click a dot (or Tab + Enter) to trace it.</figcaption></figure></div>
+      <div class="split mt">
+        <div class="card"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3 id="liftTitle">Lift</h3><span id="liftChips"></span></div>
+          <figure><div id="bandChart"></div><figcaption>Whiskers ±2σ. The invoice is a document, so it has no sensor error. Neutral colours: no series means "at fault".</figcaption></figure>
+          <div class="legend"><span><svg width="14" height="14"><circle cx="7" cy="7" r="5" class="s-dev"/></svg>Compactor</span><span><svg width="14" height="14"><rect x="2" y="2" width="10" height="10" transform="rotate(45 7 7)" class="s-tk"/></svg>Weighbridge ticket</span><span><svg width="14" height="14"><rect x="2" y="2" width="10" height="10" class="s-inv"/></svg>Invoice mass line</span></div>
+          <div class="verdict" id="verdict"></div>
+          <div id="chainBox"></div>
+        </div>
+        <div class="card"><h3>Why we think so</h3><div id="whyBox"></div>
+          <div id="traceBox"></div>
+          <div class="wrong mt" id="traceWrong"></div></div>
+      </div>
+    </div>
+
+    <!-- CAUSES -->
+    <div class="panel" id="p-causes" data-panel="causes" hidden>
+      <p class="herosent" id="causeHero"></p>
+      <p class="sub">Large gap = device and ticket differ by more than 10%. Causes come from the dataset's labels and the observable ticket fields (tare method, loads on vehicle, driver-reported side waste). Operator-neutral: these are weighbridge-hygiene causes, not intent.</p>
+      <div class="card mt"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3>Cause of large gaps</h3><span class="chip c-est"><i></i>Estimated</span></div>
+        <figure><div id="causeBar"></div><figcaption id="causeCap"></figcaption></figure></div>
+      <div class="split mt">
+        <div class="card"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3>Stored tare minus weighed tare, per vehicle</h3><span class="chip c-obs"><i></i>Observed</span></div>
+          <figure><div id="vehChart"></div><figcaption id="vehCap"></figcaption></figure></div>
+        <div class="card"><h3>Same mechanism, opposite sign</h3><div id="vehHeroes"></div>
+          <div class="wrong mt"><h4>What could make this wrong</h4>The stored-tare effect might be a simulator artefact. The split-half check shows each vehicle's offset is identical in both halves of the window, which is what a stale stored value looks like, but real fleets change equipment and fuel load. Findings go to the operator first, as a private hygiene report.</div></div>
+      </div>
+      <div class="card mt"><h3>By hauler (alphabetical, not a ranking)</h3><div class="tbl"><table id="causeOp"></table></div><p class="howcalc">Hauler Delta shares no tickets, so it has no pairs and cannot be scored here: "Not enough data to score", never zero.</p></div>
+    </div>
+
+    <!-- FULLNESS -->
+    <div class="panel" id="p-fullness" data-panel="fullness" hidden>
+      <p class="herosent" id="pofHero"></p>
+      <p class="sub">SMART already fills on-call containers well, so this is <b>not</b> a pickup optimiser. It is evidence for customers on fixed schedules (common in Poland and Central Europe) that a lower frequency or SMART on-call would do.</p>
+      <div class="grid4 mt" id="pofTiles"></div>
+      <div class="card mt"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3 id="pofTitle">CMP-00430</h3><span class="chip c-obs"><i></i>Observed</span></div>
+        <figure><div id="pofChart"></div><figcaption>Daily maximum fill (line) and fill at each lift. Hollow ring = lift labelled not needed; filled = needed. Dashed line = 40% fill. Hauler Delta shares no tickets: the compactor's kg is the only tonnage.</figcaption></figure></div>
+      <div class="split mt">
+        <div class="card"><div style="display:flex;justify-content:space-between;gap:.5rem;flex-wrap:wrap"><h3>Options for the next 56 days</h3><span class="chip c-sim"><i></i>Simulated</span></div>
+          <div class="tbl"><table id="pofOpts"></table></div>
+          <p class="howcalc">From the dataset's simulated counterfactual (decision case <span id="pofCase"></span>). The engine refuses options that would overflow the container, even when they look more valuable.</p></div>
+        <div class="card"><h3>Across the fleet</h3><div class="tbl"><table id="pofPol"></table></div>
+          <p class="howcalc">Honest split: fill alone already catches about 92% of the € on fixed schedules; weight adds +3 points of recall and the tonnage proof needed to change a schedule.</p>
+          <div class="wrong mt"><h4>What could make this wrong</h4>"Not needed" labels and € come from the simulator and a hypothetical tariff. Seasonal peaks may need the old frequency: 2 of the 9 later decision cases for this device say "no action". A schedule change is always proposed, never made automatically.</div></div>
+      </div>
+    </div>
+
+    <!-- INBOX -->
+    <div class="panel" id="p-inbox" data-panel="inbox" hidden>
+      <p class="herosent" id="inboxHero"></p>
+      <p class="sub">Each proposal names the rule that created it, cites the source rows, shows its value as a p10/p50/p90 range with its evidence tag, and states how to reverse it. Approving writes a CloudEvent to the outbox; in production SMART would deliver it. Here nothing leaves the page.</p>
+      <div class="inbox mt">
+        <div><ul class="plist" id="plist"></ul>
+          <div style="margin-top:.75rem;display:flex;gap:.5rem;flex-wrap:wrap"><button class="btn btn-secondary btn-sm" id="resetBtn" type="button">Reset demo state</button></div></div>
+        <div class="card drawer" id="drawer" aria-live="polite"></div>
+      </div>
+      <div class="grid2 mt">
+        <div class="card outbox"><div style="display:flex;justify-content:space-between;gap:.5rem;align-items:center;flex-wrap:wrap"><h3>Event outbox</h3><button class="copy" id="copyAll" type="button">Copy all JSON</button></div>
+          <p class="howcalc">CloudEvents 1.0, type prefix <code>fi.europress.smart.*</code>. Newest first.</p><div id="outbox"></div></div>
+        <div class="card audit"><h3>Audit log</h3><p class="howcalc">Who decided, when, on which draft version and which rows were shown.</p><div id="audit"></div></div>
+      </div>
+    </div>
+  </div>
+</div></section>
+
+<!-- 4 INTEGRATION -->
+<section class="blk" id="integration"><div class="wrap">
+  <span class="eyebrow">SMART integration</span>
+  <h2>Software events on the SMART you already run</h2>
+  <p class="lead">No trucks, no logistics. Verified Weight is firmware logging, an engine, a few portal screens and an event stream, mapped onto the existing SMART tiers.</p>
+  <div class="tbl mt"><table class="card" style="padding:0">
+    <thead><tr><th>SMART tier</th><th>What Verified Weight adds</th><th>Weight level</th><th>Who it is for</th></tr></thead>
+    <tbody>
+      <tr><td><b>Intro</b></td><td>Free kg teaser: "Your cardboard this month: 11.8 t ± 0.7". Upgrades the volume calculator.</td><td>T0</td><td>Everyone, incl. the ~85% of customers not on SMART today</td></tr>
+      <tr><td><b>Insights</b></td><td>Lift trace, device vs ticket vs invoice, cause attribution, drift alarm, Proof of Fullness</td><td>T0 → T1</td><td>Chains, logistics, property owners, fixed-schedule sites</td></tr>
+      <tr><td><b>Integrated</b></td><td>€/t contract benchmark, actions inbox with approval, reporting pack (ESRS E5-5, Polish BDO mass cross-check), event stream into ERP</td><td>T1, T2 where needed</td><td>Procurement and sustainability teams</td></tr>
+      <tr><td><b>Lease + service</b></td><td>Scale platform as a lease uplift; calibration and drift checks on technician visits that already happen</td><td>T2</td><td>Sites needing verification-grade weight</td></tr>
+    </tbody></table></div>
+  <div class="grid2 mt">
+    <div class="card"><h3>Event catalogue</h3>
+      <div class="tbl"><table><thead><tr><th>Type</th><th>Emitted when</th></tr></thead><tbody>
+        <tr><td><code>fi.europress.smart.weight.estimated</code></td><td>A lift ends; kg ± σ, tier, model version</td></tr>
+        <tr><td><code>fi.europress.smart.weight.reconciled</code></td><td>A ticket or invoice line is matched; z-scores per pair</td></tr>
+        <tr><td><code>fi.europress.smart.gap.attributed</code></td><td>A gap gets a likely cause with probabilities</td></tr>
+        <tr><td><code>fi.europress.smart.drift.watch</code></td><td>Ticket-free watch opens; confirmation needed</td></tr>
+        <tr><td><code>fi.europress.smart.proposal.created</code></td><td>A rule creates a recommended action</td></tr>
+        <tr><td><code>fi.europress.smart.approval.decided</code></td><td>A person approves, rejects or asks for evidence</td></tr>
+        <tr><td><code>fi.europress.smart.approval.reversed</code></td><td>An approved action is withdrawn</td></tr>
+        <tr><td><code>fi.europress.smart.ticket.ingested</code></td><td>An operator pushes tickets through the API</td></tr>
+      </tbody></table></div></div>
+    <div class="card"><h3>Operator ticket ingest: give to get</h3>
+      <p class="sub">Operators push tickets; they get back a reconciliation receipt and a private tare-hygiene report <b>before</b> anything reaches the customer. Fortum, Remeo and Alba are already Europress references, so this is a service for operators too.</p>
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:.85rem">POST /v1/operator/tickets</b><button class="copy" data-copy="ingestReq" type="button">Copy</button></div>
+      <pre id="ingestReq"></pre>
+      <div style="display:flex;justify-content:space-between;align-items:center"><b style="font-size:.85rem">202 receipt (returned to the operator)</b><button class="copy" data-copy="ingestRes" type="button">Copy</button></div>
+      <pre id="ingestRes"></pre>
+      <p class="howcalc">Illustrative API shape <span class="chip c-hyp"><i></i>Hypothetical</span>. Values are the real OP-E-V06 ticket from the dataset.</p></div>
+  </div>
+</div></section>
+
+<!-- 5 PRICING -->
+<section class="blk alt" id="pricing"><div class="wrap">
+  <span class="eyebrow">Pricing · hypothetical</span>
+  <h2>Priced from value the customer can measure</h2>
+  <p class="lead">Rule: the fee is at most ⅓ of the value the customer can realise. The median contract shows €0 of value in the data (the mean is €1,064 per year), so the median customer pays nothing and gets the free teaser.</p>
+  <div class="grid4 mt">
+    <div class="card"><span class="chip c-hyp"><i></i>Hypothetical</span><h3 class="mt">kg teaser</h3><div class="price">Free</div><p class="sub">SMART Intro. Monthly kg band per machine. Costs about €15 per device-year to serve.</p></div>
+    <div class="card"><span class="chip c-hyp"><i></i>Hypothetical</span><h3 class="mt">Verified Weight</h3><div class="price">€15 <small>/device/month</small></div><p class="sub">SMART Insights. €12 when bundled into new leases. Needs ~€540/yr realised value: plausible for chains and fixed schedules.</p></div>
+    <div class="card"><span class="chip c-hyp"><i></i>Hypothetical</span><h3 class="mt">Proof of Fullness</h3><div class="price">25% <small>gain-share</small></div><p class="sub">Of verified avoided-lift cost in year 1, then converts to Insights. Removes the price objection in Poland.</p></div>
+    <div class="card"><span class="chip c-hyp"><i></i>Hypothetical</span><h3 class="mt">Integrated</h3><div class="price">+€25 <small>/device/month</small></div><p class="sub">Or a chain licence €10–40k/yr, whichever is cheaper. Scale platform +€39–49/month inside the lease.</p></div>
+  </div>
+  <div class="grid2 mt">
+    <div class="card"><h3>Where the value sits (synthetic data)</h3><div class="tbl"><table id="valTbl"></table></div></div>
+    <div class="card"><h3>The business case, honestly</h3>
+      <ul class="clean"><li>The subscription alone has a <b>negative</b> 6-year NPV (−€0.33M at 10%) <span class="chip c-est"><i></i>Estimated</span>.</li>
+      <li>With an assumed +5 pp service-contract renewal uplift, base NPV is +€0.23M (low −€0.83M, high +€2.37M) <span class="chip c-hyp"><i></i>Hypothetical</span>.</li>
+      <li>So the pitch is: weight makes SMART and the service contract stickier, which is where Europress makes its profit. Not a new revenue line.</li>
+      <li>Value is concentrated: the top 5 of 20 customers hold 75% of it. Sell to chains first.</li></ul></div>
+  </div>
+</div></section>
+
+<!-- 6 LIMITS -->
+<section class="blk" id="limits"><div class="wrap">
+  <span class="eyebrow">Limits and what remains untested</span>
+  <h2>What we do not claim</h2>
+  <div class="grid2 mt">
+    <div class="card"><h3>Limits</h3><ul class="clean">
+      <li><b>All data is synthetic.</b> The dataset's device weight is a simulated integrated scale (σ 1.4% + 15 kg), better than our T0 would be.</li>
+      <li><b>T0/T1 accuracy is untested.</b> ±12–15% per lift and ±5–6% monthly are a literature-based error budget; no peer-reviewed mass-from-pressure study exists for compactors.</li>
+      <li><b>All € are hypothetical tariffs</b>, not savings. Task C/C2 values are simulated expected values, not causal evidence.</li>
+      <li><b>Contamination and moisture detection does not work on this data.</b> Our density proxy reaches ~1% precision (<span id="densLine"></span>). It needs pressure-curve shape from future firmware: roadmap, not a feature.</li>
+      <li><b>The stored-tare effect</b> may be a simulator artefact; it is stable in both halves of the window, but only a pilot can confirm it.</li>
+      <li><b>Verification, not billing.</b> Billing on device weight would fall under NAWI 2014/31/EU legal metrology.</li>
+      <li><b>No pickup routing or timing.</b> SMART already does that; Proof of Fullness is evidence for schedule changes only.</li>
+      <li>Freedom-to-operate check needed (e.g. US8794135B1, US11162834B2).</li></ul></div>
+    <div class="card"><h3>Untested, and how a pilot tests it</h3><ul class="clean">
+      <li>Per-lift and monthly T0 error: 10-machine golden cohort on scale platforms, ~150–240 lifts, Bland-Altman + leave-one-machine-out.</li>
+      <li>How many tickets T1 needs: ablation over k = 0/3/5/10/20.</li>
+      <li>Interval coverage: conformal 80% bands should cover 75–85%.</li>
+      <li>Operator acceptance of operator-first findings; at least one operator sharing tickets via the API.</li>
+      <li>Willingness to pay ≥ €12/device/month at 1–2 chain customers.</li></ul>
+      <h3 class="mt">How we used AI</h3><p class="sub">Claude Code agents analysed the data, wrote the extraction script and built this page. In the product, <b>rules decide</b> (in the dataset benchmark rules beat ML: 0.73 vs 0.35 macro-F1); an LLM would only draft explanations with row citations, guarded and cached. This page uses templates only.</p></div>
+  </div>
+  <div class="card mt"><h3>Third-party material used</h3><div class="tbl"><table>
+    <thead><tr><th>Item</th><th>Use</th><th>Licence</th></tr></thead><tbody>
+    <tr><td>Archivo (Omnibus-Type)</td><td>Headings: free stand-in for the commercial Loos Wide; production would license Loos Wide</td><td>SIL OFL 1.1</td></tr>
+    <tr><td>Open Sans</td><td>Body text</td><td>SIL OFL 1.1</td></tr>
+    <tr><td>Google Fonts CSS API</td><td>Font delivery (system fonts as fallback)</td><td>Service terms</td></tr>
+    <tr><td>Since AI × Europress synthetic dataset v1.0.1</td><td>All demo data (read-only, extracted by build_data.py)</td><td>Competition terms; licence of <code>baselines/</code> unstated, so none of it is imported</td></tr>
+    <tr><td>pandas, NumPy, PyArrow</td><td>Data extraction (build time only)</td><td>BSD-3 / BSD-3 / Apache-2.0</td></tr>
+    <tr><td>Charts, icons, code</td><td>Hand-built inline SVG and vanilla JS; no chart library</td><td>Team's own</td></tr>
+    </tbody></table></div>
+    <p class="howcalc">Colours follow the public epsmart.fi stylesheet; no Europress logo, photo or copy is reproduced. Hauler, customer and site names are the dataset's fictional names.</p></div>
+</div></section>
+</main>
+<footer class="site"><div class="wrap">SMART Verified Weight (working title) · Europress × Since AI Hackathon 2026 · synthetic data, hypothetical prices · <span id="builtLine"></span></div></footer>
+
+<script id="data" type="application/json"></script>
+<script>
+"use strict";
+const D = JSON.parse(document.getElementById("data").textContent);
+const $ = s => document.querySelector(s), $$ = s => Array.from(document.querySelectorAll(s));
+const esc = s => String(s ?? "").replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+const nf = (v, d = 0) => v == null || isNaN(v) ? "–" : Number(v).toLocaleString("en-GB", {minimumFractionDigits: d, maximumFractionDigits: d});
+const eur = (v, d = 0) => v == null ? "–" : (v < 0 ? "−€" : "€") + nf(Math.abs(v), d);
+const pct = (v, d = 0) => v == null ? "–" : nf(v * 100, d) + "%";
+const sgn = v => (v > 0 ? "+" : v < 0 ? "−" : "") + nf(Math.abs(v));
+const TAGS = {OBSERVED: "c-obs", ESTIMATED: "c-est", SIMULATED: "c-sim", HYPOTHETICAL: "c-hyp"};
+const chip = t => `<span class="chip ${TAGS[t] || "c-hyp"}"><i></i>${t[0] + t.slice(1).toLowerCase()}</span>`;
+const H = D.meta.hauler, hn = op => (H[op] || op);
+const STREAM = s => String(s).replace(/_/g, " ");
+const DAY0 = new Date(D.meta.d0 + "T00:00:00Z");
+const dayStr = d => { const x = new Date(DAY0.getTime() + d * 864e5); return x.toLocaleDateString("en-GB", {day: "numeric", month: "short", year: "numeric", timeZone: "UTC"}); };
+const store = { get(k, f) { try { const v = localStorage.getItem("svw:" + k); return v ? JSON.parse(v) : f; } catch (e) { return f; } },
+                set(k, v) { try { localStorage.setItem("svw:" + k, JSON.stringify(v)); } catch (e) { /* storage unavailable: state stays in memory */ } } };
+
+/* ---------- theme ---------- */
+(function theme() {
+  const order = ["auto", "light", "dark"]; let cur = store.get("theme", "auto");
+  const apply = () => { if (cur === "auto") document.documentElement.removeAttribute("data-theme"); else document.documentElement.setAttribute("data-theme", cur); $("#themeBtn").textContent = "Theme: " + cur; };
+  $("#themeBtn").addEventListener("click", () => { cur = order[(order.indexOf(cur) + 1) % 3]; store.set("theme", cur); apply(); });
+  apply();
+})();
+
+/* ---------- svg helpers ---------- */
+const svg = (w, h, body, title, desc) => `<svg class="chart" viewBox="0 0 ${w} ${h}" role="img" aria-label="${esc(title)}"><title>${esc(title)}</title>${desc ? `<desc>${esc(desc)}</desc>` : ""}${body}</svg>`;
+const ticksLin = (a, b, n) => { const s = (b - a) / n, p = Math.pow(10, Math.floor(Math.log10(s))), m = [1, 2, 2.5, 5, 10].find(m => m * p >= s) * p; const out = []; for (let v = Math.ceil(a / m) * m; v <= b + 1e-9; v += m) out.push(+v.toFixed(6)); return out; };
+
+/* ---------- copy ---------- */
+function copyText(txt, btn) {
+  const done = () => { if (!btn) return; const o = btn.textContent; btn.textContent = "Copied"; btn.classList.add("ok"); setTimeout(() => { btn.textContent = o; btn.classList.remove("ok"); }, 1400); };
+  const fallback = () => { const ta = document.createElement("textarea"); ta.value = txt; ta.style.position = "fixed"; ta.style.opacity = "0"; document.body.appendChild(ta); ta.select(); try { document.execCommand("copy"); done(); } catch (e) { btn && (btn.textContent = "Select and copy"); } ta.remove(); };
+  if (navigator.clipboard && window.isSecureContext) navigator.clipboard.writeText(txt).then(done, fallback); else fallback();
+}
+document.addEventListener("click", e => { const b = e.target.closest("[data-copy]"); if (b) copyText($("#" + b.dataset.copy).textContent, b); });
+
+/* ---------- derived data ---------- */
+const F = D.fleet, LF = D.lifts, NL = LF.dev.length;
+const DEV = D.devices.map(r => Object.fromEntries(D.devcols.map((c, i) => [c, r[i]])));
+const devIdx = Object.fromEntries(DEV.map((d, i) => [d.id, i]));
+const TARE = ["WEIGHED", "STORED"];
+function bandRel(tare, loads) { const k = (TARE[tare] || "WEIGHED") + "|" + (loads > 1 ? "COMBINED" : "SINGLE"); return (F.bands[k] || {robust_sd_rel: .08}).robust_sd_rel; }
+const TIER = {T0: .13, T1: .08, DS: D.meta.sigma_dev_rel};
+let tier = "DS";
+const sdDev = kg => tier === "DS" ? Math.sqrt((D.meta.sigma_dev_rel * kg) ** 2 + 2 * D.meta.sigma_dev_kg ** 2) : TIER[tier] * kg;
+const colId = i => `COL-${DEV[LF.dev[i]].id.slice(4)}-${String(LF.seq[i]).padStart(4, "0")}`;
+const liftsOf = di => { const out = []; for (let i = 0; i < NL; i++) if (LF.dev[i] === di) out.push(i); return out; };
+const HERO_BY_COL = {}; Object.entries(D.heroes).forEach(([k, h]) => HERO_BY_COL[h.collection_id] = k);
+$("#metaLine").textContent = `${nf(F.devices)} compactors, ${nf(F.lifts_window)} lifts, ${nf(F.pairs)} device-ticket pairs, ${nf(F.device_years, 1)} device-years`;
+$("#builtLine").textContent = `data built ${D.meta.built} from ${D.meta.dataset}`;
+
+/* ---------- 2: simulation chart ---------- */
+function simCurve(sb, se, st, n, k) { const post = 1 / (1 / sb ** 2 + k / (se ** 2 + st ** 2)); return [Math.sqrt(se ** 2 + post), Math.sqrt(se ** 2 / n + post)]; }
+function drawSim() {
+  const sb = +$("#rB").value / 100, se = +$("#rE").value / 100, n = +$("#rN").value, st = D.sim.params.sig_t;
+  $("#oB").textContent = nf(sb * 100, 1) + "%"; $("#oE").textContent = nf(se * 100, 1) + "%"; $("#oN").textContent = n;
+  const W = 640, Hh = 280, L = 48, R = 16, T = 18, B = 40, pw = W - L - R, ph = Hh - T - B, KM = 40;
+  const ymax = Math.max(16, Math.ceil(simCurve(sb, se, st, n, 0)[0] * 100 / 4) * 4 + 2);
+  const x = k => L + Math.sqrt(k / KM) * pw, y = v => T + ph - v / ymax * ph;
+  let g = "";
+  ticksLin(0, ymax, 5).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v}%</text>`);
+  [0, 1, 3, 5, 10, 20, 40].forEach(k => g += `<line class="ax2" x1="${x(k)}" x2="${x(k)}" y1="${T + ph}" y2="${T + ph + 4}"/><text x="${x(k)}" y="${T + ph + 17}" text-anchor="middle" font-size="11">${k}</text>`);
+  g += `<text x="${L + pw / 2}" y="${Hh - 4}" text-anchor="middle" font-size="11">clean calibration tickets per machine (√ scale)</text>`;
+  [[12, 15, "T0 claim per lift"], [5, 6, "T0 claim monthly"]].forEach(([a, b, t]) => { if (b < ymax) g += `<rect x="${L}" y="${y(b)}" width="${pw}" height="${y(a) - y(b)}" fill="var(--amber)" opacity=".14"/><text x="${W - R - 4}" y="${y(b) + 12}" text-anchor="end" font-size="10.5">${t} ${a}–${b}%</text>`; });
+  let p1 = "", p2 = "";
+  for (let i = 0; i <= 80; i++) { const k = KM * (i / 80) ** 2, [a, b] = simCurve(sb, se, st, n, k); p1 += (i ? "L" : "M") + x(k).toFixed(1) + " " + y(a * 100).toFixed(1); p2 += (i ? "L" : "M") + x(k).toFixed(1) + " " + y(b * 100).toFixed(1); }
+  g += `<path d="${p1}" fill="none" class="s-dev" stroke-width="3"/><path d="${p2}" fill="none" class="s-tk" stroke-width="3" stroke-dasharray="6 4"/>`;
+  const isDef = Math.abs(se - .12) < 1e-6 && n === 8 && (Math.abs(sb - .034) < 1e-6 || Math.abs(sb - .09) < 1e-6);
+  if (isDef) (Math.abs(sb - .034) < 1e-6 ? D.sim.mc_fleet : D.sim.mc_none).forEach(([k, a, b]) => g += `<circle cx="${x(k)}" cy="${y(a)}" r="3.5" class="s-dev" fill-opacity=".35"/><circle cx="${x(k)}" cy="${y(b)}" r="3.5" class="s-tk" fill-opacity=".35"/>`);
+  const [a0, b0] = simCurve(sb, se, st, n, 0), [a10, b10] = simCurve(sb, se, st, n, 10);
+  g += `<text x="${x(0) + 6}" y="${y(a0 * 100) - 6}" font-size="11" class="lbl-h">${nf(a0 * 100, 1)}%</text><text x="${x(0) + 6}" y="${y(b0 * 100) - 6}" font-size="11" class="lbl-h">${nf(b0 * 100, 1)}%</text>`;
+  $("#simChart").innerHTML = svg(W, Hh, g, "Simulated error versus number of calibration tickets", `Per-lift error falls from ${nf(a0 * 100, 1)}% to ${nf(a10 * 100, 1)}% after 10 tickets; monthly from ${nf(b0 * 100, 1)}% to ${nf(b10 * 100, 1)}%.`);
+  $("#simCap").innerHTML = `After 10 tickets: per lift ${nf(a0 * 100, 1)}% → <b>${nf(a10 * 100, 1)}%</b>, monthly ${nf(b0 * 100, 1)}% → <b>${nf(b10 * 100, 1)}%</b>. Tickets remove machine bias; they cannot remove per-lift random error. ${isDef ? "Dots: Monte Carlo (n = 4,000 machines)." : "Set bias to 3.4% or 9% with 12% / 8 lifts to see Monte Carlo dots."}`;
+}
+["#rB", "#rE", "#rN"].forEach(s => $(s).addEventListener("input", drawSim));
+$("#detTbl tbody").innerHTML = D.detect.map(r => `<tr><td>${esc(r.level.replace(/_/g, " ").replace("window 10m", "10 months"))} <span class="howcalc">(${nf(r.median_lifts)} pair${r.median_lifts > 1 ? "s" : ""})</span></td><td class="r">${nf(r.robust_sd_pct, 1)}%</td><td class="r">${pct(r["detect_+5pct"])}</td><td class="r"><b>${pct(r["detect_+10pct"])}</b></td></tr>`).join("");
+
+/* ---------- 3a: FLEET ---------- */
+function renderFleet() {
+  const within = F.pairs_within / F.pairs;
+  $("#fleetHero").textContent = `${nf(F.pairs_within)} of ${nf(F.pairs)} lifts with a ticket agree with the weighbridge within the expected band.`;
+  const tiles = [
+    ["Collected (device)", `${nf(F.t_device / 1000, 2)} kt`, `${nf(F.lifts_with_device_kg)} lifts with a device mass. ±0.1% random error at fleet level; bias is shown per device, not averaged.`, "OBSERVED"],
+    ["Agree with ticket", pct(within), `${nf(F.pairs - F.pairs_within)} pairs outside the band; ${nf(F.pairs_gt10)} differ by more than 10%.`, "ESTIMATED"],
+    ["Lifts with a ticket", pct(F.ticket_share), `The other ${pct(1 - F.ticket_share)} can only be checked against the compactor.`, "OBSERVED"],
+    ["€ at stake in billing errors", eur(F.overcharge_window_eur), `Overcharges in 10 months; mean ${eur(F.overcharge_dist.mean)}, median ${eur(F.overcharge_dist.p50)} per device-year. Only ${pct(F.overcharge_needs_weight_share)} needs weight.`, "HYPOTHETICAL"],
+  ];
+  $("#fleetTiles").innerHTML = tiles.map(([l, v, n, t]) => `<div class="card tile"><div class="top"><span class="lbl">${l}</span>${chip(t)}</div><div class="val">${v}</div><div class="note">${n}</div></div>`).join("");
+  // histogram
+  const e = F.gap_hist.edges, hw = F.gap_hist_by_tare.WEIGHED, hs = F.gap_hist_by_tare.STORED;
+  const W = 640, Hh = 250, L = 46, R = 12, T = 14, B = 34, pw = W - L - R, ph = Hh - T - B;
+  const ymax = Math.max(...hw, ...hs) * 1.08, x = v => L + (v + 60) / 120 * pw, y = v => T + ph - v / ymax * ph;
+  let g = ""; ticksLin(0, ymax, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${nf(v)}</text>`);
+  [-60, -40, -20, 0, 20, 40, 60].forEach(v => g += `<text x="${x(v)}" y="${T + ph + 16}" text-anchor="middle" font-size="11">${v > 0 ? "+" : ""}${v}%</text>`);
+  const bw = F.bands["WEIGHED|SINGLE"].robust_sd_rel * 200, bs = F.bands["STORED|SINGLE"].robust_sd_rel * 200;
+  g += `<rect x="${x(-bs)}" y="${T}" width="${x(bs) - x(-bs)}" height="${ph}" fill="var(--c-inv)" opacity=".07"/><rect x="${x(-bw)}" y="${T}" width="${x(bw) - x(-bw)}" height="${ph}" fill="var(--c-dev)" opacity=".10"/>`;
+  g += `<text x="${x(bw) + 4}" y="${T + 12}" font-size="10.5">±2σ weighed ${nf(bw, 1)}%</text><text x="${x(bs) + 4}" y="${T + 26}" font-size="10.5">±2σ stored ${nf(bs, 1)}%</text>`;
+  const path = arr => arr.map((c, i) => (i ? "L" : "M") + x((e[i] + e[i + 1]) / 2).toFixed(1) + " " + y(c).toFixed(1)).join("");
+  g += `<path d="${path(hw)}" fill="none" class="s-dev" stroke-width="2.5"/><path d="${path(hs)}" fill="none" class="s-inv" stroke-width="2.5" stroke-dasharray="6 4"/>`;
+  g += `<text x="14" y="${T + ph / 2}" transform="rotate(-90 14 ${T + ph / 2})" text-anchor="middle" font-size="11">lifts</text>`;
+  $("#gapHist").innerHTML = svg(W, Hh, g, "Histogram of device versus ticket gaps by tare method", `Weighed-tare gaps have a robust SD of ${nf(bw / 2, 1)}%, stored-tare gaps ${nf(bs / 2, 1)}%.`);
+  // ticket share bars
+  $("#tkBars").innerHTML = Object.keys(H).sort().map(op => { const s = F.tk_share_by_op[op] || 0; return `<div style="display:grid;grid-template-columns:7.5rem 1fr 3rem;gap:.5rem;align-items:center;font-size:.84rem;margin:.3rem 0"><span>${esc(hn(op))}</span><span style="background:var(--g15);border-radius:4px;height:12px;overflow:hidden"><span style="display:block;height:100%;width:${s * 100}%;background:var(--c-tk)"></span></span><span class="num" style="text-align:right">${s === 0 ? "<b>0%</b>" : pct(s)}</span></div>`; }).join("");
+  const tc = F.tier_counts;
+  $("#tierBox").innerHTML = `<div class="grid3" style="gap:.5rem;grid-template-columns:repeat(3,minmax(0,1fr))">${[["T1 ready", tc.T1, "tickets for ≥50% of lifts"], ["T0 only", tc.T0, "few or no tickets"], ["No weight", tc.none, "no weight measurement"]].map(([a, b, c]) => `<div style="background:var(--surface-2);border:1px solid var(--line);border-radius:.6rem;padding:.5rem"><b style="font-family:var(--f-title);font-size:1.3rem;color:var(--head)">${b}</b><div style="font-size:.75rem">${a}<br><span class="howcalc">${c}</span></div></div>`).join("")}</div><p class="howcalc" style="margin-top:.4rem">${chip("ESTIMATED")} Illustrative mapping; T2 platforms are not in the dataset.</p>`;
+  // filters
+  const uniq = k => [...new Set(DEV.map(d => d[k]))].sort();
+  uniq("op").forEach(v => $("#fOp").insertAdjacentHTML("beforeend", `<option value="${v}">${esc(hn(v))}</option>`));
+  uniq("stream").forEach(v => $("#fSt").insertAdjacentHTML("beforeend", `<option value="${v}">${esc(STREAM(v))}</option>`));
+  uniq("policy").forEach(v => $("#fPol").insertAdjacentHTML("beforeend", `<option value="${v}">${esc(STREAM(v).toLowerCase())}</option>`));
+  ["#fOp", "#fSt", "#fPol", "#fQ"].forEach(s => $(s).addEventListener("input", renderDevTbl));
+  $("#devList").innerHTML = DEV.filter(d => d.pairs > 0).map(d => `<option value="${d.id}">`).join("");
+  renderDevTbl();
+}
+const DCOLS = [["id", "Device"], ["stream", "Stream"], ["policy", "Schedule"], ["op", "Hauler"], ["lifts", "Lifts", 1], ["t_dev", "t (device)", 1], ["tk_share", "Tickets", 1], ["gap_med_pct", "Median gap", 1], ["outside", "Outside band", 1], ["unjust", "Not needed", 1], ["unjust_eur", "€ not needed", 1], ["overcharge_eur", "€ billing errors", 1]];
+let dsort = {k: "unjust_eur", dir: -1};
+function renderDevTbl() {
+  const op = $("#fOp").value, st = $("#fSt").value, pol = $("#fPol").value, q = $("#fQ").value.trim().toUpperCase();
+  let rows = DEV.filter(d => (!op || d.op === op) && (!st || d.stream === st) && (!pol || d.policy === pol) && (!q || d.id.includes(q)));
+  rows.sort((a, b) => { const x = a[dsort.k], y = b[dsort.k]; if (x == null) return 1; if (y == null) return -1; return (x > y ? 1 : x < y ? -1 : 0) * dsort.dir; });
+  $("#devCount").textContent = `${rows.length} of ${DEV.length} devices`;
+  $("#devTbl thead").innerHTML = "<tr>" + DCOLS.map(([k, l, r]) => `<th class="${r ? "r" : ""}" aria-sort="${dsort.k === k ? (dsort.dir > 0 ? "ascending" : "descending") : "none"}"><button type="button" data-sort="${k}">${l}${dsort.k === k ? (dsort.dir > 0 ? " ▲" : " ▼") : ""}</button></th>`).join("") + "</tr>";
+  $("#devTbl tbody").innerHTML = rows.slice(0, 200).map(d => `<tr class="click" tabindex="0" data-dev="${d.id}"><td><b>${d.id}</b>${d.weight ? "" : ' <span class="howcalc">no weight</span>'}</td><td>${esc(STREAM(d.stream))}</td><td>${esc(STREAM(d.policy).toLowerCase())}</td><td>${esc(hn(d.op).replace("Hauler ", ""))}</td><td class="r">${d.lifts}</td><td class="r">${nf(d.t_dev, 1)}</td><td class="r">${d.tk_share == null ? "–" : pct(d.tk_share)}</td><td class="r">${d.pairs ? (d.gap_med_pct > 0 ? "+" : "") + nf(d.gap_med_pct, 1) + "%" : '<span class="howcalc">no tickets</span>'}</td><td class="r">${d.pairs ? d.outside : "–"}</td><td class="r">${d.unjust || ""}</td><td class="r">${d.unjust_eur ? eur(d.unjust_eur) : ""}</td><td class="r">${d.overcharge_eur ? eur(d.overcharge_eur) : ""}</td></tr>`).join("") + (rows.length > 200 ? `<tr><td colspan="12" class="howcalc">Showing 200 of ${rows.length}; filter to narrow.</td></tr>` : "");
+}
+$("#devTbl").addEventListener("click", e => { const b = e.target.closest("[data-sort]"); if (b) { const k = b.dataset.sort; dsort = {k, dir: dsort.k === k ? -dsort.dir : -1}; renderDevTbl(); return; } const tr = e.target.closest("tr[data-dev]"); if (tr) openDevice(tr.dataset.dev); });
+$("#devTbl").addEventListener("keydown", e => { const tr = e.target.closest("tr[data-dev]"); if (tr && e.key === "Enter") openDevice(tr.dataset.dev); });
+function openDevice(id) { const d = DEV[devIdx[id]]; if (!d) return; $("#tDev").value = id; traceState.dev = id; traceState.lift = null; if (d.pairs === 0 && id === D.pof.device) { location.hash = "fullness"; return; } location.hash = "trace"; renderTrace(); }
+
+/* ---------- 3b: TRACE ---------- */
+const traceState = {dev: "CMP-00392", lift: null};
+function defaultLift(di) { const ls = liftsOf(di); if (!ls.length) return null; const h = Object.values(D.heroes).find(h => h.device === DEV[di].id); if (h) { const i = ls.find(i => colId(i) === h.collection_id); if (i != null) return i; } return ls.reduce((a, b) => Math.abs(LF.dev_kg[b] / LF.wb_kg[b] - 1) > Math.abs(LF.dev_kg[a] / LF.wb_kg[a] - 1) ? b : a); }
+function liftStats(i) {
+  const dv = LF.dev_kg[i], wb = LF.wb_kg[i], inv = LF.inv_kg[i];
+  const sd = sdDev(dv), st = bandRel(LF.tare[i], LF.loads[i]) * wb, band = 2 * Math.sqrt(sd ** 2 + st ** 2);
+  const best = (dv / sd ** 2 + wb / st ** 2) / (1 / sd ** 2 + 1 / st ** 2), bsd = 1 / Math.sqrt(1 / sd ** 2 + 1 / st ** 2);
+  return {dv, wb, inv, sd, st, band, best, bsd, gap: dv - wb, within: Math.abs(dv - wb) <= band, zInv: inv != null ? (inv - best) / bsd : null};
+}
+function renderTrace() {
+  const di = devIdx[traceState.dev];
+  if (di == null) { $("#traceHero").textContent = "Unknown device id."; return; }
+  const d = DEV[di], ls = liftsOf(di);
+  $$("[data-tier]").forEach(b => b.setAttribute("aria-pressed", b.dataset.tier === tier));
+  if (!ls.length) { $("#traceHero").textContent = `${d.id} has no weighbridge tickets (${hn(d.op)}): the compactor is the only mass.`; ["#strip", "#bandChart", "#verdict", "#chainBox", "#whyBox", "#traceBox"].forEach(s => $(s).innerHTML = ""); $("#traceWrong").innerHTML = ""; return; }
+  if (traceState.lift == null || LF.dev[traceState.lift] !== di) traceState.lift = defaultLift(di);
+  const i = traceState.lift, s = liftStats(i);
+  // strip
+  $("#stripTitle").textContent = `${d.id} · ${STREAM(d.stream)} · ${hn(d.op)} · ${ls.length} lifts with a ticket`;
+  const W = 760, Hh = 210, L = 46, R = 12, T = 12, B = 30, pw = W - L - R, ph = Hh - T - B;
+  const rel = ls.map(j => (LF.dev_kg[j] / LF.wb_kg[j] - 1) * 100), bnd = ls.map(j => { const t = liftStats(j); return t.band / LF.wb_kg[j] * 100; });
+  const lim = Math.min(80, Math.max(15, ...rel.map(Math.abs), ...bnd) * 1.1), x = dd => L + dd / 304 * pw, y = v => T + ph / 2 - Math.max(-lim, Math.min(lim, v)) / lim * ph / 2;
+  let g = ""; ticksLin(-lim, lim, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${v}%</text>`);
+  [0, 61, 123, 182, 243, 303].forEach(dd => g += `<text x="${x(dd)}" y="${Hh - 8}" text-anchor="middle" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
+  ls.forEach((j, k) => { const sel = j === i, out = Math.abs(rel[k]) > bnd[k]; g += `<line x1="${x(LF.day[j])}" x2="${x(LF.day[j])}" y1="${y(-bnd[k])}" y2="${y(bnd[k])}" stroke="var(--c-band-dev)" stroke-width="5"/><g class="pt" data-i="${j}" tabindex="0" role="button" aria-label="${colId(j)} ${dayStr(LF.day[j])} gap ${nf(rel[k], 1)}%" style="cursor:pointer"><circle cx="${x(LF.day[j])}" cy="${y(rel[k])}" r="${sel ? 7 : 4.5}" class="s-dev" ${out ? 'fill="var(--surface)" stroke-width="2.5"' : ""} ${sel ? 'stroke="var(--pink)" stroke-width="3"' : ""}/><circle cx="${x(LF.day[j])}" cy="${y(rel[k])}" r="10" fill="transparent"/></g>`; });
+  $("#strip").innerHTML = svg(W, Hh, g, `Device versus ticket gap per lift for ${d.id}`, `${ls.filter((j, k) => Math.abs(rel[k]) > bnd[k]).length} of ${ls.length} lifts fall outside the band at the selected tier.`);
+  // band chart
+  const vals = [s.dv - 2 * s.sd, s.dv + 2 * s.sd, s.wb - 2 * s.st, s.wb + 2 * s.st]; if (s.inv != null) vals.push(s.inv);
+  const lo = Math.max(0, Math.min(...vals) * .92), hi = Math.max(...vals) * 1.05;
+  const W2 = 640, H2 = 190, L2 = 140, R2 = 110, pw2 = W2 - L2 - R2, xx = v => L2 + (v - lo) / (hi - lo) * pw2;
+  let b = ""; ticksLin(lo, hi, 5).forEach(v => b += `<line class="ax" x1="${xx(v)}" x2="${xx(v)}" y1="12" y2="${H2 - 28}"/><text x="${xx(v)}" y="${H2 - 12}" text-anchor="middle" font-size="11">${nf(v)}</text>`);
+  b += `<text x="${W2 - 4}" y="${H2 - 12}" text-anchor="end" font-size="11">kg</text>`;
+  const rowY = [38, 88, 138];
+  const whisk = (yy, c, v, sd) => `<rect x="${xx(v - 2 * sd)}" y="${yy - 9}" width="${xx(v + 2 * sd) - xx(v - 2 * sd)}" height="18" rx="4" fill="var(--c-band-${c === "s-dev" ? "dev" : "tk"})"/><line x1="${xx(v - 2 * sd)}" x2="${xx(v + 2 * sd)}" y1="${yy}" y2="${yy}" class="${c}" stroke-width="2"/><line x1="${xx(v - 2 * sd)}" x2="${xx(v - 2 * sd)}" y1="${yy - 7}" y2="${yy + 7}" class="${c}" stroke-width="2"/><line x1="${xx(v + 2 * sd)}" x2="${xx(v + 2 * sd)}" y1="${yy - 7}" y2="${yy + 7}" class="${c}" stroke-width="2"/>`;
+  b += `<text x="${L2 - 10}" y="${rowY[0] + 4}" text-anchor="end" font-size="12" class="lbl-h">Compactor</text>${whisk(rowY[0], "s-dev", s.dv, s.sd)}<circle cx="${xx(s.dv)}" cy="${rowY[0]}" r="6.5" class="s-dev" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[0] + 4}" font-size="11.5">${nf(s.dv)} ±${nf(2 * s.sd)}</text>`;
+  b += `<text x="${L2 - 10}" y="${rowY[1] + 4}" text-anchor="end" font-size="12" class="lbl-h">Ticket</text>${whisk(rowY[1], "s-tk", s.wb, s.st)}<rect x="${xx(s.wb) - 6}" y="${rowY[1] - 6}" width="12" height="12" transform="rotate(45 ${xx(s.wb)} ${rowY[1]})" class="s-tk" stroke="var(--surface)" stroke-width="2"/><text x="${W2 - R2 + 8}" y="${rowY[1] + 4}" font-size="11.5">${nf(s.wb)} ±${nf(2 * s.st)}</text>`;
+  b += `<text x="${L2 - 10}" y="${rowY[2] + 4}" text-anchor="end" font-size="12" class="lbl-h">Invoice</text>` + (s.inv != null ? `<rect x="${xx(s.inv) - 6}" y="${rowY[2] - 6}" width="12" height="12" class="s-inv"/><line x1="${xx(s.inv)}" x2="${xx(s.inv)}" y1="${rowY[0]}" y2="${rowY[2]}" class="s-inv" stroke-dasharray="3 3" stroke-width="1.2"/><text x="${W2 - R2 + 8}" y="${rowY[2] + 4}" font-size="11.5">${nf(s.inv)} exact</text>` : `<text x="${L2 + 4}" y="${rowY[2] + 4}" font-size="11.5">no mass-priced line (${D.meta.pm[LF.pm[i]].replace(/_/g, " ").toLowerCase()})</text>`);
+  $("#bandChart").innerHTML = svg(W2, H2, b, `Three masses for lift ${colId(i)}`, `Device ${nf(s.dv)} kg, ticket ${nf(s.wb)} kg${s.inv != null ? ", invoice " + nf(s.inv) + " kg" : ""}.`);
+  const hk = HERO_BY_COL[colId(i)], h = hk ? D.heroes[hk] : null;
+  $("#liftTitle").textContent = `${colId(i)} · ${dayStr(LF.day[i])}`;
+  $("#liftChips").innerHTML = `${chip("OBSERVED")} ${chip("ESTIMATED")}`;
+  // verdicts
+  const zdt = s.gap / Math.sqrt(s.sd ** 2 + s.st ** 2);
+  let v = `<div><b class="${s.within ? "ok" : "look"}">${s.within ? "Device and ticket agree." : "Device and ticket disagree."}</b> Gap ${sgn(s.gap)} kg (${nf(s.gap / s.wb * 100, 1)}%), band ±${nf(s.band)} kg, ${nf(Math.abs(zdt), 1)}σ${s.within ? "" : ". Likely cause: " + causeName(LF.cause[i])}.</div>`;
+  if (s.inv != null) { const ig = s.inv - s.wb; v += Math.abs(s.zInv) > 3 && Math.abs(ig) > 100 ? `<div><b class="look">The invoice bills ${nf(ig / 1000, 2)} t more than the ticket.</b> ${s.within ? "Both independent masses agree, so device error does not explain this" : "The masses disagree, so ask for the ticket basis before disputing"} (${nf(Math.abs(s.zInv), 1)}σ from the combined estimate ${nf(s.best)} ± ${nf(s.bsd)} kg).</div>` : `<div><b class="ok">The invoice uses the ticket mass.</b> ${nf(s.inv)} kg billed, within ${nf(Math.abs(ig))} kg of the ticket.</div>`; }
+  const de = LF.d_eur[i]; v += `<div><b>${Math.abs(de) < .005 ? "€0.00 at stake." : "Re-pricing on device weight: " + (de > 0 ? "+" : "−") + "€" + nf(Math.abs(de), 2) + "."}</b> ${Math.abs(de) < .005 ? "No invoice line depends on mass here, so the engine says no action." : "Difference if this lift were billed on the compactor's mass (same contract version)."} ${chip("HYPOTHETICAL")}</div>`;
+  $("#verdict").innerHTML = v;
+  // chain + why
+  $("#chainBox").innerHTML = h ? chainHtml(h) : `<p class="howcalc">Vehicle ${LF.veh[i] >= 0 ? esc(D.vehicles[LF.veh[i]]) : "–"} · ${TARE[LF.tare[i]] ? TARE[LF.tare[i]].toLowerCase() : "?"} tare · ${LF.loads[i]} load(s) on vehicle · ${D.meta.pm[LF.pm[i]].replace(/_/g, " ").toLowerCase()} contract${LF.sw[i] ? " · driver reported side waste" : ""}. Full document chain is pre-extracted for the hero lifts (buttons above).</p>`;
+  $("#whyBox").innerHTML = whyHtml(i, s, h, hk);
+  $("#traceBox").innerHTML = hk === "H1" && h.trace ? massTrace(h) : "";
+  $("#traceWrong").innerHTML = `<h4>What could make this wrong</h4>${tier === "DS" ? "Bands use the dataset's simulated integrated scale (±1.4%). Switch to T0 to see how a €0 virtual scale would grade this lift." : `At ${tier} accuracy (±${TIER[tier] * 100}% per lift, ${tier === "T1" ? "a target, untested" : "estimated"}) one lift rarely proves anything on its own; the verdict leans on the ticket. Verify at contract level, not per lift.`} A late contract amendment, a re-weigh or a combined load we cannot see would also change the verdict.`;
+  const heroSent = {H1: "The invoice bills 0.88 t more than the ticket, and device error does not explain that.", NO: "A 335 kg gap that is real, and worth €0 on a per-lift contract. The engine says no.", V06: "Every stored-tare net on this vehicle is about 360 kg too high: a weighbridge-hygiene issue, not intent.", V12: "This vehicle's stored tare is too high, so the customer's cardboard credit is too low.", H1b: "The invoice bills 0.63 t more than a weighed-tare ticket; the compactor agrees with the ticket."};
+  $("#traceHero").textContent = heroSent[hk] || (s.within ? `${colId(i)}: device and ticket agree within ±${nf(s.band)} kg.` : `${colId(i)}: device and ticket differ by ${nf(Math.abs(s.gap))} kg, outside the expected band.`);
+}
+const CAUSE_LBL = {agree: "none (agree or small difference)", side_waste: "side waste on the same truck", stored_tare: "stale stored vehicle tare", combined_load: "combined load split 50/50", small_load: "small-load noise / timing", device: "device sensor fault, drift or calibration"};
+const causeName = c => CAUSE_LBL[D.meta.causes[c]];
+function chainHtml(h) {
+  const t = h.ticket, ml = h.lines.find(l => ["PROCESSING", "HAUL_PER_TONNE", "MATERIAL_CREDIT"].includes(l.type));
+  return `<div class="chain" aria-label="Document chain">
+    <div><b>Job</b><span class="v">${h.job}</span><br>${h.date} ${h.time}</div>
+    <div><b>Lift</b><span class="v">${h.collection_id}</span><br>${nf(h.mass_before)} → ${nf(h.mass_after)} kg, fill ${nf(h.fill_before)}%</div>
+    <div><b>Ticket</b><span class="v">${t ? t.id : "none"}</span><br>${t ? `${t.vehicle}: ${nf(t.gross)} − ${nf(t.tare)} (${t.tare_method.toLowerCase()}) = ${nf(t.net)} kg` : ""}</div>
+    <div><b>Contract</b><span class="v">${h.contract_version}</span><br>${h.contract.pricing_model.replace(/_/g, " ").toLowerCase()}${h.contract.processing_fee_cents_per_t ? `, €${nf(h.contract.processing_fee_cents_per_t / 100, 2)}/t` : ""}${h.contract.credit_share_bp ? `, credit ${h.contract.credit_share_bp / 100}%` : ""}</div>
+    <div><b>Invoice line</b><span class="v">${ml ? ml.id : "no mass line"}</span><br>${ml ? `${ml.type.toLowerCase()} ${nf(ml.qty, 3)} t × €${nf(Math.abs(ml.price), 2)} = ${eur(ml.eur, 2)}` : `${h.lines.length} lines, ${eur(h.lines.reduce((a, l) => a + l.eur, 0), 2)}`}</div></div>
+    <details><summary>All invoice lines for this job (${h.lines.length})</summary><div class="tbl"><table><thead><tr><th>Line</th><th>Type</th><th class="r">Qty</th><th class="r">€</th><th class="r">Reference €</th></tr></thead><tbody>${h.lines.map(l => { const r = h.ref_lines.find(x => x.type === l.type); return `<tr><td>${l.id}</td><td>${l.type.toLowerCase()}</td><td class="r">${nf(l.qty, 3)} ${l.unit}</td><td class="r">${nf(l.eur, 2)}</td><td class="r">${r ? nf(r.eur, 2) : "–"}</td></tr>`; }).join("")}</tbody></table></div>
+    <p class="howcalc">Reference = the dataset's contract re-pricing on ${h.ref_basis.replace(/_/g, " ").toLowerCase()} ${nf(h.ref_billing_kg)} kg (${eur(h.ref_invoice_eur, 2)}, ${eur(h.ref_eur_t, 2)}/t). Labels: ${h.labels.length ? h.labels.map(x => `${x.family} ${x.eur != null ? eur(x.eur, 2) : ""} (${x.sev})`).join("; ") : "none"}.</p></details>`;
+}
+function whyHtml(i, s, h, hk) {
+  const items = [];
+  items.push(`<li><b>Compactor:</b> ${nf(s.dv)} kg collected ${chip("OBSERVED")} σ ${nf(s.sd)} kg at the ${tier === "DS" ? "dataset" : tier} tier.</li>`);
+  items.push(`<li><b>Ticket:</b> ${nf(s.wb)} kg, ${TARE[LF.tare[i]] ? TARE[LF.tare[i]].toLowerCase() : "?"} tare, ${LF.loads[i]} load(s) ${chip("OBSERVED")} σ ${nf(s.st)} kg = robust SD of all ${TARE[LF.tare[i]].toLowerCase()}-tare ${LF.loads[i] > 1 ? "combined" : "single"} loads (${nf(bandRel(LF.tare[i], LF.loads[i]) * 100, 1)}%).</li>`);
+  items.push(`<li><b>Combined estimate:</b> ${nf(s.best)} ± ${nf(s.bsd)} kg (inverse-variance) ${chip("ESTIMATED")}</li>`);
+  if (hk === "H1") items.push(`<li><b>Label check:</b> the dataset labels line INV-00392-202512-L045 WEIGHT_BASIS_MISMATCH, €111.61 at stake (ticket basis). Our rule R1 found it without labels.</li>`);
+  if (hk === "NO" || hk === "V06") items.push(`<li><b>Vehicle OP-E-V06:</b> its stored tare (15,960 kg) is 360 kg below its weighed median (16,320 kg). See Cause attribution.</li>`);
+  const r1 = D.rule_r1;
+  return `<ul class="clean" style="font-size:.88rem">${items.join("")}</ul><p class="howcalc">Rule R1 across all lifts flags ${r1.flagged} invoice mass lines where both masses agree but the invoice is &gt;3σ away; ${r1.true_wbm} of them carry the dataset's weight-basis-mismatch label (precision ${pct(r1.precision)}, recall ${pct(r1.recall_on_paired)} of labelled lines that have a ticket).</p>`;
+}
+function massTrace(h) {
+  const tr = h.trace; if (!tr.length) return "";
+  const W = 640, Hh = 200, L = 50, R = 12, T = 14, B = 30, pw = W - L - R, ph = Hh - T - B, mx = Math.max(...tr.map(p => p[1] + 2 * p[2])) * 1.05;
+  const x = t => L + (t + 72) / 144 * pw, y = m => T + ph - m / mx * ph;
+  let g = ""; ticksLin(0, mx, 4).forEach(v => g += `<line class="ax" x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${nf(v)}</text>`);
+  [-72, -48, -24, 0, 24, 48, 72].forEach(t => g += `<text x="${x(t)}" y="${Hh - 8}" text-anchor="middle" font-size="11">${t > 0 ? "+" : ""}${t} h</text>`);
+  let band = "", line = "";
+  tr.forEach((p, k) => { line += (k ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1); });
+  const up = tr.map(p => x(p[0]).toFixed(1) + "," + y(p[1] + 2 * p[2]).toFixed(1)), dn = tr.slice().reverse().map(p => x(p[0]).toFixed(1) + "," + y(Math.max(0, p[1] - 2 * p[2])).toFixed(1));
+  band = `<polygon points="${up.concat(dn).join(" ")}" fill="var(--c-band-dev)"/>`;
+  g += band + `<path d="${line}" fill="none" class="s-dev" stroke-width="2"/><line x1="${x(0)}" x2="${x(0)}" y1="${T}" y2="${T + ph}" class="s-tk" stroke-dasharray="4 3" stroke-width="1.5"/><text x="${x(0) + 5}" y="${T + 12}" font-size="11">lift: ${nf(h.mass_before)} → ${nf(h.mass_after)} kg</text>`;
+  return `<h4 class="mt">Container mass around the lift</h4><figure>${svg(W, Hh, g, "Hourly container mass 72 hours either side of the lift", `Mass rises to ${nf(h.mass_before)} kg and drops to ${nf(h.mass_after)} kg at the lift.`)}<figcaption>Hourly telemetry, CMP-00392, ±2σ reported uncertainty band ${chip("OBSERVED")}</figcaption></figure>`;
+}
+$("#tDev").addEventListener("change", () => { const v = $("#tDev").value.trim().toUpperCase(); if (devIdx[v] != null) { traceState.dev = v; traceState.lift = null; renderTrace(); } });
+$("#strip").addEventListener("click", e => { const p = e.target.closest(".pt"); if (p) { traceState.lift = +p.dataset.i; renderTrace(); } });
+$("#strip").addEventListener("keydown", e => { const p = e.target.closest(".pt"); if (p && (e.key === "Enter" || e.key === " ")) { e.preventDefault(); traceState.lift = +p.dataset.i; renderTrace(); const n = $(`.pt[data-i="${p.dataset.i}"]`); n && n.focus(); } });
+$$("[data-tier]").forEach(b => b.addEventListener("click", () => { tier = b.dataset.tier; renderTrace(); }));
+$$("[data-jump]").forEach(b => b.addEventListener("click", () => jumpHero(b.dataset.jump)));
+function jumpHero(k) { const h = D.heroes[k]; const di = devIdx[h.device]; const i = liftsOf(di).find(j => colId(j) === h.collection_id); traceState.dev = h.device; traceState.lift = i ?? null; $("#tDev").value = h.device; if (location.hash !== "#trace") location.hash = "trace"; renderTrace(); }
+
+/* ---------- 3c: CAUSES ---------- */
+const CZ = [["side_waste", "Side waste on same truck", "--cz-side", "d1"], ["stored_tare", "Stale stored tare", "--cz-tare", "d2"], ["combined_load", "Combined load 50/50", "--cz-comb", "d3"], ["agree", "Unlabelled", "--cz-agree", "x"], ["small_load", "Small-load noise", "--cz-small", "h"], ["device", "Device fault/drift", "--cz-dev", "v"]];
+function renderCauses() {
+  const C = D.causes;
+  $("#causeHero").textContent = `Of ${nf(C.n_gt10)} large gaps, ${pct(C.weighbridge_side)} come from the weighbridge side and only ${pct(C.share.device, 1)} from the compactor's sensor.`;
+  const W = 760, Hh = 120, L = 8, R = 8, pw = W - L - R;
+  let g = `<defs>${CZ.map(([k, , c, p]) => `<pattern id="pt-${k}" width="8" height="8" patternUnits="userSpaceOnUse" patternTransform="rotate(${p === "d1" ? 45 : p === "d2" ? -45 : p === "d3" ? 90 : 0})"><rect width="8" height="8" fill="var(${c})"/>${p === "x" ? '<path d="M0 0L8 8M8 0L0 8" stroke="rgba(255,255,255,.55)" stroke-width="1.2"/>' : p === "v" ? "" : p === "h" ? '<circle cx="4" cy="4" r="1.3" fill="rgba(255,255,255,.6)"/>' : '<line x1="0" y1="0" x2="0" y2="8" stroke="rgba(255,255,255,.45)" stroke-width="2.5"/>'}</pattern>`).join("")}</defs>`;
+  let x0 = L;
+  CZ.forEach(([k, l]) => { const w = C.share[k] * pw; g += `<rect x="${x0}" y="14" width="${Math.max(0, w - 2)}" height="44" fill="url(#pt-${k})" rx="3"/>`; if (w > 60) g += `<text x="${x0 + 4}" y="78" font-size="12" class="lbl-h">${nf(C.share[k] * 100, 1)}%</text><text x="${x0 + 4}" y="94" font-size="11">${l}</text>`; else g += `<text x="${x0 + w / 2}" y="${k === "device" ? 110 : 78}" font-size="11" text-anchor="middle" class="lbl-h">${nf(C.share[k] * 100, 1)}%</text>${k === "device" ? `<text x="${x0 + w / 2 - 4}" y="78" font-size="11" text-anchor="end">Device ${nf(C.share[k] * 100, 1)}% →</text>` : ""}`; x0 += w; });
+  $("#causeBar").innerHTML = svg(W, Hh, g, "Share of large device versus ticket gaps by cause", CZ.map(([k, l]) => `${l} ${nf(C.share[k] * 100, 1)}%`).join(", "));
+  $("#causeCap").innerHTML = `n = ${nf(C.n_gt10)} of ${nf(C.n_pairs)} pairs differ by more than 10%. Each cause has its own hatch as well as colour. Small segments: small-load noise ${nf(C.share.small_load * 100, 1)}%, device ${nf(C.share.device * 100, 1)}%.`;
+  // vehicles
+  const V = C.vehicles, W2 = 760, H2 = 260, L2 = 50, R2 = 12, T2 = 16, B2 = 30, pw2 = W2 - L2 - R2, ph2 = H2 - T2 - B2;
+  const mx = 500, xv = k => L2 + (k + .5) / V.length * pw2, yv = v => T2 + ph2 / 2 - v / mx * ph2 / 2, bw = pw2 / V.length * .7;
+  let vg = ""; [-400, -200, 0, 200, 400].forEach(v => vg += `<line class="ax" x1="${L2}" x2="${W2 - R2}" y1="${yv(v)}" y2="${yv(v)}"/><text x="${L2 - 6}" y="${yv(v) + 4}" text-anchor="end" font-size="11">${v > 0 ? "+" : ""}${v}</text>`);
+  V.forEach((v, k) => { const hero = v.v === "OP-E-V06" || v.v === "OP-A-V12"; vg += `<rect x="${xv(k) - bw / 2}" y="${Math.min(yv(0), yv(v.off))}" width="${bw}" height="${Math.abs(yv(v.off) - yv(0))}" fill="${hero ? "var(--cz-tare)" : "var(--g30)"}"><title>${v.v}: stored ${nf(v.stored)} kg, weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}), offset ${sgn(v.off)} kg</title></rect>`; if (hero) vg += `<text x="${xv(k) + (v.off < 0 ? 8 : -8)}" y="${yv(v.off) + (v.off < 0 ? 4 : 4)}" font-size="11.5" class="lbl-h" text-anchor="${v.off < 0 ? "start" : "end"}">${v.v} ${sgn(v.off)} kg</text>`; });
+  vg += `<text x="${L2 + 4}" y="${H2 - 8}" font-size="11">${V.length} vehicles with ≥10 stored and ≥20 weighed tares, sorted by offset</text><text x="14" y="${T2 + ph2 / 2}" transform="rotate(-90 14 ${T2 + ph2 / 2})" text-anchor="middle" font-size="11">kg</text>`;
+  $("#vehChart").innerHTML = svg(W2, H2, vg, "Stored minus weighed tare for each vehicle", `${C.vehicles_abs_ge200} of ${V.length} vehicles are off by 200 kg or more.`);
+  $("#vehCap").innerHTML = `${C.vehicles_abs_ge200} of ${V.length} vehicles are off by ≥200 kg. Negative = stored tare too low, so the ticket net is too high. Hover a bar for detail.`;
+  const vv = id => V.find(v => v.v === id);
+  $("#vehHeroes").innerHTML = ["OP-E-V06", "OP-A-V12"].map(id => { const v = vv(id), hk = id === "OP-E-V06" ? "V06" : "V12", hh = D.heroes[hk]; return `<div style="border:1px solid var(--line);border-radius:.7rem;padding:.7rem;margin:.5rem 0;background:var(--surface-2)"><b>${id}</b> · ${esc(hn(v.op))}<br><span style="font-size:.88rem">Stored ${nf(v.stored)} kg vs weighed median ${nf(v.weighed_med)} kg (n=${v.n_we}) → nets about <b>${nf(Math.abs(v.off))} kg too ${v.off < 0 ? "high" : "low"}</b>. Split halves: ${sgn(v.off_h1)} / ${sgn(v.off_h2)} kg. Device vs ticket median ${v.rel_med_st > 0 ? "+" : ""}${nf(v.rel_med_st, 1)}% (n=${v.n_pairs_st}).</span><br><span class="howcalc">Example ${hh.collection_id}: ${hh.ticket.gross ? nf(hh.ticket.gross) : ""} − ${nf(hh.ticket.tare)} = ${nf(hh.ticket.net)} kg on the ticket, compactor ${nf(hh.dev_kg)} kg.</span> <button class="btn btn-secondary btn-sm" type="button" data-jump2="${hk}">Trace it</button></div>`; }).join("") + `<p class="howcalc">Same mechanism as the "says no" lift: vehicle OP-E-V06 again, 335 kg off, €0 at stake.</p>`;
+  $$("[data-jump2]").forEach(b => b.addEventListener("click", () => jumpHero(b.dataset.jump2)));
+  const ops = Object.keys(H).sort();
+  $("#causeOp").innerHTML = `<thead><tr><th>Hauler</th><th class="r">Pairs &gt;10%</th>${CZ.map(c => `<th class="r">${c[1]}</th>`).join("")}</tr></thead><tbody>${ops.map(op => { const r = C.by_op[op]; if (!r) return `<tr><td>${esc(hn(op))}</td><td colspan="${CZ.length + 1}" class="howcalc">Not enough data to score (0% tickets shared)</td></tr>`; const n = Object.values(r).reduce((a, b) => a + b, 0); return `<tr><td>${esc(hn(op))}</td><td class="r">${nf(n)}</td>${CZ.map(c => `<td class="r">${pct(r[c[0]] / n)}</td>`).join("")}</tr>`; }).join("")}</tbody>`;
+}
+
+/* ---------- 3d: FULLNESS ---------- */
+function renderPof() {
+  const P = D.pof;
+  $("#pofHero").textContent = `On a fixed twice-weekly schedule, ${P.n_unjust} of ${P.n_lifts} lifts at ${P.device} were not needed. The compactor's weight is the only proof.`;
+  const fh = D.fleet.fixed_hybrid_dist;
+  const tiles = [["Not-needed lifts", `${P.n_unjust} <small>of ${P.n_lifts}</small>`, `Median fill at lift ${nf(P.fill_med, 1)}%, median ${nf(P.kg_med)} kg collected.`, "OBSERVED"],
+    ["€ in not-needed lifts", eur(P.eur_unjust), "10-month window, hypothetical tariff (fixed €409/lift).", "HYPOTHETICAL"],
+    ["Net cost per tonne", `€${nf(P.eur_t)}<small>/t</small>`, `Stream peer median €${nf(P.peer_eur_t)}/t (+${nf((P.eur_t / P.peer_eur_t - 1) * 100)}%). Device weight only.`, "ESTIMATED"],
+    ["Fixed + hybrid fleet", `${eur(fh.mean)} <small>/device-yr</small>`, `Mean; median ${eur(fh.p50)}, p90 ${eur(fh.p90)}. 30–32% of their lifts not needed.`, "HYPOTHETICAL"]];
+  $("#pofTiles").innerHTML = tiles.map(([l, v, n, t]) => `<div class="card tile"><div class="top"><span class="lbl">${l}</span>${chip(t)}</div><div class="val">${v}</div><div class="note">${n}</div></div>`).join("");
+  $("#pofTitle").textContent = `${P.device} · ${P.m3} m³ ${STREAM(P.stream)} · fixed ${P.per_week}×/week · ${hn(P.op)} · ${P.customer}`;
+  const W = 760, Hh = 250, L = 44, R = 12, T = 14, B = 30, pw = W - L - R, ph = Hh - T - B, x = d => L + d / 304 * pw, y = v => T + ph - v / 100 * ph;
+  let g = ""; [0, 20, 40, 60, 80, 100].forEach(v => g += `<line class="${v === 40 ? "ax2" : "ax"}" ${v === 40 ? 'stroke-dasharray="5 4"' : ""} x1="${L}" x2="${W - R}" y1="${y(v)}" y2="${y(v)}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end" font-size="11">${v}%</text>`);
+  [0, 61, 123, 182, 243, 303].forEach(dd => g += `<text x="${x(dd)}" y="${Hh - 8}" text-anchor="middle" font-size="11">${dayStr(dd).replace(/^\d+ /, "")}</text>`);
+  g += `<path d="${P.daily.filter(p => p[1] != null).map((p, k) => (k ? "L" : "M") + x(p[0]).toFixed(1) + " " + y(p[1]).toFixed(1)).join("")}" fill="none" class="s-tk" stroke-width="1.5" opacity=".8"/>`;
+  P.lifts.forEach(l => { const cx = x(l[0] + l[1] / 24), cy = y(l[2] ?? 0); g += l[4] ? `<circle cx="${cx}" cy="${cy}" r="5" fill="var(--surface)" class="s-dev" stroke-width="2"><title>${dayStr(l[0])}: fill ${l[2]}%, ${nf(l[3])} kg, not needed (${eur(l[5], 2)})</title></circle>` : `<circle cx="${cx}" cy="${cy}" r="4.5" class="s-dev"><title>${dayStr(l[0])}: fill ${l[2]}%, ${nf(l[3])} kg</title></circle>`; });
+  $("#pofChart").innerHTML = svg(W, Hh, g, `Fill level and lifts for ${P.device}`, `${P.n_unjust} of ${P.n_lifts} lifts happened at low fill and were labelled not needed.`);
+  const c0 = P.cases[0]; $("#pofCase").textContent = `${c0.case}, ${c0.at}, ${c0.h} days`;
+  const AL = {NO_ACTION: "Keep schedule", REDUCE_FREQUENCY: "Reduce frequency", INCREASE_FREQUENCY: "Increase frequency", SWITCH_TO_ON_CALL: "Switch to SMART on-call", MASS_TARGET_TRIGGER: "Lift at a mass target"};
+  $("#pofOpts").innerHTML = `<thead><tr><th>Option</th><th class="r">Benefit</th><th class="r">Lifts</th><th class="r">Overflow h</th><th>Engine</th></tr></thead><tbody>${c0.opts.slice().sort((a, b) => b.eur - a.eur).map(o => `<tr class="${o.a === c0.best ? "sel" : ""}"><td>${AL[o.a] || o.a}</td><td class="r">${eur(o.eur)}<br><span class="howcalc">± ${eur(o.se)}</span></td><td class="r">${nf(o.lifts, 1)}</td><td class="r">${nf(o.overflow_h, 1)}</td><td>${!o.ok ? '<b style="color:var(--autumn-ink)">Refused: overflow</b>' : o.a === c0.best ? "<b>Proposed</b>" : "Allowed"}</td></tr>`).join("")}</tbody>`;
+  const pt = Object.fromEntries(P.policy_table.map(r => [r.collection_policy, r])), ed = Object.fromEntries(P.eur_dy_by_policy.map(r => [r.value, r]));
+  const det = p => { const f = P.detect.find(r => r.policy === p && r.rule === "fill_rule"), m = P.detect.find(r => r.policy === p && r.rule === "mass_rule"); return `${pct(f.eur_caught / f.eur_total)} → ${pct(m.eur_caught / m.eur_total)}`; };
+  $("#pofPol").innerHTML = `<thead><tr><th>Schedule</th><th class="r">Not needed</th><th class="r">€/device-yr</th><th class="r">€ recall fill → +mass</th></tr></thead><tbody>${["FIXED_SCHEDULE", "HYBRID", "ON_CALL"].map(p => `<tr><td>${STREAM(p).toLowerCase()}</td><td class="r">${pct(pt[p].share, 1)}</td><td class="r">${eur(ed[p] ? ed[p].eur_per_device_year : null)}</td><td class="r">${det(p)}</td></tr>`).join("")}</tbody>`;
+}
+
+/* ---------- 3e: INBOX ---------- */
+const PROPS = D.props;
+let st = store.get("state", null);
+const fresh = () => ({status: Object.fromEntries(PROPS.map(p => [p.id, "waiting"])), events: PROPS.map(p => ev("proposal.created", p, {rule: p.rule, action: p.action, severity: p.sev, value_eur: p.value})).reverse(), audit: [], sel: PROPS[0].id});
+function uuid() { try { if (crypto.randomUUID) return crypto.randomUUID(); } catch (e) { /* fall through */ } return "xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx".replace(/[xy]/g, c => { const r = Math.random() * 16 | 0; return (c === "x" ? r : (r & 3 | 8)).toString(16); }); }
+function ev(type, p, data) { return {specversion: "1.0", id: uuid(), source: "/smart/verified-weight/engine/v0", type: "fi.europress.smart." + type, subject: p.id + (p.subject ? "/" + p.subject : ""), time: new Date().toISOString(), datacontenttype: "application/json", data: Object.assign({proposal_id: p.id}, data)}; }
+if (!st || !st.status || Object.keys(st.status).length !== PROPS.length) st = fresh();
+const save = () => store.set("state", st);
+const ACTION_LBL = {DISPUTE_INVOICE: "Dispute invoice", FIX_VEHICLE_TARE: "Fix vehicle tare", REDUCE_FREQUENCY: "Reduce frequency", RENEGOTIATE_CONTRACT: "Renegotiate contract", VERIFY_WEIGHT_SENSOR: "Verify weight sensor", NO_ACTION: "No action", REQUEST_WEIGHBRIDGE_DATA: "Request ticket data"};
+const STL = {waiting: "Waiting", approved: "Approved", rejected: "Rejected", more: "Evidence requested"};
+function draft(p) {
+  const t = {
+    DISPUTE_INVOICE: `To: Customer finance (for review before anything goes to ${hn(p.op)})\nSubject: Query on invoice line ${p.subject}\n\nInvoice line ${p.subject} bills PROCESSING 5.080 t. The weighbridge ticket WB-OP-E-00392-0032 for the same job shows a net of 4,200 kg, and the compactor recorded 4,125 kg collected. Both independent masses agree within their expected band.\n\nProposed request to ${hn(p.op)}: please confirm the tonnage basis for this line, or issue a credit note for the difference (0.880 t × €126.82/t = €111.61).\n\nSource rows: ${p.evidence.map(e => e[1]).join(", ")}.`,
+    FIX_VEHICLE_TARE: `To: ${p.to}\nSubject: Private tare-hygiene note for vehicle ${p.subject}\n\nShared with you first, before any customer report. ${p.why[0]} ${p.why[1]}\n\nSuggested step: re-weigh the vehicle's tare and update the stored value. If the offset disappears we close this note; no customer-facing claim is made.\n\nSource rows: ${p.evidence.map(e => e[1]).join(", ")}.`,
+    REDUCE_FREQUENCY: `To: ${p.to}\nSubject: Schedule review for compactor ${p.subject}\n\n${p.why[0]} ${p.why[1]}\n\nProposal: discuss a lower fixed frequency with ${hn(p.op)} at the next schedule review. SMART keeps watching fill daily and alerts before any overflow. Switching to on-call is not proposed for now because the simulation shows overflow risk.`,
+    RENEGOTIATE_CONTRACT: `To: ${p.to}\nSubject: Contract review request ${p.subject} (discussion only)\n\n${p.why[0]} ${p.why[1]}\n\nProposed next step: a review meeting with ${hn(p.op)}. Tendering is not proposed at this stage.`,
+    VERIFY_WEIGHT_SENSOR: `To: ${p.to}\nSubject: Weight sensor check for ${p.subject}\n\n${p.why[0]} ${p.why[1]}\n\nProposal: add a VERIFY_WEIGHT_SENSOR check to the next scheduled technician visit.`,
+    NO_ACTION: `No message. Logged: ${p.why[0]} ${p.why[1]}`,
+    REQUEST_WEIGHBRIDGE_DATA: `To: ${p.to}\nSubject: Invitation to the SMART ticket feed\n\nWe would like to offer you a reconciliation receipt and a private tare-hygiene report for every ticket you share through the operator API. Findings about your own vehicles reach you first.`,
+  };
+  return t[p.action] || "";
+}
+function renderInbox() {
+  const waiting = PROPS.filter(p => st.status[p.id] === "waiting").length;
+  $("#inboxCnt").textContent = waiting;
+  $("#inboxHero").textContent = waiting ? `${waiting} proposal${waiting > 1 ? "s are" : " is"} waiting. Nothing is sent without your approval.` : "All proposals decided. Every decision is in the outbox and the audit log.";
+  $("#plist").innerHTML = PROPS.map(p => `<li><button class="pbtn" type="button" data-p="${p.id}" aria-pressed="${st.sel === p.id}"><span class="row"><span class="sev sev-${p.sev}">${p.sev}</span><span style="font:700 .72rem var(--f-body);letter-spacing:.04em">${ACTION_LBL[p.action]}</span><span class="st st-${st.status[p.id]}">${STL[st.status[p.id]]}</span></span><span class="t">${esc(p.title)}</span><span class="m">${esc(p.rule)} · ${p.value.p50 == null ? "no € claimed" : eur(p.value.p50) + " " + esc(p.value.unit.split("(")[0])}</span></button></li>`).join("");
+  const p = PROPS.find(x => x.id === st.sel), s = st.status[p.id], v = p.value;
+  $("#drawer").innerHTML = `<div class="row" style="display:flex;gap:.4rem;flex-wrap:wrap;align-items:center"><span class="sev sev-${p.sev}">${p.sev}</span><span class="tagpink">${ACTION_LBL[p.action]}</span><span class="howcalc" style="margin-left:auto">Decided by rule <b>${esc(p.rule)}</b></span></div>
+    <h3 class="mt">${esc(p.title)}</h3><p class="howcalc">To: ${esc(p.to)} · confidence ${p.conf}</p>
+    <h4 class="mt">Why</h4><ul class="clean" style="font-size:.88rem">${p.why.map(w => `<li>${esc(w)}</li>`).join("")}</ul>
+    <h4>Evidence rows</h4><div class="ev">${p.evidence.map(e => `<span>${chip(e[2])} <code>${esc(e[0])}</code> ${esc(e[1])}</span>`).join("")}</div>
+    <h4 class="mt">Expected value ${chip(v.tag)}</h4><div class="vrange">${["p10", "p50", "p90"].map(k => `<div>${k}<b>${v[k] == null ? "–" : eur(v[k], Math.abs(v[k]) < 1000 ? 2 : 0)}</b></div>`).join("")}<div style="flex:1;min-width:12rem">unit<b style="font-size:.85rem;font-family:var(--f-body)">${esc(v.unit)}</b></div></div>
+    ${v.label_eur ? `<p class="howcalc">Dataset label on the ticket basis: €${nf(v.label_eur, 2)}. Our range uses the combined device + ticket mass.</p>` : ""}
+    <div class="wrong"><h4>What could make this wrong</h4>${esc(p.limits)}</div>
+    <h4 class="mt">Draft <span class="chip c-tpl">Template · rule-filled, no LLM</span></h4><div class="draft">${esc(draft(p))}</div>
+    <p class="howcalc"><b>Reversal:</b> ${esc(p.reverse)}</p>
+    ${s === "waiting" || s === "more" ? `<label class="check"><input type="checkbox" id="chk"> I have reviewed the ${p.evidence.length} evidence rows and the limits above.</label>
+    <div class="ctas" style="margin-top:.5rem"><button class="btn btn-primary" id="bA" type="button" disabled>${p.action === "NO_ACTION" ? "Confirm no action" : "Approve and queue"}</button><button class="btn btn-secondary" id="bR" type="button">Reject</button><button class="btn btn-ghost btn-sm" id="bM" type="button" style="color:var(--head)">Ask for more evidence</button></div>`
+    : `<div class="done">${s === "approved" ? "Approved. A CloudEvent is in the outbox; delivery is queued, not sent (demo)." : "Rejected. Logged with your reason; the rule will not re-raise this item for 90 days."}</div><div class="ctas" style="margin-top:.5rem"><button class="btn btn-secondary btn-sm" id="bU" type="button">${s === "approved" ? "Reverse approval" : "Reopen"}</button></div>`}`;
+  const chk = $("#chk"); if (chk) chk.addEventListener("change", () => $("#bA").disabled = !chk.checked);
+  const act = (decision, type) => { const before = st.status[p.id]; st.status[p.id] = decision === "approved" ? "approved" : decision === "rejected" ? "rejected" : decision === "more_evidence" ? "more" : "waiting";
+    const e = ev(type, p, {action: p.action, decision, previous_status: before, decided_by: "demo user (customer facility manager)", rule: p.rule, evidence_rows: p.evidence.map(x => ({table: x[0], ref: x[1], tag: x[2]})), value_eur: v, draft: {kind: "template", version: "tpl-" + p.action.toLowerCase() + "-v1"}, reversible: true, delivery: "queued, not sent (demo)"});
+    st.events.unshift(e); if (decision === "approved" && p.op && p.action === "FIX_VEHICLE_TARE") st.events.unshift(ev("operator.notice.queued", p, {operator_id: p.op, visibility: "operator-only", customer_visible_after_days: 14}));
+    st.audit.unshift({t: new Date().toISOString(), id: p.id, decision, rows: p.evidence.length, draft: "tpl-" + p.action.toLowerCase() + "-v1"}); save(); renderInbox(); };
+  $("#bA") && $("#bA").addEventListener("click", () => act("approved", "approval.decided"));
+  $("#bR") && $("#bR").addEventListener("click", () => act("rejected", "approval.decided"));
+  $("#bM") && $("#bM").addEventListener("click", () => act("more_evidence", "approval.decided"));
+  $("#bU") && $("#bU").addEventListener("click", () => act("reopened", s === "approved" ? "approval.reversed" : "approval.decided"));
+  $("#outbox").innerHTML = st.events.slice(0, 40).map((e, k) => `<div class="evt"><div class="h"><code>${esc(e.type.replace("fi.europress.smart.", ""))}</code><span class="howcalc">${esc(e.subject)} · ${esc(e.time.slice(11, 19))}</span><button class="copy" type="button" data-ev="${k}">Copy</button></div><details${k === 0 && e.type.includes("approval") ? " open" : ""}><summary>JSON</summary><pre>${esc(JSON.stringify(e, null, 2))}</pre></details></div>`).join("");
+  $("#audit").innerHTML = st.audit.length ? `<ol>${st.audit.map(a => `<li>${esc(a.t.replace("T", " ").slice(0, 19))} UTC · ${esc(a.id)} · <b>${esc(a.decision.replace("_", " "))}</b> · ${a.rows} rows shown · draft ${esc(a.draft)}</li>`).join("")}</ol>` : `<p class="howcalc">No decisions yet.</p>`;
+}
+$("#plist").addEventListener("click", e => { const b = e.target.closest("[data-p]"); if (b) { st.sel = b.dataset.p; save(); renderInbox(); $("#drawer").scrollIntoView({block: "nearest"}); } });
+$("#outbox").addEventListener("click", e => { const b = e.target.closest("[data-ev]"); if (b) copyText(JSON.stringify(st.events[+b.dataset.ev], null, 2), b); });
+$("#copyAll").addEventListener("click", e => copyText(JSON.stringify(st.events, null, 2), e.currentTarget));
+$("#resetBtn").addEventListener("click", () => { st = fresh(); save(); renderInbox(); });
+
+/* ---------- integration samples, pricing, limits ---------- */
+(function samples() {
+  const h = D.heroes.V06, t = h.ticket;
+  $("#ingestReq").textContent = JSON.stringify({operator_id: "OP-E", tickets: [{ticket_id: t.id, operator_job_ref: h.job, vehicle_id: t.vehicle, facility_id: t.facility, gross_kg: t.gross, tare_kg: t.tare, tare_method: t.tare_method, net_kg: t.net, loads_on_vehicle: t.loads}]}, null, 2);
+  const vv = D.causes.vehicles.find(v => v.v === "OP-E-V06");
+  $("#ingestRes").textContent = JSON.stringify({accepted: 1, receipt: [{ticket_id: t.id, collection_id: h.collection_id, device_kg: h.dev_kg, device_sigma_kg: Math.round(Math.sqrt((0.014 * h.dev_kg) ** 2 + 450)), ticket_net_kg: t.net, z: +((h.dev_kg - t.net) / Math.sqrt((0.014 * h.dev_kg) ** 2 + 450 + (0.0772 * t.net) ** 2)).toFixed(2), likely_cause: "stored_tare", visibility: "operator-only"}], hygiene: {vehicle_id: "OP-E-V06", stored_tare_kg: vv.stored, weighed_tare_median_kg: vv.weighed_med, offset_kg: vv.off, n_weighed: vv.n_we, suggestion: "re-weigh tare"}}, null, 2);
+  const c2 = D.fleet.c2;
+  $("#valTbl").innerHTML = `<thead><tr><th>Use case</th><th class="r">€ / device-yr</th><th>Weight's role</th></tr></thead><tbody>
+    <tr><td>Billing errors (all families)</td><td class="r">${eur(D.fleet.overcharge_dist.mean)} <span class="howcalc">p50 ${eur(D.fleet.overcharge_dist.p50)}</span></td><td>Only ${pct(D.fleet.overcharge_needs_weight_share)} needs weight; it raises verifiable mass-billed € from 77% to 96%</td></tr>
+    <tr><td>Not-needed lifts, fixed + hybrid</td><td class="r">${eur(D.fleet.fixed_hybrid_dist.mean)} <span class="howcalc">p50 ${eur(D.fleet.fixed_hybrid_dist.p50)}</span></td><td>Tonnage proof for a schedule change</td></tr>
+    <tr><td>Contract actions (best set)</td><td class="r">${eur(c2.best_mean)} <span class="howcalc">p50 €0</span></td><td>28% of renegotiate/tender value is on contracts where device weight is the only mass</td></tr>
+    <tr><td>Contamination / moisture</td><td class="r">–</td><td>Not demonstrable (density proxy ~1% precision)</td></tr></tbody>`;
+  const m = D.density.find(r => r.target.startsWith("moisture")), c = D.density.find(r => r.target.startsWith("contamination (|z|"));
+  $("#densLine").textContent = `moisture ${pct(m.precision, 1)} precision at ${pct(m.recall)} recall; contamination ${pct(c.precision, 1)} at ${pct(c.recall)}`;
+})();
+
+/* ---------- router (plain #hash) ---------- */
+const TABS = ["fleet", "trace", "causes", "fullness", "inbox"], rendered = {};
+const RENDER = {fleet: renderFleet, trace: renderTrace, causes: renderCauses, fullness: renderPof, inbox: renderInbox};
+function showTab(t, scroll) {
+  $$("[data-panel]").forEach(p => p.hidden = p.dataset.panel !== t);
+  $$("[data-tab]").forEach(a => a.dataset.tab === t ? a.setAttribute("aria-current", "page") : a.removeAttribute("aria-current"));
+  if (!rendered[t] || t === "trace" || t === "inbox") { RENDER[t](); rendered[t] = true; }
+  if (scroll) $("#app").scrollIntoView({behavior: matchMedia("(prefers-reduced-motion: reduce)").matches ? "auto" : "smooth"});
+}
+function route() { const h = location.hash.slice(1); if (TABS.includes(h)) showTab(h, true); }
+window.addEventListener("hashchange", route);
+renderFleet(); rendered.fleet = true; renderInbox(); drawSim();
+if (TABS.includes(location.hash.slice(1))) route(); else showTab("fleet", false);
+</script>
+</body>
+</html>

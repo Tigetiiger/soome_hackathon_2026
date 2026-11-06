@@ -1,0 +1,7 @@
+mass_fill_thr,k_of_6,episode_recall,median_h_to_alert,false_alert_episodes_per_device_year
+40,3,0.853,3.0,0.048
+40,4,0.853,4.0,0.021
+40,5,0.853,5.0,0.027
+50,3,0.89,3.0,0.048
+50,4,0.89,4.0,0.027
+50,5,0.883,5.0,0.027
