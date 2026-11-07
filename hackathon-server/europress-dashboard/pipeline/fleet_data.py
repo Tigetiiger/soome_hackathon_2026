@@ -6,7 +6,7 @@ from __future__ import annotations
 
 import pandas as pd
 
-from build_data import LOW_FILL_PCT, SRC, TODAY, load, r, sample, traced
+from build_data import LOW_FILL_PCT, SRC, TODAY, as_of_fields, load, r, sample, traced
 
 SMART_FEE_EUR_PER_DEVICE_MONTH = 12.0  # bundled Verified Weight price [assumption, see business plan]
 K_ANON_MIN_CUSTOMERS = 5               # publish a material-flow cell only with ≥5 customers
@@ -179,6 +179,7 @@ def fleet_payload(D, payloads):
         "pipeline": sales_pipeline(payloads),
         "sales_alerts": sales_alerts(payloads),
         "maintenance": maintenance(D),
+        "period": as_of_fields(),
         "data_products": data_products(D),
         "assumptions": {"fee_eur_per_device_month": SMART_FEE_EUR_PER_DEVICE_MONTH, "k_anon_min_customers": K_ANON_MIN_CUSTOMERS,
                         "today": str(TODAY.date())},

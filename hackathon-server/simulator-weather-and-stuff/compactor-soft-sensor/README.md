@@ -51,7 +51,7 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 | path | what |
 |---|---|
 | `README.md` | this file |
-| `docs/SIMULATOR.md` | detailed simulator documentation: physics, every assumption with its source, expert-interview facts, validation results |
+| `docs/SIMULATOR.md` | detailed simulator documentation: physics, every assumption with its source, machine behaviour, validation results |
 | `compactor_sim/` | simulator package (`python -m compactor_sim`) |
 | `weight_train/` | soft-sensor package (`python -m weight_train train/predict/report/curve`). [`weight_train/README.md`](weight_train/README.md) describes the method and lists every feature in one line |
 | `config.yaml` | every simulator parameter (fleet, weather, moisture, compaction, hydraulics, sensors, operations) |
@@ -438,9 +438,9 @@ All simulator parameters are in [`config.yaml`](config.yaml), organised in these
 | `operations` | order thresholds and truck logistics |
 
 [`docs/SIMULATOR.md`](docs/SIMULATOR.md) gives every value with its source: the hackathon brief, an
-assumption, or the expert interview.
+assumption, or known machine behaviour.
 
-Settings based on the **interview with a Europress expert**:
+Settings based on how the machine behaves:
 
 - **The fill reading comes from pressure only**, not from an ultrasonic sensor
   (`sensors.fill_mode: pressure_derived`). It is a rolling average of back pressure over

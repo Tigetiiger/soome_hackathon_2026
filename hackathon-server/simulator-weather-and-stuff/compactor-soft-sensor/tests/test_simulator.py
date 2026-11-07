@@ -192,5 +192,5 @@ def test_fill_reading_is_pressure_derived_and_approximate(result):
     ok = ~np.isnan(obs)
     err = obs[ok] - true_fill[ok]
     assert result.cfg["sensors"]["fill_mode"] == "pressure_derived"
-    assert 2.0 < np.mean(np.abs(err[true_fill[ok] >= 30])) < 9.0   # ~5 % accuracy (expert interview)
+    assert 2.0 < np.mean(np.abs(err[true_fill[ok] >= 30])) < 9.0   # ~5 % accuracy
     assert np.corrcoef(obs[ok], true_fill[ok])[0, 1] > 0.8

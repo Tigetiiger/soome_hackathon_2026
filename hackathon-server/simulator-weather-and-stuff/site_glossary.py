@@ -211,7 +211,7 @@ def _params(cfg: dict | None) -> dict[str, str]:
                    f"{cv('compaction.rho_typ_kg_m3')} kg/m³",
         "P_idle": f"idle pressure of an unloaded stroke, drawn per machine from {cv('hydraulics.p_idle_bar')} bar",
         "relief": f"relief-valve pressure: {cv('hydraulics.relief_bar', 0)} bar, cv {cv('hydraulics.relief_cv')} across machines",
-        "fill_onset": f"fill fraction from which back pressure becomes visible: {cv('hydraulics.fill_onset')} (expert: 5–10 %)",
+        "fill_onset": f"fill fraction from which back pressure becomes visible: {cv('hydraulics.fill_onset')} (typically 5–10 %)",
         "fill_exponent": f"exponent of the fill term in the pressure law: {cv('hydraulics.fill_exponent')} (linear)",
         "density_exponent": f"exponent of the density term in the pressure law: {cv('hydraulics.density_exponent')} (medium dependence)",
         "ram_ingress_frac": f"share of the stroke the ram travels inside the container: {cv('hydraulics.curve.ram_ingress_frac')} (the ram enters only 20–30 cm)",

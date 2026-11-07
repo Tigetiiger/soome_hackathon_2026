@@ -38,7 +38,7 @@ pandas 3.1, pyarrow 26, LightGBM 4.7, matplotlib 3.11, PyYAML 6). Always run Pyt
 | `weight_train/` | soft-sensor package: features, training, prediction, report (`python -m weight_train`) |
 | `models/full400/` | **the trained model for the 400-machine run** (+ metrics, report, predictions) |
 | `models/bins25/` | model trained on the 25-machine run (dev/testing) |
-| `README.md` | simulator documentation (model, assumptions, expert-interview facts, validation) |
+| `README.md` | simulator documentation (model, assumptions, machine behaviour, validation) |
 | `weight_train/README.md` | soft-sensor documentation (method, every feature in one line, licences) |
 | `models/full400/REPORT.md` | full evaluation report with tables and plots |
 | `make_site.py`, `site_*.py`, `site/` | existing static results website (served at `http://100.87.158.27:8765/`) |
@@ -142,7 +142,7 @@ last row.
 - **Fleet**: error by material, coverage, the comparison ladder (`comparison.csv`), the learning
   curve, feature importance (`metrics.json → feature_importance_gain`), SHAP.
 - **Simulator context**: pressure graph examples (`pressure_curves.parquet`), validation plots
-  (`runs/full400/plots/`), assumptions and expert-interview facts (`README.md`).
+  (`runs/full400/plots/`), assumptions and machine behaviour (`README.md`).
 - Timestamps are tz-aware **Europe/Helsinki**. Masses in kg, volumes in m³, pressure in bar.
 
 ## 6. Rules and caveats

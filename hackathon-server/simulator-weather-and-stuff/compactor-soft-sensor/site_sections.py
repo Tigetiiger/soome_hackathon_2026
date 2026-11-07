@@ -63,7 +63,7 @@ def fleet(cfg: dict) -> str:
     return (h3("Fleet and sites", "sim-fleet")
             + p(f"{v(cfg, 'run.n_bins')} machines, each its own site. Materials are drawn with exact shares (largest remainder). "
                 "<strong>mixed_waste</strong> (household waste including bio waste: heavy and less condensed) replaced the brief's "
-                "mixed plastic after the expert interview.")
+                "mixed plastic.")
             + raw_table(["material", "share", "rho_typ kg/m³", "containers (class, volume, weight)"], rows, left_cols={0, 3},
                         caption="Materials, typical densities and container mix.")
             + p("<strong>COMBI</strong>: press and container are one unit, lifted together (tare "
@@ -187,22 +187,22 @@ chamber  loads in an hour without a stroke wait in the press chamber and go in w
 # ---------------------------------------------------------------- 5.6 hydraulics
 def hydraulics(cfg: dict, b: Build, run: Path, sim_pngs: dict[str, Path]) -> str:
     y, cv = "hydraulics", "hydraulics.curve"
-    interview = raw_table(["expert said", "simulator"], [
+    behaviour = raw_table(["machine behaviour", "simulator"], [
         ["back pressure is visible from <strong>5–10 % fill</strong>, then it rises until full",
          f"<code>fill_onset</code> {v(cfg, y + '.fill_onset')}, <code>fill_exponent</code> {v(cfg, y + '.fill_exponent')} (linear)"],
         ["the ram enters only <strong>20–30 cm</strong> into the container",
          f"pressure graph rises only in the last part of the stroke (<code>ram_ingress_frac</code> {v(cfg, cv + '.ram_ingress_frac')})"],
-        ["fill tells <strong>volume; weight is a question mark</strong>",
+        ["fill tells <strong>volume, not weight</strong>",
          f"medium density dependence, <code>density_exponent</code> {v(cfg, y + '.density_exponent')}"],
         ["single strokes spike — a <strong>box crushed</strong> on the way in",
          f"spikes +{v(cfg, y + '.spikes.bar')} bar with probability {shares(dig(cfg, y, 'spikes', 'prob_per_stroke'), False)} per stroke"],
         ["the machine can log the <strong>pressure graph</strong>", f"{v(cfg, cv + '.n_points')} samples per stroke → per-stroke curve features"],
-    ], left_cols={0, 1}, caption="Expert interview statements and their implementation.")
+    ], left_cols={0, 1}, caption="Machine behaviour and its implementation.")
     imgs = [sim_pngs[s] for s in SHOWN_IN_HYDRAULICS if s in sim_pngs]
     extra = pressure_examples(b, run, cfg)
     return (h3("Hydraulics and the pressure signal", "sim-hydraulics")
-            + p("The ram pressure is the only signal that sees the pack. Its law follows what a Europress specialist told us in "
-                "the expert interview; the parameter <em>values</em> are assumed, the real ones are unknown.") + interview
+            + p("The ram pressure is the only signal that sees the pack. Its law follows how the machine behaves; "
+                "the parameter <em>values</em> are assumed, the real ones are unknown.") + behaviour
             + pre(f"""
 f(fill)  = clip((fill - {v(cfg, y + '.fill_onset')}) / (1 - {v(cfg, y + '.fill_onset')}), 0, 1)^{v(cfg, y + '.fill_exponent')}
 demand   = k * f(fill) * stiffness * (rho/rho_typ)^{v(cfg, y + '.density_exponent')} * soft(moisture) * (1 + {v(cfg, y + '.frost_stiffening')}*frost_share)
@@ -227,7 +227,7 @@ device   : contact_pos  = first x where P rises > {v(cfg, cv + '.contact_thresho
                 f"first {v(cfg, cv + '.sample_bins')} machines.")
             + figures(imgs + extra)
             + why("pressure is what separates a light from a heavy container at the same fill; making its dependence on "
-                  "density only medium keeps the problem honest — as the expert said, weight is a question mark."))
+                  "density only medium keeps the problem honest: the fill reading tells volume, not weight."))
 
 
 def _hourly_cols(run: Path, cols: list[str], bins: list[str] | None = None) -> pd.DataFrame | None:
@@ -293,7 +293,7 @@ def fill_error(b: Build, run: Path) -> tuple[str, list[Path]]:
         b.facts.update(fill_err_pp=float(err.mean()), fill_err_hi_pp=float(hi.mean()), fill_readings=int(len(h)))
         text = p(f"Measured on the 400-machine run ({num(len(h), 0)} hourly readings): mean |fill_pct − true fill| = "
                  f"<strong>{num(err.mean())} pp</strong> overall, {num(hi.mean())} pp at true fill ≥ 30 % (including the "
-                 "spurious-high episodes). The expert quoted about 5 %.")
+                 "spurious-high episodes). The reference accuracy is about 5 %.")
         import matplotlib
         matplotlib.use("Agg")
         import matplotlib.pyplot as plt

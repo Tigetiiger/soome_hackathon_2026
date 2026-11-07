@@ -33,6 +33,9 @@ CO2_KG_PER_KM = 1.1               # heavy refuse truck, diesel [assumption]
 AVOIDABLE_FEE_SHARE = 0.5         # share of penalty/extra fees avoidable [assumption]
 CONTRACT_YEARS = 3               # typical customer-operator contract (Europress, briefing 24:40)
 TODAY = pd.Timestamp("2026-10-01")
+DATA_AS_OF = TODAY - pd.Timedelta(days=1)   # last day with data; every date-relative claim is "as of" this day
+NOTICE_SOON_MONTHS = 6            # a notice deadline within this many months of TODAY is flagged "soon"
+NOTICE_SOON_BEFORE = TODAY + pd.DateOffset(months=NOTICE_SOON_MONTHS)
 RECYCLED = {"cardboard", "paper", "plastic_film", "mixed_plastic", "biowaste"}
 FIXED_LIFT_LINES = {"LIFT_FEE", "TRANSPORT", "FUEL_SURCHARGE", "REMOTE_SURCHARGE"}
 AVOIDABLE_FEE_LINES = {
@@ -107,6 +110,11 @@ def roll_renewals(con: pd.DataFrame) -> pd.DataFrame:
     con["renewal"] = [s + pd.DateOffset(years=int(y)) for s, y in zip(start, years)]
     con["notice_by"] = con.renewal - pd.to_timedelta(con.notice_period_days, unit="D")
     return con
+
+
+def as_of_fields() -> dict:
+    """The date the data stands at, and the 'notice soon' cut-off the UI uses (never the browser clock)."""
+    return {"as_of": str(DATA_AS_OF.date()), "notice_soon_before": str(NOTICE_SOON_BEFORE.date())}
 
 
 # ----------------------------------------------------------------------------- load
@@ -306,7 +314,7 @@ def build_insights(h1, h2, grades, ops, early_saving, avoid_km):
     if n_qa and bad > REJECTED_ALERT_SHARE * n_qa:
         ins.append({"id": "contamination", "params": {"share": r(bad / n_qa * 100)}, "severity": "warn"})
     for o in ops:
-        if pd.Timestamp(o["notice_by"]) < TODAY + pd.DateOffset(months=6):
+        if pd.Timestamp(o["notice_by"]) < NOTICE_SOON_BEFORE:
             ins.append({"id": "tender_window", "params": {"operator": o["name"].replace(" (fictional)", ""), "date": o["notice_by"]}, "severity": "info"})
     if early_saving > 200:
         ins.append({"id": "early_lifts", "params": {"eur": r(early_saving, 0), "km": r(avoid_km, 0)}, "severity": "warn"})
@@ -777,7 +785,7 @@ def customer_payload(D, cid, bench, fleet_dd):
     return {
         "customer": {"id": cid, "name": cust.customer_name.replace("Fictional ", ""), "sector": cust.primary_sector,
                      "n_sites": int(cust.n_sites), "n_devices": int(len(dev)), "streams": streams},
-        "period": {"from": months[0], "to": months[-1], "months": months},
+        "period": {"from": months[0], "to": months[-1], "months": months, **as_of_fields()},
         "kpis": kpis,
         "monthly": {
             "cost_by_stream": {s: [r(v, 0) for v in cost_m[s]] if s in cost_m else [0] * len(months) for s in streams},

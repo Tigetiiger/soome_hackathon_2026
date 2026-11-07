@@ -46,17 +46,17 @@ their columns. Hourly disaggregation, snow and snowpack work exactly as in synth
 
 ---
 
-## Machine behaviour from the expert interview
+## Machine behaviour
 
-What a Europress specialist told us, and how the simulator models it:
+How the compactor behaves, and how the simulator models it:
 
-| expert said | simulator |
+| machine behaviour | simulator |
 |---|---|
 | fill is estimated **only from pressure**, as a rolling average over ~10 cycles, because single strokes spike (a box crushed on the way in) | `sensors.fill_mode: pressure_derived`: 10-stroke exponential rolling average of back pressure → linear fill; per-stroke spikes in `hydraulics.spikes` |
 | the ram enters only **20–30 cm** into the container | pressure graph: rise only in the last ~20–35 % of the stroke (`hydraulics.curve.ram_ingress_frac`) |
 | back pressure is visible from **5–10 % fill**, then it packs until full | `hydraulics.fill_onset: 0.07`, linear rise |
 | fill accuracy about **5 %** | per-installation setpoint calibration → ≈ 6 pp mean error |
-| fill tells **volume; what it says about weight is a question mark** | pressure depends only moderately on pack density (`density_exponent: 1.0`); corr(peak pressure, density) at high fill is weak |
+| fill tells **volume, not weight** | pressure depends only moderately on pack density (`density_exponent: 1.0`); corr(peak pressure, density) at high fill is weak |
 | cardboard and plastic pack densely; **mixed household waste** is heavy and less condensed | material `mixed_waste` (400 kg/m³, compressibility 0.12) replaces mixed plastic |
 | the machine can log the **pressure graph** | `pressure_curves.parquet` + hourly `curve_*` features |
 
@@ -175,7 +175,7 @@ quantisation.
 **Fleet**
 | item | value | source |
 |---|---|---|
-| materials | cardboard 50 %, paper 15 %, film 25 %, mixed waste 10 % (exact counts by largest remainder). Mixed waste (household incl. bio waste) replaces the brief's mixed plastic after the expert interview | brief / expert interview |
+| materials | cardboard 50 %, paper 15 %, film 25 %, mixed waste 10 % (exact counts by largest remainder). Mixed waste (household incl. bio waste) replaces the brief's mixed plastic | brief / machine behaviour |
 | COMBI / DUO volumes | 10–22 m³ / 20–35 m³ | brief |
 | volume mix per material | `fleet.containers`; paper on 10–14 m³, mixed waste on 10/14 m³ COMBI and 20 m³ DUO (heavy: keeps lifts < 10 t) | assumed (to hit lift-mass targets) |
 | DUO tare | 2.3–3.0 t, linear in volume | brief |
@@ -232,18 +232,18 @@ quantisation.
 **Compaction / hydraulics / sensors / operations**
 | item | value | source |
 |---|---|---|
-| rho_typ | 190 / 330 / 140 / 400 kg/m³ (cardboard / paper / film / mixed waste) at P_ref 120 bar | brief; mixed waste assumed ("weighs quite well") |
-| compressibility c | 0.25 / 0.15 / 0.35 / 0.12, P0 20 bar | brief c; mixed waste assumed ("not that condensed") |
+| rho_typ | 190 / 330 / 140 / 400 kg/m³ (cardboard / paper / film / mixed waste) at P_ref 120 bar | brief; mixed waste assumed (heavy) |
+| compressibility c | 0.25 / 0.15 / 0.35 / 0.12, P0 20 bar | brief c; mixed waste assumed (compacts less) |
 | springback | 4 / 2 / 8 / 6 %, τ 3 h | assumed |
 | machine density factor | lognormal cv 15 % × (force/30 t)^0.15 | brief cv, assumed force law |
 | daily density factor | cv 7 % | brief |
-| P_idle, k, relief | 20–30 bar, k 150 bar (cv 5 %), relief 240 bar (cv 2 %); back pressure from 7 % fill, linear in fill (`fill_onset` 0.07, exponent 1.0); density exponent 1.0 (medium: pressure mostly tracks volume); crushed-item spikes +20–80 bar (6 % of cardboard strokes, 1–3 % others) | brief ranges; onset, linearity, spikes from the expert interview; values assumed (**real values unknown**) |
+| P_idle, k, relief | 20–30 bar, k 150 bar (cv 5 %), relief 240 bar (cv 2 %); back pressure from 7 % fill, linear in fill (`fill_onset` 0.07, exponent 1.0); density exponent 1.0 (medium: pressure mostly tracks volume); crushed-item spikes +20–80 bar (6 % of cardboard strokes, 1–3 % others) | brief ranges; onset, linearity, spikes from machine behaviour; values assumed (**real values unknown**) |
 | viscosity | +0.4 %/°C below 40 °C | brief |
 | oil | +0.8 °C/stroke, cools to ambient with τ 2 h, max 60 °C | assumed |
 | stroke | duration ×(1 + 0.35·load²), +0.3 %/°C below 20 °C; energy = motor kW × duration × (0.25 + 0.65·load)/0.88 | assumed |
-| fill reading (default) | firmware: exponential rolling average over ~10 strokes of the back pressure (peak − idle), mapped linearly to fill; reads 100 % at a 'full' back-pressure setpoint (150 bar × material stiffness) calibrated per installation at commissioning; no oil-temperature correction (cold oil reads fuller). Mean error ≈ 6 pp (≈ 5.5 pp above 30 % fill) | expert interview (pressure only, rolling ~10 cycles, ~5 % accuracy, 'reads full at some back pressure'); calibration assumed |
+| fill reading (default) | firmware: exponential rolling average over ~10 strokes of the back pressure (peak − idle), mapped linearly to fill; reads 100 % at a 'full' back-pressure setpoint (150 bar × material stiffness) calibrated per installation at commissioning; no oil-temperature correction (cold oil reads fuller). Mean error ≈ 6 pp (≈ 5.5 pp above 30 % fill) | machine behaviour (pressure only, rolling ~10 cycles, ~5 % accuracy, reads full at a set back pressure); calibration assumed |
 | fill reading (`ultrasonic` mode) | noise 3 %, gain bias ±3 %, drift 0.1 %/day RW, integer % | brief / assumed drift |
-| pressure graph | 16 samples per stroke. The ram enters only ~20–30 cm into the container, so the rise starts at x_c = 0.80 − 0.15·clip((fill − 0.07)/0.93) ± 0.03; P(x) = min(relief, visc·(idle + excess·ramp^q + loose) + spike bump), q = 1.2 + 2·(0.35 − c); device detects contact at +15 bar over the start | expert interview (ram travel, graph available); shape assumed |
+| pressure graph | 16 samples per stroke. The ram enters only ~20–30 cm into the container, so the rise starts at x_c = 0.80 − 0.15·clip((fill − 0.07)/0.93) ± 0.03; P(x) = min(relief, visc·(idle + excess·ramp^q + loose) + spike bump), q = 1.2 + 2·(0.35 − c); device detects contact at +15 bar over the start | machine behaviour (ram travel, graph available); shape assumed |
 | false full / spurious high | 1 per 60 days, 1–4 days at 88–97 %, only once ≥ 15 % true fill, clears at lift (with the pressure-derived reading: e.g. a jammed bulky item) | brief / assumed last two |
 | pressure sensor | 4 bar noise, 0.5 bar steps, gain bias 1 %, drift 2 %/yr (sd) | brief |
 | dropouts | 1 % of hours + outages 1 per 50 days, lognormal median 6 h (≤ 96 h) | brief / assumed outages |
@@ -254,7 +254,7 @@ quantisation.
 
 ## Validation results (seed 7, 400 bins, 365 days; `validate.py`)
 
-Physics after the expert interview (pressure-derived fill, medium density link, mixed waste).
+Current physics: pressure-derived fill, medium density link, mixed waste.
 
 | check | result | target |
 |---|---|---|
@@ -263,7 +263,7 @@ Physics after the expert interview (pressure-derived fill, medium density link, 
 | heaviest net lift | **11.7 t** (34 of 20,281 lifts > 10 t, all mixed waste in 20 m³ DUO) | < ~10 t |
 | days between lifts | median 7.0, 98 % within 2–14 d | mostly 2–14 |
 | overflow | side waste 2.6 % of inflow; 18 % of lifts with some side waste | exception, not the rule |
-| fill reading (pressure-derived) | corr 0.95 with true fill; ≈ 6 pp mean error | ~5 % (expert) |
+| fill reading (pressure-derived) | corr 0.95 with true fill; ≈ 6 pp mean error | ~5 % (reference) |
 | pressure graph | corr(contact point, true fill) −0.34 (ram enters only 20–30 cm) | — |
 | annual precipitation UUS/VAR/PIR/POP/LAP | 724 / 723 / 601 / 526 / **359** mm (30-seed mean 659/676/625/521/507) | 600–700 S, 450–550 N |
 | Jan / Jul mean T | UUS −3.9 / 18.4 °C, LAP −12.7 / 15.1 °C | −4 / 17 S, −12 / 15 N |
