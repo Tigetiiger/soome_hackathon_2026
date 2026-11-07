@@ -1,0 +1,182 @@
+{
+  "_comment": "Single source of truth for the 2-minute demo video. Times in seconds. Each caption is also the voice-over line. Numbers come from output/NUMBERS.md.",
+  "fps": 30,
+  "width": 1920,
+  "height": 1080,
+  "segments": [
+    {
+      "id": "problem",
+      "kind": "manim",
+      "file": "clips/manim/problem.mp4",
+      "start": 0.0,
+      "duration": 15.0,
+      "tag": "practice data",
+      "captions": [
+        {
+          "t": 0.3,
+          "d": 5.0,
+          "text": "Waste is billed per tonne, yet only the hauler, who gets paid, weighs it."
+        },
+        {
+          "t": 5.5,
+          "d": 5.0,
+          "text": "Our demo hotel group: 395 pickups a year, only 48 with a weighing ticket."
+        },
+        {
+          "t": 10.7,
+          "d": 4.2,
+          "text": "The machine knows how full it is. Nobody knows how heavy."
+        }
+      ]
+    },
+    {
+      "id": "machine3d",
+      "kind": "external",
+      "file": "clips/3d/combi_exploded_sensors.mp4",
+      "in_point": 4.0,
+      "start": 15.0,
+      "duration": 12.0,
+      "tag": "exterior per Europress brochure, internals schematic",
+      "captions": [
+        {
+          "t": 0.2,
+          "d": 5.6,
+          "text": "A Europress compactor already measures its hydraulic ram pressure on every stroke."
+        },
+        {
+          "t": 6.0,
+          "d": 5.8,
+          "text": "Denser, heavier waste pushes back harder. That pressure is our weight signal."
+        }
+      ]
+    },
+    {
+      "id": "solution",
+      "kind": "manim",
+      "file": "clips/manim/solution.mp4",
+      "start": 27.0,
+      "duration": 13.0,
+      "tag": "simulated",
+      "captions": [
+        {
+          "t": 0.2,
+          "d": 6.0,
+          "text": "Our soft sensor turns pressure, strokes, oil temperature and weather into kilograms, with an honest range."
+        },
+        {
+          "t": 6.4,
+          "d": 6.4,
+          "text": "Fill level alone is 32 % off. On simulated machines it never saw, ours is 5.3 % off."
+        }
+      ]
+    },
+    {
+      "id": "demo",
+      "kind": "screen",
+      "file": "clips/screen/demo.mp4",
+      "start": 40.0,
+      "duration": 55.0,
+      "tag": "live app · practice data",
+      "shots": [
+        {
+          "id": "D1",
+          "t": 0.0,
+          "d": 9.0,
+          "what": "Customer view, Overview: 'Your machines now' cards with fill % and '≈ kg inside', then scroll to 'SMART can save you €60,471 / year'."
+        },
+        {
+          "id": "D2",
+          "t": 9.0,
+          "d": 9.0,
+          "what": "Customer view, 'Weight & seasons' tab: pickup weights with a range and the ticket-vs-machine check (48 of 395 with a ticket)."
+        },
+        {
+          "id": "D3",
+          "t": 18.0,
+          "d": 9.0,
+          "what": "Customer view, 'Operators & contracts': Hauler Delta vs the second operator (on time 57 % vs 62 %, tickets shared 0 % vs 89 %), 'Data as of 30 Sep 2026' visible."
+        },
+        {
+          "id": "D4",
+          "t": 27.0,
+          "d": 9.0,
+          "what": "Customer view, 'Savings': click the €39,955 'empty machines when they are full' lever so the trace drawer opens with formula and data rows."
+        },
+        {
+          "id": "D5",
+          "t": 36.0,
+          "d": 10.0,
+          "what": "Switch to 'Europress' workspace, weight sensor 'Weighbridge check' page: predicted vs weighbridge scatter over 4,876 emptyings."
+        },
+        {
+          "id": "D6",
+          "t": 46.0,
+          "d": 9.0,
+          "what": "Europress workspace, sales leads / pipeline: open a lead pop-up and press 'Brief me' so the three-sentence brief appears."
+        }
+      ],
+      "captions": [
+        {
+          "t": 0.3,
+          "d": 8.5,
+          "text": "This is SMART Insights, running on Europress's practice data. Each machine shows its fill level and estimated weight."
+        },
+        {
+          "t": 9.2,
+          "d": 8.6,
+          "text": "Every pickup gets a weight with a range, checked against the weighing ticket wherever one exists."
+        },
+        {
+          "t": 18.2,
+          "d": 8.6,
+          "text": "Contracts become comparable: Hauler Delta is on time 57 % of the time and shares none of its weight data."
+        },
+        {
+          "t": 27.2,
+          "d": 8.6,
+          "text": "Every euro opens to its formula and data rows. Here, €39,955 a year from emptying half-full machines."
+        },
+        {
+          "t": 36.2,
+          "d": 9.6,
+          "text": "For Europress, the weight sensor is checked against weighbridge tickets, emptying by emptying."
+        },
+        {
+          "t": 46.2,
+          "d": 8.6,
+          "text": "Sales get a short brief, written by Claude from cited data, for a person to review."
+        }
+      ]
+    },
+    {
+      "id": "impact",
+      "kind": "manim",
+      "file": "clips/manim/impact.mp4",
+      "start": 95.0,
+      "duration": 25.0,
+      "tag": "practice data · estimate",
+      "captions": [
+        {
+          "t": 0.3,
+          "d": 6.4,
+          "text": "This hotel group could save about €60,000 of its €140,000 a year, mostly on half-empty pickups."
+        },
+        {
+          "t": 6.9,
+          "d": 5.4,
+          "text": "Across the fleet, pickups with an independent weight rise from 74 % to 97 %."
+        },
+        {
+          "t": 12.5,
+          "d": 6.4,
+          "text": "For Europress, weight makes SMART stickier: one more point of adoption is worth about €21,600 a year."
+        },
+        {
+          "t": 19.1,
+          "d": 5.7,
+          "text": "Another study is less optimistic, so step one is a zero-euro test on archived data."
+        }
+      ]
+    }
+  ]
+}
