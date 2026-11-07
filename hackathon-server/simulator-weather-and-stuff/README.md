@@ -156,7 +156,7 @@ has its own seeded stream (`numpy.random.SeedSequence.spawn`). A 28-day burn-in
   Closes to about 1e-9 kg (tested).
 
 ### Hydraulics
-`P_peak = min(relief, visc(T_oil) · (P_idle + k · f(fill) · stiffness · (rho/rho_typ)^1.5 · softening(moisture) · (1 + 1.5·frost_share)))`
+`P_peak = min(relief, visc(T_oil) · (P_idle + k · f(fill) · stiffness · (rho/rho_typ)^1.0 · softening(moisture) · (1 + 1.5·frost_share)))`
 with `f(fill) = clip((fill − 0.07)/0.93, 0, 1)` (back pressure from ~7 % fill, rising linearly) and density exponent 1.0. The pack only receives the part of
 the pressure left after viscous losses (`relief/visc − P_idle`), so density growth
 stalls when the valve opens. Wet fibre is softer (softening 1 − 2.5·moisture): a wet
@@ -199,7 +199,7 @@ quantisation.
 | opening hours | retail 7–21 (Sat 8–20, Sun 12–18); warehouse 6–22 (Sat 7–15); industry 6–22 Mon–Fri; hotel 6–23 daily; ±1 h per site | assumed |
 | monthly profile | retail Dec ×1.35; industry Jul ×0.35; hotel Jun–Aug ×1.25–1.45 | brief (shape), assumed (other months) |
 | holidays | Finnish public holidays (incl. Easter, Ascension, Midsummer, All Saints); closed except hotels | brief |
-| event mass | gamma, shape 2; mean 18 / 22 / 9 / 8 kg | brief means, assumed shape |
+| event mass | gamma, shape 2; mean 18 / 22 / 9 / 12 kg (cardboard / paper / film / mixed waste) | brief means (mixed waste assumed), assumed shape |
 | day-to-day noise | AR(1) lognormal, φ 0.6, σ 0.30 | assumed |
 | bulk days | 2 % of open days, ×2–4 | brief (×2–4), assumed rate |
 | press per event | 85 %; test cycles 0.004 per open hour | brief / assumed |

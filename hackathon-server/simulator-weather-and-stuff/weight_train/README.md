@@ -76,7 +76,7 @@ A *cycle* starts at each `lift_event` hour. "Since lift" means within the curren
 | `fill_ffill` | reported fill % (on real machines a firmware estimate from ram pressure, so approximate), forward-filled over dropouts within the cycle |
 | `fill_max_cycle` | highest fill reading since the lift (catches bridging spikes) |
 | `fill_change_24h` | fill now minus 24 h ago |
-| `naive_kg_m3` | fill × nominal material density (190/330/140/115 kg/m³), the naive estimate |
+| `naive_kg_m3` | fill × nominal material density (190/330/140/400 kg/m³; mixed waste 400), the naive estimate |
 | `presses` | press cycles this hour |
 | `presses_cycle` | press cycles since the lift, a proxy for the number of loads |
 | `presses_per_fill` | presses since lift per % of fill (high means dense material) |
