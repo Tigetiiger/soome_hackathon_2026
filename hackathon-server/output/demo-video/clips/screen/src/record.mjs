@@ -78,8 +78,7 @@ class Rec {
   }
   async snap() {
     await this.apply();
-    const { data } = await this.cdp.send('Page.captureScreenshot', { format: 'png' });
-    const buf = Buffer.from(data, 'base64');
+    const buf = await this.page.screenshot({ type: 'png', scale: 'device', animations: 'allow', caret: 'initial' });
     const local = this.frame - this.shotStart;
     if (this.sink) await this.sink(buf);
     else if (local % 15 === 0) writeFileSync(join(STILL_DIR, `${this.shotId}_${String(local).padStart(3, '0')}.png`), buf);
@@ -141,7 +140,7 @@ const plan = {
     r.cx = 1180; r.cy = 300;
     await r.hold(1.0);
     await r.scrollTo('#view-overview h2[data-i18n="machines.title"]', 115, 1.4);          // 1.0 → 2.4  machine cards
-    await r.move('#machinesNowOverview >> text=/kg inside now/', 1.0, 0.55, 1.75); // → 3.4
+    await r.move('#machinesNowOverview >> text=/kg inside now/', 1.0, 1.06, 0.55); // → 3.4
     await r.holdUntil(5.0);
     await r.scrollTo('.save-card', 105, 1.4);                     // 5.0 → 6.4  savings card
     await r.move('#saveTitle', 0.9, 0.62, 1.8);                  // → 7.3
@@ -249,7 +248,7 @@ const plan = {
 async function main() {
   if (STILLS) mkdirSync(STILL_DIR, { recursive: true });
   const browser = await chromium.launch({ executablePath: '/usr/bin/chromium', args: ['--hide-scrollbars', '--font-render-hinting=none'] });
-  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: DSF, colorScheme: 'light', reducedMotion: 'reduce', locale: 'en-GB' });
+  const ctx = await browser.newContext({ viewport: { width: W, height: H }, deviceScaleFactor: DSF, colorScheme: 'light', reducedMotion: 'reduce', locale: 'en-GB', bypassCSP: true });
   await ctx.addInitScript(INIT);
   const page = await ctx.newPage();
   page.on('pageerror', (e) => process.stderr.write(`pageerror: ${e.message}\n`));

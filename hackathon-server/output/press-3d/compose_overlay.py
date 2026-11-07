@@ -391,12 +391,12 @@ def draw_ghost_note(ov, d, anchors, t):
            width=int(1.5 * SS))
 
 
-def draw_sensors(ov, anchors, t):
+def draw_sensors(ov, anchors, t, labels=True):
     d = ImageDraw.Draw(ov)
     out_a = 1.0 - TL.seg(t, *TL.LABELS_OUT)          # labels fade out at reassembly
     # leaders + dots first, boxes on top
     boxes = []
-    for lab in LABELS:
+    for lab in (LABELS if labels else []):
         t_on = TL.sensor_on(lab["key"])
         if t < t_on:
             continue
@@ -452,14 +452,14 @@ def draw_card(ov, t):
     ov.alpha_composite(layer_alpha(lay, TL.seg(t, TL.CARD_IN[0] + 0.1, TL.CARD_IN[1] + 0.15)))
 
 
-def compose(base: Image.Image, t: float, anchors: dict) -> Image.Image:
+def compose(base: Image.Image, t: float, anchors: dict, labels: bool = True) -> Image.Image:
     """base: 1920x1080 RGB 3D frame; anchors: name -> [x, y, depth, visible] in 1920 space."""
     ov = Image.new("RGBA", (W * SS, H * SS), (0, 0, 0, 0))
     draw_title(ov, t)
     draw_heading(ov, t)
     d = ImageDraw.Draw(ov)
     draw_bracket(ov, d, anchors, t)
-    draw_sensors(ov, anchors, t)
+    draw_sensors(ov, anchors, t, labels)
     draw_inset(ov, t)
     draw_caption(ov, t)
     draw_card(ov, t)
@@ -488,7 +488,10 @@ def _one(job):
     src = OUT / "frames3d" / f"f{min(f, TL.LAST_3D_FRAME):04d}.png"
     if not src.exists():
         return f, "missing"
-    img = compose(Image.open(src).convert("RGB"), TL.t_of(f), _ANCH[str(f)])
+    base = Image.open(src).convert("RGB")
+    if base.size != (W, H):                    # SCALE=50 preview passes
+        base = base.resize((W, H), Image.LANCZOS)
+    img = compose(base, TL.t_of(f), _ANCH[str(f)])
     tmp = dst.with_suffix(".tmp.png")
     img.save(tmp, compress_level=3)
     tmp.replace(dst)
@@ -520,7 +523,8 @@ def run_qc():
         base = Image.open(src).convert("RGB").resize((W, H), Image.LANCZOS)
         k = 1.0 / m["scale"]
         t = TL.t_of(m["frame"])
-        img = compose(base, t, scale_anchors(m["points"], k))
+        # label columns are laid out for the main camera; the close-up shows dots + caption
+        img = compose(base, t, scale_anchors(m["points"], k), labels=(name != "03_sensor_closeup"))
         img.resize((W // 2, H // 2), Image.LANCZOS).save(QC / f"{name}.png")
         print("QC", name)
 

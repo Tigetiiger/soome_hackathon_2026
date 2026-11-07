@@ -619,8 +619,11 @@ def build(out: Path) -> None:
     B.box("container_rear_top_beam", x_post_r0, x_post_r1, -HW_CONT, HW_CONT, H_TOP - 0.10,
           H_TOP, M["blue"], E, K, bevel=0.006)
     # plain EUROPRESS lettering on the near side (as in the photo; no logo mark)  [M]
-    B.text("lettering_EUROPRESS", "EUROPRESS", 0.33, "IBMPlexSans-SemiBold.ttf", M["letter"],
+    lt = B.text("lettering_EUROPRESS", "EUROPRESS", 0.31, "IBMPlexSans-SemiBold.ttf", M["letter"],
            ((X(935) + X(1418)) / 2, -(yi + 0.0016), Z(361)), (math.pi / 2, 0, 0), E, K)
+    # plain Plex lettering widened to the measured span of the brochure lettering (no logo mark)
+    lt.scale.x = 1.45
+    lt.data.space_character = 1.03
     # locking handles: vertical shaft + two lever arms hooking the door           [M]
     yl = -HW_CONT - 0.03
     B.cyl("lock_shaft", (X(1547), yl, Z(690)), (X(1547), yl, Z(250)), 0.018, M["galv"], E, K)

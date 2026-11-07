@@ -87,7 +87,7 @@ Each sensor gets a short label with a leader line, and a one-line note on what i
    - the stroke is sized so the ram reaches 20–30 cm into the container.
 3. **Label the internals on screen.** A small caption "Internal layout: schematic, not Europress CAD" must be visible whenever internals are shown. The video's closing card must say "Exterior dimensions from the Europress Combi brochure (20 m³). Internal layout and most sensor positions are schematic."
 4. **Do not invent precision.** No part numbers, no real Europress sensor models, and no exact values apart from those listed above.
-5. **Watch the units.** The data is synthetic and the model is ours. Never put the Europress logo on any surface where it would look like official CAD. Plain "EUROPRESS" lettering on the container side, as in the photo, is fine.
+5. **No official-looking logo.** The data is synthetic and the model is ours. Never put the Europress logo on any surface where it would look like official CAD. Plain "EUROPRESS" lettering on the container side, as in the photo, is fine.
 
 ## Storyboard (about 16 s at 30 fps, 1920×1080, ~480 frames)
 
