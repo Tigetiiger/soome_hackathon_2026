@@ -56,6 +56,85 @@
   .rt-weightlink { font: 600 var(--fs-1)/1.4 var(--font); color: var(--link); text-decoration: none; }
   .rt-weightlink:hover { text-decoration: underline; }
 
+  /* problem → SMART AI solution (How you save, How to save money, bell, pop-up) */
+  .ps-problem { display: block; font: 600 var(--fs-3)/1.35 var(--font); color: var(--ink); }
+  .ps-solution { display: block; margin-top: 2px; font: 400 var(--fs-2)/1.45 var(--font); color: var(--ink-2); }
+  .ps-solution b { font-weight: 600; color: var(--good-c); }
+  .ps-row { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: center; gap: var(--s-4); padding: var(--s-4) 0; border-bottom: 1px solid var(--line); }
+  .ps-open { display: block; width: 100%; padding: 0; border: 0; background: none; text-align: left; cursor: pointer; }
+  .ps-open:hover .ps-problem { text-decoration: underline; }
+  .save-list .ps-open { grid-column: 1; grid-row: 1 / 3; }
+  .ps-cell .ps-problem { font-size: var(--fs-2); }
+  .ps-eur { display: block; margin-top: var(--s-2); font: 600 var(--fs-2)/1.4 var(--font); color: var(--link); }
+
+  /* bell + notifications panel (Figma: amber bell in the header) */
+  .bell-wrap { position: relative; }
+  .bell { position: relative; display: inline-grid; place-items: center; width: var(--tap); height: var(--tap); border: 1px solid var(--warn-bd); border-radius: var(--radius-1); background: var(--warn-bg); color: var(--ink); cursor: pointer; }
+  .bell:hover { border-color: var(--ink); }
+  .bell[data-unread="true"] svg { animation: bell-ring 1.6s ease-in-out 1; transform-origin: 50% 10%; }
+  .bell-n { position: absolute; top: -6px; right: -6px; min-width: 20px; height: 20px; padding: 0 5px; border-radius: var(--radius-pill); background: var(--bad-c); color: var(--on-action); font: 700 11px/20px var(--font); }
+  .bell-n:empty { display: none; }
+  .bell-panel { position: absolute; right: 0; top: calc(100% + 8px); z-index: 30; width: min(420px, calc(100vw - 32px)); max-height: 70vh; overflow: auto; padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--radius-2); background: var(--surface); box-shadow: var(--shadow-pop); }
+  .bell-title { margin-bottom: var(--s-2); font: 700 var(--fs-1)/1.4 var(--font); letter-spacing: .1em; text-transform: uppercase; color: var(--ink-3); }
+  .bell-list { list-style: none; margin: 0; padding: 0; }
+  .bell-list li + li { border-top: 1px solid var(--line); }
+  .bell-list button { display: block; width: 100%; padding: var(--s-3) var(--s-2); border: 0; border-radius: var(--radius-1); background: none; text-align: left; cursor: pointer; }
+  .bell-list button:hover { background: var(--ground); }
+  .bell-list li[data-read="false"] .ps-problem::before { content: ""; display: inline-block; width: 8px; height: 8px; margin-right: 8px; border-radius: 50%; background: var(--bad-c); vertical-align: 2px; }
+  @keyframes bell-ring { 0%, 100% { transform: rotate(0); } 15% { transform: rotate(14deg); } 30% { transform: rotate(-12deg); } 45% { transform: rotate(8deg); } 60% { transform: rotate(-4deg); } }
+
+  /* the 5-second "SMART AI found a way to save" pop-up */
+  .ai-popup { position: fixed; left: 50%; bottom: var(--s-6); z-index: 40; width: min(520px, calc(100vw - 32px)); transform: translateX(-50%);
+    padding: var(--s-6); border-radius: var(--radius-3); background: var(--surface); border: 2px solid var(--mark); box-shadow: var(--shadow-pop); animation: pop-in .35s ease-out; }
+  .pop-title { margin-bottom: var(--s-3); font: 700 var(--fs-4)/1.25 var(--font); color: var(--ink); }
+  .pop-actions { display: flex; gap: var(--s-2); margin-top: var(--s-4); }
+  @keyframes pop-in { from { opacity: 0; transform: translate(-50%, 16px); } to { opacity: 1; transform: translate(-50%, 0); } }
+
+  /* sales lead: short row → structured pop-up */
+  .lead-facts { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-2); margin: 0 0 var(--s-4); }
+  .lead-facts div { padding: var(--s-3); border-radius: var(--radius-1); background: var(--ground); }
+  .lead-facts dt { font-size: var(--fs-1); color: var(--ink-3); }
+  .lead-facts dd { margin: 0; font: 700 var(--fs-4)/1.2 var(--font); }
+  .lead-op { margin-top: var(--s-3); padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--radius-2); }
+  .lead-op header { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); margin-bottom: var(--s-3); }
+  .lead-op .eur { font: 700 var(--fs-3)/1 var(--font); }
+  .lead-op .eur small { font-weight: 400; color: var(--ink-3); }
+  .lead-dl { display: grid; grid-template-columns: 110px minmax(0, 1fr); gap: var(--s-2) var(--s-3); margin: 0; font-size: var(--fs-2); }
+  .lead-dl div { display: contents; }
+  .lead-dl dt { color: var(--ink-3); }
+  .lead-dl dd { margin: 0; color: var(--ink); }
+  .lead-dl .strong { font-weight: 700; }
+  .lead-say { font-family: var(--font-serif); font-size: var(--fs-3); }
+  .lead-actions { display: flex; flex-wrap: wrap; gap: var(--s-2); margin-top: var(--s-4); }
+
+  /* calendar period picker */
+  .pd { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+  .pd > svg { color: var(--ink-2); }
+  .pd input[type="month"] { min-height: 38px; padding: 0 var(--s-2); border: 1px solid var(--line-strong); border-radius: var(--radius-1); background: var(--surface); font: 500 var(--fs-2) var(--font); color: var(--ink); }
+  .pd-presets button { padding: 0 var(--s-3); }
+  .ov-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); }
+  .tr-top { display: flex; justify-content: flex-end; }
+
+  /* Trends, compact: tiles instead of paragraphs, small charts, "when" collapsed */
+  #view-trends { gap: var(--s-4); }
+  #view-trends .card { padding: var(--s-4) var(--s-6); }
+  #view-trends .card-head { margin-bottom: var(--s-2); }
+  #view-trends h2 { font-size: var(--fs-3); }
+  #view-trends .chart-sm { height: 200px; }
+  .tf-grid { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(auto-fill, minmax(190px, 1fr)); gap: var(--s-2); }
+  .tf button { display: flex; flex-direction: column; gap: 2px; width: 100%; height: 100%; padding: var(--s-3); text-align: left; cursor: pointer;
+    border: 1px solid var(--line); border-left-width: 3px; border-radius: var(--radius-1); background: var(--surface); }
+  .tf button:hover { border-color: var(--ink); }
+  .tf b { font: 600 var(--fs-2)/1.3 var(--font); color: var(--ink); }
+  .tf-v { font: 500 var(--fs-3)/1.3 var(--font-mono); color: var(--ink-2); }
+  .tf[data-tone="good"] button { border-left-color: var(--good-c); } .tf[data-tone="good"] .tf-v { color: var(--good-c); }
+  .tf[data-tone="warn"] button { border-left-color: var(--warn-c); } .tf[data-tone="warn"] .tf-v { color: var(--warn-c); }
+  .tf[data-tone="info"] button { border-left-color: var(--info-c); }
+  .tr-when > summary { list-style: none; cursor: pointer; margin-bottom: 0; }
+  .tr-when > summary::-webkit-details-marker { display: none; }
+  .tr-when > summary h2::after { content: " ▾"; color: var(--ink-3); }
+  .tr-when[open] > summary { margin-bottom: var(--s-3); }
+
   /* customer weight page */
   .cw-view, #cwBody { display: flex; flex-direction: column; gap: var(--s-6); }
   .cw-answers { grid-template-columns: repeat(3, minmax(0, 1fr)); }

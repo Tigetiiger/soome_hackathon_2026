@@ -1,7 +1,7 @@
 // Europress internal workspace: fleet overview, sales pipeline, fleet health, data products.
-import { t, fmt, eur, date, stream, sector } from "./i18n.js";
+import { t, fmt, eur, date, stream, sector, addStrings } from "./i18n.js";
 import { flowChart, barChart, gradeChart, priceChart } from "./charts.js";
-import { esc, openTrace } from "./drawer.js";
+import { esc, openTrace, openCustom, closePanels } from "./drawer.js";
 
 const el = (id) => document.getElementById(id);
 const SEARCH_ICON = '<svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="11" cy="11" r="6"/><path d="M20 20l-4-4"/></svg>';
@@ -90,31 +90,53 @@ function alertParams(a) {
   return { n: a.n, thr: a.min_thr, fill: a.fill, a: fmt(a.a, 1), b: fmt(a.b, 1), date: a.date ? date(a.date) : "", op: a.op || "", hours: fmt(a.hours), eur: eur(a.value) };
 }
 
-export function renderSalesAlerts(f, onAsk) {
+export function renderSalesAlerts(f, onAsk, onOpenCustomer) {
   const by = new Map();
   for (const a of f.sales_alerts || []) {
     const g = by.get(a.customer) || { name: a.name, devices: a.devices, customer: a.customer, alerts: [], value: 0 };
     g.alerts.push(a); g.value = Math.max(g.value, a.value || 0); by.set(a.customer, g);
   }
   const groups = [...by.values()].sort((x, y) => y.value - x.value).slice(0, 12);
-  el("salesAlerts").innerHTML = groups.map((g, i) => `<li class="ans" data-i="${i}">
-      <button type="button" class="ans-row sa-row" aria-expanded="false">
+  // one short row per lead; everything else lives in a structured pop-up
+  el("salesAlerts").innerHTML = groups.map((g, i) => `<li class="ans lead" data-i="${i}">
+      <button type="button" class="ans-row sa-row" aria-haspopup="dialog">
         <span class="state" data-state="${ALERT_STATE[g.alerts[0].type]}">${esc(t(`sa.${g.alerts[0].type}.tag`))}</span>
-        <span class="ans-q">${esc(g.name)} · ${g.devices}</span>
+        <span class="ans-q">${esc(g.name)}</span>
         <b class="ans-h">${esc(t(`sa.${g.alerts[0].type}.offer`))}${g.alerts.length > 1 ? ` <span class="fine">+${g.alerts.length - 1}</span>` : ""}</b>
         <span class="eur">${g.value ? eur(g.value) : ""}</span>
-      </button>
-      <div class="ans-more" hidden>
-        <ul class="sa-list">${g.alerts.map((a) => `<li><span class="state" data-state="${ALERT_STATE[a.type]}">${esc(t(`sa.${a.type}.tag`))}</span>
-          <p class="ans-why">${esc(t(`sa.${a.type}.why`, alertParams(a)))}</p>
-          <p class="sa-tell"><b>${esc(t("sa.tell"))}</b> “${esc(t(`sa.${a.type}.say`, alertParams(a)))}”</p>
-          <p class="fine">${esc(t("sa.offerLabel"))}: ${esc(t(`sa.${a.type}.offer`))}</p></li>`).join("")}</ul>
-        <div class="ans-actions"><button type="button" class="ask-link" data-brief="${i}">${esc(t("sa.brief"))} →</button></div>
-      </div></li>`).join("");
-  el("salesAlerts").querySelectorAll(".ans").forEach((li) => {
+      </button></li>`).join("");
+  el("salesAlerts").querySelectorAll(".lead").forEach((li) => {
     const g = groups[Number(li.dataset.i)];
-    const row = li.querySelector(".ans-row"), more = li.querySelector(".ans-more");
-    row.addEventListener("click", () => { more.hidden = !more.hidden; row.setAttribute("aria-expanded", String(!more.hidden)); });
-    li.querySelector("[data-brief]").addEventListener("click", () => onAsk?.(t("sa.briefQ", { name: g.name, id: g.customer })));
+    li.querySelector(".ans-row").addEventListener("click", () => openLead(g, onAsk, onOpenCustomer));
   });
 }
+
+/** Structured lead pop-up: who → one block per opportunity (problem · offer · what to say · worth) → actions. */
+function openLead(g, onAsk, onOpenCustomer) {
+  const block = (a) => `<section class="lead-op">
+      <header><span class="state" data-state="${ALERT_STATE[a.type]}">${esc(t(`sa.${a.type}.tag`))}</span>${a.value ? `<b class="eur">${esc(eur(a.value))} <small>${esc(t("lead.perYear"))}</small></b>` : ""}</header>
+      <dl class="lead-dl">
+        <div><dt>${esc(t("lead.problem"))}</dt><dd>${esc(t(`sa.${a.type}.why`, alertParams(a)))}</dd></div>
+        <div><dt>${esc(t("sa.offerLabel"))}</dt><dd class="strong">${esc(t(`sa.${a.type}.offer`))}</dd></div>
+        <div><dt>${esc(t("sa.tell"))}</dt><dd class="lead-say">“${esc(t(`sa.${a.type}.say`, alertParams(a)))}”</dd></div>
+        ${a.date ? `<div><dt>${esc(t("lead.deadline"))}</dt><dd>${esc(date(a.date))}</dd></div>` : ""}
+      </dl></section>`;
+  const body = openCustom({
+    eyebrow: t("lead.eyebrow"), title: g.name,
+    question: t("sa.briefQ", { name: g.name, id: g.customer }), focus: `sales_alerts.${g.customer}`,
+    html: `<dl class="lead-facts"><div><dt>${esc(t("account.machines"))}</dt><dd>${fmt(g.devices)}</dd></div>
+        <div><dt>${esc(t("lead.value"))}</dt><dd>${esc(eur(g.value))}</dd></div><div><dt>${esc(t("lead.count"))}</dt><dd>${fmt(g.alerts.length)}</dd></div></dl>
+      ${g.alerts.map(block).join("")}
+      <div class="lead-actions"><button type="button" class="btn" data-lead="brief">${esc(t("sa.brief"))}</button>
+        <button type="button" class="btn ghost" data-lead="open">${esc(t("lead.open"))}</button></div>`,
+  });
+  body.querySelector('[data-lead="brief"]').addEventListener("click", () => { closePanels(); onAsk?.(t("sa.briefQ", { name: g.name, id: g.customer })); });
+  body.querySelector('[data-lead="open"]').addEventListener("click", () => { closePanels(); onOpenCustomer?.(g.customer); });
+}
+
+addStrings({
+  en: { "lead.eyebrow": "Sales lead", "lead.problem": "Problem", "lead.deadline": "Deadline", "lead.value": "Worth to the customer / yr",
+        "lead.count": "Opportunities", "lead.open": "Open customer dashboard", "lead.perYear": "/ yr" },
+  fi: { "lead.eyebrow": "Myyntiliidi", "lead.problem": "Ongelma", "lead.deadline": "Määräaika", "lead.value": "Arvo asiakkaalle / v",
+        "lead.count": "Mahdollisuudet", "lead.open": "Avaa asiakkaan näkymä", "lead.perYear": "/ v" },
+});

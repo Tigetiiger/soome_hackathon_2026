@@ -8,6 +8,8 @@ import { renderOperator } from "./operator.js";
 import { renderAccount, initials } from "./account.js";
 import { FAQ, METHOD } from "./faq.js";
 import { renderMachinesNow, machineNames } from "./machines.js";
+import { initNotifications, setNotifications, notifications, problemSolutionHtml } from "./notify.js";
+import { periodView, renderPeriodPicker, periodLabel } from "./period.js";
 import { renderCustomerWeight, renderWeightHero, titleFor } from "./sensor/customer.js";
 import { renderTrends } from "./trends.js";
 import { renderAnswers } from "./answers.js";
@@ -137,13 +139,22 @@ function renderProblems(p) {
 
 const openLever = (l) => openTrace(l.trace, t(`lever.${l.id}`), `levers.${l.id}`, t(`lever.${l.id}.d`));
 
+/** "How you save": each line is the customer's problem, then SMART AI's solution, then the money (click → full detail). */
 function renderHowSave(p) {
   el("saveTitle").textContent = t("save.title", { eur: eur(p.kpis.savings.value) });
-  el("howSave").innerHTML = p.levers.map((l) => `<li class="xv-stretch">
-      <b class="sl-ttl"><span class="lead-in" data-effort="${l.effort}">${esc(t(`effort.${l.effort}`))}: </span>${esc(t(`lever.${l.id}`))}</b>
-      <span class="sl-desc">${esc(t(`lever.${l.id}.d`))}</span>
-      <span class="sl-eur">${chip(esc(eur(l.saving_eur)), `${t(`lever.${l.id}`)}: ${eur(l.saving_eur)}`, l.id)}</span></li>`).join("");
-  bindChips(el("howSave"), (id) => openLever(p.levers.find((l) => l.id === id)));
+  el("howSave").innerHTML = notifications(p).map((n) => `<li class="ps-row">
+      <button type="button" class="ps-open" data-lever="${esc(n.id)}">${problemSolutionHtml(n)}</button>
+      <span class="sl-eur">${chip(esc(eur(n.eur)), `${t(`lever.${n.id}`)}: ${eur(n.eur)}`, n.id)}</span></li>`).join("");
+  const go = (id) => openLever(p.levers.find((l) => l.id === id));
+  bindChips(el("howSave"), go);
+  el("howSave").querySelectorAll("button[data-lever]").forEach((b) => b.addEventListener("click", () => go(b.dataset.lever)));
+}
+
+/** A notification opens "How to save money" with that lever's full detail. */
+function openNotification(id) {
+  const lever = state.customer?.levers.find((l) => l.id === id);
+  if (location.hash !== "#savings") location.hash = "#savings";
+  if (lever) setTimeout(() => openLever(lever), 0);
 }
 
 function renderInsights(p) {
@@ -176,9 +187,10 @@ function costStreamTrace(p, s) {
 // ---------------------------------------------------------------- savings, machines, contracts, weight
 function renderSavings(p) {
   const tbl = el("leversTable");
+  const ps = new Map(notifications(p).map((n) => [n.id, n]));
   tbl.innerHTML = `<thead><tr><th>${t("col.lever")}</th><th>${t("col.effort")}</th><th class="num">${t("col.saving")}</th><th class="row-go"></th></tr></thead><tbody>${
     p.levers.map((l, i) => `<tr class="click" data-i="${i}" tabindex="0">
-      <td><span class="strong">${esc(t(`lever.${l.id}`))}</span><span class="desc">${esc(t(`lever.${l.id}.d`))}</span></td>
+      <td class="ps-cell">${ps.has(l.id) ? problemSolutionHtml(ps.get(l.id)) : `<span class="strong">${esc(t(`lever.${l.id}`))}</span>`}</td>
       <td><span class="state" data-state="${EFFORT_STATE[l.effort]}">${esc(t(`effort.${l.effort}`))}</span></td>
       <td class="num strong">${eur(l.saving_eur)}</td>${ROW_GO}</tr>`).join("")}
     <tr><td class="strong">${t("total")}</td><td></td><td class="num strong">${eur(p.kpis.savings.value)}</td><td></td></tr></tbody>`;
@@ -289,9 +301,10 @@ async function route() {
   });
   el("customerPick").classList.toggle("hidden", state.ws !== "customer" || view === "faq");
   el("operatorPick").classList.toggle("hidden", state.ws !== "partners");
+  el("bellWrap").classList.toggle("hidden", state.ws !== "customer");
   el("pageTitle").textContent = t(NAV_KEY[view]);
   el("pageEyebrow").textContent = state.ws === "europress" ? t("ep.eyebrow")
-    : state.ws === "partners" || view === "faq" ? "Europress SMART" : `${state.customer?.customer.name ?? ""} · ${t("top.period")}`;
+    : state.ws === "partners" || view === "faq" ? "Europress SMART" : `${state.customer?.customer.name ?? ""} · ${state.customer ? periodLabel(state.customer) : t("top.period")}`;
   el("sidebar").classList.remove("open");
   toggleMenu(false);
   window.scrollTo({ top: 0 });
@@ -300,7 +313,8 @@ async function route() {
     if (isSensorView(view)) return renderSensor(view, arg);
     const f = await getJson("/data/fleet.json");
     if (view === "ep-overview") renderEpOverview(f);
-    else if (view === "ep-pipeline") { renderSalesAlerts(f, (q) => { setAskContext({ page: "ep-sales" }); openAi(q, "sales_alerts"); }); }
+    else if (view === "ep-pipeline") { renderSalesAlerts(f, (q) => { setAskContext({ page: "ep-sales" }); openAi(q, "sales_alerts"); },
+      (id) => { el("customerSelect").value = id; loadCustomer(id); location.hash = "#overview"; }); }
     if (view === "ep-pipeline") renderEpPipeline(f, (id) => { el("customerSelect").value = id; loadCustomer(id); location.hash = "#overview"; });
     else if (view === "ep-fleet") renderEpFleet(f);
     else if (view === "ep-data") renderEpData(f);
@@ -313,7 +327,11 @@ async function route() {
   else {
     setAskContext({ view: "customer", id: state.customer.customer.id, page: view, name: state.customer.customer.name });
     if (view === "machine") renderMachinePage(state.customer, decodeURIComponent(arg || ""));
-    else RENDER[view]?.(state.customer);
+    else {
+      const pv = periodView(state.customer);
+      RENDER[view]?.(pv);
+      el(`view-${view}`).querySelectorAll("[data-period]").forEach((c) => renderPeriodPicker(c, state.customer, route));
+    }
   }
 }
 
@@ -321,6 +339,7 @@ async function loadCustomer(id) {
   state.customer = await getJson(`/data/customers/${id}.json`);
   try { localStorage.setItem("ep.customer", id); } catch { /* storage blocked */ }
   renderAccountButton(state.customer);
+  setNotifications(state.customer, openNotification);
   if (state.ws === "customer") route();
 }
 
@@ -339,7 +358,7 @@ function rerenderAll() {
   syncViewToggles();
   document.querySelectorAll(".seg button[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === getLang())));
   fillSelects();
-  if (state.customer) renderAccountButton(state.customer);
+  if (state.customer) { renderAccountButton(state.customer); setNotifications(state.customer, openNotification); }
   route();
 }
 
@@ -391,6 +410,8 @@ async function init() {
   bindGlobal();
   renderWeightModel(state.index.weight_model);
   state.customer = await getJson(`/data/customers/${start}.json`);
+  initNotifications();
+  setNotifications(state.customer, openNotification);
   rerenderAll();
 }
 

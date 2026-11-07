@@ -142,6 +142,18 @@ function explainFor(focus) {
  * @param {string} focus   metric key passed to the AI ("kpis.total_cost")
  * @param {string} todo    optional "what to do" line
  */
+/** Drawer with caller-built (already escaped) HTML, e.g. a structured sales lead. */
+export function openCustom({ eyebrow = "", title, html, question = "", focus = "" }) {
+  el("drawerTitle").textContent = title;
+  el("drawerEyebrow").textContent = eyebrow;
+  el("drawerEyebrow").hidden = !eyebrow;
+  el("drawerBody").innerHTML = html;
+  el("drawerBody").scrollTop = 0;
+  current = { question: question || title, focus };
+  openPanel(el("drawer"));
+  return el("drawerBody");
+}
+
 export function openTrace(trace, title, focus = "", todo = "") {
   if (!trace) return;
   openExplain({ title, trace, focus, todo, what: explainFor(focus) });

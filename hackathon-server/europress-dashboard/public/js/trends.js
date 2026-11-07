@@ -1,6 +1,6 @@
 // Trends tab: findings (last 3 vs first 3 months), monthly trend charts, and when the work happens.
 import { t, fmt, getLang } from "./i18n.js";
-import { esc, openTrace } from "./drawer.js";
+import { esc, openTrace, openExplain } from "./drawer.js";
 import { mixedTrendChart, streamTrendChart, costPickupChart, fillTrendChart, weekdayChart, hourChart, seasonChart } from "./charts.js";
 
 const el = (id) => document.getElementById(id);
@@ -34,14 +34,30 @@ function findingText(f) {
   }
 }
 
+/** The short value on a tile: "a → b" for the changes, the key fact for the patterns. */
+function shortValue(f) {
+  const n1 = (v) => fmt(v, Number.isInteger(v) ? 0 : 1);
+  switch (f.id) {
+    case "eurt": return `${fmt(f.a)} → ${fmt(f.b)} €/t`;
+    case "fill": case "recycling": return `${fmt(f.a)} → ${fmt(f.b)} %`;
+    case "mixed": case "pickups": return `${n1(f.a)} → ${n1(f.b)}`;
+    case "weekday": return cap(dayName(f.day, "short"));
+    case "hours": return `${hh(f.from)}–${hh(f.to)}`;
+    case "season": return `${f.diff >= 0 ? "+" : "−"}${fmt(Math.abs(f.diff))} %`;
+    case "pickupday": return cap(dayName(f.day, "short"));
+    default: return "";
+  }
+}
+
+/** Compact tiles: title + one value; the full sentence opens in the drawer. */
 function renderFindings(p) {
   const list = p.trend_findings || [];
-  el("trendFindings").innerHTML = list.map((f, i) => {
-    const tn = tone(f);
-    return `<li><b class="ttl"><span class="lead-in" data-tone="${tn}">${esc(t(`trtone.${tn}`))}: </span>${esc(t(`trt.${f.id}`))}</b>
-      <span class="eur"></span><span class="n">${String(i + 1).padStart(3, "0")}</span>
-      <span class="desc">${esc(findingText(f))}</span></li>`;
-  }).join("");
+  el("trendFindings").innerHTML = list.map((f, i) => `<li class="tf" data-tone="${tone(f)}"><button type="button" data-f="${i}">
+      <b>${esc(t(`trt.${f.id}`))}</b><span class="tf-v">${esc(shortValue(f))}</span></button></li>`).join("");
+  el("trendFindings").querySelectorAll("button[data-f]").forEach((b) => b.addEventListener("click", () => {
+    const f = list[Number(b.dataset.f)];
+    openExplain({ title: t(`trt.${f.id}`), value: shortValue(f), what: findingText(f), focus: `trend_findings.${f.id}` });
+  }));
 }
 
 function renderHeatmap(tp) {
