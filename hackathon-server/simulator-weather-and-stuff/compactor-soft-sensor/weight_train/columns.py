@@ -9,7 +9,9 @@ DEVICE_COLUMNS = (
     "temp_c", "precip_mm_day", "rh_pct", "fill_pct", "presses", "peak_pressure_bar", "lift_event",
 )
 CURVE_COLUMNS = ("curve_contact_pos", "curve_rise_slope_bar", "curve_mean_bar", "curve_completion")
-OPTIONAL_DEVICE_COLUMNS = ("oil_temp_c", "energy_kwh", "precip_mm") + CURVE_COLUMNS   # pressure graph
+OPTIONAL_DEVICE_COLUMNS = ("energy_kwh", "precip_mm") + CURVE_COLUMNS   # pressure graph
+# The hydraulic oil temperature is deliberately NOT used (no oil sensor assumed on real machines);
+# the pressure inversion uses the air temperature as its viscosity proxy instead.
 REQUIRED_PREDICT_COLUMNS = DEVICE_COLUMNS
 
 # Simulator outputs that are truth even though they do not start with true_.

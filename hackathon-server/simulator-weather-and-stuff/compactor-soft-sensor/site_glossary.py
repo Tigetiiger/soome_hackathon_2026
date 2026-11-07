@@ -25,7 +25,7 @@ COLUMNS: dict[str, tuple[str, str]] = {
     "presses": ("number of ram strokes in the hour", TEL),
     "peak_pressure_bar": ("highest stroke peak pressure of the hour in bar (NaN without a stroke or during a dropout)", TEL),
     "lift_event": ("1 when the container was emptied at the start of this hour; starts a new cycle", SMART),
-    "oil_temp_c": ("hydraulic oil temperature in °C", TEL), "energy_kwh": ("motor energy of the hour in kWh", TEL),
+    "oil_temp_c": ("hydraulic oil temperature in °C (simulated data column; not a model input — the pressure correction uses the air temperature)", TEL), "energy_kwh": ("motor energy of the hour in kWh", TEL),
     "precip_mm": ("precipitation of the hour in mm (past hours only)", WX),
     "curve_contact_pos": ("pressure graph: ram position (0–1 of the stroke) where the pressure starts rising, hourly mean", TEL),
     "curve_rise_slope_bar": ("pressure graph: slope from the contact point to the peak, hourly mean", TEL),

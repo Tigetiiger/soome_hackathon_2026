@@ -128,12 +128,11 @@ class Impact(Timed):
             ("waste-operator partners", f"{fl['trips_saved']:,}", "fewer truck trips", f"{fl['partners']} demo partners", C["ink"]),
             ("Europress", f"≈ {k_eur(fl['fee_eur'])}", "SMART fees", "at a 25 % share of savings", C["ink"]),
         ):
-            c = card(3.9, 3.0)
-            g = VGroup(mono(who, 24, C["muted"]), txt(big, 76, col, "SEMIBOLD"),
-                       txt(sub1, 32, C["ink"], "MEDIUM"), txt(sub2, 26, C["muted"])).arrange(DOWN, buff=0.16)
-            g[1].shift(UP * 0.04)
+            c = card(4.2, 3.5)
+            g = VGroup(mono(who, 26, C["muted"]), txt(big, 92, col, "SEMIBOLD"),
+                       txt(sub1, 36, C["ink"], "MEDIUM"), txt(sub2, 28, C["muted"])).arrange(DOWN, buff=0.2)
             tiles.append(VGroup(c, g.move_to(c)))
-        row = VGroup(*tiles).arrange(RIGHT, buff=0.45).move_to([0, 0.05, 0])
+        row = VGroup(*tiles).arrange(RIGHT, buff=0.4).move_to([0, 0.15, 0])
         tiles[2][0].set_stroke(C["mark"], 3)
         for t, start in zip(tiles, (8.2, 10.5, 12.7)):
             self.at(start)
@@ -147,29 +146,31 @@ class Impact(Timed):
         self.p(FadeOut(prev), FadeIn(head), rt=0.5)
         lo, hi = (v // 1000 for v in ref["loadcell_eur_total"])
         steps = (
-            ("1", "Weigh a reference group", ["partner weighbridge weights first;",
-                                              f"load cells ≈ €{lo}–{hi}k for {ref['machines']} machines"]),
+            ("1", "Weigh a reference group", ["partner weighbridge weights first,",
+                                              f"load cells on {ref['machines']} machines",
+                                              f"(≈ €{lo}–{hi}k) if needed"]),
             ("2", "Retrain the model", ["on real weights, tested on", "machines outside the group"]),
             ("3", "Roll out as software", ["to every SMART machine,", "no new hardware"]),
         )
         cards = []
         for n, title, lines in steps:
-            c = card(3.9, 2.6)
+            c = card(4.2, 3.0)
             num = txt(n, 40, C["mark_ink"], "SEMIBOLD")
             dot = RoundedRectangle(width=0.62, height=0.62, corner_radius=0.31, stroke_width=0).set_fill(C["mark"], 1)
             badge = VGroup(dot, num.move_to(dot))
-            body = VGroup(txt(title, 32, C["ink"], "SEMIBOLD"),
+            body = VGroup(txt(title, 34, C["ink"], "SEMIBOLD"),
                           *[txt(s, 24, C["ink2"]) for s in lines]).arrange(DOWN, aligned_edge=LEFT, buff=0.1)
-            body[1].shift(DOWN * 0.08)
-            body[2].shift(DOWN * 0.08)
+            for line in body[1:]:
+                line.shift(DOWN * 0.08)
             g = VGroup(badge, body).arrange(DOWN, aligned_edge=LEFT, buff=0.22)
-            cards.append(VGroup(c, g.move_to(c)))
-        row = VGroup(*cards).arrange(RIGHT, buff=0.55).move_to([0, 0.15, 0])
+            assert g.width < c.width - 0.3, f"step {n} text too wide: {g.width:.2f}"
+            cards.append(VGroup(c, g.move_to(c).align_to(c, LEFT).shift(RIGHT * 0.3)))
+        row = VGroup(*cards).arrange(RIGHT, buff=0.5).move_to([0, 0.2, 0])
         arrs = [Arrow(cards[i].get_right(), cards[i + 1].get_left(), buff=0.06, color=C["ink2"], stroke_width=4,
                       max_tip_length_to_length_ratio=0.35) for i in range(2)]
         note = txt("all figures so far are simulated; this is how they become measured", 26, C["muted"])
         note.next_to(row, DOWN, buff=0.4)
-        self.at(16.0)
+        self.at(16.2)
         self.p(FadeIn(cards[0], shift=UP * 0.12), rt=0.6, rate_func=EASE)
         self.at(17.9)
         self.p(Create(arrs[0]), FadeIn(cards[1], shift=UP * 0.12), rt=0.6, rate_func=EASE)

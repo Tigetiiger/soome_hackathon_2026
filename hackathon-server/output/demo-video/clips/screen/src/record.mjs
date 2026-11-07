@@ -200,16 +200,18 @@ const plan = {
   async D3(r) {
     await r.go('#savings');
     r.cx = 700; r.cy = 500;
-    await r.hold(0.8);
-    await r.move('#leversTable tr:has-text("39,955") >> text=/39,955/', 1.1, 0.5, 0.55); // → 1.9
+    await r.hold(0.4);
+    await r.move('#leversTable tr:has-text("Total") >> text=/52,154/', 0.9, 0.5, 0.55); // → 1.3  total €52,154
+    await r.holdUntil(2.2);
+    await r.move('#leversTable tr:has-text("39,955") >> text=/39,955/', 0.8, 0.5, 0.55); // → 3.0
     await r.click(1200);                                           // trace drawer opens
-    await r.holdUntil(3.4);
-    await r.scrollTo('#drawerBody details.calc > summary', 140, 0.8, '#drawerBody'); // → 4.2
-    await r.move('#drawerBody details.calc > summary', 0.6, 0.15, 0.5); // → 4.8
+    await r.holdUntil(4.2);
+    await r.scrollTo('#drawerBody details.calc > summary', 140, 0.8, '#drawerBody'); // → 5.0
+    await r.move('#drawerBody details.calc > summary', 0.6, 0.15, 0.5); // → 5.6
     await r.click(700);                                            // expand "How it is calculated"
     await r.hold(0.3);
-    await r.scrollTo('#drawerBody details.calc > summary', 90, 0.9, '#drawerBody'); // → 6.0
-    await r.move('#drawerBody .formula', 0.7, 0.6, 0.5);          // → 6.7
+    await r.scrollTo('#drawerBody details.calc > summary', 90, 0.9, '#drawerBody'); // → 6.8
+    await r.move('#drawerBody .formula', 0.7, 0.6, 0.5);          // → 7.5
     await r.holdUntil(10.0);
   },
   // D4 · Partner view: driver plan 14 days ahead, value of SMART, the data partnership.

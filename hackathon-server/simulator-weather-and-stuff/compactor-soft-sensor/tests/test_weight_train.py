@@ -151,3 +151,14 @@ def test_same_data_and_seed_give_same_metrics(tiny_run, trained, tmp_path):
     a = json.loads((trained / "metrics.json").read_text())["splits"]["time"]["final"]
     b = json.loads((again / "metrics.json").read_text())["splits"]["time"]["final"]
     assert a == b
+
+
+def test_oil_temperature_is_not_a_model_input(hourly):
+    """No oil-temperature sensor is assumed: the column may be present but must change nothing."""
+    inverter = PressureInverter({"cardboard": (-2.5, 2.5, 1.45), "paper": (-3.0, 2.6, 1.4),
+                                 "plastic_film": (-2.7, 2.2, 1.5), "mixed_waste": (-2.6, 2.2, 1.6)})
+    a = build_features(hourly, inverter).X
+    assert not [c for c in a.columns if "oil" in c]
+    scrambled = hourly.assign(oil_temp_c=np.random.default_rng(3).uniform(-30, 80, len(hourly)))
+    pd.testing.assert_frame_equal(a, build_features(scrambled, inverter).X)
+    pd.testing.assert_frame_equal(a, build_features(hourly.drop(columns=["oil_temp_c"]), inverter).X)

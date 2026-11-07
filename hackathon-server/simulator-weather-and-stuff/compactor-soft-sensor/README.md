@@ -22,8 +22,8 @@ by conformal calibration. It is evaluated on both "same machines, later months" 
 > parameters are assumptions, not real Europress pressure settings. The results show that the method
 > works on a plausible simulated fleet. They are not a measurement of field accuracy.
 
-**Headline (400 simulated machines, 1 year):** mean error of the mass at lift is **3.7 %** on the same
-machines in later months and **5.3 %** on machines the model has never seen. The naive estimate
+**Headline (400 simulated machines, 1 year):** mean error of the mass at lift is **3.8 %** on the same
+machines in later months and **5.2 %** on machines the model has never seen. The naive estimate
 "fill × nominal density" has an error of 28–32 %. Details are under [Results](#results).
 
 ---
@@ -352,44 +352,44 @@ the estimate in the hour before each lift against the true lifted mass. The test
 
 | material | `time` mean % | `time` within 5 % | `time` p10–p90 coverage | `bins` mean % | `bins` within 5 % | `bins` coverage |
 |---|---|---|---|---|---|---|
-| cardboard | 4.0 | 69 % | 78 % | 5.2 | 55 % | 82 % |
-| paper | 4.0 | 69 % | 78 % | 5.4 | 58 % | 86 % |
-| plastic film | 3.3 | 78 % | 80 % | 4.7 | 64 % | 82 % |
-| mixed waste | 3.1 | 83 % | 77 % | 6.7 | 35 % | **31 %** |
-| **overall** | **3.75** (n = 4,876, MAE 110 kg) | 73 % | 78 % | **5.26** (n = 1,221, MAE 166 kg) | 55 % | 77 % |
+| cardboard | 4.0 | 69 % | 78 % | 5.2 | 57 % | 84 % |
+| paper | 4.3 | 68 % | 80 % | 5.5 | 53 % | 88 % |
+| plastic film | 3.3 | 78 % | 79 % | 4.6 | 62 % | 81 % |
+| mixed waste | 3.1 | 83 % | 77 % | 6.3 | 39 % | **34 %** |
+| **overall** | **3.80** (n = 4,876, MAE 112 kg) | 72 % | 78 % | **5.21** (n = 1,221, MAE 165 kg) | 55 % | 78 % |
 
-**Every test hour (not only lifts):** the `time` split has MAE 66 kg (5.2 %) and 79 % coverage. The
-`bins` split has MAE 90 kg (6.5 %) and 77 % coverage.
+**Every test hour (not only lifts):** the `time` split has MAE 67 kg and 80 % coverage. The
+`bins` split has MAE 90 kg and 79 % coverage.
 
 **Comparison ladder, overall mean % at lift, `time` / `bins`:**
 
 | model | `time` | `bins` |
 |---|---|---|
 | naive fill × nominal density | 28.3 | 32.1 |
-| fill + presses (LightGBM) | 5.8 | 7.0 |
-| + peak pressure | 4.3 | 5.9 |
-| + pressure graph | 4.0 | 5.7 |
-| + weather | 4.0 | 5.5 |
-| selected per material | 3.7 | 5.3 |
+| fill + presses (LightGBM) | 5.9 | 7.0 |
+| + peak pressure | 4.3 | 5.7 |
+| + pressure graph | 4.0 | 5.4 |
+| + weather | 4.0 | 5.2 |
+| selected per material | 3.8 | 5.2 |
 
 Press counts and hydraulic pressure carry most of the information, the pressure graph adds a little
 more, and weather adds very little.
 
 **How many machines are needed?**
 
-- Learning curve on unseen machines, shared model, all materials: 10 machines → 9.7 %, 25 → 7.8 %,
-  50 → 6.7 %, 100 → 6.1 %, 240 → 5.6 %. About **100 machines** is enough to come within 0.5 pp of
+- Learning curve on unseen machines, shared model, all materials: 10 machines → 9.7 %, 25 → 7.6 %,
+  50 → 6.7 %, 100 → 5.9 %, 240 → 5.4 %. About **100 machines** is enough to come within 0.5 pp of
   using all of them.
 - Cardboard only: `material_curve_cardboard.csv`, plot `plots/material_curve_cardboard.png`.
-  - Unseen-machine error: 1 machine → 15.3 %, 4 → 8.5 %, 12 → 6.6 %, 24 → 5.7 %, 48 → 5.4 %,
-    120 → 5.4 %. The naive estimate is 31.0 %.
+  - Unseen-machine error: 1 machine → 14.4 %, 4 → 8.5 %, 12 → 6.6 %, 24 → 5.7 %, 48 → 5.3 %,
+    120 → 5.3 %. The naive estimate is 31.0 %.
   - It levels off at about **25–50 cardboard machines**.
-  - On the training machines themselves (later months) the error is 3.3–3.7 % even with a single
+  - On the training machines themselves (later months) the error is 3.0–3.9 % even with a single
     machine. A per-machine pilot is therefore accurate quickly, while generalising to new
     installations needs a few dozen machines.
 
 Target "< 5 % at lift": all four materials meet it on `time`. On `bins` only plastic film meets it;
-cardboard (5.2 %) and paper (5.4 %) are just above, and mixed waste (6.7 %) is clearly above.
+cardboard (5.2 %) and paper (5.5 %) are just above, and mixed waste (6.3 %) is clearly above.
 
 ## Validation and baseline scripts
 
@@ -468,7 +468,7 @@ Soft-sensor training settings (fractions, grid, quantiles, coverage target, fill
 - **Heavy mixed-waste lifts.** 34 of 20,281 lifts exceed ~10 t (maximum 11.7 t), all of them mixed
   waste in 20 m³ DUO containers. That is above a hook-lift truck's capacity. Restricting mixed waste
   to ≤ 14–17 m³ containers in `fleet.containers` would fix it.
-- **Mixed-waste intervals on unseen machines are under-calibrated.** At lift the coverage is 31 %
+- **Mixed-waste intervals on unseen machines are under-calibrated.** At lift the coverage is 34 %
   (56 % hourly) against an 80 % target, and the bias is −156 kg. There are only 40 mixed-waste
   machines (≤ 30 in training), and the calibration pools all hours while the lift hour is the
   fullest. Treat that band with caution.

@@ -98,10 +98,10 @@ material set and are not referenced by `bundle.json`.
 ### Performance (`models/full400/metrics.json`)
 | | same machines, later months (`time`) | unseen machines (`bins`) |
 |---|---|---|
-| mean % error at lift | **3.75 %** (cardboard 4.0, paper 4.0, film 3.3, mixed waste 3.1) | 5.26 % (cardboard 5.2, paper 5.4, film 4.7, mixed waste 6.7) |
+| mean % error at lift | **3.80 %** (cardboard 4.0, paper 4.3, film 3.3, mixed waste 3.1) | 5.21 % (cardboard 5.2, paper 5.5, film 4.6, mixed waste 6.3) |
 | lifts within 5 % | 73 % | 55 % |
-| p10–p90 coverage at lift (target 80 %) | 78 % | 77 % (mixed waste only 31 %) |
-| hourly MAE | 66 kg | 90 kg |
+| p10–p90 coverage at lift (target 80 %) | 78 % | 78 % (mixed waste only 34 %) |
+| hourly MAE | 67 kg | 90 kg |
 
 Naive "fill × nominal density" has about 28–32 % error. Inference cost is about **20 µs per
 machine-hour** including features (3.5 M rows in about 71 s, about 4 GB peak RAM). Training takes
@@ -155,7 +155,7 @@ last row.
 - Leave the running static site server on port 8765 alone.
 - Known simulator limitation: 34 of about 20,300 lifts (all mixed waste in 20 m³ DUO containers)
   exceed the ~10 t truck limit (max 11.7 t). A container-size fix is pending.
-- Mixed-waste intervals on unseen machines are under-calibrated (31 % coverage). Show the band
+- Mixed-waste intervals on unseen machines are under-calibrated (34 % coverage). Show the band
   with that caveat.
 
 ## 7. Ask before you build

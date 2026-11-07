@@ -6,7 +6,7 @@
 Inputs (paths relative to this folder, all listed in timeline.json):
     clips/manim/{problem,solution,impact}.mp4   Manim clips
     clips/screen/demo.mp4                       dashboard screen recording
-    clips/3d/combi_exploded_sensors.mp4         3D render from the GPU machine (drop it in when ready;
+    clips/3d/press_weight.mp4                   25 s 3D clip, 0:15–0:40 (drop it in when ready;
                                                 until then a placeholder card is used)
     voice/voiceover.wav   (optional) one take of the whole narration, 120 s, starting at 0:00
     voice/<segment>_<n>.wav (optional) one file per caption line, placed at its caption start
@@ -95,19 +95,21 @@ def placeholder_3d(path: Path) -> None:
     """Card shown until the GPU render of the exploded 3D view is dropped into clips/3d/."""
     img = Image.new("RGB", (W, H), DARK)
     d = ImageDraw.Draw(img)
-    d.text((160, 200), "Europress Combi · 20 m³", font=font("IBMPlexSans-SemiBold.ttf", 64), fill=(232, 237, 243))
-    d.text((160, 290), "3D exploded view with sensor positions", font=font("IBMPlexSans-Light.ttf", 44), fill=(135, 147, 163))
-    sensors = [
-        "ram pressure transducer  →  fill & weight estimate",
-        "4 load cells (optional scale platform)  →  reference weight",
-        "oil temperature probe  →  cold-oil correction",
-        "GPS · tilt · door & lid switches",
+    d.text((160, 150), "Europress Combi · 20 m³", font=font("IBMPlexSans-SemiBold.ttf", 64), fill=(232, 237, 243))
+    d.text((160, 240), "3D: from ram pressure to kilograms (25 s)", font=font("IBMPlexSans-Light.ttf", 44), fill=(135, 147, 163))
+    scenes = [
+        "inside the machine: the hydraulic ram",
+        "sensors already on board  ·  load cells only on reference machines",
+        "every push draws a pressure graph",
+        "sent every hour, with local weather",
+        "the model turns it into kilograms: 32.1 % → 5.3 % error",
+        "no extra hardware  ·  honesty card",
     ]
-    for i, s in enumerate(sensors):
-        y = 420 + i * 70
+    for i, s in enumerate(scenes):
+        y = 350 + i * 64
         d.ellipse([160, y + 12, 182, y + 34], fill=(63, 208, 201))
-        d.text((206, y), s, font=font("IBMPlexSans-Regular.ttf", 38), fill=(232, 237, 243))
-    d.text((160, 760), "PLACEHOLDER · final render comes from the GPU machine",
+        d.text((206, y), s, font=font("IBMPlexSans-Regular.ttf", 36), fill=(232, 237, 243))
+    d.text((160, 760), "PLACEHOLDER · drop the render in as clips/3d/press_weight.mp4",
            font=font("IBMPlexMono-Medium.ttf", 28), fill=(242, 169, 59))
     img.save(path)
 
