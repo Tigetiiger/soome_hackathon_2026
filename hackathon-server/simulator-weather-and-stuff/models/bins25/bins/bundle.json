@@ -21,7 +21,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -50,12 +49,12 @@
         "frost_days_cycle",
         "material"
       ],
-      "best_iter": 287,
+      "best_iter": 299,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
-      "monotone": false,
+      "monotone": true,
       "objective": "regression"
     },
     "per_material__cardboard__point": {
@@ -79,7 +78,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -107,12 +105,12 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 545,
+      "best_iter": 266,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
-      "monotone": true,
+      "monotone": false,
       "objective": "regression"
     },
     "per_material__mixed_waste__point": {
@@ -136,7 +134,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -167,7 +164,7 @@
       "best_iter": 400,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
       "monotone": false,
       "objective": "regression"
@@ -193,7 +190,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -221,10 +217,10 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 64,
+      "best_iter": 65,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
       "monotone": true,
       "objective": "regression"
@@ -250,7 +246,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -278,129 +273,13 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 216,
+      "best_iter": 185,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
-      "monotone": false,
+      "monotone": true,
       "objective": "regression"
-    },
-    "shared__all__q_lo": {
-      "features": [
-        "container_volume_m3",
-        "equipment_class",
-        "infeed",
-        "drainage",
-        "hour",
-        "weekday",
-        "hours_since_lift",
-        "fill_ffill",
-        "fill_max_cycle",
-        "fill_change_24h",
-        "naive_kg_m3",
-        "presses",
-        "presses_cycle",
-        "presses_per_fill",
-        "p_now",
-        "p_last",
-        "p_ewm",
-        "p_max_cycle",
-        "p_count_cycle",
-        "oil_temp_c",
-        "rho_p",
-        "rho_p_smooth",
-        "pressure_kg_m3",
-        "stroke_peak_mean",
-        "stroke_duration_mean",
-        "energy_kwh",
-        "curve_contact_pos",
-        "curve_contact_ewm",
-        "curve_contact_min_cycle",
-        "curve_rise_slope_ewm",
-        "curve_mean_bar_ewm",
-        "curve_completion_min_cycle",
-        "graph_kg_m3",
-        "temp_c",
-        "rh_prev_day",
-        "rh_mean_cycle",
-        "rain_mm_d1",
-        "rain_mm_d2",
-        "rain_mm_d3",
-        "rain_mm_d4",
-        "rain_mm_d5",
-        "rain_mm_d6",
-        "rain_mm_d7",
-        "rain_72h",
-        "rain_exposed_cycle",
-        "frost_days_cycle",
-        "material"
-      ],
-      "best_iter": 1268,
-      "params": {
-        "num_leaves": 31,
-        "min_data_in_leaf": 200
-      },
-      "monotone": false,
-      "objective": "quantile"
-    },
-    "shared__all__q_hi": {
-      "features": [
-        "container_volume_m3",
-        "equipment_class",
-        "infeed",
-        "drainage",
-        "hour",
-        "weekday",
-        "hours_since_lift",
-        "fill_ffill",
-        "fill_max_cycle",
-        "fill_change_24h",
-        "naive_kg_m3",
-        "presses",
-        "presses_cycle",
-        "presses_per_fill",
-        "p_now",
-        "p_last",
-        "p_ewm",
-        "p_max_cycle",
-        "p_count_cycle",
-        "oil_temp_c",
-        "rho_p",
-        "rho_p_smooth",
-        "pressure_kg_m3",
-        "stroke_peak_mean",
-        "stroke_duration_mean",
-        "energy_kwh",
-        "curve_contact_pos",
-        "curve_contact_ewm",
-        "curve_contact_min_cycle",
-        "curve_rise_slope_ewm",
-        "curve_mean_bar_ewm",
-        "curve_completion_min_cycle",
-        "graph_kg_m3",
-        "temp_c",
-        "rh_prev_day",
-        "rh_mean_cycle",
-        "rain_mm_d1",
-        "rain_mm_d2",
-        "rain_mm_d3",
-        "rain_mm_d4",
-        "rain_mm_d5",
-        "rain_mm_d6",
-        "rain_mm_d7",
-        "rain_72h",
-        "rain_exposed_cycle",
-        "frost_days_cycle",
-        "material"
-      ],
-      "best_iter": 140,
-      "params": {
-        "num_leaves": 31,
-        "min_data_in_leaf": 200
-      },
-      "monotone": false,
-      "objective": "quantile"
     },
     "per_material__plastic_film__q_lo": {
       "features": [
@@ -423,7 +302,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -451,10 +329,10 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 119,
+      "best_iter": 116,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
       },
       "monotone": false,
       "objective": "quantile"
@@ -480,7 +358,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -508,41 +385,267 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 880,
+      "best_iter": 282,
       "params": {
         "num_leaves": 31,
-        "min_data_in_leaf": 200
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "shared__all__q_lo": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle",
+        "material"
+      ],
+      "best_iter": 1500,
+      "params": {
+        "num_leaves": 31,
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "shared__all__q_hi": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle",
+        "material"
+      ],
+      "best_iter": 135,
+      "params": {
+        "num_leaves": 31,
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "per_material__cardboard__q_lo": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle"
+      ],
+      "best_iter": 147,
+      "params": {
+        "num_leaves": 31,
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "per_material__cardboard__q_hi": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle"
+      ],
+      "best_iter": 411,
+      "params": {
+        "num_leaves": 31,
+        "min_data_in_leaf": 50
       },
       "monotone": false,
       "objective": "quantile"
     }
   },
   "selection": {
-    "cardboard": "shared",
+    "cardboard": "per_material",
     "mixed_waste": "shared",
     "paper": "shared",
     "plastic_film": "per_material"
   },
   "inverter": {
     "cardboard": [
-      0.9052770857933656,
-      1.0018041597984717,
-      0.7765972260727327
+      0.8995807204061456,
+      1.002777542419467,
+      0.7748209415919209
     ],
     "paper": [
-      -0.7576118415530023,
-      1.1203466190293145,
-      1.0159990033054533
+      -0.7642610422159545,
+      1.1200812467405392,
+      1.0144817952775327
     ],
     "plastic_film": [
-      0.4669476388614363,
-      1.0261039789048991,
-      0.8975824702693221
+      0.7271228726751541,
+      1.0212521592024513,
+      0.8380140687409365
     ],
     "mixed_waste": [
-      -1.4663700846569958,
-      1.0327660981026443,
-      1.0777474674185281
+      -1.2356393002527177,
+      1.0388032408713843,
+      1.0304390509685293
     ]
   },
   "conformal": {
@@ -554,14 +657,14 @@
     ],
     "coverage": 0.8,
     "q": {
-      "cardboard|0": 0.8367306906101039,
-      "cardboard|1": 1.9473004444275936,
-      "cardboard|2": 0.5265056173259759
+      "cardboard|0": 0.9490571760765014,
+      "cardboard|1": 1.6007039210592138,
+      "cardboard|2": 0.3691351044247646
     },
     "q_material": {
-      "cardboard": 1.1173625268700267
+      "cardboard": 1.0598199781407605
     },
-    "q_pool": 1.1173625268700267
+    "q_pool": 1.0598199781407605
   },
   "info": {
     "split": "bins",
@@ -608,7 +711,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -636,7 +738,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
@@ -671,7 +772,6 @@
         "p_ewm",
         "p_max_cycle",
         "p_count_cycle",
-        "oil_temp_c",
         "rho_p",
         "rho_p_smooth",
         "pressure_kg_m3",
