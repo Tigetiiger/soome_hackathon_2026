@@ -1,0 +1,23 @@
+# Regenerable outputs: simulator data and trained models are NOT committed.
+# Rebuild them with the commands in README.md ("Regenerate data and models").
+/runs/
+/models/
+
+# Parquet anywhere except the website (site/ may ship small downloads)
+*.parquet
+!site/**/*.parquet
+
+# Python environment and caches
+.venv/
+venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+
+# Logs
+*.log
+
+# Editor / OS
+.DS_Store
+.idea/
+.vscode/
