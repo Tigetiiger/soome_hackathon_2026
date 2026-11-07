@@ -29,7 +29,7 @@ def _parser() -> argparse.ArgumentParser:
     c.add_argument("--data", type=Path, required=True)
     c.add_argument("--models", type=Path, required=True, help="trained folder (uses its bins bundle settings)")
     c.add_argument("--material", default="cardboard")
-    c.add_argument("--sizes", default="1,2,4,8,16,32,64,128")
+    c.add_argument("--sizes", default="1,2,3,4,6,8,10,12,16,24,32,48,64,96,128")
     r = sub.add_parser("report", help="(re)build plots and REPORT.md from a trained folder")
     r.add_argument("--models", type=Path, required=True)
     return p

@@ -21,13 +21,14 @@ import pandas as pd
 
 from site_common import (GOOD_PCT, ROOT, SITE, SPLIT_LABEL, Build, copy_plots, dig, figures, load_csv, load_json,
                          md_to_html, note, num, page, pct_of, sci, table)
+from site_curve import material_curve_section
 from site_model import model_inputs
 from site_sections import simulation_detail
 
 SIM_RUN = Path("runs/full400")
 PREFERRED_MODEL, FALLBACK_MODEL = Path("models/full400"), Path("models/bins25")
 NAV = (("top", "Overview"), ("sim", "Simulation"), ("inputs", "Model inputs"), ("model", "Soft sensor"),
-       ("ai", "How the AI built it"))
+       ("curve", "Machines needed"), ("ai", "How the AI built it"))
 
 
 # ---------------------------------------------------------------- sections
@@ -186,7 +187,8 @@ def build(model_run: Path | None = None) -> Build:
     body = ("<main>" + hero(metrics, model_run, summary, choice)
             + simulation_detail(b, SIM_RUN, summary, baseline(b))
             + model_inputs(b, metrics, model_run, data_run)
-            + soft_sensor(b, metrics, model_run) + ai_section(b) + footer(b) + "</main>")
+            + soft_sensor(b, metrics, model_run) + material_curve_section(b, model_run)
+            + ai_section(b) + footer(b) + "</main>")
     (SITE / "index.html").write_text(page("Compactor Soft Sensor", body, nav))
     return b
 

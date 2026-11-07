@@ -12,9 +12,13 @@ Small n are repeated with different machine draws; the mean and the min-max rang
 """
 from __future__ import annotations
 
+import dataclasses
 import json
 import logging
+import multiprocessing as mp
+import os
 import time
+from concurrent.futures import ProcessPoolExecutor
 from pathlib import Path
 
 import matplotlib
@@ -33,8 +37,18 @@ from .settings import TrainSettings  # noqa: E402
 from .splits import make_split  # noqa: E402
 
 log = logging.getLogger(__name__)
-DEFAULT_SIZES = (1, 2, 4, 8, 16, 32, 64, 128)
+DEFAULT_SIZES = (1, 2, 3, 4, 6, 8, 10, 12, 16, 24, 32, 48, 64, 96, 128)
 TARGET_PCT = 5.0
+THREADS_PER_FIT = 4
+_SHARED: dict = {}          # filled before forking; workers read it copy-on-write
+
+
+def _worker(task: tuple) -> tuple:
+    n, r, chosen = task
+    sh = _SHARED
+    rng = np.random.default_rng(sh["s"].seed + 104729 * r + n)
+    out = _one_run(sh["feats"], sh["y"], sh["pre"], chosen, sh["masks"], sh["ref"], sh["s"], rng)
+    return n, r, out
 
 
 def repeats_for(n: int, pool: int) -> int:
@@ -87,7 +101,7 @@ def run_material_curve(data_dir: Path, models_dir: Path, material: str, sizes=DE
                        s: TrainSettings | None = None) -> dict:
     s = s or TrainSettings()
     t0 = time.perf_counter()
-    data = load_training_data(data_dir)
+    data = load_training_data(data_dir, material=material)
     split = make_split(data.base.meta, "bins", s)
     ref = _reference_model(models_dir, material)
     feats, y, pre = _subset(data, material)
@@ -100,13 +114,20 @@ def run_material_curve(data_dir: Path, models_dir: Path, material: str, sizes=DE
     unseen_idx = np.flatnonzero(masks["unseen"])
     naive = point_metrics(y[unseen_idx], feats.X["naive_kg_m3"].fillna(0).to_numpy()[unseen_idx]
                           * meta["container_volume_m3"].to_numpy()[unseen_idx])
-    rng = np.random.default_rng(s.seed)
+    ns = [k for k in sizes if k < len(pool)] + [len(pool)]
+    tasks = [(n, r, list(np.random.default_rng(s.seed + 7919 * r + n).choice(pool, n, replace=False)))
+             for n in ns for r in range(repeats_for(n, len(pool)))]
+    workers = max(1, min(len(tasks), (os.cpu_count() or 4) // THREADS_PER_FIT))
+    _SHARED.update(feats=feats, y=y, pre=pre, masks=masks, ref=ref,
+                   s=dataclasses.replace(s, num_threads=THREADS_PER_FIT))
+    log.info("%d fits (%d sizes) on %d parallel workers x %d threads", len(tasks), len(ns), workers, THREADS_PER_FIT)
+    results: dict = {}
+    with ProcessPoolExecutor(max_workers=workers, mp_context=mp.get_context("fork")) as pool_exec:
+        for n, r, out in pool_exec.map(_worker, sorted(tasks, key=lambda t: -t[0])):
+            results.setdefault(n, []).append(out)
     points = []
-    for n in [k for k in sizes if k < len(pool)] + [len(pool)]:
-        runs = []
-        for r in range(repeats_for(n, len(pool))):
-            chosen = list(np.random.default_rng(s.seed + 7919 * r + n).choice(pool, n, replace=False))
-            runs.append(_one_run(feats, y, pre, chosen, masks, ref, s, rng))
+    for n in ns:
+        runs = results[n]
         point = {"n_machines": int(n), "repeats": len(runs), "unseen": _summarise(runs, "unseen"),
                  "same": _summarise(runs, "same")}
         points.append(point)

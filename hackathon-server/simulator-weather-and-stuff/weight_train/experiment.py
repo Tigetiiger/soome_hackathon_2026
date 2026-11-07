@@ -2,7 +2,10 @@
 from __future__ import annotations
 
 import logging
+import multiprocessing as mp
+import os
 import time
+from concurrent.futures import ProcessPoolExecutor
 from dataclasses import dataclass, field
 from pathlib import Path
 
@@ -39,12 +42,52 @@ class SplitOutput:
     importance: dict = field(default_factory=dict)
 
 
-def load_training_data(run_dir: Path) -> TrainData:
-    hourly = pd.read_parquet(run_dir / "hourly.parquet")
+_LOAD: dict = {}   # set before forking feature workers (read copy-on-write)
+
+
+def _feature_chunk(bins: list) -> Features:
+    hourly, strokes = _LOAD["hourly"], _LOAD["strokes"]
+    h = hourly[hourly["bin_id"].isin(bins)]
+    st = strokes[strokes["bin_id"].isin(bins)] if strokes is not None else None
+    return base_features(h, st)
+
+
+def parallel_base_features(hourly: pd.DataFrame, strokes: pd.DataFrame | None, workers: int) -> Features:
+    """base_features per contiguous chunk of machines on ``workers`` processes (features never cross machines)."""
+    bins = sorted(hourly["bin_id"].unique())
+    if workers <= 1 or len(bins) < 2:
+        return base_features(hourly, strokes)
+    chunks = [list(c) for c in np.array_split(np.array(bins, dtype=object), min(workers, len(bins))) if len(c)]
+    _LOAD.update(hourly=hourly, strokes=strokes)
+    try:
+        with ProcessPoolExecutor(max_workers=len(chunks), mp_context=mp.get_context("fork")) as ex:
+            parts = list(ex.map(_feature_chunk, chunks))
+    finally:
+        _LOAD.clear()
+    offset = 0
+    metas = []
+    for part in parts:                       # keep segment ids unique across chunks
+        meta = part.meta.copy()
+        meta["seg"] = meta["seg"] + offset
+        offset = int(meta["seg"].max()) + 1
+        metas.append(meta)
+    X = pd.concat([part.X for part in parts], ignore_index=True)
+    return Features(X=X, meta=pd.concat(metas, ignore_index=True))
+
+
+def load_training_data(run_dir: Path, material: str | None = None, workers: int | None = None) -> TrainData:
+    filters = [("material", "==", material)] if material else None
+    hourly = pd.read_parquet(run_dir / "hourly.parquet", filters=filters)
     strokes_path = run_dir / "strokes.parquet"
-    strokes = pd.read_parquet(strokes_path, columns=["bin_id", "ts", "peak_pressure_bar", "duration_s"]) \
-        if strokes_path.is_file() else None
-    base = base_features(hourly, strokes)
+    strokes = None
+    if strokes_path.is_file():
+        bin_filter = [("bin_id", "in", sorted(hourly["bin_id"].unique()))] if material else None
+        strokes = pd.read_parquet(strokes_path, columns=["bin_id", "ts", "peak_pressure_bar", "duration_s"],
+                                  filters=bin_filter)
+        strokes["bin_id"] = strokes["bin_id"].astype(str)
+    t0 = time.perf_counter()
+    base = parallel_base_features(hourly, strokes, workers if workers is not None else (os.cpu_count() or 1))
+    log.info("features for %d rows built in %.1f s", len(base.X), time.perf_counter() - t0)
     truth = hourly.sort_values(["bin_id", "ts"], kind="stable").reset_index(drop=True)  # same order as features
     ff = truth["true_false_full"].astype(bool) if "true_false_full" in truth else pd.Series(False, index=truth.index)
     ff_cycle = ff.groupby(base.meta["seg"].to_numpy()).cummax().to_numpy()
