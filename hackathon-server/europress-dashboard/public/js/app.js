@@ -1,6 +1,6 @@
 // Europress SMART Insights — app controller: tab routing, account switcher, language, customer views.
 import { t, setLang, getLang, applyStatic, fmt, eur, stream, sector, date, month } from "./i18n.js";
-import { costChart, recyclingChart, weightChart, densityChart, gaugeSvg, STREAM_COLORS } from "./charts.js";
+import { costChart, gaugeSvg, STREAM_COLORS } from "./charts.js";
 import { openTrace, openInfo, openExplain, deviceTrace, closePanels, setAskHandler, esc, tx, chip, bindChips, ROW_GO } from "./drawer.js";
 import { renderEpOverview, renderEpPipeline, renderEpFleet, renderEpData, renderSalesAlerts } from "./europress.js";
 import { initAi, openAi, setAskContext } from "./ask.js";
@@ -8,12 +8,11 @@ import { renderOperator } from "./operator.js";
 import { renderAccount, initials } from "./account.js";
 import { FAQ, METHOD } from "./faq.js";
 import { renderMachinesNow, machineNames } from "./machines.js";
+import { renderChanges } from "./changes.js";
 import { initNotifications, setNotifications, notifications, problemSolutionHtml } from "./notify.js";
-import { periodView, renderPeriodPicker, periodLabel } from "./period.js";
+import { periodView, renderPeriodPicker } from "./period.js";
 import { renderCustomerWeight, renderWeightHero, renderWeightTable, titleFor } from "./sensor/customer.js";
 import { renderTrends } from "./trends.js";
-import { renderAnswers } from "./answers.js";
-import { renderWeightModel } from "./weightmodel.js";
 import { renderSensor, stopLive, SENSOR_VIEWS, isSensorView } from "./sensor/index.js";
 
 const el = (id) => document.getElementById(id);
@@ -108,34 +107,6 @@ function renderKpis(p) {
   }));
 }
 
-const probVal = (v, unit) => (v == null ? "" : unit === "date" ? date(v) : unit === "€" ? eur(v) : `${fmt(v, unit === "%" ? 1 : 0)} ${unit}`);
-const probLabel = (x) => t(`prob.${x.id}`, { operator: x.operator || "" });
-
-function problemRow(x, i) {
-  const label = probLabel(x), to = probVal(x.to, x.unit);
-  return `<li><div class="prob-what"><b>${esc(label)}</b><span class="prob-act">${esc(t(`act.${x.action}`))}</span></div>
-      <span class="prob-chg">${x.from != null ? `${esc(probVal(x.from, x.unit))} → ` : ""}${chip(esc(to), `${label}: ${to}`, String(i))}</span></li>`;
-}
-
-/** The "to" chip explains the change itself. No € here: a lever's annual potential is not the cost of a change. */
-function openProblem(list, key, period) {
-  const x = list[Number(key)];
-  const facts = x.from != null ? [[period.prev, probVal(x.from, x.unit)], [period.last, probVal(x.to, x.unit)]] : [];
-  openExplain({
-    title: probLabel(x), value: probVal(x.to, x.unit), facts,
-    what: tx(`x.prob.${x.id}`), todo: t(`act.${x.action}`), focus: `problems.${x.id}`,
-  });
-}
-
-function renderProblems(p) {
-  const c = p.compare;
-  const period = { last: `${month(c.last_months[0])}–${month(c.last_months[1])}`, prev: `${month(c.prev_months[0])}–${month(c.prev_months[1])}` };
-  el("probPeriod").textContent = `${period.last} vs ${period.prev}`;
-  const changes = p.problems.filter((x) => x.id !== "notice"); // a notice deadline is not a change: it sits on the contract answer
-  el("problems").innerHTML = changes.length ? changes.map(problemRow).join("")
-    : `<li><div class="prob-what"><b>${esc(t("prob.none"))}</b></div></li>`;
-  bindChips(el("problems"), (key) => openProblem(changes, key, period));
-}
 
 const openLever = (l) => openTrace(l.trace, t(`lever.${l.id}`), `levers.${l.id}`, t(`lever.${l.id}.d`));
 
@@ -283,22 +254,34 @@ function renderMachinePage(p, deviceId) {
   renderCustomerWeight(el("machineWeight"), m, { name, eurPerT, dayLabel: DAY_FMT });
 }
 
+/** A period change re-renders only what depends on the period, in place (no reload of live parts, no jump). */
+function renderPickers(view) {
+  el(`view-${view}`).querySelectorAll("[data-period]").forEach((c) => renderPeriodPicker(c, state.customer, () => {
+    const pv = periodView(state.customer);
+    if (view === "overview") renderKpis(pv);
+    else if (view === "trends") renderTrends(pv, state.index.assumptions.target_fill_pct);
+    else RENDER[view]?.(pv);
+    renderPickers(view);
+  }));
+}
+
 // ---------------------------------------------------------------- routing
 const RENDER = {
-  overview: (p) => { renderWeightHero(el("weightHero"), p, DAY_FMT); renderKpis(p); renderAnswers(p); renderHowSave(p); renderProblems(p);
+  overview: (p) => { renderWeightHero(el("weightHero"), p, DAY_FMT); renderKpis(p); renderHowSave(p);
+    renderChanges(state.customer, { list: el("problems"), period: el("probPeriod"), toggle: el("chgToggle") });
     renderMachinesNow(el("machinesNowOverview"), p.machines_now, { limit: 4, mode: "compact" }); },
   savings: (p) => { renderSavings(p);
     costChart(p, (s) => openTrace(costStreamTrace(p, s), `${t("card.cost")} · ${stream(s)}`, `monthly.cost_by_stream.${s}`)); },
   machines: (p) => { renderMachinesNow(el("machinesNow"), p.machines_now, { mode: state.mv.machines });
     el("machinesAsOf").textContent = p.machines_now[0] ? t("machines.asof", { date: date(p.machines_now[0].as_of) }) : ""; renderMachines(p); },
   contracts: renderContracts,
-  weight: (p) => { renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT });
-    renderWeightModel(state.index.weight_model); weightChart(p); recyclingChart(p); densityChart(p); },
+  weight: (p) => { renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT }); },
   trends: (p) => renderTrends(p, state.index.assumptions.target_fill_pct),
   account: renderAccount,
 };
 
-async function route() {
+async function route(opts) {
+  const keepScroll = opts?.keepScroll === true; // period changes re-render in place (no jump to the top)
   const [hash, arg] = (location.hash || "#overview").slice(1).split("/"); // "#ep-sensor/BIN-0001" → view + machine
   const view = VIEWS.includes(hash) ? hash : "overview";
   if (!isSensorView(view)) stopLive();
@@ -316,11 +299,14 @@ async function route() {
   el("operatorPick").classList.toggle("hidden", state.ws !== "partners");
   el("bellWrap").classList.toggle("hidden", state.ws !== "customer");
   el("pageTitle").textContent = t(NAV_KEY[view]);
-  el("pageEyebrow").textContent = state.ws === "europress" ? t("ep.eyebrow")
-    : state.ws === "partners" || view === "faq" ? "Europress SMART" : `${state.customer?.customer.name ?? ""} · ${state.customer ? `${periodLabel(state.customer)} · ${t("asof.data", { date: asOfLabel(state.customer) })}` : t("top.period")}`;
+  el("pageEyebrow").textContent = "";
+  el("pageEyebrow").hidden = true;
   el("sidebar").classList.remove("open");
   toggleMenu(false);
-  window.scrollTo({ top: 0 });
+  if (!keepScroll) window.scrollTo({ top: 0 });
+  el("wsLabel").textContent = t(`ws.${state.ws}`);
+  el("wsMenu").classList.add("hidden");
+  el("wsBtn").setAttribute("aria-expanded", "false");
   if (state.ws === "europress") {
     setAskContext({ view: "fleet", id: "FLEET", page: view, name: "Europress" });
     if (isSensorView(view)) return renderSensor(view, arg);
@@ -343,7 +329,7 @@ async function route() {
     else {
       const pv = periodView(state.customer);
       RENDER[view]?.(pv);
-      el(`view-${view}`).querySelectorAll("[data-period]").forEach((c) => renderPeriodPicker(c, state.customer, route));
+      renderPickers(view);
     }
   }
 }
@@ -399,9 +385,14 @@ function bindGlobal() {
   document.addEventListener("keydown", (e) => { if (e.key === "Escape") { closePanels(); toggleMenu(false); } });
   el("menuBtn").addEventListener("click", (e) => { e.stopPropagation(); el("sidebar").classList.toggle("open"); });
   el("gauge").addEventListener("click", () => openTrace(state.customer.kpis.avg_fill, t("kpi.avg_fill"), "kpis.avg_fill"));
-  el("weightWrap").addEventListener("click", () => openTrace(state.customer.weight.trace, t("card.weight"), "weight"));
-  window.addEventListener("hashchange", route);
+  window.addEventListener("hashchange", () => route());
   document.querySelectorAll(".ws button").forEach((b) => b.addEventListener("click", () => { location.hash = WS_HOME[b.dataset.ws]; }));
+  el("wsBtn").addEventListener("click", (e) => {
+    e.stopPropagation();
+    const open = el("wsMenu").classList.toggle("hidden") === false;
+    el("wsBtn").setAttribute("aria-expanded", String(open));
+  });
+  document.addEventListener("click", () => { el("wsMenu").classList.add("hidden"); el("wsBtn").setAttribute("aria-expanded", "false"); });
   document.addEventListener("click", (e) => {
     const b = e.target.closest("[data-info]");
     if (!b) return;
@@ -421,7 +412,6 @@ async function init() {
   initAi();
   setAskHandler((question, focus) => { closePanels(); openAi(question, focus); });
   bindGlobal();
-  renderWeightModel(state.index.weight_model);
   state.customer = await getJson(`/data/customers/${start}.json`);
   initNotifications();
   setNotifications(state.customer, openNotification);

@@ -217,14 +217,14 @@ export async function renderWeightHero(root, p, dayLabel) {
 
 addStrings({
   en: {
-    "wh.title": "Your waste right now", "wh.by": "Weighed by Europress SMART AI",
+    "wh.title": "Live container weight", "wh.by": "Weighed by Europress SMART AI",
     "wh.now": "In your containers now", "wh.nowSub": "{n} of {m} machines weighed by the model",
     "wh.next": "Next 7 days of pickups", "wh.nextSub": "{n} pickups · first {date}", "wh.noPickups": "No pickups in the next 7 days",
     "wh.cost": "Expected charges, next 7 days", "wh.costSub": "Predicted weight × your price per tonne",
     "wh.trust": "Our weight estimate matched the weighbridge within ±5 % on {pct} % of pickups.", "wh.see": "See each machine →",
   },
   fi: {
-    "wh.title": "Jätteesi juuri nyt", "wh.by": "Punninnut Europress SMART AI",
+    "wh.title": "Säiliöiden paino nyt", "wh.by": "Punninnut Europress SMART AI",
     "wh.now": "Säiliöissäsi nyt", "wh.nowSub": "Malli punnitsee {n}/{m} laitetta",
     "wh.next": "Tyhjennykset seuraavat 7 päivää", "wh.nextSub": "{n} tyhjennystä · ensimmäinen {date}", "wh.noPickups": "Ei tyhjennyksiä seuraavan 7 päivän aikana",
     "wh.cost": "Odotetut veloitukset, 7 päivää", "wh.costSub": "Ennustettu paino × tonnihintasi",

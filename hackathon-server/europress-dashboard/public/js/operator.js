@@ -1,5 +1,5 @@
 // "For waste operators" view: forecast workload, expected tonnes, fill-at-pickup, renewals.
-import { t, fmt, date, sector } from "./i18n.js";
+import { t, fmt, date, sector, addStrings } from "./i18n.js";
 import { opStreamChart, histChart, regionChart } from "./charts.js";
 import { esc, openTrace } from "./drawer.js";
 

@@ -81,12 +81,11 @@ export function compactorSvg(m, { label = true } = {}) {
       ${brackets}
       <circle cx="${P0 - 5}" cy="${bot + 9}" r="5" class="mc-dark"/><circle cx="${C1 - 2}" cy="${bot + 9}" r="5" class="mc-dark"/>
       <!-- hook-lift A-frame with hook -->
-      <rect x="${P0 - 10}" y="52" width="7" height="${bot - 52}" class="mc-press"/>
+      <rect x="${P0 - 10}" y="52" width="10" height="${bot - 52}" class="mc-press"/>
       <path d="M${P0 - 6.5} 52v-5a4 4 0 1 1 8 0v3" class="mc-line"/>
       <!-- press unit: sloped hopper lid, service door, control panel with E-stop -->
       <path d="M${P0} ${bot}V60L${C0 - 10} 46V${bot}Z" class="mc-press"/>
-      <path d="M${P0 - 3} 59.5L${C0 - 10} 44.5" class="mc-lid"/>
-      <line x1="${P0}" x2="${C0 - 10}" y1="84" y2="84" class="mc-line"/>
+      <path d="M${P0} 59.5L${C0 - 10} 44.5" class="mc-lid"/>
       <rect x="${P0 + 5}" y="65" width="14" height="27" rx="1" class="mc-line"/>
       <rect x="${P0 + 26}" y="63" width="25" height="14" rx="2" class="mc-dark"/>
       <circle cx="${P0 + 32}" cy="70" r="2.6" class="mc-socket"/><circle cx="${P0 + 44}" cy="70" r="3.2" class="mc-estop"/>
@@ -96,7 +95,6 @@ export function compactorSvg(m, { label = true } = {}) {
         ${m.stream === "mixed_waste" ? `<rect x="${C0}" y="${level}" width="${L}" height="${bot - level}" fill="url(#${id}-h)"/>` : ""}
       </g>
       <line x1="${C0}" x2="${C1}" y1="${target}" y2="${target}" class="mc-pickup"/>
-      <text x="${C0 + 4}" y="${target - 3}" class="mc-pickup-label">${PICKUP_LINE} %</text>
       <!-- container shell, bands, rear door, hinges, lock -->
       <path d="${shell}" class="mc-body"/>
       <path d="M${C0} ${top + 7}L${C1 - 7} ${top - rise + 7}H${C1}" class="mc-line"/>
