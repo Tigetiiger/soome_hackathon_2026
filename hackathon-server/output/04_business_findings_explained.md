@@ -323,7 +323,7 @@ Each phase has a clear test. **If the test fails, we stop** rather than keep spe
 | **3. Platform** | 2029 onwards | The operator data feed at scale, plus anonymous statistics on waste flows. A statistic is only published if it covers at least 5 customers, so nobody can be identified. | Every contract includes consent under the EU Data Act, and a competition-law review is passed. |
 
 - **Cost to start:** about 2–3 full-time people for 6 months (working with Vincit), plus €34–63k for the reference-group scales (10 machines × €3.4–6.3k).
-- **Worst case:** because of the stop sign after Phase 0, the most Europress could lose is the Phase 0 budget, about **€211–267k** (itemised in `05_business_plan_addon.md` §6) [E].
+- **Worst case:** because of the stop sign after Phase 0, the most Europress could lose is the Phase 0 budget, about **€206–252k** (itemised in `05_business_plan_addon.md` §6) [E].
 
 ---
 

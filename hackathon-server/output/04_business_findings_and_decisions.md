@@ -186,7 +186,7 @@ Full source documents are in `business_sources/`.
 | 3 Platform | 2029+ | Operator feed at scale; anonymised material-flow index (≥5 customers per cell) | EU Data Act consent in every contract; competition-law review passed |
 
 - **Cost to start:** ~2–3 FTE for 6 months (with Vincit), plus €34–63k for the golden cohort (10 × €3.4–6.3k).
-- **Downside:** capped by the Phase 0 gate at the Phase 0 budget, ≈ €211–267k, itemised in `05_business_plan_addon.md` §6 [E].
+- **Downside:** capped by the Phase 0 gate at the Phase 0 budget, ≈ €206–252k, itemised in `05_business_plan_addon.md` §6 [E].
 
 ## 9. Operator stance (critical)
 

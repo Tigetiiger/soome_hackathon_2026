@@ -175,7 +175,7 @@ details.why .alt b{color:var(--ink-3)}
       <li>Fixed rules make every decision, Claude only writes the explanations with citations, and a person approves anything that leaves the system, so the weight stays a <b>neutral second opinion</b> and never becomes a bill.</li>
       <li>The Answers tier is <b>free</b> as a hook for the roughly 85 % of customers not yet on SMART, Verified Weight is included in SMART Insights, whose price rises by <b>€15 per machine per month</b> (€12 in a lease), bought by chains and fixed-schedule customers, and operators get the feed free in exchange for sharing their tickets.</li>
       <li>Expected add-on revenue is about <b>€0.9M a year by 2029</b>, but the real case for Europress is stickier SMART subscriptions and service contracts, which turn a negative stand-alone NPV into a positive one.</li>
-      <li>The roadmap starts with <b>software only in November 2026</b>, runs a €0 test of archived pressure data against tickets before any hardware is bought, and stops at any phase gate that fails, so the most Europress can lose is the Phase 0 budget of about €270k.</li>
+      <li>The roadmap starts with <b>software only in November 2026</b>, runs a €0 test of archived pressure data against tickets before any hardware is bought, and stops at any phase gate that fails, so the most Europress can lose is the Phase 0 budget of about €206–252k.</li>
     </ol>
   </div>
   <div class="stats">
@@ -263,7 +263,7 @@ details.why .alt b{color:var(--ink-3)}
 <section class="sec" id="addon">
   <div class="sec-head"><p class="eyebrow">2 · The add-on</p><h2>Seven modules on one data spine</h2>
   <p class="prose">Every module reads the same data: SMART telemetry, the weight estimate, weather, operator tickets and contracts. Fixed rules make every decision. Claude only explains and drafts, and a person approves anything that leaves the system. Each module has a buyer and a price, or a clear reason to be free.</p></div>
-  <details class="why" open><summary>Why seven modules on one spine, and why three of them are free</summary><div class="wb"><p><b>One spine</b> because every module needs the same five inputs. Building them as separate products would mean five copies of the same pipeline, and the demo dashboard already has the traced-JSON pipeline the spine extends.</p><p><b>Seven modules</b> because each maps to one voiced problem in section 1 and has its own buyer. Fewer would bundle buyers with different budgets; more would be features, not modules.</p><p><b>Free where the buyer would not pay.</b> Answers (M2) is free because the median practice-data customer saves €0, and it is the hook for the ~85 % of machines not on SMART. Sales briefs (M3) are internal because one extra percentage point of SMART adoption pays more than any licence. The operator feed (M4) is free for operators who share tickets, because Europress told us it does not sell data, and the tickets are what calibrates the weight.</p><p>Each card below carries a one-line <b>Why</b> of its own.</p><p class="alt"><b>Rejected:</b> customer invoice upload with AI reading (Tommi: point-to-point links with thousands of customers are "probably not feasible"; the ~20 operators are the integration point). Our own contamination detection (licensed vision models exist). Automatic actions without approval. A headline about recovering overbilling. The name "TrueLoad", which is already a truck-overload product.</p></div></details>
+  <details class="why" open><summary>Why seven modules on one spine, and why three of them are free</summary><div class="wb"><p><b>One spine</b> because every module needs the same five inputs. Building them as separate products would mean five copies of the same pipeline, and the demo dashboard already has the traced-JSON pipeline the spine extends.</p><p><b>Seven modules</b> because each maps to one voiced problem in section 1 and has its own buyer. Fewer would bundle buyers with different budgets; more would be features, not modules.</p><p><b>Free where the buyer would not pay.</b> Answers (M2) is free because, for the median practice-data contract, weight unlocks €0 of contract or billing value (most customers can still save with the ordinary SMART levers), and it is the hook for the ~85 % of machines not on SMART. Sales briefs (M3) are internal because one extra percentage point of SMART adoption pays more than any licence. The operator feed (M4) is free for operators who share tickets, because Europress told us it does not sell data, and the tickets are what calibrates the weight.</p><p>Each card below carries a one-line <b>Why</b> of its own.</p><p class="alt"><b>Rejected:</b> customer invoice upload with AI reading (Tommi: point-to-point links with thousands of customers are "probably not feasible"; the ~20 operators are the integration point). Our own contamination detection (licensed vision models exist). Automatic actions without approval. A headline about recovering overbilling. The name "TrueLoad", which is already a truck-overload product.</p></div></details>
   <div class="grid g2 mods" id="modules"></div>
 
   <div class="sub3">
@@ -486,10 +486,10 @@ flowchart LR
   </table></div>
   <div class="grid g2" style="align-items:start">
     <div class="card"><h3>Add-on revenue by year, three cases <span class="tag">estimate</span></h3><div class="chart" id="arrChart"></div>
-      <p style="font-size:14px">Expected 2029: Verified Weight on 3,000 machines €540k, 8 chain licences €160k, Proof of Fullness €90k, Operator Pro €60k, quality cameras €60k. That is about €0.91M. The subscription alone breaks even over 6 years (NPV +€0.01M). With +5 pp service-contract renewals and SMART upsell it reaches +€0.58M expected. The board message is that weight makes SMART and service stickier.</p></div>
+      <p style="font-size:14px">Expected 2029: Verified Weight on 3,000 machines €540k, 8 chain licences €160k, Proof of Fullness €90k, Operator Pro €60k. That is about €0.85M (quality cameras are roadmap only and not counted). The subscription alone breaks even over 6 years (NPV +€0.01M). With +5 pp service-contract renewals and SMART upsell it reaches +€0.58M expected. The board message is that weight makes SMART and service stickier.</p></div>
     <div class="card"><h3>Phase 0 budget, Q1–Q2 2027</h3>
       <div class="tbl" style="border:0"><table style="min-width:0"><tbody id="budgetRows"></tbody></table></div>
-      <p style="font-size:14px">The reference-cohort line corrects the earlier €10–19k estimate, which predates the bill of materials. If the Phase 0 gate fails we stop, so the most Europress can lose is about €270k. Business Finland can fund part of it, through circular-economy investment aid or the DUT 2026 call (€200–500k per Finnish sub-consortium).</p></div>
+      <p style="font-size:14px">The reference-cohort line corrects the earlier €10–19k estimate, which predates the bill of materials. If the Phase 0 gate fails we stop, so the most Europress can lose is about €206–252k. Business Finland can fund part of it, through circular-economy investment aid or the DUT 2026 call (€200–500k per Finnish sub-consortium).</p></div>
   </div>
   <div class="grid g3">
     <div class="card"><h3>Unit economics per machine</h3><dl class="kv"><dt>Price</dt><dd>Insights +€180/yr list, +€144 in a lease</dd><dt>Run cost</dt><dd>≈ €15/yr compute and support, ≈ €1–3/yr Claude, €0 weather (FMI)</dd><dt>Gross margin</dt><dd>≈ 78–82 %</dd><dt>Break-even</dt><dd>≈ 3,100 paying machines</dd></dl></div>
@@ -520,13 +520,13 @@ flowchart LR
 <section class="sec" id="roadmap">
   <div class="sec-head"><p class="eyebrow">9 · Roadmap with stop signs</p><h2>Ship software first, prove weight next, then scale</h2>
   <p class="prose">Each phase has a test. If the test fails, we stop rather than keep spending.</p></div>
-  <details class="why" open><summary>Why software first, Finland first, and a stop sign at every phase</summary><div class="wb"><p><b>Software first</b> because Sprint 0 runs on data SMART already collects and costs nothing in hardware. It proves two things before any money is spent: that salespeople use the briefs, and that archived pressure curves predict ticket weights. If either fails, the plan changes while it is still cheap.</p><p><b>Finland first</b> because the operators, FMI, Kiwa, Tukes and the pilot chains are all here, and the team can sit in Kerava at the test rig. Poland and Benelux come second because they are price-driven markets where Proof of Fullness fits, and Poland's BDO register gives an independent cross-check.</p><p><b>Gates</b> because the two weight studies disagree. A fixed roadmap would commit €270k on a number that may be wrong. With gates, the most Europress can lose is the Phase 0 budget, and each gate's test is a number already defined in section 1.</p><p>Certified T3 weighing comes last because it only pays for customers who want to bill from their own scale, and because verification needs a product that already exists.</p><p class="alt"><b>Rejected:</b> starting with hardware (the intuitive order for a machine company, and the expensive one), and launching all markets together.</p></div></details>
+  <details class="why" open><summary>Why software first, Finland first, and a stop sign at every phase</summary><div class="wb"><p><b>Software first</b> because Sprint 0 runs on data SMART already collects and costs nothing in hardware. It proves two things before any money is spent: that salespeople use the briefs, and that archived pressure curves predict ticket weights. If either fails, the plan changes while it is still cheap.</p><p><b>Finland first</b> because the operators, FMI, Kiwa, Tukes and the pilot chains are all here, and the team can sit in Kerava at the test rig. Poland and Benelux come second because they are price-driven markets where Proof of Fullness fits, and Poland's BDO register gives an independent cross-check.</p><p><b>Gates</b> because the two weight studies disagree. A fixed roadmap would commit about €206–252k on a number that may be wrong. With gates, the most Europress can lose is the Phase 0 budget, and each gate's test is a number already defined in section 1.</p><p>Certified T3 weighing comes last because it only pays for customers who want to bill from their own scale, and because verification needs a product that already exists.</p><p class="alt"><b>Rejected:</b> starting with hardware (the intuitive order for a machine company, and the expensive one), and launching all markets together.</p></div></details>
   <div class="timeline" id="timeline"></div>
 </section>
 
 <section class="sec" id="risks">
   <div class="sec-head"><p class="eyebrow">10 · Risks and how we measure success</p><h2>What could go wrong, and the numbers we watch</h2></div>
-  <details class="why" open><summary>Why the risk list leads with our own study, and how the KPIs were chosen</summary><div class="wb"><p>The first risk is the one we created: our simulator says 5.3 % mean error on machines the model never saw, and our hardware study finds pressure-only estimates off by about 29 % at the 95th percentile. Listing it first, with a €0 test as the mitigation, is more useful to Europress than a list that starts with the weather.</p><p>"The median customer saves €0" is marked high because it is the one risk the practice data already confirms. Everything in the pricing follows from it.</p><p>The KPIs are in three groups because three people own them: the business ones belong to sales, the weight ones to engineering, and the customer-outcome ones to SMART Center. Each is a number already on a dashboard, so nobody has to build a report to track it.</p><p class="alt"><b>Rejected:</b> a risk-score matrix (false precision on a plan built on synthetic data).</p></div></details>
+  <details class="why" open><summary>Why the risk list leads with our own study, and how the KPIs were chosen</summary><div class="wb"><p>The first risk is the one we created: our simulator says 5.3 % mean error on machines the model never saw, and our hardware study finds pressure-only estimates off by about 29 % at the 95th percentile. Listing it first, with a €0 test as the mitigation, is more useful to Europress than a list that starts with the weather.</p><p>"Weight unlocks €0 for the median contract" is marked high because it is the one risk the practice data already confirms. Everything in the pricing follows from it.</p><p>The KPIs are in three groups because three people own them: the business ones belong to sales, the weight ones to engineering, and the customer-outcome ones to SMART Center. Each is a number already on a dashboard, so nobody has to build a report to track it.</p><p class="alt"><b>Rejected:</b> a risk-score matrix (false precision on a plan built on synthetic data).</p></div></details>
   <div class="tbl"><table><thead><tr><th>Risk</th><th>Likelihood</th><th>Mitigation</th></tr></thead><tbody id="riskRows"></tbody></table></div>
   <div class="grid g3" id="kpis"></div>
 </section>
@@ -582,7 +582,7 @@ const MODS = [
     shows: "Five cards as the Customer home; drill-down to the formula and rows; a monthly four-sentence email; an email on the day a card turns red.",
     build: "pipeline/answers.py (rules, writes an answers block per customer); public/js/answers.js (cards and drill-down); one mail template sent by the nightly build through the SMART portal mailer. No new data. 3 weeks.",
     for_: "Customer", price: "Free in SMART Intro (the hook)", kpi: "Cards opened; Intro → Insights",
-    why: "Tommi's five questions as the home page, because 60–70 % of information is ignored and users do not ask. Free because the median customer saves €0 and would not pay." },
+    why: "Tommi's five questions as the home page, because 60–70 % of information is ignored and users do not ask. Free because, for the median contract, weight unlocks €0 of contract or billing value, so the median customer would not pay for it." },
   { id: "M3", name: "Sales briefs", what: "Every night, rules rank customers by trigger. Claude drafts three sentences with citations, and a salesperson approves before it goes to the CRM.",
     reads: "The answers block and the sales rules the dashboard already has: order levels still below 75 %, timetable trucks finding machines half-empty, mixed waste rising, contract notice within 90 days, machines standing full for hours.",
     does: "Rules rank customers by euros at stake. For the top of the list, Claude drafts three sentences in the same read-only sandbox the advisor uses today (Read, Glob and Grep over the customer's JSON only). Each sentence must end with a citation path such as levers.early_lift; a checker resolves every path and drops any sentence that fails.",
@@ -609,7 +609,7 @@ const MODS = [
     does: "Accepted vs rejected per machine and stream, average contamination, hotspots, and an insight when more than 3 % of a customer's loads are rejected (fleet average 2 %). Stage 2 adds a score per load from a licensed vision model running on the camera.",
     shows: "A quality panel on the Weight & quality tab; “what to sort better” from the advisor; a quality-feedback page for operators.",
     build: "Stage 1: a pipeline join and two Chart.js charts, 1 week. Stage 2 (2028): a camera kit on LTE-M, €300–800 per machine, with a WasteVision or Greyparrot model.",
-    for_: "Customer, operator", price: "Camera tier €25 per machine per month (2028)", kpi: "Rejected loads ↓; mixed share ↓",
+    for_: "Customer, operator", price: "Stage 2 priced after a camera pilot (2028+); not in the revenue plan", kpi: "Rejected loads ↓; mixed share ↓",
     why: "Quality is “our next exercise”. Operator grades already exist in the data, so stage 1 needs no hardware; cameras wait until rejection fees justify them." },
   { id: "M7", name: "Reporting pack", what: "One-click export of tonnes by stream and treatment, recycling rate and transport CO₂, in ESRS E5, GHG Scope 3 (category 5) and BDO formats.",
     reads: "Traced tonnes by stream; treatment codes from tickets; billable km per site; the emission factor (shown as a range until Statistics Finland publishes one).",
@@ -798,7 +798,7 @@ rows("tierRows", [
   ["T1 · Cheap sensors + tickets", "Oil-temperature probe, lid switch, hopper temperature/humidity; operator tickets as anchors; drift alarm", "€60–130", "≈ 3.6 % median per pickup after 5 tickets (virtual-scale study) <span class=\"tag\">simulated</span>; cannot see a constant operator bias", "estimate", "machines at ticket-sharing operators"],
   ["T2 · Reference cohort", "4 × IP68 C3 shear-beam load cells under the supports, read at rest, automatic tare", "€3.4–6.3k (mid €4.85k)", "P95 ≈ 2.3 %; 98 % of 3 t loads within ±100 kg <span class=\"tag\">simulated</span>", "verification", "≈ 5 machines per operator × region (2–5 % of the fleet)"],
   ["T3 · Certified", "As T2, with OIML-approved cells, indicator and tilt sensor; Kiwa verification", "€5.4–10k + €150–400/yr", "P95 ≈ 1.4 % <span class=\"tag\">simulated</span>", "billing", "customers who want to bill by their own scale"],
-  ["Quality camera", "Hopper camera + edge AI, with a licensed model (e.g. WasteVision, Greyparrot)", "≈ €300–800 hardware <span class=\"tag\">assumption</span>", "contamination score per load", "estimate", "mixed waste and plastics only"],
+  ["Quality camera", "Hopper camera + edge AI, with a licensed model (e.g. WasteVision, Greyparrot)", "≈ €300–800 hardware <span class=\"tag\">assumption</span>", "contamination score per load", "roadmap (2028+)", "mixed waste and plastics only; not in Phase 0"],
 ], (r) => `<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="n">${r[2]}</td><td>${r[3]}</td><td><span class="pill ${r[4] === "estimate" ? "mute" : r[4] === "verification" ? "info" : "good"}">${r[4]}</span></td><td>${r[5]}</td></tr>`);
 
 rows("compRows", [
@@ -807,7 +807,7 @@ rows("compRows", [
   ["Orwak Connect", "Full-bale and service alerts in a portal", "Built-in scale, as a premium option", "on request", "Scales are sold as hardware, not as a service"],
   ["Marathon / 3rd Eye Connected Compactor", "Fill, status, location, utilisation", "No", "on request", "US benchmark; no weight"],
   ["Sensoneo, Nordsense, Enevo", "Ultrasonic fill sensors + SaaS", "No", "Nordsense ≈ DKK 1,000 per sensor per year", "Customers accept a per-sensor subscription"],
-  ["Compology (RoadRunner)", "AI camera inside the container, contamination score", "No", "≈ $30 per camera per month (cities)", "Price anchor for our camera tier"],
+  ["Compology (RoadRunner)", "AI camera inside the container, contamination score", "No", "≈ $30 per camera per month (cities)", "Price anchor for a future camera tier"],
   ["WasteHero (office in Turku), AMCS, Ecomond", "Operator ERP, routing, billing", "Uses truck or weighbridge weights", "B2B SaaS", "Integration partners for the operator feed"],
   ["Tamtron onboard scales", "Legal-for-trade truck scales (Urbaser 40+ trucks, Remeo 17)", "Yes, the operator's", "≈ $15–20k per truck (Rice Lake benchmark)", "Certified ground truth for calibration"],
   ["Stena and L&T customer portals", "Operator portals with CO₂ and CSRD exports", "Yes, from the operator's own tickets", "Stena CO2 Impact is a paid service", "Customers already expect ESG exports"],
@@ -819,12 +819,12 @@ rows("priceRows", [
   ["Proof of Fullness", "price-driven markets (Poland, Benelux)", "Insights", "25 % of verified savings in year 1", "Paid only from money already saved"],
   ["Reporting pack, benchmark, procurement briefs", "chains, sustainability teams", "Integrated", "€10–40k per chain per year", "Replaces consultant time"],
   ["Operator feed", "waste operators", "Operator API", "free with ticket sharing; Pro €500/month", "A trade, not a data sale"],
-  ["Quality camera tier", "mixed and plastic machines with rejection fees", "Insights add-on", "€25 per machine per month", "Below Compology's ≈ $30"],
+  ["Quality cameras (roadmap)", "mixed and plastic machines with rejection fees", "2028+, after a pilot", "priced after the pilot", "Compology's ≈ $30 per camera per month is the ceiling"],
   ["Reference or certified scale", "where the value exceeds the cost", "lease + service", "Europress's current platform price, on the lease", "Outside the add-on economics; Europress already sells the platform"],
 ], (r) => `<tr><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td><td>${esc(r[4])}</td></tr>`);
 
 function drawArr() {
-  const yrs = ["2027", "2028", "2029"], S = [["Pessimistic", [0.05, 0.15, 0.26], "--line-strong"], ["Expected", [0.15, 0.5, 0.91], "--ink"], ["Optimistic", [0.3, 1.0, 2.1], "--mark"]];
+  const yrs = ["2027", "2028", "2029"], S = [["Pessimistic", [0.05, 0.15, 0.26], "--line-strong"], ["Expected", [0.15, 0.5, 0.85], "--ink"], ["Optimistic", [0.3, 1.0, 2.1], "--mark"]];
   const W = 460, H = 230, L = 46, B = 28, T = 16, max = 2.2, gw = (W - L - 10) / 3, bw = gw / 4.2, y = (v) => T + (1 - v / max) * (H - T - B);
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Add-on revenue by scenario, 2027 to 2029">`;
   [0, 0.5, 1, 1.5, 2].forEach((v) => s += `<line x1="${L}" x2="${W - 10}" y1="${y(v)}" y2="${y(v)}" stroke="${css("--line")}"/><text x="${L - 6}" y="${y(v) + 4}" text-anchor="end">€${v}M</text>`);
@@ -836,9 +836,8 @@ rows("budgetRows", [
   ["Kerava load-cell test rig (DUO + COMBI, 3 t of test weights)", "€15–30k"],
   ["Reference cohort: 10 machines × T2 load cells", "€34–63k"],
   ["Cheap sensor kits on 50 pilot machines", "€4–6k"],
-  ["Camera pilot: 3 hopper cameras + model licence", "€5–15k"],
   ["Cloud, Claude, map tiles (FMI weather is free)", "≈ €3k"],
-  ["<b>Total</b>", "<b>≈ €211–267k</b>"],
+  ["<b>Total</b>", "<b>≈ €206–252k</b>"],
 ], (r) => `<tr><td>${r[0]}</td><td class="n">${r[1]}</td></tr>`);
 
 rows("partnerRows", [
@@ -871,16 +870,16 @@ rows("commsRows", [
 
 $("#timeline").innerHTML = [
   ["Sprint 0", "Nov 2026 – Jan 2027", "Software only, on existing SMART data: Answers cards, Sales briefs, FMI weather pipeline, fleet map, and a quality panel from operator grades. Phase 0a: run archived SMART pressure curves against shared tickets (€0).", "Phase 0a shows the soft sensor is at least 30 % better than fill only, and 5 salespeople use briefs every week."],
-  ["Phase 0 · Pilot", "Q1–Q2 2027", "Kerava load-cell rig. 10 reference machines (T2) and 50 soft-sensor machines at 1–2 chains. One operator feed live in that operator's ERP. 3 hopper cameras on mixed waste.", "Monthly weight error ≤ 6 %, at least one operator shares tickets, and customers say they would pay ≥ €12."],
+  ["Phase 0 · Pilot", "Q1–Q2 2027", "Kerava load-cell rig. 10 reference machines (T2) and 50 soft-sensor machines at 1–2 chains. One operator feed live in that operator's ERP.", "Monthly weight error ≤ 6 %, at least one operator shares tickets, and customers say they would pay ≥ €12."],
   ["Phase 1 · Finland launch", "H2 2027", "Answers and the weight preview on every SMART machine. Verified Weight in Insights, Operator Pro, and the reporting pack for chains.", "≥ 10 % of Insights machines buy Verified Weight, and no operator complains at senior level."],
-  ["Phase 2 · Poland, Benelux, quality", "2028", "Proof of Fullness on gain-share, cross-checks against Poland's BDO register, and the camera tier on mixed waste and plastics.", "≥ 30 % of pilot sites move to on-call pickups, and the camera tier cuts rejected loads."],
+  ["Phase 2 · Poland, Benelux, quality", "2028", "Proof of Fullness on gain-share, cross-checks against Poland's BDO register, and a first quality-camera pilot on mixed waste and plastics.", "≥ 30 % of pilot sites move to on-call pickups, and the camera pilot cuts rejected loads."],
   ["Phase 3 · Platform", "2029 onwards", "The operator feed at scale; anonymised material-flow statistics (at least 5 customers per cell); certified T3 for customers who want to bill by their own scale.", "Data Act consent in every contract, and a competition-law review passed."],
 ].map((p) => `<div class="phase"><div><h3>${p[0]}</h3><p class="when">${p[1]}</p></div><div style="display:grid;gap:8px"><p style="color:var(--ink-2);font-size:15px">${esc(p[2])}</p><p class="gate"><b>Go on only if:</b> ${esc(p[3])}</p></div></div>`).join("");
 
 rows("riskRows", [
   ["The soft sensor does worse on real machines than in simulation (our two studies disagree)", "medium", "Run the €0 Phase 0a test first; keep a reference cohort; publish the monthly error; fall back to T1/T2 where needed"],
   ["Operators see the product as a weapon", "medium", "Operators hear findings first; neutral wording; free feed; operator council"],
-  ["The median customer saves €0 and won't pay", "high", "Free Answers tier; charge only chains and fixed-schedule customers"],
+  ["Weight unlocks €0 for the median contract, so the median customer won't pay for it", "high", "Free Answers tier; charge only chains and fixed-schedule customers"],
   ["Claude tells a customer something wrong", "low", "Rules decide and Claude only explains, with citations; a person approves; read-only sandbox (already security-reviewed)"],
   ["Weather API terms change or the service goes down", "low", "FMI (CC BY 4.0) as primary, MET Norway as fallback; cached daily features; without weather the model barely degrades (+0.01 pp error)"],
   ["Camera privacy (GDPR)", "medium", "Camera points only into the hopper; processing on the device; people blurred; only scores kept, never images"],
@@ -916,7 +915,7 @@ $("#buildOrder").innerHTML = [
   ["8 · Operator feed and ticket upload", "Weeks 9–12", "The /api/operator/feed route with tokens, rate limit and audit log; the ticket-upload endpoint; AMCS and WasteHero mappings; the data-sharing agreement.", "One operator's planning system receives the feed daily and its tickets flow back and appear as anchors in the weight engine."],
   ["9 · Login, scopes and consent", "Weeks 10–14 · Vincit", "SMART portal SSO; roles for customer, operator and Europress; consent flags per contract under the EU Data Act.", "Each role sees only its own data in a penetration test, and the advisor sandbox still has no write access."],
   ["10 · Reporting pack", "Weeks 12–14", "pipeline/reports.py and the ESRS E5, Scope 3 and BDO templates; the Reports tab.", "A quarter's export for the demo chain reconciles to the dashboard's tonnes and CO₂ to the kilogram."],
-  ["11 · Phase 0 hardware", "Q1–Q2 2027", "The Kerava load-cell rig, 10 T2 reference machines, 50 soft-sensor machines at one or two chains, 3 hopper cameras. See section 9.", "The Phase 0 gate: monthly weight error ≤ 6 %, one operator sharing tickets, customers saying they would pay at least €12."],
+  ["11 · Phase 0 hardware", "Q1–Q2 2027", "The Kerava load-cell rig, 10 T2 reference machines, 50 soft-sensor machines at one or two chains. See section 9.", "The Phase 0 gate: monthly weight error ≤ 6 %, one operator sharing tickets, customers saying they would pay at least €12."],
 ].map((p) => `<div class="phase"><div><h3>${esc(p[0])}</h3><p class="when">${esc(p[1])}</p></div><div style="display:grid;gap:8px"><p style="color:var(--ink-2);font-size:15px">${esc(p[2])}</p><p class="gate"><b>Done when:</b> ${esc(p[3])}</p></div></div>`).join("");
 
 rows("decRows", [
@@ -925,11 +924,11 @@ rows("decRows", [
   ["Position the weight as a neutral second opinion, never a billing basis", "Legal-for-trade weighing", "NAWI and MID rules; in the practice data most device-vs-ticket gaps had weighbridge-side causes", "Legal review; practice data"],
   ["Rules decide, Claude explains with citations, a person approves", "ML-first scoring; automatic actions", "Rules beat the classifier on the benchmark (macro-F1 0.73 vs 0.35); auditable; operator trust", "Team output 04"],
   ["Answers before reports: five cards from Tommi's framework as the customer home", "Charts and reports first; chat-first home", "\"Simplify, simplify, simplify\"; 60–70 % of information is ignored; \"instructions for dummies\"", "Second briefing"],
-  ["Free tier for the median customer; charge chains and fixed-schedule customers", "Charge every SMART customer", "The median practice-data contract saves €0; the free tier is the hook for the ~85 % not on SMART", "Practice data"],
+  ["Free tier for the median customer; charge chains and fixed-schedule customers", "Charge every SMART customer", "For the median practice-data contract, weight unlocks €0 of contract or billing value (most customers still save with the SMART levers); the free tier is the hook for the ~85 % not on SMART", "Practice data"],
   ["Weight included in SMART Insights; Insights +€15 list, +€12 in a lease", "€8 (draft plan), €10, €25", "Fee ≤ ⅓ of value; at €8 the contribution is ≈ €3.20 and break-even needs ≈ 3,500 machines; matches the parallel session", "Plan 04 §6"],
   ["Board pitch is stickier SMART and service, not a new revenue line", "Sell it as new revenue", "The subscription alone breaks even (6-year NPV +€0.01M); with retention and upsell +€0.58M", "CFO lens, plan 04"],
   ["A weight ladder T0–T3 with a small reference cohort", "Load cells on every machine; soft sensor only", "Cells cost €3.4–6.3k each; a soft sensor needs anchors; Tommi proposed the hybrid himself", "Second briefing; bill of materials"],
-  ["Publish that our two weight studies disagree, and run a €0 archive test first", "Quote the better number", "5.3 % mean on machines the model never saw and ≈ 29 % P95 for pressure-only estimates cannot both be right; real pressure curves settle it before €270k is spent", "Simulator; hardware study"],
+  ["Publish that our two weight studies disagree, and run a €0 archive test first", "Quote the better number", "5.3 % mean on machines the model never saw and ≈ 29 % P95 for pressure-only estimates cannot both be right; real pressure curves settle it before the Phase 0 budget is spent", "Simulator; hardware study"],
   ["No customer invoice upload; integrate through the ~20 operators", "Invoice upload with AI reading", "Tommi: point-to-point links with thousands of customers are \"probably not feasible\"; operators hold the tickets", "Second briefing"],
   ["Operator feed free for operators who share tickets; Pro tier paid", "Sell operator data; charge for the feed", "Europress does not sell data; the trade yields the tickets that calibrate the weight", "Kick-off briefing"],
   ["Operators hear findings first; \"overcharged\" and \"fraud\" are never written", "Customer sees the scorecard directly", "Operators are Europress customers too; backlash would stop ticket sharing; legal exposure", "Communication plan"],
@@ -942,7 +941,7 @@ rows("decRows", [
   ["Reference-cohort cost corrected to €34–63k for 10 machines", "Keep €10–19k from plan 04", "The bill of materials came later: 4 × IP68 C3 load cells per machine", "Bill of materials"],
   ["Retrofitted machines get a rough fill × density weight, labelled rough", "Leave them out", "They report only a \"full\" lamp; customers run mixed fleets and an honest rough number beats a gap", "Second briefing"],
   ["Finland first, then Poland and Benelux", "All markets at once", "Operators, FMI, Kiwa and Tukes are Finnish; Poland is price-driven with a BDO register, so gain-share fits there", "Roadmap"],
-  ["A stop gate at every phase", "A fixed roadmap", "Caps the loss at the Phase 0 budget (≈ €270k) while the weight studies disagree", "Roadmap"],
+  ["A stop gate at every phase", "A fixed roadmap", "Caps the loss at the Phase 0 budget (≈ €206–252k) while the weight studies disagree", "Roadmap"],
 ], (r, i) => `<tr><td class="num">${i + 1}</td><td><b>${esc(r[0])}</b></td><td>${esc(r[1])}</td><td>${esc(r[2])}</td><td>${esc(r[3])}</td></tr>`);
 
 function renderThemed() { drawMap(); drawWx(); drawQuality(); drawArr(); draw3d(); }

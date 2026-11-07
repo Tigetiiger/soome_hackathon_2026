@@ -107,9 +107,9 @@ LOADCELL_XY = [(0.15, -0.71), (0.15, 0.71), (6.37, -0.71), (6.37, 0.71)]
 # Sensor / label anchors in machine coordinates: key -> (group, (x, y, z))
 SENSORS = {
     "pressure": ("press", (0.470, -0.330, 1.330)),
-    "ram":      ("ram", (RAM_FACE_RETRACTED + 0.005, -0.40, RAM_Z0 + RAM_H * 0.62)),
-    "gps":      ("press", (0.820, -0.735, 1.300)),
-    "tilt":     ("press", (0.440, -0.735, 1.120)),
+    "ram":      ("ram", (RAM_FACE_RETRACTED - 0.03, -0.40, RAM_Z0 + RAM_H + 0.002)),  # top front edge
+    "gps":      ("press", (0.830, -0.775, 1.130)),
+    "tilt":     ("press", (0.420, -0.775, 1.120)),
     "door":     ("container", (6.105, -1.205, 1.330)),
     "lid":      ("side_panel", (1.990, -0.885, 1.895)),   # on the near hopper cheek
     "oiltemp":  ("press", (0.750, -0.120, 1.205)),
@@ -746,7 +746,7 @@ def build(out: Path) -> None:
             B.tube(f"hose_{side}_{k}", pts, 0.011, M["hose"], I, G)
             j += 1
     # control box behind the panel (open towards -Y; the panel is its door)
-    cb_y0, cb_y1 = -HW_PRESS + 0.012, -HW_PRESS + 0.17
+    cb_y0, cb_y1 = -HW_PRESS + 0.012, -HW_PRESS + 0.13
     cbx0, cbx1, cbz0, cbz1 = cp_x0 + 0.03, cp_x1 - 0.03, cp_z0 + 0.01, cp_z1 - 0.01
     B.box("control_box_back", cbx0, cbx1, cb_y1 - 0.01, cb_y1, cbz0, cbz1, M["plastic"], I, G, bevel=0.004)
     for nm, (x0, x1, z0, z1) in {
@@ -754,12 +754,12 @@ def build(out: Path) -> None:
         "front": (cbx0, cbx0 + 0.012, cbz0, cbz1), "rear": (cbx1 - 0.012, cbx1, cbz0, cbz1),
     }.items():
         B.box(f"control_box_{nm}", x0, x1, cb_y0, cb_y1, z0, z1, M["plastic"], I, G, bevel=0.003)
-    B.box("control_box_din_rail", cbx0 + 0.04, cbx1 - 0.04, cb_y1 - 0.025, cb_y1 - 0.01,
-          cbz0 + 0.115, cbz0 + 0.145, M["galv"], I, G, bevel=0)
-    for i in range(5):
-        xx = cbx0 + 0.20 + i * 0.055
-        B.box(f"control_box_module_{i}", xx - 0.024, xx + 0.024, cb_y1 - 0.09, cb_y1 - 0.01,
-              cbz0 + 0.07, cbz0 + 0.19, M["plastic_mid"], I, G, bevel=0.003)
+    B.box("control_box_din_rail", cbx0 + 0.12, cbx1 - 0.16, cb_y1 - 0.025, cb_y1 - 0.01,
+          cbz0 + 0.20, cbz0 + 0.23, M["galv"], I, G, bevel=0)
+    for i in range(5):   # generic DIN-rail modules (no real part types implied)
+        xx = cbx0 + 0.17 + i * 0.055
+        B.box(f"control_box_module_{i}", xx - 0.024, xx + 0.024, cb_y1 - 0.07, cb_y1 - 0.01,
+              cbz0 + 0.16, cbz0 + 0.30, M["plastic_mid"], I, G, bevel=0.003)
     B.tube("transducer_cable", [Vector(SENSORS["pressure"][1]) + Vector((0, 0, 0.03)),
                                 (0.62, -0.50, 1.37), (cbx1 - 0.05, cb_y1 - 0.01, cbz1 - 0.05)],
            0.005, M["hose"], I, G)

@@ -116,7 +116,7 @@ This means SMART Center can run it as a managed service without hiring a data te
 | 2. Poland and Benelux | 2028 | Proof of Fullness on gain-share; BDO reporting | At least 30% of pilot sites move from fixed to on-call; gain-share revenue covers cost to serve |
 | 3. Platform | 2029+ | Operator data feed at scale; anonymised material-flow index | EU Data Act consent in every contract; competition-law review passed |
 
-Starting cost is about 2–3 FTE for 6 months plus €34–63k for the 10 load-cell reference machines (10 × €3.4–6.3k installed) [E]. The full Phase 0 budget is about €211–267k, itemised in `output/05_business_plan_addon.md` §6, and the Phase 0 gate caps the downside at that budget [E].
+Starting cost is about 2–3 FTE for 6 months plus €34–63k for the 10 load-cell reference machines (10 × €3.4–6.3k installed) [E]. The full Phase 0 budget is about €206–252k, itemised in `output/05_business_plan_addon.md` §6, and the Phase 0 gate caps the downside at that budget [E].
 
 ## 5. Assumptions and what remains unproven
 

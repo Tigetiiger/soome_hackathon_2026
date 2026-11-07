@@ -1,0 +1,28 @@
+import { chromium } from 'playwright-core';
+import { writeFileSync } from 'node:fs';
+const OUT = '/home/hackathon/output/demo-video/clips/screen/explore';
+const browser = await chromium.launch({ executablePath: '/usr/bin/chromium' });
+const ctx = await browser.newContext({ viewport: { width: 1920, height: 1080 }, colorScheme: 'light' });
+await ctx.addInitScript(() => { try { localStorage.setItem('ep.lang', 'en'); localStorage.setItem('ep.plan','smart'); } catch {} });
+const page = await ctx.newPage();
+await page.addStyleTag;
+// machine page
+await page.goto('http://127.0.0.1:8080/#machine/CMP-00430'); await page.waitForTimeout(4000);
+await page.screenshot({ path: `${OUT}/machine_full2.png`, fullPage: true });
+await page.goto('http://127.0.0.1:8080/#ep-pipeline'); await page.waitForTimeout(3000);
+const leads = await page.$$eval('#salesAlerts .lead', (ls) => ls.map((l) => l.textContent.replace(/\s+/g, ' ').slice(0, 80)));
+const idx = leads.findIndex((s) => s.includes('0049'));
+console.log('lead idx', idx);
+await page.locator('#salesAlerts .lead .ans-row').nth(idx).click(); await page.waitForTimeout(1200);
+await page.screenshot({ path: `${OUT}/lead2.png` });
+const t0 = Date.now();
+const respP = page.waitForResponse((r) => r.url().includes('/api/ask'), { timeout: 300000 });
+await page.click('[data-lead="brief"]');
+const resp = await respP;
+const body = await resp.text();
+console.log('status', resp.status(), 'secs', (Date.now() - t0) / 1000);
+writeFileSync('/home/hackathon/output/demo-video/clips/screen/src/brief_cache2.sse', body);
+const req = resp.request(); writeFileSync('/home/hackathon/output/demo-video/clips/screen/src/brief_req.json', req.postData() || '');
+await page.waitForTimeout(1000);
+await page.screenshot({ path: `${OUT}/brief2.png` });
+await browser.close();

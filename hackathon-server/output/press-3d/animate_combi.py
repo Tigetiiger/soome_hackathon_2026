@@ -206,7 +206,9 @@ def project_anchors(scene, cam, res):
         dist = d.length
         hit, loc, _n, _i, obj, _m = scene.ray_cast(dg, cam_pos, d.normalized(), distance=dist)
         visible = ((not hit) or (loc - cam_pos).length > dist - 0.04 or obj.name.startswith("sensor_")
-                   or a.name.startswith("anchor_loadcell"))   # pucks show beside their feet
+                   # a load-cell puck peeks out beside its own foot plate / leg
+                   or (a.name.startswith("anchor_loadcell") and obj.name.startswith("platform_")
+                       and (loc - p).length < 0.35))
         out[a.name[len("anchor_"):]] = [round(v.x * w, 1), round((1 - v.y) * h, 1), round(v.z, 3),
                                         int(visible)]
     return out

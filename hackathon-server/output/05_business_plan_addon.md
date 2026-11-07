@@ -28,8 +28,8 @@
   - M7 Reporting pack
   
   Rules decide, Claude explains with citations, and a person approves.
-- **The money.** Expected add-on revenue is about €0.91M a year by 2029 [E]. The real value is stickier SMART and service contracts: the subscription alone breaks even over 6 years (NPV +€0.01M), and the NPV becomes +€0.58M once service retention and upsell are counted. The scale platform is sold at Europress's own price and is outside these figures (`europress_conclusions/analysis/npv_option_a.py`).
-- **Phase 0 cost.** About €211–267k, with a stop gate. The €0 first test runs archived SMART pressure curves against shared tickets.
+- **The money.** Expected add-on revenue is about €0.85M a year by 2029 [E]. The real value is stickier SMART and service contracts: the subscription alone breaks even over 6 years (NPV +€0.01M), and the NPV becomes +€0.58M once service retention and upsell are counted. The scale platform is sold at Europress's own price and is outside these figures (`europress_conclusions/analysis/npv_option_a.py`).
+- **Phase 0 cost.** About €206–252k, with a stop gate. The €0 first test runs archived SMART pressure curves against shared tickets.
 
 ## 1. What changed since 04 (from the second feedback session and new research)
 
@@ -112,7 +112,7 @@
 | T1 + cheap sensors + tickets | oil-temp probe €20–40, lid switch ~€10, hopper T/RH ~€15 [A] | €60–130 | ≈ 3.6 % median per pickup after 5 tickets (virtual-scale study) [S] | estimate |
 | T2 reference cohort | 4 × IP68 C3 load cells | €3.4–6.3k | P95 ≈ 2.3 % [S] | verification |
 | T3 certified | OIML cells, indicator, Kiwa verification | €5.4–10k + €150–400/yr | P95 ≈ 1.4 % [S] | billing |
-| Quality camera | hopper camera + edge AI | ≈ €300–800 [A] | contamination score | estimate |
+| Quality camera (roadmap, 2028+) | hopper camera + edge AI | ≈ €300–800 [A] | contamination score | not in Phase 0 or the revenue plan |
 
 **Open conflict.** Our two studies disagree. On the simulator, the soft sensor's mean error is 5.3 % on machines the model never saw (3.7 % on the same machines in later months) [S]. The separate hardware study finds pressure-only estimates off by about 29 % at the 95th percentile, because water and stiffness change the mass without changing the pressure [S]. A €0 test on archived pressure data from 10–30 machines against their tickets decides it (Phase 0a).
 
@@ -141,7 +141,7 @@ All of these products measure fill. **We found no commercial compactor "virtual 
 - Proof of Fullness: 25 % gain-share.
 - Integrated reporting pack: €10–40k per chain per year.
 - Operator feed: free with ticket sharing; Pro €500/month.
-- Camera tier: €25 per machine per month.
+- Quality cameras: roadmap only (2028+), priced after a pilot; not in the revenue below.
 - Scale on lease: Europress's current platform price (outside the add-on economics).
 
 **Revenue** [E], €M per year:
@@ -149,7 +149,7 @@ All of these products measure fill. **We found no commercial compactor "virtual 
 | Case | 2027 | 2028 | 2029 |
 |---|---|---|---|
 | Pessimistic | 0.05 | 0.15 | 0.26 |
-| Expected | 0.15 | 0.50 | 0.91 |
+| Expected | 0.15 | 0.50 | 0.85 |
 | Optimistic | 0.30 | 1.0 | 2.1 |
 
 Expected 2029 breaks down as:
@@ -157,7 +157,8 @@ Expected 2029 breaks down as:
 - 8 chain licences: €160k
 - Proof of Fullness: €90k
 - Operator Pro: €60k
-- Cameras: €60k
+
+Only the expected 2029 figure is itemised. It no longer includes quality cameras (−€60k, decided 7 Nov). The 2028 and the pessimistic and optimistic figures were never split by product and are left as first estimated.
 
 **Phase 0 budget:**
 
@@ -167,9 +168,8 @@ Expected 2029 breaks down as:
 | Kerava rig | €15–30k |
 | 10 T2 reference machines | €34–63k |
 | Sensor kits | €4–6k |
-| Camera pilot | €5–15k |
 | Cloud and LLM | ≈ €3k |
-| **Total** | **≈ €211–267k** |
+| **Total** | **≈ €206–252k** |
 
 **Funding:** Business Finland circular-economy aid, or the DUT 2026 call (€200–500k per Finnish sub-consortium).
 
@@ -211,9 +211,9 @@ The HTML version gives each partner's role, what they get and when.
 | Phase | When | What | Go on only if |
 |---|---|---|---|
 | Sprint 0 | Nov 2026–Jan 2027 | Answers, Sales briefs, FMI weather, map, quality panel; €0 archive test | Soft sensor ≥ 30 % better than fill only; 5 salespeople use briefs weekly |
-| Phase 0 pilot | Q1–Q2 2027 | Kerava rig, 10 T2 + 50 T0 machines, 1 operator feed, 3 cameras | Monthly error ≤ 6 %; one operator shares tickets; customers would pay ≥ €12 |
+| Phase 0 pilot | Q1–Q2 2027 | Kerava rig, 10 T2 + 50 T0 machines, 1 operator feed | Monthly error ≤ 6 %; one operator shares tickets; customers would pay ≥ €12 |
 | Phase 1 Finland launch | H2 2027 | Verified Weight, Operator Pro, reporting pack | ≥ 10 % Insights uptake; no senior operator complaint |
-| Phase 2 Poland, Benelux, quality | 2028 | Proof of Fullness, BDO cross-checks, camera tier | ≥ 30 % of pilot sites move to on-call |
+| Phase 2 Poland, Benelux, quality | 2028 | Proof of Fullness, BDO cross-checks, first quality-camera pilot | ≥ 30 % of pilot sites move to on-call |
 | Phase 3 platform | 2029 onwards | Feed at scale, k-anonymous statistics, T3 | Data Act consent in every contract; competition-law review passed |
 
 ## 10. Main risks
@@ -222,7 +222,7 @@ The HTML version gives each partner's role, what they get and when.
 |---|---|
 | Soft sensor worse on real machines (the study conflict) | €0 test first; reference cohort |
 | Operator backlash | Operators hear findings first |
-| Median customer saves €0 | Free tier |
+| Weight unlocks €0 for the median contract (most customers still save with the SMART levers) | Free tier |
 | LLM error | Rules decide; citations; human approval |
 | Weather API outage | FMI with MET Norway fallback |
 | Camera privacy | Hopper-only view; keep scores, not images |

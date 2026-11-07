@@ -115,7 +115,7 @@ Sources: `agents/business-strategy.md` (`analysis/pl_model.py`), `bizplan-esg-ch
 **Cost to start [E].**
 - People: about 2–3 FTE for 6 months, working with Vincit, on firmware logging, the model and the portal screens.
 - Golden cohort: €34–63k (10 × €3.4–6.3k).
-- Phase 0 budget: ≈ €211–267k in total, itemised in `output/05_business_plan_addon.md` §6. The Phase 0 gate caps the downside at that budget.
+- Phase 0 budget: ≈ €206–252k in total, itemised in `output/05_business_plan_addon.md` §6. The Phase 0 gate caps the downside at that budget.
 
 ## 7. Operator stance (critical)
 
