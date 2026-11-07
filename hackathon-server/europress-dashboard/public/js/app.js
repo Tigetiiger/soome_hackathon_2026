@@ -10,7 +10,7 @@ import { FAQ, METHOD } from "./faq.js";
 import { renderMachinesNow, machineNames } from "./machines.js";
 import { initNotifications, setNotifications, notifications, problemSolutionHtml } from "./notify.js";
 import { periodView, renderPeriodPicker, periodLabel } from "./period.js";
-import { renderCustomerWeight, renderWeightHero, titleFor } from "./sensor/customer.js";
+import { renderCustomerWeight, renderWeightHero, renderWeightTable, titleFor } from "./sensor/customer.js";
 import { renderTrends } from "./trends.js";
 import { renderAnswers } from "./answers.js";
 import { renderWeightModel } from "./weightmodel.js";
@@ -19,7 +19,7 @@ import { renderSensor, stopLive, SENSOR_VIEWS, isSensorView } from "./sensor/ind
 const el = (id) => document.getElementById(id);
 const VIEWS = ["overview", "savings", "machines", "machine", "contracts", "weight", "trends", "account", "operators", "faq",
   "ep-overview", "ep-pipeline", "ep-fleet", "ep-data", ...SENSOR_VIEWS];
-const WS_HOME = { customer: "#overview", europress: "#ep-overview", partners: "#operators" };
+const WS_HOME = { customer: "#overview", europress: "#ep-sensor", partners: "#operators" };
 const NAV_KEY = { overview: "title.overview", savings: "nav.savings", machines: "nav.machines", machine: "nav.machines", contracts: "nav.operators",
   weight: "nav.weight", trends: "nav.trends", advisor: "nav.advisor", account: "account.details", operators: "title.operator", faq: "title.faq",
   "ep-overview": "title.ep.overview", "ep-pipeline": "title.ep.pipeline", "ep-fleet": "title.ep.fleet", "ep-data": "title.ep.data",
@@ -280,7 +280,8 @@ const RENDER = {
   machines: (p) => { renderMachinesNow(el("machinesNow"), p.machines_now, { mode: state.mv.machines });
     el("machinesAsOf").textContent = p.machines_now[0] ? t("machines.asof", { date: date(p.machines_now[0].as_of) }) : ""; renderMachines(p); },
   contracts: renderContracts,
-  weight: (p) => { renderWeightModel(state.index.weight_model); weightChart(p); recyclingChart(p); densityChart(p); },
+  weight: (p) => { renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT });
+    renderWeightModel(state.index.weight_model); weightChart(p); recyclingChart(p); densityChart(p); },
   trends: (p) => renderTrends(p, state.index.assumptions.target_fill_pct),
   account: renderAccount,
 };
@@ -296,7 +297,7 @@ async function route() {
   document.querySelectorAll(".ws button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ws === state.ws)));
   document.querySelectorAll(".navitem").forEach((a) => {
     const href = a.getAttribute("href");
-    if (href === `#${view}` || (isSensorView(view) && href === "#ep-sensor") || (view === "machine" && href === "#machines")) a.setAttribute("aria-current", "page");
+    if (href === `#${view}` || (isSensorView(view) && href === "#ep-sensor") || (view === "machine" && href === "#weight")) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
   el("customerPick").classList.toggle("hidden", state.ws !== "customer" || view === "faq");

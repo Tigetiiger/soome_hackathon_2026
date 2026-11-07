@@ -25,21 +25,19 @@
     </div>
     <nav class="nav" aria-label="Main" data-ws-nav="customer">
       <a class="navitem" href="#overview"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span data-i18n="nav.overview"></span></a>
+      <a class="navitem" href="#weight"><svg viewBox="0 0 24 24"><path d="M5.5 9h13l-1.8 11H7.3z"/><circle cx="12" cy="5.5" r="2"/></svg><span data-i18n="nav.weight"></span></a>
       <a class="navitem" href="#savings"><svg viewBox="0 0 24 24"><path d="M4 16l5-5 4 4 7-7"/><path d="M15 8h5v5"/></svg><span data-i18n="nav.savings"></span></a>
       <a class="navitem" href="#machines"><svg viewBox="0 0 24 24"><rect x="4" y="7" width="16" height="12" rx="2"/><path d="M8 7V5h8v2M8 12h8M8 15.5h5"/></svg><span data-i18n="nav.machines"></span></a>
       <a class="navitem" href="#contracts"><svg viewBox="0 0 24 24"><path d="M7 3.5h7.5l4 4V20.5H7z"/><path d="M14.5 3.5v4h4M10 12h6M10 16h6"/></svg><span data-i18n="nav.operators"></span></a>
-      <a class="navitem" href="#weight"><svg viewBox="0 0 24 24"><path d="M5.5 9h13l-1.8 11H7.3z"/><circle cx="12" cy="5.5" r="2"/></svg><span data-i18n="nav.weight"></span></a>
       <a class="navitem" href="#trends"><svg viewBox="0 0 24 24"><path d="M4 19h16"/><path d="M5 15l4-4 3 3 6-7"/><path d="M15 7h3v3"/></svg><span data-i18n="nav.trends"></span></a>
-      <a class="navitem" href="#advisor" data-open-advisor><svg viewBox="0 0 24 24"><path d="M4 5.5h16v10H10l-4 3.5v-3.5H4z"/><path d="M8.5 10.5h.01M12 10.5h.01M15.5 10.5h.01"/></svg><span data-i18n="nav.advisor"></span></a>
-      <a class="navitem" href="#account"><svg viewBox="0 0 24 24"><circle cx="12" cy="8.5" r="3.5"/><path d="M5 20c.8-3.6 3.6-5.5 7-5.5s6.2 1.9 7 5.5"/></svg><span data-i18n="nav.account"></span></a>
       <a class="navitem" href="#faq"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="8.5"/><path d="M9.6 9.6a2.5 2.5 0 014.9.6c0 1.6-2.5 2-2.5 3.4M12 16.8h.01"/></svg><span data-i18n="nav.faq"></span></a>
     </nav>
     <nav class="nav hidden" aria-label="Europress" data-ws-nav="europress">
+      <a class="navitem" href="#ep-sensor"><svg viewBox="0 0 24 24"><path d="M5.5 9h13l-1.8 11H7.3z"/><circle cx="12" cy="5.5" r="2"/><path d="M9.5 15.5l2-2 1.5 1.5 2-2.5"/></svg><span data-i18n="nav.ep.sensor"></span></a>
       <a class="navitem" href="#ep-overview"><svg viewBox="0 0 24 24"><path d="M4 20V10M10 20V4M16 20v-7M21 20H3"/></svg><span data-i18n="nav.ep.overview"></span></a>
       <a class="navitem" href="#ep-pipeline"><svg viewBox="0 0 24 24"><path d="M4 5h16l-6 7v6l-4 2v-8z"/></svg><span data-i18n="nav.ep.pipeline"></span></a>
       <a class="navitem" href="#ep-fleet"><svg viewBox="0 0 24 24"><path d="M14.5 6.5a4 4 0 00-5.3 5.3L4 17l3 3 5.2-5.2a4 4 0 005.3-5.3l-2.4 2.4-2.6-.6-.6-2.6z"/></svg><span data-i18n="nav.ep.fleet"></span></a>
       <a class="navitem" href="#ep-data"><svg viewBox="0 0 24 24"><rect x="4" y="4" width="16" height="16" rx="2"/><path d="M4 10h16M4 15h16M10 4v16M15 4v16"/></svg><span data-i18n="nav.ep.data"></span></a>
-      <a class="navitem" href="#ep-sensor"><svg viewBox="0 0 24 24"><path d="M5.5 9h13l-1.8 11H7.3z"/><circle cx="12" cy="5.5" r="2"/><path d="M9.5 15.5l2-2 1.5 1.5 2-2.5"/></svg><span data-i18n="nav.ep.sensor"></span></a>
       <a class="navitem" href="#advisor" data-open-advisor><svg viewBox="0 0 24 24"><path d="M4 5.5h16v10H10l-4 3.5v-3.5H4z"/></svg><span data-i18n="nav.advisor"></span></a>
     </nav>
     <nav class="nav hidden" aria-label="Partners" data-ws-nav="partners">
@@ -146,6 +144,7 @@
 
     <!-- Weight & seasons -->
     <section class="view hidden" id="view-weight" data-view>
+      <article class="card weight-table" id="weightTable"></article>
       <article class="card" id="wmCard">
         <header class="card-head"><div class="card-title"><h2 data-i18n="wm.title"></h2></div><div class="seg wm-toggle" role="group" aria-label="Model version" id="wmToggle"></div></header>
         <div id="wmBody"></div>

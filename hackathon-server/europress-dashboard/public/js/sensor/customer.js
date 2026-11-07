@@ -16,7 +16,7 @@ let fleetPromise = null;
 
 addStrings({
   en: {
-    "cw.back": "← All machines", "cw.notice": "Weight from the SMART weight model. Demo: computed on a simulated machine of the same type and size, scaled to your fill level. The chart and past pickups show that simulated machine.",
+    "cw.back": "← Weight of all machines", "cw.notice": "Weight from the SMART weight model. Demo: computed on a simulated machine of the same type and size, scaled to your fill level. The chart and past pickups show that simulated machine.",
     "cw.now": "In the container now", "cw.nowSub": "Most likely {lo}–{hi} kg",
     "cw.next": "At the next pickup", "cw.nextSub": "{date} · when about {fill} % full",
     "cw.cost": "Expected charge", "cw.costSub": "Next pickup at your price {eurt} €/t",
@@ -27,7 +27,7 @@ addStrings({
     "cw.card": "See weight & next bill →", "cw.title": "{name} · weight", "cw.when": "When", "cw.ours": "Our estimate", "cw.ticket": "Weighbridge", "cw.diff": "Difference",
   },
   fi: {
-    "cw.back": "← Kaikki laitteet", "cw.notice": "Paino SMART-painomallista. Demo: laskettu samantyyppisellä ja -kokoisella simuloidulla laitteella ja skaalattu täyttöasteeseesi. Kaavio ja aiemmat tyhjennykset näyttävät simuloidun laitteen.",
+    "cw.back": "← Kaikkien laitteiden paino", "cw.notice": "Paino SMART-painomallista. Demo: laskettu samantyyppisellä ja -kokoisella simuloidulla laitteella ja skaalattu täyttöasteeseesi. Kaavio ja aiemmat tyhjennykset näyttävät simuloidun laitteen.",
     "cw.now": "Säiliössä nyt", "cw.nowSub": "Todennäköisesti {lo}–{hi} kg",
     "cw.next": "Seuraavassa tyhjennyksessä", "cw.nextSub": "{date} · kun noin {fill} % täynnä",
     "cw.cost": "Odotettu veloitus", "cw.costSub": "Seuraava tyhjennys hinnallasi {eurt} €/t",
@@ -134,7 +134,7 @@ function techDetails(d) {
  * @param {{name: string, eurPerT: number|null, dayLabel: (iso: string) => string}} opts
  */
 export async function renderCustomerWeight(root, m, { name, eurPerT, dayLabel }) {
-  root.innerHTML = `<a class="link" href="#machines">${esc(t("cw.back"))}</a>
+  root.innerHTML = `<a class="link" href="#weight">${esc(t("cw.back"))}</a>
     <p class="ss-notice" role="note"><span class="state" data-state="note">${esc(t("top.synthetic"))}</span>${esc(t("cw.notice"))}</p>
     <div id="cwBody"><p class="note">${esc(t("ss.loading"))}</p></div>`;
   const body = root.querySelector("#cwBody");
@@ -206,7 +206,7 @@ export async function renderWeightHero(root, p, dayLabel) {
       ${big(t("wh.cost"), eur(nextEur), "", t("wh.costSub"))}
     </div>
     <p class="wh-trust">${within != null ? `<span class="state" data-state="good">✓</span>${esc(t("wh.trust", { pct: fmt(within * 100) }))}` : ""}
-      <a class="link" href="#machines">${esc(t("wh.see"))}</a></p>
+      <a class="link" href="#weight">${esc(t("wh.see"))}</a></p>
     <p class="fine">${esc(t("cw.notice"))}</p>`;
 }
 
@@ -225,6 +225,47 @@ addStrings({
     "wh.cost": "Odotetut veloitukset, 7 päivää", "wh.costSub": "Ennustettu paino × tonnihintasi",
     "wh.trust": "Painoarviomme osui ±5 %:n sisään punnituksesta {pct} %:ssa tyhjennyksistä.", "wh.see": "Katso jokainen laite →",
   },
+});
+
+/** Weight page: one row per machine — weight now, next pickup, weight then, expected charge (→ machine page). */
+export async function renderWeightTable(root, p, { names, dayLabel }) {
+  root.innerHTML = `<header class="card-head"><div class="card-title"><h2>${esc(t("wt.title"))}</h2></div><span class="ai-badge">${esc(t("wh.by"))}</span></header>
+    <div class="wt-body"><p class="muted">${esc(t("ss.loading"))}</p></div>`;
+  const body = root.querySelector(".wt-body");
+  let w;
+  try { w = await weightsNow(p.machines_now); } catch { body.innerHTML = `<p class="note">${esc(t("cw.offline"))}</p>`; return; }
+  const price = new Map(p.devices.map((d) => [d.device_id, d.eur_per_t]));
+  const rows = [...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id)).map((m) => {
+    const row = w.get(m.device_id);
+    const next = row ? atPickup(row, m) : null;
+    const cost = next && price.get(m.device_id) != null ? (next.kg / 1000) * price.get(m.device_id) : null;
+    return { m, row, next, cost };
+  });
+  const tot = rows.reduce((a, r) => ({ now: a.now + (r.row?.mass_kg || 0), next: a.next + (r.next?.kg || 0), cost: a.cost + (r.cost || 0) }), { now: 0, next: 0, cost: 0 });
+  body.innerHTML = `<div class="table-wrap"><table class="table"><thead><tr><th>${esc(t("ss.col.machine"))}</th><th class="num">${esc(t("mv.fillNow"))}</th>
+    <th class="num">${esc(t("wt.now"))}</th><th>${esc(t("mv.nextTruck"))}</th><th class="num">${esc(t("wt.atPickup"))}</th><th class="num">${esc(t("cw.cost"))}</th></tr></thead><tbody>${
+    rows.map(({ m, row, next, cost }) => `<tr${row ? ` class="click" tabindex="0" data-go="${esc(m.device_id)}"` : ""}>
+      <td class="strong">${esc(names.get(m.device_id) || m.device_id)}<span class="desc">${esc(m.device_id)} · ${fmt(m.volume_m3)} m³</span></td>
+      <td class="num">${fmt(m.fill_now)} %</td>
+      <td class="num strong">${row ? esc(kg(row.mass_kg)) : `<span class="fine">${esc(t("wt.soon"))}</span>`}</td>
+      <td>${m.truck_on ? esc(dayLabel(m.truck_on)) : "–"}</td>
+      <td class="num">${next ? esc(kg(next.kg)) : "–"}</td>
+      <td class="num strong">${cost != null ? esc(eur(cost)) : "–"}</td></tr>`).join("")}
+    <tr class="wt-total"><td class="strong">${esc(t("total"))}</td><td></td><td class="num strong">${esc(kg(tot.now))}</td><td></td>
+      <td class="num">${esc(kg(tot.next))}</td><td class="num strong">${esc(eur(tot.cost))}</td></tr></tbody></table></div>
+    <p class="fine">${esc(t("wt.note"))}</p>`;
+  body.querySelectorAll("tr[data-go]").forEach((tr) => {
+    const go = () => { location.hash = `#machine/${encodeURIComponent(tr.dataset.go)}`; };
+    tr.addEventListener("click", go);
+    tr.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); go(); } });
+  });
+}
+
+addStrings({
+  en: { "wt.title": "Weight of each machine, right now", "wt.now": "Weight now", "wt.atPickup": "Weight at pickup", "wt.soon": "model coming",
+        "wt.note": "Click a machine for its weight history and how close our estimates were to the weighbridge. Biowaste and mixed plastic: weight model not trained yet. Demo values on simulated machines." },
+  fi: { "wt.title": "Jokaisen laitteen paino nyt", "wt.now": "Paino nyt", "wt.atPickup": "Paino tyhjennyksessä", "wt.soon": "malli tulossa",
+        "wt.note": "Valitse laite nähdäksesi painohistorian ja kuinka lähellä arviomme olivat punnitusta. Biojäte ja sekamuovi: painomallia ei ole vielä opetettu. Demoarvot simuloiduilla laitteilla." },
 });
 
 export const cardWeightLink = (deviceId) => `<a class="rt-weightlink" href="#machine/${encodeURIComponent(deviceId)}">${esc(t("cw.card"))}</a>`;
