@@ -129,7 +129,7 @@
         {
           "t": 18.2,
           "d": 8.6,
-          "text": "Contracts become comparable: Hauler Delta is on time 57 % of the time and shares none of its tickets."
+          "text": "Contracts become comparable: Hauler Delta is on time 57 % of the time and shares none of its weight data."
         },
         {
           "t": 27.2,
@@ -144,7 +144,7 @@
         {
           "t": 46.2,
           "d": 8.6,
-          "text": "Sales get a three-sentence brief, written by Claude from cited data, for a person to review."
+          "text": "Sales get a short brief, written by Claude from cited data, for a person to review."
         }
       ]
     },
