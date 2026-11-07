@@ -231,7 +231,7 @@ const plan = {
     await wait(1200);
     await r.page.evaluate(() => { const l = document.getElementById('aiLog'); const b = l.querySelector('.msg.bot'); if (b) l.scrollTop = b.offsetTop - 8; });
     await r.hold(0.3);
-    await r.move('#aiLog .msg.bot', 0.7, 0.85, 0.12);              // → ~6.0
+    await r.move('#aiLog .msg.bot', 0.7, 0.015, 0.1);              // → ~6.0
     await r.holdUntil(6.4);
     await r.frames(r.sec(1.6), async (p) => {                     // → 8.0 scroll the brief to "Tell the customer"
       await r.page.evaluate((p) => {

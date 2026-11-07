@@ -60,7 +60,7 @@ def ram_progress(t: float) -> float:
 
 
 TITLE = (0.2, 3.1)               # title card window
-INTERNALS_CAPTION = (3.35, 14.75)  # "Internal layout: schematic" visible whenever internals show
+INTERNALS_CAPTION = (3.10, 14.95)  # "Internal layout: schematic" visible whenever internals show
 LABELS_OUT = (12.0, 12.5)        # sensor labels fade; glowing dots remain
 MOUTH_GHOST = (9.35, 12.1)
 CARD_IN = (15.0, 15.35)          # closing card fade-in
