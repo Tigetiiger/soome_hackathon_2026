@@ -71,9 +71,10 @@ function kpiChip(key, k) {
   return chip(`${esc(num)}${unit ? `<small>${esc(unit)}</small>` : ""}`, `${t(`kpi.${key}`)}: ${kpiText(key, k)}`, key);
 }
 
-function kpiSubs(k) {
+/** `annualCost`: savings are a yearly figure, so their share is always of the full-year cost (not the picked period). */
+function kpiSubs(k, annualCost = k.total_cost.value) {
   return {
-    savings: t("kpi.sub.savings", { pct: `${Math.round((k.savings.value / k.total_cost.value) * 100)} %` }),
+    savings: t("kpi.sub.savings", { pct: `${Math.round((k.savings.value / annualCost) * 100)} %` }),
     total_cost: isFree() ? t("kpi.sub.total_cost_free", { lifts: fmt(k.lifts.value) }) : t("kpi.sub.total_cost", { lifts: fmt(k.lifts.value), t: fmt(k.tonnes.value) }),
     eur_per_t: t("kpi.sub.eur_per_t"),
     recycling_rate: t("kpi.sub.recycling_rate"),
@@ -104,7 +105,7 @@ const visibleKpis = (keys) => (isFree() ? keys.filter((k) => !WEIGHT_KPIS.has(k)
 
 function renderKpis(p) {
   const k = p.kpis;
-  const subs = kpiSubs(k);
+  const subs = kpiSubs(k, state.customer?.kpis.total_cost.value);
   el("kpis").innerHTML = visibleKpis(KPI_MAIN).map((key) => kpiCard(key, p, subs[key])).join("");
   el("kpiStats").innerHTML = visibleKpis(KPI_STATS).map((key) => `<div><dt>${esc(t(`kpi.${key}`))}</dt><dd>${kpiChip(key, k)}</dd></div>`).join("");
   bindChips(el("ovYear"), (key) => openExplain({
