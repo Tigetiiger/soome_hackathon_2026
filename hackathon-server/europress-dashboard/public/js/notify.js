@@ -14,10 +14,8 @@ addStrings({
     "np.found": "SMART AI found a solution:", "np.saves": "Saves {eur} a year", "np.show": "Show me how", "np.later": "Later",
     "np.popTitle": "SMART AI found a way to save you {eur} a year",
     "np.early_lifts.p": "{early} of {lifts} pickups came while the machine was not full.", "np.early_lifts.s": "Let SMART order the truck only at 85 % full.",
-    "np.tender.p": "You pay {eurt} €/t — more than similar customers.", "np.tender.s": "Use the fleet price at your next tender.",
     "np.sorting.p": "{mixed} % of your waste goes to expensive mixed waste.", "np.sorting.s": "Sort cardboard and plastic out of mixed waste.",
     "np.avoidable_fees.p": "You paid {fees} in extra fees this year.", "np.avoidable_fees.s": "Order on time and keep side waste off the site.",
-    "np.invoice_check.p": "{n} billing lines from your waste operator differ from your price list.", "np.invoice_check.s": "Ask your operator to check them. Europress gets the billing data from the operator — you send nothing.",
     "nav.savings": "How to save money",
   },
   fi: {
@@ -25,10 +23,8 @@ addStrings({
     "np.found": "SMART AI löysi ratkaisun:", "np.saves": "Säästää {eur} vuodessa", "np.show": "Näytä miten", "np.later": "Myöhemmin",
     "np.popTitle": "SMART AI löysi tavan säästää {eur} vuodessa",
     "np.early_lifts.p": "{early}/{lifts} tyhjennystä tehtiin, kun laite ei ollut täynnä.", "np.early_lifts.s": "Anna SMARTin tilata auto vasta 85 %:n täytössä.",
-    "np.tender.p": "Maksat {eurt} €/t — enemmän kuin vastaavat asiakkaat.", "np.tender.s": "Käytä kannan hintaa seuraavassa kilpailutuksessa.",
     "np.sorting.p": "{mixed} % jätteestäsi menee kalliiseen sekajätteeseen.", "np.sorting.s": "Lajittele pahvi ja muovi pois sekajätteestä.",
     "np.avoidable_fees.p": "Maksoit tänä vuonna {fees} lisämaksuja.", "np.avoidable_fees.s": "Tilaa ajoissa ja pidä sivujäte poissa.",
-    "np.invoice_check.p": "{n} jäteoperaattorisi laskuriviä poikkeaa hinnastostasi.", "np.invoice_check.s": "Pyydä operaattoria tarkistamaan ne. Europress saa laskutustiedot operaattorilta — sinun ei tarvitse lähettää mitään.",
     "nav.savings": "Näin säästät",
   },
 });

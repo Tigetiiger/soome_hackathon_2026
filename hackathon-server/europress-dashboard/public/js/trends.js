@@ -1,6 +1,7 @@
 // Trends tab: findings (last 3 vs first 3 months), monthly trend charts, and when the work happens.
 import { t, fmt, getLang } from "./i18n.js";
 import { esc, openTrace, openExplain } from "./drawer.js";
+import { isFree } from "./plan.js";
 import { mixedTrendChart, streamTrendChart, costPickupChart, fillTrendChart, weekdayChart, hourChart, seasonChart } from "./charts.js";
 
 const el = (id) => document.getElementById(id);
@@ -51,7 +52,8 @@ function shortValue(f) {
 
 /** Compact tiles: title + one value; the full sentence opens in the drawer. */
 function renderFindings(p) {
-  const list = p.trend_findings || [];
+  // Free shows no weight: findings in tonnes or €/t are SMART.
+  const list = (p.trend_findings || []).filter((f) => !(isFree() && (f.id === "eurt" || f.id === "mixed")));
   el("trendFindings").innerHTML = list.map((f, i) => `<li class="tf" data-tone="${tone(f)}"><button type="button" data-f="${i}">
       <b>${esc(t(`trt.${f.id}`))}</b><span class="tf-v">${esc(shortValue(f))}</span></button></li>`).join("");
   el("trendFindings").querySelectorAll("button[data-f]").forEach((b) => b.addEventListener("click", () => {

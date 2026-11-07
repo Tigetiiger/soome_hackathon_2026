@@ -74,7 +74,7 @@ function kpiChip(key, k) {
 function kpiSubs(k) {
   return {
     savings: t("kpi.sub.savings", { pct: `${Math.round((k.savings.value / k.total_cost.value) * 100)} %` }),
-    total_cost: t("kpi.sub.total_cost", { lifts: fmt(k.lifts.value), t: fmt(k.tonnes.value) }),
+    total_cost: isFree() ? t("kpi.sub.total_cost_free", { lifts: fmt(k.lifts.value) }) : t("kpi.sub.total_cost", { lifts: fmt(k.lifts.value), t: fmt(k.tonnes.value) }),
     eur_per_t: t("kpi.sub.eur_per_t"),
     recycling_rate: t("kpi.sub.recycling_rate"),
   };
@@ -98,11 +98,15 @@ function kpiCard(key, p, sub) {
     <div class="kpi-trend">${esc(trend?.line ?? "")}</div></article>`;
 }
 
+/** Free shows no weight (kg, t or €/t): weight is what SMART sells. */
+const WEIGHT_KPIS = new Set(["tonnes", "eur_per_t"]);
+const visibleKpis = (keys) => (isFree() ? keys.filter((k) => !WEIGHT_KPIS.has(k)) : keys);
+
 function renderKpis(p) {
   const k = p.kpis;
   const subs = kpiSubs(k);
-  el("kpis").innerHTML = KPI_MAIN.map((key) => kpiCard(key, p, subs[key])).join("");
-  el("kpiStats").innerHTML = KPI_STATS.map((key) => `<div><dt>${esc(t(`kpi.${key}`))}</dt><dd>${kpiChip(key, k)}</dd></div>`).join("");
+  el("kpis").innerHTML = visibleKpis(KPI_MAIN).map((key) => kpiCard(key, p, subs[key])).join("");
+  el("kpiStats").innerHTML = visibleKpis(KPI_STATS).map((key) => `<div><dt>${esc(t(`kpi.${key}`))}</dt><dd>${kpiChip(key, k)}</dd></div>`).join("");
   bindChips(el("ovYear"), (key) => openExplain({
     title: t(`kpi.${key}`), value: kpiText(key, k), trace: k[key], what: tx(`x.kpi.${key}`), focus: `kpis.${key}`,
   }));
@@ -218,12 +222,12 @@ function renderContracts(p) {
   const soon = noticeSoon(p);
   el("operatorsAsOf").textContent = t("asof.data", { date: asOfLabel(p) });
   const tbl = el("operatorsTable");
-  tbl.innerHTML = `<thead><tr><th>${t("col.operator")}</th><th class="num">${t("col.ontime")}</th><th class="num">${t("col.shared")}</th>
+  tbl.innerHTML = `<thead><tr><th>${t("col.operator")}</th><th class="num">${t("col.ontime")}</th>
     <th class="num">${t("col.leadtime")}</th><th>${t("col.notice")}</th><th class="row-go"></th></tr></thead><tbody>${
     p.operators.map((o, i) => `<tr class="click" data-i="${i}" tabindex="0">
       <td class="strong">${esc(o.name.replace(" (fictional)", ""))}<span class="desc">${o.contracts} ${t("col.contracts").toLowerCase()}</span></td>
-      <td class="num">${fmt(o.on_time_rate)} %</td><td class="num">${fmt(o.weighbridge_shared_rate)} %</td><td class="num">${fmt(o.order_to_lift_h)} h</td>
-      <td><span class="state" data-state="${new Date(o.notice_by) < soon ? "bad" : "mute"}">${esc(date(o.notice_by))}</span></td>${ROW_GO}</tr>`).join("")}</tbody>`;
+      <td class="num">${fmt(o.on_time_rate)} %</td><td class="num">${fmt(o.order_to_lift_h)} h</td>
+      <td><span class="state" data-state="${new Date(o.notice_by) < soon ? "info" : "mute"}">${esc(date(o.notice_by))}</span></td>${ROW_GO}</tr>`).join("")}</tbody>`;
   bindRows(tbl, (i) => openTrace(p.operators[i].trace, p.operators[i].name, `operators.${p.operators[i].operator_id}`));
 }
 
@@ -289,7 +293,8 @@ const RENDER = {
     el("machinesAsOf").textContent = p.machines_now[0] ? t("machines.asof", { date: date(p.machines_now[0].as_of) }) : ""; renderMachines(p); },
   contracts: renderContracts,
   weight: (p) => { if (isFree()) { renderWeightOrTeaser(el("weightTable"), null); return; } renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT }); },
-  trends: (p) => { renderTrends(p, state.index.assumptions.target_fill_pct); gate(document.querySelector("#view-trends .tr-when"), "plan.lock.when"); },
+  trends: (p) => { renderTrends(p, state.index.assumptions.target_fill_pct); gate(document.querySelector("#view-trends .tr-when"), "plan.lock.when");
+    ["mixedTrendChart", "streamTrendChart"].forEach((id) => gate(el(id).closest(".card"), "plan.lock.tonnes")); },
   account: renderAccount,
 };
 

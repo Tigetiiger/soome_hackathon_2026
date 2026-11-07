@@ -2,6 +2,7 @@
 // computed from the monthly series. Each row: measure · before → after · change (good/bad) · what to do if worse.
 import { t, fmt, eur, month, addStrings } from "./i18n.js";
 import { esc } from "./drawer.js";
+import { isFree } from "./plan.js";
 
 const SPANS = [3, 6, 12];
 const QUARTER = 3;
@@ -43,6 +44,8 @@ function block(p, idx) {
            mixed: tonnes ? (100 * mixed) / tonnes : null, pickups, fill };
 }
 
+/** Free shows no weight: tonnes and €/t are SMART. */
+const WEIGHT_MEASURES = new Set(["tonnes", "eurt"]);
 // measure → [good direction, unit, decimals]
 const MEASURES = { cost: ["down", "€", 0], tonnes: ["info", "t", 1], eurt: ["down", "€/t", 0], recycling: ["up", "%", 1],
                    mixed: ["down", "%", 1], pickups: ["down", "", 0], fill: ["up", "%", 0] };
@@ -55,7 +58,7 @@ function rows(p) {
   const before = span === 12 ? Array.from({ length: k }, (_, i) => i) : after.map((i) => i - k).filter((i) => i >= 0);
   const a = block(p, before), b = block(p, after);
   const label = (idx) => `${month(p.period.months[idx[0]])}–${month(p.period.months[idx[idx.length - 1]])}`;
-  const list = Object.entries(MEASURES).map(([key, [good, unit, d]]) => {
+  const list = Object.entries(MEASURES).filter(([key]) => !(isFree() && WEIGHT_MEASURES.has(key))).map(([key, [good, unit, d]]) => {
     const pct = a[key] ? ((b[key] - a[key]) / Math.abs(a[key])) * 100 : null;
     const tone = good === "info" || pct == null || Math.abs(pct) < 1 ? "mute" : (good === "up") === pct > 0 ? "good" : "bad";
     return { key, from: show(a[key], unit, d), to: show(b[key], unit, d), pct, tone };

@@ -14,7 +14,6 @@ import "./strings.js";
 const CHART_HOURS = 720;
 const TWIN_POOL = 12;           // closest volumes considered, then the nearest current fill wins
 const MIN_TWIN_FILL = 15;       // a just-emptied twin says little about density
-const WITHIN_PCT = 5;
 let metaPromise = null;
 let fleetPromise = null;
 
@@ -24,22 +23,22 @@ addStrings({
     "cw.now": "In the container now", "cw.nowSub": "Most likely {lo}–{hi} kg",
     "cw.next": "At the next pickup", "cw.nextSub": "{date} · when about {fill} % full",
     "cw.cost": "Expected charge", "cw.costSub": "Next pickup at your price {eurt} €/t",
-    "cw.chart": "Weight in the container, last 30 days", "cw.history": "Last pickups: our estimate vs the weighbridge ticket",
-    "cw.trust": "Our estimate was within ±{pct} % of the weighbridge on {n} of {m} pickups.", "cw.noLifts": "No pickups in the last 30 days.",
+    "cw.chart": "Weight in the container, last 30 days", "cw.history": "Last pickups: estimated weight",
+    "cw.trust": "Approximate weight from the SMART weight model. In testing on machines it had never seen, it was about {pct} % off on average.", "cw.noLifts": "No pickups in the last 30 days.",
     "cw.tech": "How the model knows (technical)", "cw.noModel": "The weight model is not trained for {stream} yet (trained: cardboard, paper, plastic film, mixed waste; mixed plastic uses the plastic film model).",
     "cw.offline": "The weight model is not reachable right now. Fill levels and pickups still work.",
-    "cw.card": "See weight & next bill →", "cw.title": "{name} · weight", "cw.when": "When", "cw.ours": "Our estimate", "cw.ticket": "Weighbridge", "cw.diff": "Difference",
+    "cw.card": "See weight & next bill →", "cw.title": "{name} · weight", "cw.when": "When", "cw.ours": "Our estimate", "cw.charge": "Expected charge",
   },
   fi: {
     "cw.back": "← Kaikkien laitteiden paino", "cw.notice": "Paino SMART-painomallista. Demo: laskettu samantyyppisellä ja -kokoisella simuloidulla laitteella ja skaalattu täyttöasteeseesi. Kaavio ja aiemmat tyhjennykset näyttävät simuloidun laitteen.",
     "cw.now": "Säiliössä nyt", "cw.nowSub": "Todennäköisesti {lo}–{hi} kg",
     "cw.next": "Seuraavassa tyhjennyksessä", "cw.nextSub": "{date} · kun noin {fill} % täynnä",
     "cw.cost": "Odotettu veloitus", "cw.costSub": "Seuraava tyhjennys hinnallasi {eurt} €/t",
-    "cw.chart": "Paino säiliössä, viimeiset 30 päivää", "cw.history": "Viimeiset tyhjennykset: arviomme vs. punnituslappu",
-    "cw.trust": "Arviomme osui ±{pct} %:n sisään punnituksesta {n} kertaa {m}:stä.", "cw.noLifts": "Ei tyhjennyksiä viimeisen 30 päivän aikana.",
+    "cw.chart": "Paino säiliössä, viimeiset 30 päivää", "cw.history": "Viimeiset tyhjennykset: arvioitu paino",
+    "cw.trust": "Likimääräinen paino SMART-painomallista. Testissä laitteilla, joita malli ei ollut nähnyt, se oli keskimäärin noin {pct} % pielessä.", "cw.noLifts": "Ei tyhjennyksiä viimeisen 30 päivän aikana.",
     "cw.tech": "Miten malli sen tietää (tekninen)", "cw.noModel": "Painomallia ei ole vielä opetettu jätelajille {stream} (opetettu: pahvi, paperi, muovikalvo, sekajäte; sekamuovi käyttää muovikalvomallia).",
     "cw.offline": "Painomalliin ei saada nyt yhteyttä. Täyttöasteet ja tyhjennykset toimivat.",
-    "cw.card": "Katso paino ja seuraava lasku →", "cw.title": "{name} · paino", "cw.when": "Milloin", "cw.ours": "Arviomme", "cw.ticket": "Punnitus", "cw.diff": "Ero",
+    "cw.card": "Katso paino ja seuraava lasku →", "cw.title": "{name} · paino", "cw.when": "Milloin", "cw.ours": "Arviomme", "cw.charge": "Odotettu veloitus",
   },
 });
 
@@ -106,19 +105,19 @@ function atPickup(row, m) {
 const answer = (label, value, sub, primary = false) => `<article class="kpi${primary ? " primary" : ""}">
   <div class="kpi-label">${esc(label)}</div><div class="kpi-value">${value}</div><div class="kpi-sub">${esc(sub)}</div></article>`;
 
-function historyTable(lifts) {
+/** Past pickups: only our approximate weight (and its charge) — never a comparison with the operator's ticket. */
+function historyTable(lifts, eurPerT, meanPct) {
   if (!lifts.length) return `<p class="muted">${esc(t("cw.noLifts"))}</p>`;
-  const rows = [...lifts].reverse().map((l) => {
-    const d = ((l.pred_kg - l.weighbridge_kg) / l.weighbridge_kg) * 100;
-    const st = Math.abs(d) <= WITHIN_PCT ? "good" : Math.abs(d) <= 10 ? "warn" : "bad";
-    return `<tr><td>${esc(fmtTime(l.t))}</td><td class="num strong">${esc(kg(l.pred_kg))}</td><td class="num">${esc(kg(l.weighbridge_kg))}</td>
-      <td class="num"><span class="state" data-state="${st}">${d > 0 ? "+" : ""}${esc(fmt(d, 1))} %</span></td></tr>`;
-  }).join("");
-  const n = lifts.filter((l) => Math.abs((l.pred_kg - l.weighbridge_kg) / l.weighbridge_kg) * 100 <= WITHIN_PCT).length;
-  return `<p class="cw-trust"><span class="state" data-state="good">✓</span>${esc(t("cw.trust", { pct: WITHIN_PCT, n, m: lifts.length }))}</p>
+  const rows = [...lifts].reverse().map((l) => `<tr><td>${esc(fmtTime(l.t))}</td><td class="num strong">${esc(kg(l.pred_kg))}</td>
+      <td class="num">${eurPerT != null ? esc(eur((l.pred_kg / 1000) * eurPerT)) : "–"}</td></tr>`).join("");
+  return `${meanPct != null ? `<p class="cw-trust">${esc(t("cw.trust", { pct: fmt(meanPct, 0) }))}</p>` : ""}
     <div class="table-wrap"><table class="table"><thead><tr><th>${esc(t("cw.when"))}</th><th class="num">${esc(t("cw.ours"))}</th>
-    <th class="num">${esc(t("cw.ticket"))}</th><th class="num">${esc(t("cw.diff"))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
+    <th class="num">${esc(t("cw.charge"))}</th></tr></thead><tbody>${rows}</tbody></table></div>`;
 }
+
+/** Mean % error of the model on machines it never saw (the honest figure for a customer's machine). */
+const unseenMeanPct = (ev) => ev?.splits?.bins?.lift?.overall?.mean_pct ?? null;
+const getEvaluation = () => fetch("/data/softsensor/evaluation.json").then((r) => (r.ok ? r.json() : null)).catch(() => null);
 
 function techDetails(d) {
   const live = d.live;
@@ -144,9 +143,10 @@ export async function renderCustomerWeight(root, m, { name, eurPerT, dayLabel })
     <div id="cwBody"><p class="note">${esc(t("ss.loading"))}</p></div>`;
   const body = root.querySelector("#cwBody");
   if (!hasWeightModel(m.stream)) { body.innerHTML = `<p class="note">${esc(t("cw.noModel", { stream: stream(m.stream).toLowerCase() }))}</p>`; return; }
-  let d, w;
+  let d, w, ev;
   try {
     const meta = await getMeta();
+    ev = await getEvaluation();
     w = (await weightsNow([m])).get(m.device_id);
     if (!w) { body.innerHTML = `<p class="note">${esc(t("cw.offline"))}</p>`; return; }
     d = await sensorGet(`machines/${w.bin_id}`, { at: meta.replay.end, hours: CHART_HOURS });
@@ -163,8 +163,8 @@ export async function renderCustomerWeight(root, m, { name, eurPerT, dayLabel })
       ${answer(t("cw.cost"), cost != null ? esc(eur(cost)) : "–", t("cw.costSub", { eurt: fmt(eurPerT) }))}
     </div>
     <article class="card"><header class="card-head"><h2>${esc(t("cw.chart"))}</h2></header><div class="chart ss-chart-tall"><canvas id="cwChart"></canvas></div></article>
-    <article class="card"><header class="card-head"><h2>${esc(t("cw.history"))}</h2></header>${historyTable(d.lifts)}${techDetails(d)}</article>`;
-  massChart("cwChart", d.series, d.lifts);
+    <article class="card"><header class="card-head"><h2>${esc(t("cw.history"))}</h2></header>${historyTable(d.lifts, eurPerT, unseenMeanPct(ev))}${techDetails(d)}</article>`;
+  massChart("cwChart", d.series, d.lifts, { customer: true });
 }
 
 // ---------------------------------------------------------------- Overview hero: weight first
@@ -173,7 +173,7 @@ const addDays = (iso, n) => { const d = new Date(`${iso}T12:00:00Z`); d.setUTCDa
 
 /**
  * "Your waste right now": tonnes in the containers, next week's pickups and their expected charge,
- * and how often the model matched the weighbridge. Fills in asynchronously from the model service.
+ * and how accurate the model is on machines it never saw. Fills in asynchronously from the model service.
  */
 export async function renderWeightHero(root, p, dayLabel) {
   root.innerHTML = `<header class="card-head"><div class="card-title"><h2>${esc(t("wh.title"))}</h2></div>
@@ -202,7 +202,7 @@ export async function renderWeightHero(root, p, dayLabel) {
       if (!first || m.truck_on < first) first = m.truck_on;
     }
   }
-  const within = evaluation?.splits?.time?.lift?.overall?.within_5pct;
+  const meanPct = unseenMeanPct(evaluation);
   const big = (label, value, unit, sub, primary) => `<div class="wh-item${primary ? " primary" : ""}"><span class="wh-label">${esc(label)}</span>
     <b class="wh-value">${esc(value)}${unit ? `<small>${esc(unit)}</small>` : ""}</b><span class="wh-sub">${esc(sub)}</span></div>`;
   body.innerHTML = `<div class="wh-grid">
@@ -210,7 +210,7 @@ export async function renderWeightHero(root, p, dayLabel) {
       ${big(t("wh.next"), fmt(nextKg / 1000, 1), "t", pickups ? t("wh.nextSub", { n: pickups, date: dayLabel(first) }) : t("wh.noPickups"))}
       ${big(t("wh.cost"), eur(nextEur), "", t("wh.costSub"))}
     </div>
-    <p class="wh-trust">${within != null ? `<span class="state" data-state="good">✓</span>${esc(t("wh.trust", { pct: fmt(within * 100) }))}` : ""}
+    <p class="wh-trust">${meanPct != null ? esc(t("wh.trust", { pct: fmt(meanPct, 0) })) : ""}
       <a class="link" href="#weight">${esc(t("wh.see"))}</a></p>
     <p class="fine">${esc(t("cw.notice"))}</p>`;
 }
@@ -221,14 +221,14 @@ addStrings({
     "wh.now": "In your containers now", "wh.nowSub": "{n} of {m} machines weighed by the model",
     "wh.next": "Next 7 days of pickups", "wh.nextSub": "{n} pickups · first {date}", "wh.noPickups": "No pickups in the next 7 days",
     "wh.cost": "Expected charges, next 7 days", "wh.costSub": "Predicted weight × your price per tonne",
-    "wh.trust": "Our weight estimate matched the weighbridge within ±5 % on {pct} % of pickups.", "wh.see": "See each machine →",
+    "wh.trust": "Approximate weight. In testing on machines it had never seen, the model was about {pct} % off on average.", "wh.see": "See each machine →",
   },
   fi: {
     "wh.title": "Säiliöiden paino nyt", "wh.by": "Punninnut Europress SMART AI",
     "wh.now": "Säiliöissäsi nyt", "wh.nowSub": "Malli punnitsee {n}/{m} laitetta",
     "wh.next": "Tyhjennykset seuraavat 7 päivää", "wh.nextSub": "{n} tyhjennystä · ensimmäinen {date}", "wh.noPickups": "Ei tyhjennyksiä seuraavan 7 päivän aikana",
     "wh.cost": "Odotetut veloitukset, 7 päivää", "wh.costSub": "Ennustettu paino × tonnihintasi",
-    "wh.trust": "Painoarviomme osui ±5 %:n sisään punnituksesta {pct} %:ssa tyhjennyksistä.", "wh.see": "Katso jokainen laite →",
+    "wh.trust": "Likimääräinen paino. Testissä laitteilla, joita malli ei ollut nähnyt, se oli keskimäärin noin {pct} % pielessä.", "wh.see": "Katso jokainen laite →",
   },
 });
 
@@ -268,9 +268,9 @@ export async function renderWeightTable(root, p, { names, dayLabel }) {
 
 addStrings({
   en: { "wt.title": "Weight of each machine, right now", "wt.now": "Weight now", "wt.atPickup": "Weight at pickup", "wt.soon": "model coming",
-        "wt.note": "Click a machine for its weight history and how close our estimates were to the weighbridge. Biowaste and mixed plastic: weight model not trained yet. Demo values on simulated machines." },
+        "wt.note": "Click a machine for its weight history and expected charges. Biowaste: weight model not trained yet. Demo values on simulated machines." },
   fi: { "wt.title": "Jokaisen laitteen paino nyt", "wt.now": "Paino nyt", "wt.atPickup": "Paino tyhjennyksessä", "wt.soon": "malli tulossa",
-        "wt.note": "Valitse laite nähdäksesi painohistorian ja kuinka lähellä arviomme olivat punnitusta. Biojäte ja sekamuovi: painomallia ei ole vielä opetettu. Demoarvot simuloiduilla laitteilla." },
+        "wt.note": "Valitse laite nähdäksesi painohistorian ja odotetut veloitukset. Biojäte: painomallia ei ole vielä opetettu. Demoarvot simuloiduilla laitteilla." },
 });
 
 export const cardWeightLink = (deviceId) => `<a class="rt-weightlink" href="#machine/${encodeURIComponent(deviceId)}">${esc(t("cw.card"))}</a>`;

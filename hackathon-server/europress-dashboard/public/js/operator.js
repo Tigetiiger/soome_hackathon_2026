@@ -136,7 +136,11 @@ function renderValue(o) {
       ${tile(fmt(fcPickups), "", t("opx.v.plan"), t("opx.v.planSub", { t: fmt(fcT, 0) }))}
       ${tile(fmt(v.wasted_trips_year), "", t("opx.v.wasted"), t("opx.v.wastedSub"))}
     </div>
-    <p class="opv-weight"><span class="state" data-state="good">✓</span>${esc(t("opx.v.weight"))}</p>`;
+    <p class="opv-weight"><span class="state" data-state="good">✓</span>${esc(t("opx.v.weight"))}</p>
+    <div class="opv-deal"><h3 class="sub-h">${esc(t("opx.deal"))}</h3><div class="opv-deal-grid">
+      <div><span class="opv-label">${esc(t("opx.deal.give"))}</span><p>${esc(t("opx.deal.giveP"))}</p></div>
+      <div><span class="opv-label">${esc(t("opx.deal.get"))}</span><p>${esc(t("opx.deal.getP"))}</p></div>
+    </div><p class="fine">${esc(t("opx.deal.trust"))}</p></div>`;
 }
 
 addStrings({
@@ -149,6 +153,10 @@ addStrings({
     "opx.v.plan": "Pickups known 14 days ahead", "opx.v.planSub": "≈ {t} t to collect — plan routes and trucks early",
     "opx.v.wasted": "Wasted trips to avoid", "opx.v.wastedSub": "SMART only orders a truck when the machine is really full",
     "opx.v.weight": "Every pickup weighed by the SMART weight model — the load is known before the truck leaves (within ±5 % on 73 % of test pickups).",
+    "opx.deal": "The partnership", "opx.deal.give": "You share through SMART",
+    "opx.deal.giveP": "Pickups, weighbridge weights and invoice lines for your SMART customers.",
+    "opx.deal.get": "You get", "opx.deal.getP": "The driver plan, pickups predicted 14 days ahead and the load of every pickup before the truck leaves.",
+    "opx.deal.trust": "Data is only exchanged when both parties agree. Europress never sells it to third parties.",
   },
   fi: {
     "opx.graph": "Tyhjennykset: kerätty → ennustettu", "opx.graphSub": "Viimeiset 26 viikkoa kerättynä, SMARTin 85 %:n säännön tarve ja seuraavat 2 viikkoa ennustettuna.",
@@ -159,6 +167,10 @@ addStrings({
     "opx.v.plan": "Tyhjennykset tiedossa 14 pv etukäteen", "opx.v.planSub": "≈ {t} t kerättävää — suunnittele reitit ja autot ajoissa",
     "opx.v.wasted": "Vältettävät turhat ajot", "opx.v.wastedSub": "SMART tilaa auton vain, kun laite on oikeasti täynnä",
     "opx.v.weight": "Jokainen tyhjennys punnittu SMART-painomallilla — kuorma tiedetään ennen kuin auto lähtee (±5 %:n sisällä 73 %:ssa testityhjennyksistä).",
+    "opx.deal": "Kumppanuus", "opx.deal.give": "Jaat SMARTin kautta",
+    "opx.deal.giveP": "SMART-asiakkaidesi tyhjennykset, punnituspainot ja laskurivit.",
+    "opx.deal.get": "Saat", "opx.deal.getP": "Kuljettajasuunnitelman, tyhjennykset 14 päivää etukäteen ja jokaisen tyhjennyksen kuorman ennen kuin auto lähtee.",
+    "opx.deal.trust": "Tietoja vaihdetaan vain, kun molemmat osapuolet hyväksyvät sen. Europress ei koskaan myy niitä kolmansille osapuolille.",
   },
 });
 

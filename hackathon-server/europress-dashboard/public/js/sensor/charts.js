@@ -38,8 +38,12 @@ export function destroyChart(id) {
 
 const xy = (ts, ys) => ts.map((x, i) => ({ x, y: ys[i] }));
 
-/** Hourly mass with the p10–p90 band, simulator truth, device fill (right axis) and weighbridge tickets. */
-export function massChart(id, s, lifts) {
+/**
+ * Hourly mass with the p10–p90 band, simulator truth, device fill (right axis) and weighbridge tickets.
+ * `customer: true` shows only our estimate, its band and the fill: the customer gets the approximate weight,
+ * never a comparison with the operator's ticket (operators are Europress's partners).
+ */
+export function massChart(id, s, lifts, { customer = false } = {}) {
   const lo = s.t[0], hi = s.t[s.t.length - 1];
   return upsert(id, {
     type: "line",
@@ -48,10 +52,10 @@ export function massChart(id, s, lifts) {
         { label: "p10", data: xy(s.t, s.p10_kg), borderWidth: 0, pointRadius: 0, fill: false, _hide: true },
         { label: t("ss.m.band"), data: xy(s.t, s.p90_kg), borderWidth: 0, pointRadius: 0, fill: "-1", backgroundColor: BAND },
         { label: t("ss.m.estimate"), data: xy(s.t, s.mass_kg), borderColor: INK, backgroundColor: INK, borderWidth: 2, pointRadius: 0 },
-        { label: t("ss.m.truth"), data: xy(s.t, s.truth_kg), borderColor: TRUTH, backgroundColor: TRUTH, borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0 },
+        ...(customer ? [] : [{ label: t("ss.m.truth"), data: xy(s.t, s.truth_kg), borderColor: TRUTH, backgroundColor: TRUTH, borderDash: [5, 4], borderWidth: 1.5, pointRadius: 0 }]),
         { label: t("ss.m.fill"), data: xy(s.t, s.fill_pct), yAxisID: "y1", borderColor: FILL, backgroundColor: FILL, borderWidth: 1, pointRadius: 0, stepped: true },
-        { type: "scatter", label: t("ss.m.lift"), data: lifts.map((l) => ({ x: l.t, y: l.weighbridge_kg })),
-          backgroundColor: LIFT, borderColor: "#fff", borderWidth: 1.5, pointRadius: 6, pointStyle: "rectRot" },
+        ...(customer ? [] : [{ type: "scatter", label: t("ss.m.lift"), data: lifts.map((l) => ({ x: l.t, y: l.weighbridge_kg })),
+          backgroundColor: LIFT, borderColor: "#fff", borderWidth: 1.5, pointRadius: 6, pointStyle: "rectRot" }]),
       ],
     },
     options: {
