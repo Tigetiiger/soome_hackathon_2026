@@ -542,9 +542,9 @@ def run_stills():
 
 def run_sheet():
     frames = OUT / "frames"
-    poster_f = int(10.55 * TL.FPS) + 1
+    poster_f = int(10.95 * TL.FPS) + 1          # ram 25 cm into the mouth, curve at its peak
     Image.open(frames / f"f{poster_f:04d}.png").convert("RGB").save(OUT / "poster.jpg", quality=92)
-    picks = [1.5, 5.2, 8.6, 10.6, 13.6, 15.8]
+    picks = [1.5, 5.2, 8.6, 10.95, 13.6, 15.8]
     tw, th = 640, 360
     sheet = Image.new("RGB", (tw * 3 + 4 * 16, th * 2 + 3 * 16 + 2 * 40), hexa(C["bg"])[:3])
     d = ImageDraw.Draw(sheet)
