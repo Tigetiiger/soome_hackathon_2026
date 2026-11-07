@@ -1,0 +1,93 @@
+{
+ "overcharge_per_device_year_dist": {
+  "p10": 0.0,
+  "p50": 11.646381578947366,
+  "p75": 185.26151315789474,
+  "p90": 449.16611842105266,
+  "mean": 149.48190789473682,
+  "share_devices_nonzero": 0.548
+ },
+ "overcharge_total_window": 45606.100000000006,
+ "undercharge_total_window": 28225.33,
+ "overcharge_needs_weight_share": 0.030523986922801987,
+ "gt10_n": 2250,
+ "gt10_share_by_cause": {
+  "side waste on same truck": 0.3427,
+  "stale/wrong tare (operator side)": 0.304,
+  "no label (agree or small diff)": 0.1347,
+  "combined load (50/50 split)": 0.1204,
+  "noise/timing (small loads)": 0.0596,
+  "device sensor fault/drift/calibration": 0.0387
+ },
+ "gt10_device_caused_share": 0.03866666666666667,
+ "gt10_weighbridge_side_share": 0.7671111111111111,
+ "mass_billing_abs_eur_window": 2755041.39,
+ "mass_billing_device_only_eur_window": 525865.48,
+ "mass_billing_noindep_eur_window": 119619.06999999999,
+ "all_billing_abs_eur_window": 6176223.609999999,
+ "detection_empirical": {
+  "per_lift": {
+   "units": 4776,
+   "median_lifts_per_unit": 1.0,
+   "sd_r_pct": 35.82,
+   "iqr_sd_pct": 4.09,
+   "tau_pct": 39.64,
+   "detect_+3pct": 0.03,
+   "detect_+5pct": 0.035,
+   "detect_+10pct": 0.046
+  },
+  "device_month": {
+   "units": 2380,
+   "median_lifts_per_unit": 2.0,
+   "sd_r_pct": 9.51,
+   "iqr_sd_pct": 3.6,
+   "tau_pct": 27.13,
+   "detect_+3pct": 0.032,
+   "detect_+5pct": 0.044,
+   "detect_+10pct": 0.077
+  },
+  "device_quarter": {
+   "units": 972,
+   "median_lifts_per_unit": 4.0,
+   "sd_r_pct": 23.89,
+   "iqr_sd_pct": 3.16,
+   "tau_pct": 20.0,
+   "detect_+3pct": 0.043,
+   "detect_+5pct": 0.06,
+   "detect_+10pct": 0.119
+  }
+ },
+ "detection_empirical_allpairs": {
+  "per_lift": {
+   "units": 9062,
+   "median_lifts_per_unit": 1.0,
+   "sd_r_pct": 55.92,
+   "iqr_sd_pct": 5.97,
+   "tau_pct": 55.96,
+   "detect_+3pct": 0.029,
+   "detect_+5pct": 0.033,
+   "detect_+10pct": 0.042
+  },
+  "device_month": {
+   "units": 2882,
+   "median_lifts_per_unit": 3.0,
+   "sd_r_pct": 22.37,
+   "iqr_sd_pct": 5.64,
+   "tau_pct": 30.44,
+   "detect_+3pct": 0.036,
+   "detect_+5pct": 0.043,
+   "detect_+10pct": 0.071
+  },
+  "device_quarter": {
+   "units": 997,
+   "median_lifts_per_unit": 8.0,
+   "sd_r_pct": 9.2,
+   "iqr_sd_pct": 4.8,
+   "tau_pct": 23.66,
+   "detect_+3pct": 0.041,
+   "detect_+5pct": 0.049,
+   "detect_+10pct": 0.104
+  }
+ },
+ "median_clean_lifts_per_device_month": 2.0
+}

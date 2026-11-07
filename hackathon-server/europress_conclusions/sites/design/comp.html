@@ -1,0 +1,786 @@
+<!DOCTYPE html>
+<html lang="en" data-theme="light">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SMART Verified Weight — design comp</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* =====================================================================
+   SMART Verified Weight — theme.css  (drop-in tokens + components)
+   Two skins share one token set:
+     .ep-portal  — the Europress SMART portal look (smart.europressgroup.com)
+                   for the product add-on panel. Dense, operational.
+     .ep-corp    — the europressgroup.com corporate look (Uncode theme)
+                   for the business-plan explainer. Editorial, uppercase.
+   Sources: see DESIGN_SYSTEM.md (every hex below is traced to a URL).
+   Fonts (Google Fonts, all SIL OFL 1.1):
+     <link rel="preconnect" href="https://fonts.googleapis.com">
+     <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;500;600;700&family=Montserrat:wght@600;700;800&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+   ===================================================================== */
+
+/* ---------- 1. Tokens ------------------------------------------------ */
+:root {
+  /* Portal palette — verbatim from smart.europressgroup.com/assets/index-*.css :root */
+  --ep-navy:        #214269;   /* --col-214269: top bar, sidenav, primary button */
+  --ep-navy-dark:   #1d3a5d;   /* --col-214269-dark: pressed */
+  --ep-twilight:    #0d477d;   /* --twilight-blue: headings on light */
+  --ep-twilight-dk: #0c3f6f;
+  --ep-cool:        #2c83d7;   /* --cool-blue: links, active nav, focus */
+  --ep-denim:       #3c6390;   /* --denim: secondary text on light (6.2:1) */
+  --ep-blue-grey:   #bfcfde;   /* --light-blue-grey: borders, muted on navy */
+  --ep-ice-light:   #f8fafb;   /* --ice-blue-light: card hover / zebra */
+  --ep-ice:         #eff3f6;   /* --ice-blue: panel background */
+  --ep-ice-dark:    #e1e9f1;   /* --ice-blue-dark: hairlines */
+  --ep-bg:          #fafbfc;   /* --background: page */
+  --ep-seafoam:     #72c0a2;   /* --seafoam-blue: OK / success fill */
+  --ep-seafoam-dk:  #68bb9b;
+  --ep-tangerine:   #ff9800;   /* --tangerine: notice fill (never text) */
+  --ep-orange:      #f08038;   /* map-pin orange (app) */
+  --ep-coral:       #df6940;   /* fault / critical fill */
+  --ep-teal:        #11a1c5;   /* decorative accent only (3.0:1) */
+  --ep-ink:         #1c2020;   /* --col-1-c-2020: body text */
+
+  /* AA-safe ink derivatives (ours; the portal fills these colours, we also need them as text) */
+  --ep-ok-ink:      #0d7a6f;   /* 5.2:1 on white */
+  --ep-notice-ink:  #8a5a00;   /* 5.9:1 */
+  --ep-warn-ink:    #b84a24;   /* 5.2:1 */
+  --ep-muted:       #545d61;   /* 6.7:1 — portal's own grey */
+  --ep-muted-2:     #6b7a8a;   /* 4.2:1 on #fafbfc, large/secondary only */
+
+  /* Corporate palette — europressgroup.com (Uncode style-custom.css + HTML classes) */
+  --co-text:        #303133;   /* body/menu text */
+  --co-cyan:        #03b4e0;   /* accent: menu hover/active, links on dark (2.4:1 on white: never small text) */
+  --co-cyan-btn:    #0cb4ce;   /* btn-color-vyce, used on home CTA */
+  --co-navy:        #0d426e;   /* style-color-210407 band */
+  --co-navy-2:      #214269;   /* style-color-186284 band (= portal navy) */
+  --co-grey-band:   #f7f7f7;   /* style-color-lxmt */
+  --co-grey-2:      #eaeaea;   /* style-color-gyho, hairlines */
+  --co-charcoal:    #141618;   /* style-color-wayh: footer */
+  --co-mint:        #72c1a1;   /* theme palette, matches portal seafoam */
+  --co-gold:        #b4975a;   /* theme palette, rarely used */
+
+  /* Surfaces & text (light) */
+  --bg:        var(--ep-bg);
+  --surface:   #ffffff;
+  --surface-2: var(--ep-ice);
+  --line:      var(--ep-ice-dark);
+  --line-2:    var(--ep-blue-grey);
+  --text:      var(--ep-ink);
+  --text-2:    var(--ep-muted);
+  --heading:   var(--ep-twilight);
+  --link:      var(--ep-cool);
+  --chrome:    var(--ep-navy);       /* top bar + side nav */
+  --chrome-text: #ffffff;
+  --chrome-muted: var(--ep-blue-grey);
+  --chrome-active: var(--ep-cool);
+  --focus:     var(--ep-cool);
+
+  /* Evidence chips (meaning encoded by glyph + border style, not hue alone) */
+  --ev-obs-bg:  #e3f3ec; --ev-obs-ink:  #0d7a6f;   /* OBSERVED    filled dot, solid  */
+  --ev-est-bg:  #e3eef9; --ev-est-ink:  #1d5a9e;   /* ESTIMATED   half dot, solid    */
+  --ev-sim-bg:  #fdf0dc; --ev-sim-ink:  #8a5a00;   /* SIMULATED   diamond, dashed    */
+  --ev-hyp-bg:  var(--ep-ice); --ev-hyp-ink: #3b4a58; /* HYPOTHETICAL ring, dotted, italic */
+
+  /* Status (icon + label always; never colour alone) */
+  --st-ok:        var(--ep-seafoam);  --st-ok-ink:   var(--ep-ok-ink);
+  --st-notice:    var(--ep-tangerine);--st-notice-ink: var(--ep-notice-ink);
+  --st-warn:      var(--ep-coral);    --st-warn-ink: var(--ep-warn-ink);
+  --st-crit:      #c0392b;            --st-crit-ink: #ffffff;
+
+  /* Chart palette — validated with dataviz/validate_palette.js (light, surface #fff): all checks pass */
+  --s1: #2c83d7;  /* device / compactor (cool blue)   */
+  --s2: #e8702a;  /* weighbridge ticket (orange)      */
+  --s3: #17a87a;  /* invoice line (green)             */
+  --s4: #c58a06;  /* 4th series (amber, labels req'd) */
+  --s5: #7d6bd9;  /* violet */
+  --s6: #c04b8c;  /* magenta */
+  --band: rgba(44,131,215,.14);
+  --grid: var(--ep-ice-dark);
+
+  /* Type */
+  --f-ui:   "Poppins", -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;  /* portal body stack lists Poppins first after system */
+  --f-data: "Roboto", "Helvetica Neue", Arial, sans-serif;  /* portal login/table font; tabular figures */
+  --f-corp: "Montserrat", "Poppins", sans-serif;            /* stand-in for bio-sans (Uncode declares Montserrat as its fallback) */
+  --fs-xs: 11px; --fs-sm: 12px; --fs-base: 13px; --fs-md: 14px; --fs-lg: 16px;
+  --fs-h3: 15px; --fs-h2: 18px; --fs-h1: 22px; --fs-kpi: 28px;
+
+  /* Rhythm & shape (portal: tight 4/8 grid, small radii; app button radius 4px) */
+  --sp-1: 4px; --sp-2: 8px; --sp-3: 12px; --sp-4: 16px; --sp-5: 24px; --sp-6: 32px;
+  --r-sm: 4px; --r-md: 6px; --r-lg: 10px; --r-pill: 999px;
+  --shadow-1: 0 1px 2px rgba(33,66,105,.08), 0 1px 1px rgba(33,66,105,.04);
+  --shadow-2: 0 4px 16px rgba(33,66,105,.12);
+  --topbar-h: 52px; --sidenav-w: 220px;
+}
+
+/* Dark theme — the portal's own html.dark-mode values (#1c2022 bg, #2a2e30 topbar, #51a8ff links, #f0f1f1 text) */
+[data-theme="dark"] {
+  --bg: #1c2022; --surface: #24292c; --surface-2: #2a2e30;
+  --line: #3a4044; --line-2: #4a5257;
+  --text: #f0f1f1; --text-2: #b7bcbf; --heading: #e8f0f8;
+  --link: #51a8ff; --chrome: #16191b; --chrome-text: #f0f1f1; --chrome-muted: #9aa5ae; --chrome-active: #51a8ff;
+  --focus: #51a8ff;
+  --ev-obs-bg: #173f36; --ev-obs-ink: #8fdcc3;
+  --ev-est-bg: #1a3350; --ev-est-ink: #96ccff;
+  --ev-sim-bg: #3f3214; --ev-sim-ink: #f3c86a;
+  --ev-hyp-bg: #2f353a; --ev-hyp-ink: #d6dde3;
+  --st-ok-ink: #8fdcc3; --st-notice-ink: #f3c86a; --st-warn-ink: #ff9a7a;
+  --s1: #3987e5; --s2: #d95926; --s3: #199e70; --s4: #c98500; --s5: #9085e9; --s6: #d55181;  /* validated dark set */
+  --band: rgba(57,135,229,.22); --grid: #3a4044;
+  --shadow-1: 0 1px 2px rgba(0,0,0,.4); --shadow-2: 0 4px 16px rgba(0,0,0,.5);
+}
+@media (prefers-color-scheme: dark) {
+  [data-theme="auto"] { color-scheme: dark; }
+}
+
+/* ---------- 2. Base ------------------------------------------------- */
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body { margin: 0; background: var(--bg); color: var(--text); font: 400 var(--fs-base)/1.5 var(--f-ui); -webkit-font-smoothing: antialiased; }
+a { color: var(--link); text-decoration: none; }
+a:hover { text-decoration: underline; text-underline-offset: 2px; }
+:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+h1, h2, h3, h4 { margin: 0; color: var(--heading); font-family: var(--f-ui); font-weight: 600; line-height: 1.25; }
+h1 { font-size: var(--fs-h1); } h2 { font-size: var(--fs-h2); } h3 { font-size: var(--fs-h3); }
+p { margin: 0 0 var(--sp-3); }
+small, .ep-small { font-size: var(--fs-sm); color: var(--text-2); }
+.num, .ep-table td.num, .ep-kpi__value { font-family: var(--f-data); font-variant-numeric: tabular-nums lining-nums; }
+.sr-only { position: absolute; width: 1px; height: 1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+/* ---------- 3. Portal shell ----------------------------------------- */
+.ep-portal { min-height: 100vh; display: grid; grid-template-rows: var(--topbar-h) 1fr; grid-template-columns: var(--sidenav-w) 1fr; }
+.ep-topbar { grid-column: 1 / -1; display: flex; align-items: center; gap: var(--sp-4); padding: 0 var(--sp-4); background: var(--chrome); color: var(--chrome-text); box-shadow: 0 1px 0 rgba(255,255,255,.06); }
+.ep-topbar__brand { display: flex; align-items: center; gap: var(--sp-2); font-weight: 700; letter-spacing: .04em; font-size: var(--fs-lg); white-space: nowrap; }
+.ep-topbar__brand .mark { width: 26px; height: 26px; border-radius: var(--r-sm); background: #fff; color: var(--ep-navy); display: grid; place-items: center; font-size: 13px; font-weight: 800; }
+.ep-topbar__module { font-weight: 500; font-size: var(--fs-sm); color: var(--chrome-muted); padding-left: var(--sp-3); border-left: 1px solid rgba(255,255,255,.18); }
+.ep-topbar__spacer { flex: 1; }
+.ep-topbar__ctl { display: inline-flex; align-items: center; gap: var(--sp-2); height: 32px; padding: 0 var(--sp-3); border-radius: var(--r-sm); background: rgba(255,255,255,.08); border: 1px solid rgba(255,255,255,.16); color: var(--chrome-text); font: 500 var(--fs-sm)/1 var(--f-ui); cursor: pointer; }
+.ep-topbar__ctl:hover { background: rgba(255,255,255,.14); }
+.ep-topbar__ctl .caret { opacity: .7; font-size: 10px; }
+.ep-topbar__ctl .lbl { color: var(--chrome-muted); font-weight: 400; }
+.ep-avatar { width: 30px; height: 30px; border-radius: 50%; background: var(--ep-cool); color: #fff; display: grid; place-items: center; font: 600 12px/1 var(--f-ui); }
+
+.ep-sidenav { background: var(--chrome); color: var(--chrome-text); padding: var(--sp-3) var(--sp-2); display: flex; flex-direction: column; gap: 2px; }
+.ep-sidenav__group { margin: var(--sp-3) var(--sp-2) var(--sp-1); font: 600 var(--fs-xs)/1 var(--f-ui); letter-spacing: .08em; text-transform: uppercase; color: var(--chrome-muted); }
+.ep-sidenav__item { display: flex; align-items: center; gap: var(--sp-2); padding: 8px 10px; border-radius: var(--r-sm); color: var(--chrome-text); font-weight: 500; font-size: var(--fs-md); text-decoration: none; border-left: 3px solid transparent; }
+.ep-sidenav__item:hover { background: rgba(255,255,255,.08); text-decoration: none; }
+.ep-sidenav__item[aria-current="page"] { background: rgba(255,255,255,.10); border-left-color: var(--chrome-active); color: #fff; }
+.ep-sidenav__item .ico { width: 18px; height: 18px; flex: 0 0 18px; opacity: .85; }
+.ep-sidenav__item .count { margin-left: auto; min-width: 20px; padding: 0 6px; border-radius: var(--r-pill); background: var(--ep-tangerine); color: var(--ep-ink); font: 600 11px/18px var(--f-data); text-align: center; }
+.ep-sidenav__foot { margin-top: auto; padding: var(--sp-3) var(--sp-2) var(--sp-1); font-size: var(--fs-xs); color: var(--chrome-muted); }
+
+.ep-main { padding: var(--sp-5); min-width: 0; }
+.ep-view__head { display: flex; align-items: flex-end; gap: var(--sp-4); margin-bottom: var(--sp-4); flex-wrap: wrap; }
+.ep-view__head h1 { font-size: var(--fs-h1); }
+.ep-view__head .lede { max-width: 72ch; color: var(--text-2); font-size: var(--fs-md); margin: 4px 0 0; }
+.ep-view__tools { margin-left: auto; display: flex; gap: var(--sp-2); align-items: center; }
+.ep-crumb { font-size: var(--fs-sm); color: var(--text-2); margin-bottom: var(--sp-2); }
+.ep-crumb a { color: var(--text-2); }
+.ep-grid { display: grid; gap: var(--sp-4); }
+.ep-grid--4 { grid-template-columns: repeat(4, minmax(0,1fr)); }
+.ep-grid--3 { grid-template-columns: repeat(3, minmax(0,1fr)); }
+.ep-grid--2 { grid-template-columns: repeat(2, minmax(0,1fr)); }
+.ep-grid--main-aside { grid-template-columns: minmax(0,1fr) 340px; }
+@media (max-width: 1100px) { .ep-grid--4 { grid-template-columns: repeat(2,1fr);} .ep-grid--3, .ep-grid--main-aside { grid-template-columns: 1fr; } }
+@media (max-width: 860px) { .ep-portal { grid-template-columns: 1fr; } .ep-sidenav { display: none; } .ep-main { padding: var(--sp-4); } }
+
+/* ---------- 4. Cards, KPI tiles, insight cards ---------------------- */
+.ep-card { background: var(--surface); border: 1px solid var(--line); border-radius: var(--r-md); box-shadow: var(--shadow-1); overflow: hidden; min-width: 0; }
+.ep-scroll { overflow-x: auto; }
+.ep-card__head { display: flex; align-items: center; gap: var(--sp-2); padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--line); }
+.ep-card__head h2, .ep-card__head h3 { font-size: var(--fs-h3); }
+.ep-card__head .tools { margin-left: auto; display: flex; gap: var(--sp-2); }
+.ep-card__body { padding: var(--sp-4); }
+.ep-card__foot { padding: var(--sp-2) var(--sp-4); border-top: 1px solid var(--line); font-size: var(--fs-sm); color: var(--text-2); }
+
+.ep-kpi { padding: var(--sp-3) var(--sp-4); display: flex; flex-direction: column; gap: 2px; }
+.ep-kpi__label { display: flex; align-items: center; gap: var(--sp-2); font: 600 var(--fs-xs)/1.3 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--text-2); }
+.ep-kpi__label .ep-chip { margin-left: auto; }
+.ep-kpi__value { font-size: var(--fs-kpi); font-weight: 500; color: var(--heading); line-height: 1.15; }
+.ep-kpi__value .pm { font-size: var(--fs-md); color: var(--text-2); font-weight: 400; margin-left: 4px; }
+.ep-kpi__value .unit { font-size: var(--fs-lg); font-weight: 400; color: var(--text-2); }
+.ep-kpi__note { font-size: var(--fs-sm); color: var(--text-2); }
+
+.ep-insight { display: grid; grid-template-columns: 4px 1fr; overflow: hidden; }
+.ep-insight__bar { background: var(--ep-cool); }
+.ep-insight--notice .ep-insight__bar { background: var(--ep-tangerine); }
+.ep-insight--ok .ep-insight__bar { background: var(--ep-seafoam); }
+.ep-insight--warn .ep-insight__bar { background: var(--ep-coral); }
+.ep-insight__body { padding: var(--sp-3) var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-2); }
+.ep-insight__kicker { display: flex; align-items: center; gap: var(--sp-2); font-size: var(--fs-xs); color: var(--text-2); text-transform: uppercase; letter-spacing: .06em; font-weight: 600; }
+.ep-insight__kicker .ep-chip { margin-left: auto; }
+.ep-insight__claim { font-size: var(--fs-md); font-weight: 500; color: var(--heading); line-height: 1.4; }
+.ep-insight__why { font-size: var(--fs-sm); color: var(--text-2); }
+.ep-insight__actions { display: flex; gap: var(--sp-2); align-items: center; margin-top: 2px; }
+
+/* ---------- 5. Chips & badges --------------------------------------- */
+.ep-chip { display: inline-flex; align-items: center; gap: 5px; height: 20px; padding: 0 8px; border-radius: var(--r-sm); border: 1px solid currentColor; font: 600 10.5px/1 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; white-space: nowrap; }
+.ep-chip::before { content: ""; width: 8px; height: 8px; border-radius: 50%; border: 1.5px solid currentColor; box-sizing: border-box; }
+.ep-chip--obs { background: var(--ev-obs-bg); color: var(--ev-obs-ink); }
+.ep-chip--obs::before { background: currentColor; }
+.ep-chip--est { background: var(--ev-est-bg); color: var(--ev-est-ink); }
+.ep-chip--est::before { background: linear-gradient(90deg, currentColor 50%, transparent 50%); }
+.ep-chip--sim { background: var(--ev-sim-bg); color: var(--ev-sim-ink); border-style: dashed; }
+.ep-chip--sim::before { border-radius: 1px; transform: rotate(45deg) scale(.8); background: currentColor; }
+.ep-chip--hyp { background: var(--ev-hyp-bg); color: var(--ev-hyp-ink); border-style: dotted; font-style: italic; }
+.ep-chip--synthetic { background: var(--ep-tangerine); color: var(--ep-ink); border-color: transparent; }
+.ep-chip--synthetic::before { display: none; }
+
+.ep-status { display: inline-flex; align-items: center; gap: 6px; font-weight: 500; font-size: var(--fs-sm); white-space: nowrap; }
+.ep-status::before { content: ""; width: 9px; height: 9px; border-radius: 50%; background: currentColor; }
+.ep-status--ok { color: var(--st-ok-ink); }
+.ep-status--notice { color: var(--st-notice-ink); } .ep-status--notice::before { border-radius: 0; clip-path: polygon(50% 0,100% 100%,0 100%); }
+.ep-status--warn { color: var(--st-warn-ink); } .ep-status--warn::before { border-radius: 1px; transform: rotate(45deg) scale(.85); }
+.ep-status--crit { color: var(--st-warn-ink); } .ep-status--crit::before { border-radius: 1px; }
+.ep-status--none { color: var(--text-2); } .ep-status--none::before { background: transparent; border: 1.5px solid currentColor; }
+.ep-tag { display: inline-block; padding: 1px 7px; border-radius: var(--r-sm); background: var(--surface-2); color: var(--text-2); font: 500 var(--fs-xs)/1.6 var(--f-ui); }
+
+/* ---------- 6. Buttons ----------------------------------------------- */
+.ep-btn { display: inline-flex; align-items: center; justify-content: center; gap: 6px; height: 34px; padding: 0 14px; border-radius: var(--r-sm); border: 1px solid transparent; font: 500 var(--fs-base)/1 var(--f-ui); cursor: pointer; transition: background .15s ease, border-color .15s ease, box-shadow .15s ease; text-decoration: none; white-space: nowrap; }
+.ep-btn:hover { text-decoration: none; }
+.ep-btn--primary { background: var(--ep-navy); color: #fff; }               /* app: full-width navy "Order Maintenance" */
+.ep-btn--primary:hover { background: var(--ep-twilight); }
+.ep-btn--primary:active { background: var(--ep-navy-dark); }
+.ep-btn--accent { background: var(--ep-cool); color: #fff; }               /* approve */
+.ep-btn--accent:hover { background: #1c6fc2; }
+.ep-btn--secondary { background: var(--surface); color: var(--heading); border-color: var(--line-2); }
+.ep-btn--secondary:hover { background: var(--surface-2); }
+.ep-btn--ghost { background: transparent; color: var(--link); padding: 0 8px; }
+.ep-btn--ghost:hover { background: var(--surface-2); }
+.ep-btn--sm { height: 28px; padding: 0 10px; font-size: var(--fs-sm); }
+.ep-btn--block { width: 100%; }
+.ep-btn[disabled] { opacity: .5; cursor: not-allowed; }
+[data-theme="dark"] .ep-btn--primary { background: var(--ep-cool); } [data-theme="dark"] .ep-btn--primary:hover { background: #1c6fc2; }
+
+/* ---------- 7. Controls --------------------------------------------- */
+.ep-select, .ep-input { height: 32px; padding: 0 28px 0 10px; border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--surface); color: var(--text); font: 400 var(--fs-base)/1 var(--f-ui); }
+.ep-select { appearance: none; background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 20 20'><path fill='%23545d61' d='M5 7l5 6 5-6z'/></svg>"); background-repeat: no-repeat; background-position: right 8px center; }
+.ep-input { padding-right: 10px; }
+.ep-field { display: flex; flex-direction: column; gap: 4px; font-size: var(--fs-sm); color: var(--text-2); }
+.ep-filters { display: flex; flex-wrap: wrap; gap: var(--sp-2); align-items: center; margin-bottom: var(--sp-3); }
+.ep-segment { display: inline-flex; border: 1px solid var(--line-2); border-radius: var(--r-sm); overflow: hidden; }
+.ep-segment button { height: 30px; padding: 0 12px; border: 0; background: var(--surface); color: var(--text-2); font: 500 var(--fs-sm)/1 var(--f-ui); cursor: pointer; }
+.ep-segment button[aria-pressed="true"] { background: var(--ep-navy); color: #fff; }
+.ep-toggle { display: inline-flex; align-items: center; gap: 8px; font-size: var(--fs-sm); color: var(--text-2); }
+.ep-toggle .sw { width: 32px; height: 18px; border-radius: var(--r-pill); background: var(--line-2); position: relative; }
+.ep-toggle .sw::after { content: ""; position: absolute; top: 2px; left: 2px; width: 14px; height: 14px; border-radius: 50%; background: #fff; }
+.ep-toggle[aria-checked="true"] .sw { background: var(--ep-cool); } .ep-toggle[aria-checked="true"] .sw::after { left: 16px; }
+
+/* ---------- 8. Tabs (secondary, inside a view) ---------------------- */
+.ep-tabs { display: flex; gap: 2px; border-bottom: 1px solid var(--line); margin-bottom: var(--sp-4); }
+.ep-tabs button, .ep-tabs a { height: 36px; padding: 0 14px; border: 0; background: none; color: var(--text-2); font: 500 var(--fs-md)/1 var(--f-ui); border-bottom: 2px solid transparent; margin-bottom: -1px; cursor: pointer; text-decoration: none; }
+.ep-tabs [aria-selected="true"] { color: var(--heading); border-bottom-color: var(--ep-cool); }
+
+/* ---------- 9. Tables ----------------------------------------------- */
+.ep-table { width: 100%; border-collapse: collapse; font-size: var(--fs-base); }
+.ep-table th { text-align: left; padding: 8px 10px; background: var(--surface-2); color: var(--text-2); font: 600 var(--fs-xs)/1.3 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; border-bottom: 1px solid var(--line); white-space: nowrap; }
+.ep-table td { padding: 8px 10px; border-bottom: 1px solid var(--line); vertical-align: middle; }
+.ep-table td.num, .ep-table th.num { text-align: right; }
+.ep-table tbody tr:hover { background: var(--ep-ice-light); }
+[data-theme="dark"] .ep-table tbody tr:hover { background: var(--surface-2); }
+.ep-table tr[aria-selected="true"] td { background: var(--ev-est-bg); }
+.ep-table .mono { font-family: var(--f-data); }
+.ep-table .row-link { color: var(--heading); font-weight: 500; white-space: nowrap; font-family: var(--f-data); }
+.ep-table td { font-size: var(--fs-sm); }
+.ep-bar { display: inline-block; height: 8px; border-radius: 2px; background: var(--s1); vertical-align: middle; }
+
+/* ---------- 10. Drawer (approval) ----------------------------------- */
+.ep-drawer { background: var(--surface); border-left: 1px solid var(--line); box-shadow: var(--shadow-2); display: flex; flex-direction: column; border-radius: var(--r-md); overflow: hidden; }
+.ep-drawer__head { padding: var(--sp-3) var(--sp-4); border-bottom: 1px solid var(--line); display: flex; align-items: center; gap: var(--sp-2); }
+.ep-drawer__head h3 { font-size: var(--fs-h3); }
+.ep-drawer__close { margin-left: auto; }
+.ep-drawer__body { padding: var(--sp-4); display: flex; flex-direction: column; gap: var(--sp-3); overflow: auto; }
+.ep-drawer__foot { padding: var(--sp-3) var(--sp-4); border-top: 1px solid var(--line); display: flex; flex-wrap: wrap; gap: var(--sp-2); background: var(--surface-2); }
+.ep-draft { border: 1px solid var(--line-2); border-radius: var(--r-sm); background: var(--ep-ice-light); padding: var(--sp-3); font-size: var(--fs-sm); line-height: 1.55; }
+[data-theme="dark"] .ep-draft { background: var(--surface-2); }
+.ep-draft__meta { display: flex; gap: var(--sp-2); align-items: center; margin-bottom: var(--sp-2); font-size: var(--fs-xs); color: var(--text-2); }
+.ep-evlist { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 6px; font-size: var(--fs-sm); }
+.ep-evlist li { display: flex; gap: var(--sp-2); align-items: center; }
+.ep-evlist code { font: 11.5px/1.4 var(--f-data); color: var(--text-2); }
+
+/* ---------- 11. Charts (inline SVG) --------------------------------- */
+.ep-chart { width: 100%; height: auto; font-family: var(--f-data); font-size: 11px; }
+.ep-chart .axis { stroke: var(--line-2); stroke-width: 1; }
+.ep-chart .grid { stroke: var(--grid); stroke-width: 1; }
+.ep-chart .lbl { fill: var(--text-2); }
+.ep-chart .lbl-strong { fill: var(--text); font-weight: 500; }
+.ep-chart .band { fill: var(--band); }
+.ep-chart .s1 { fill: var(--s1); stroke: var(--s1); } .ep-chart .s2 { fill: var(--s2); stroke: var(--s2); } .ep-chart .s3 { fill: var(--s3); stroke: var(--s3); }
+.ep-chart .ring { stroke: var(--surface); stroke-width: 2; }
+.ep-legend { display: flex; flex-wrap: wrap; gap: var(--sp-3); font-size: var(--fs-sm); color: var(--text-2); margin-top: var(--sp-2); }
+.ep-legend i { display: inline-block; width: 10px; height: 10px; border-radius: 50%; margin-right: 6px; vertical-align: -1px; }
+.ep-legend .sq i { border-radius: 2px; } .ep-legend .dia i { border-radius: 1px; transform: rotate(45deg) scale(.85); }
+
+/* ---------- 12. Portal footer strip --------------------------------- */
+.ep-foot { margin-top: var(--sp-5); padding-top: var(--sp-3); border-top: 1px solid var(--line); display: flex; gap: var(--sp-4); align-items: center; font-size: var(--fs-xs); color: var(--text-2); flex-wrap: wrap; }
+
+/* =====================================================================
+   CORPORATE SKIN — europressgroup.com (Uncode) look for the explainer
+   ===================================================================== */
+.ep-corp { background: #fff; color: var(--co-text); font: 400 15px/1.7 var(--f-ui); }
+.ep-corp h1, .ep-corp h2, .ep-corp h3, .ep-corp h4 { font-family: var(--f-corp); font-weight: 600; letter-spacing: 0; color: var(--co-text); line-height: 1.2; text-transform: uppercase; }
+.ep-corp h1 { font-size: clamp(31px, 4vw, 50px); font-weight: 700; }
+.ep-corp h2 { font-size: clamp(22px, 2.4vw, 31px); }
+.ep-corp h3 { font-size: 20px; }
+.ep-corp h4 { font-size: 13px; letter-spacing: .05em; }
+.ep-corp .lead { font-size: 18px; line-height: 1.6; font-weight: 300; }
+.ep-corp a { color: var(--co-navy); }
+.ep-corp a:hover { color: var(--co-cyan); }
+.co-wrap { max-width: 1140px; margin: 0 auto; padding: 0 24px; }
+.co-nav { height: 90px; display: flex; align-items: center; gap: 28px; background: #fff; border-bottom: 1px solid var(--co-grey-2); position: sticky; top: 0; z-index: 5; }
+.co-nav .co-wrap { display: flex; align-items: center; gap: 28px; width: 100%; }
+.co-nav__brand { font: 800 18px/1 var(--f-corp); letter-spacing: .04em; color: var(--co-text); text-decoration: none; text-transform: uppercase; display: flex; align-items: center; gap: 10px; }
+.co-nav__brand .mark { width: 30px; height: 30px; background: var(--co-navy); color: #fff; display: grid; place-items: center; font-size: 14px; border-radius: 3px; }
+.co-nav__brand small { display: block; font: 500 10px/1 var(--f-ui); letter-spacing: .12em; color: #777; margin-top: 4px; text-transform: uppercase; }
+.co-nav__menu { margin-left: auto; display: flex; gap: 26px; list-style: none; padding: 0; margin-top: 0; margin-bottom: 0; }
+.co-nav__menu a { font: 600 12px/1 var(--f-ui); letter-spacing: .05em; text-transform: uppercase; color: var(--co-text); text-decoration: none; }
+.co-nav__menu a:hover, .co-nav__menu a[aria-current="page"] { color: var(--co-cyan); }
+.co-band { padding: 72px 0; }
+.co-band--grey { background: var(--co-grey-band); }
+.co-band--navy { background: var(--co-navy); color: #fff; }
+.co-band--navy h1, .co-band--navy h2, .co-band--navy h3, .co-band--navy p { color: #fff; }
+.co-band--navy a { color: var(--co-cyan); }
+.co-band--charcoal { background: var(--co-charcoal); color: #eaeaea; }
+.co-hero { position: relative; overflow: hidden; background: linear-gradient(100deg, var(--co-navy) 0%, var(--co-navy-2) 55%, #2b5a8a 100%); color: #fff; padding: 110px 0 96px; }
+.co-hero::after { content: ""; position: absolute; inset: 0; background: linear-gradient(180deg, rgba(0,0,0,.15), rgba(0,0,0,.35)); pointer-events: none; }  /* Uncode "style-dark-bg" overlay */
+.co-hero .co-wrap { position: relative; z-index: 1; }
+.co-hero h1, .co-hero h2, .co-hero p { color: #fff; }
+.co-hero h1 { max-width: 16ch; margin-bottom: 10px; }
+.co-hero h2 { font-size: clamp(18px, 2vw, 24px); font-weight: 600; margin-bottom: 22px; opacity: .92; }
+.co-hero p { max-width: 62ch; font-size: 17px; opacity: .92; margin-bottom: 30px; }
+.co-hero__art { position: absolute; right: -40px; bottom: -20px; width: min(52vw, 640px); opacity: .95; z-index: 0; }
+.co-rule { width: 100%; border: 0; border-top: 1px solid var(--co-grey-2); margin: 0; }
+.co-head-rule { display: inline-block; width: 44px; height: 3px; background: var(--co-cyan); margin: 14px 0 22px; }  /* dashed underline motif under uppercase headings */
+.ep-corp .co-btn, .co-btn { display: inline-flex; align-items: center; justify-content: center; height: 46px; padding: 0 31px; border: 1px solid var(--co-navy); border-radius: 2px; background: var(--co-navy); color: #fff; font: 600 12px/1 var(--f-corp); letter-spacing: .1em; text-transform: uppercase; text-decoration: none; transition: background .2s ease-in-out, border-color .2s ease-in-out, color .2s ease-in-out; cursor: pointer; }
+.ep-corp .co-btn:hover, .co-btn:hover { background: #0a3356; border-color: #0a3356; color: #fff; text-decoration: none; }
+.co-btn--lg { height: 52px; padding: 0 39px; font-size: 15px; }
+.ep-corp .co-btn--outline, .co-btn--outline { background: transparent; color: var(--co-navy); }
+.ep-corp .co-btn--outline:hover, .co-btn--outline:hover { background: var(--co-navy); color: #fff; }
+.ep-corp .co-btn--cyan, .co-btn--cyan { background: var(--co-cyan-btn); border-color: var(--co-cyan-btn); color: #fff; }  /* only on dark bands or >= 18px bold text */
+.ep-corp .co-btn--cyan:hover, .co-btn--cyan:hover { background: #0a9db4; border-color: #0a9db4; }
+.ep-corp .co-band--navy .co-btn--outline, .ep-corp .co-hero .co-btn--outline { color: #fff; border-color: #fff; }
+.ep-corp .co-band--navy .co-btn--outline:hover, .ep-corp .co-hero .co-btn--outline:hover { background: #fff; color: var(--co-navy); }
+.co-grid { display: grid; gap: 32px; }
+.co-grid--3 { grid-template-columns: repeat(3, 1fr); } .co-grid--2 { grid-template-columns: repeat(2, 1fr); }
+@media (max-width: 860px) { .co-grid--3, .co-grid--2 { grid-template-columns: 1fr; } .co-nav__menu { display: none; } .co-hero__art { display: none; } }
+.co-stat { text-align: left; }
+.co-stat__num { font: 700 44px/1.05 var(--f-corp); color: var(--co-navy); }
+.co-stat__num .unit { font-size: 22px; font-weight: 600; color: var(--co-cyan-btn); margin-left: 2px; }
+.co-stat__label { font: 600 12px/1.4 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: var(--co-text); margin-top: 8px; }
+.co-stat__note { font-size: 14px; color: #555; margin-top: 4px; }
+.co-card { background: #fff; border: 1px solid var(--co-grey-2); padding: 28px; }
+.co-card h3 { font-size: 15px; letter-spacing: .04em; margin-bottom: 10px; }
+.co-card p { font-size: 14px; margin-bottom: 0; }
+.co-quote { border-left: 3px solid var(--co-cyan); padding-left: 20px; font-size: 17px; font-style: italic; color: #444; }
+.co-quote cite { display: block; font: 600 12px/1.4 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; font-style: normal; color: var(--co-text); margin-top: 10px; }
+.co-footer { background: var(--co-charcoal); color: #bbb; padding: 32px 0; font-size: 13px; }
+.co-footer .co-wrap { display: flex; gap: 24px; align-items: center; flex-wrap: wrap; }
+.co-footer a { color: #fff; } .co-footer a:hover { color: var(--co-cyan); }
+.co-footer .social { margin-left: auto; display: flex; gap: 14px; }
+.co-footer .social span { width: 30px; height: 30px; border: 1px solid #444; border-radius: 50%; display: grid; place-items: center; font-size: 11px; color: #ddd; }
+.co-chip { display: inline-block; padding: 2px 8px; border: 1px solid var(--co-grey-2); border-radius: 2px; font: 600 10.5px/1.6 var(--f-ui); letter-spacing: .06em; text-transform: uppercase; color: #555; background: #fff; }
+.co-chip--e { border-color: #cfe3f7; color: #1d5a9e; background: #eef5fc; }  /* estimate */
+.co-chip--a { border-color: #f1dcb8; color: #8a5a00; background: #fdf4e3; }  /* assumption */
+.co-chip--f { border-color: #cfe9de; color: #0d7a6f; background: #eaf6f1; }  /* fact */
+
+</style>
+<style>
+/* comp-only scaffolding */
+.comp-label { position: sticky; top: 0; z-index: 20; background: #1c2020; color: #fff; font: 600 11px/1 "Poppins", sans-serif; letter-spacing: .1em; text-transform: uppercase; padding: 8px 16px; display: flex; gap: 16px; align-items: center; }
+.comp-label span { color: #bfcfde; font-weight: 400; letter-spacing: 0; text-transform: none; }
+.comp-sep { height: 24px; background: repeating-linear-gradient(135deg, #e1e9f1 0 8px, #fff 8px 16px); }
+.ep-portal { min-height: 0; }
+.mass-row { display: grid; grid-template-columns: 150px 1fr 110px; align-items: center; gap: 12px; padding: 6px 0; border-bottom: 1px solid var(--line); font-size: var(--fs-sm); }
+.mass-row:last-child { border-bottom: 0; }
+.mass-row .who { display: flex; align-items: center; gap: 8px; font-weight: 500; color: var(--heading); }
+.mass-row .who i { width: 10px; height: 10px; border-radius: 50%; display: inline-block; }
+.mass-row .val { text-align: right; }
+.ep-kv { display: grid; grid-template-columns: 130px 1fr; gap: 4px 12px; font-size: var(--fs-sm); }
+.ep-kv dt { color: var(--text-2); } .ep-kv dd { margin: 0; color: var(--text); font-family: var(--f-data); }
+</style>
+</head>
+<body>
+
+<div class="comp-label">Comp A · product add-on inside the SMART portal <span>Overview screen (insight cards) — skin .ep-portal</span></div>
+
+<!-- ============ PORTAL SHELL: OVERVIEW ============ -->
+<div class="ep-portal">
+  <header class="ep-topbar">
+    <div class="ep-topbar__brand"><span class="mark">S</span>SMART</div>
+    <div class="ep-topbar__module">Verified Weight · add-on</div>
+    <div class="ep-topbar__spacer"></div>
+    <button class="ep-topbar__ctl"><span class="lbl">Customer</span> Northfield Retail Oy · 14 sites <span class="caret">▼</span></button>
+    <button class="ep-topbar__ctl"><span class="lbl">As of</span> 23 Dec 2025 <span class="caret">▼</span></button>
+    <span class="ep-chip ep-chip--synthetic">Synthetic data</span>
+    <button class="ep-topbar__ctl" aria-label="Theme">◐</button>
+    <span class="ep-avatar">TK</span>
+  </header>
+
+  <nav class="ep-sidenav" aria-label="Verified Weight views">
+    <div class="ep-sidenav__group">Verified Weight</div>
+    <a class="ep-sidenav__item" href="#" aria-current="page"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="3" width="6" height="6"/><rect x="11" y="3" width="6" height="6"/><rect x="3" y="11" width="6" height="6"/><rect x="11" y="11" width="6" height="6"/></svg>Overview</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M3 15h14M5 15V8l5-4 5 4v7"/><path d="M8 15v-4h4v4"/></svg>Lifts</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 6v4l3 2"/></svg>Causes</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="4" y="3" width="12" height="14" rx="1"/><path d="M4 11h12M7 14h6"/></svg>Proof of Fullness</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M4 5h12v8H8l-4 3z"/></svg>Recommendations <span class="count">3</span></a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><rect x="3" y="6" width="14" height="9" rx="1"/><path d="M6 6V4h8v2M3 11h14"/></svg>Devices</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><path d="M7 10H3M17 10h-4M10 3v4M10 13v4"/><circle cx="10" cy="10" r="3"/></svg>Integration</a>
+    <a class="ep-sidenav__item" href="#"><svg class="ico" viewBox="0 0 20 20" fill="none" stroke="currentColor" stroke-width="1.6"><circle cx="10" cy="10" r="7"/><path d="M10 9v5M10 6.5v.5"/></svg>Method &amp; limits</a>
+    <div class="ep-sidenav__foot">a Europress SMART concept<br>build 2026-11-06 · v0.3</div>
+  </nav>
+
+  <main class="ep-main">
+    <div class="ep-view__head">
+      <div>
+        <div class="ep-crumb">Northfield Retail Oy · All sites · Oct–Dec 2025</div>
+        <h1>118 of 142 lifts agree with the weighbridge within the expected band.</h1>
+        <p class="lede">Each lift's compactor mass is compared with its weighbridge ticket and the invoice line. Gaps are explained by cause, without blame. Nothing is sent without your approval.</p>
+      </div>
+      <div class="ep-view__tools">
+        <select class="ep-select" aria-label="Period"><option>Last 90 days</option></select>
+        <select class="ep-select" aria-label="Stream"><option>All streams</option></select>
+        <button class="ep-btn ep-btn--secondary">Export</button>
+      </div>
+    </div>
+
+    <div class="ep-grid ep-grid--4" style="margin-bottom:16px">
+      <div class="ep-card ep-kpi">
+        <div class="ep-kpi__label">Collected mass <span class="ep-chip ep-chip--est">Estimated</span></div>
+        <div class="ep-kpi__value">412,6 <span class="unit">t</span><span class="pm">±6,1</span></div>
+        <div class="ep-kpi__note">Random error only; bias shown per device, not averaged.</div>
+      </div>
+      <div class="ep-card ep-kpi">
+        <div class="ep-kpi__label">Verified share <span class="ep-chip ep-chip--obs">Observed</span></div>
+        <div class="ep-kpi__value">83 <span class="unit">%</span></div>
+        <div class="ep-kpi__note">Tickets shared for 73 % of lifts; 118 of 142 inside band.</div>
+      </div>
+      <div class="ep-card ep-kpi">
+        <div class="ep-kpi__label">Open gaps <span class="ep-chip ep-chip--est">Estimated</span></div>
+        <div class="ep-kpi__value">24 <span class="unit">lifts</span></div>
+        <div class="ep-kpi__note">9 beyond 2σ · 15 "needs a look".</div>
+      </div>
+      <div class="ep-card ep-kpi">
+        <div class="ep-kpi__label">Actions waiting <span class="ep-chip ep-chip--hyp">Hypothetical</span></div>
+        <div class="ep-kpi__value">3</div>
+        <div class="ep-kpi__note">Drafts only · none sent · <a href="#">open inbox</a></div>
+      </div>
+    </div>
+
+    <div class="ep-grid ep-grid--main-aside">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <h2 style="font-size:15px;color:var(--text-2);font-weight:600;letter-spacing:.06em;text-transform:uppercase;font-size:11px">Conclusions generated for this period</h2>
+
+        <div class="ep-card ep-insight ep-insight--warn">
+          <div class="ep-insight__bar"></div>
+          <div class="ep-insight__body">
+            <div class="ep-insight__kicker">Lifts · rule R2 · 7 lifts <span class="ep-chip ep-chip--obs">Observed</span></div>
+            <div class="ep-insight__claim">The invoice bills more than both the compactor and the ticket on 7 lifts (€ 111,61 on the largest). Device error does not explain that.</div>
+            <div class="ep-insight__why">Ticket vs invoice gap 2,9 % on INV-00392-202512-L045; line HAUL_PER_TONNE. Compactor 4,125 t ±0,06 and ticket 4,20 t agree (0,9σ).</div>
+            <div class="ep-insight__actions"><button class="ep-btn ep-btn--sm ep-btn--primary">Draft query to finance</button><a class="ep-btn ep-btn--sm ep-btn--ghost" href="#">Trace lift →</a></div>
+          </div>
+        </div>
+
+        <div class="ep-card ep-insight ep-insight--notice">
+          <div class="ep-insight__bar"></div>
+          <div class="ep-insight__body">
+            <div class="ep-insight__kicker">Causes · rule R6 · n = 318 gaps <span class="ep-chip ep-chip--est">Estimated</span></div>
+            <div class="ep-insight__claim">Stale stored vehicle tares explain about 30 % of the large device-vs-ticket gaps; the sign flips with the vehicle, not the hauler.</div>
+            <div class="ep-insight__why">Split-half check: each vehicle's offset is identical in both halves of the window. Could still be a simulator artefact — pilot test listed under Method &amp; limits.</div>
+            <div class="ep-insight__actions"><button class="ep-btn ep-btn--sm ep-btn--secondary">Draft hygiene report to operator</button><a class="ep-btn ep-btn--sm ep-btn--ghost" href="#">See causes →</a></div>
+          </div>
+        </div>
+
+        <div class="ep-card ep-insight">
+          <div class="ep-insight__bar"></div>
+          <div class="ep-insight__body">
+            <div class="ep-insight__kicker">Devices · rule R4 · Hauler Delta <span class="ep-chip ep-chip--obs">Observed</span></div>
+            <div class="ep-insight__claim">Hauler Delta shares no weighbridge tickets, so 41 lifts cannot be checked. The compactor is the only mass.</div>
+            <div class="ep-insight__why">0 of 41 lifts have a ticket; invoice lines 312–352 unverifiable. Not a ranking: "Not enough data to score".</div>
+            <div class="ep-insight__actions"><button class="ep-btn ep-btn--sm ep-btn--secondary">Draft data request</button></div>
+          </div>
+        </div>
+
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>Devices · gap vs ticket, last 90 days</h3><div class="tools"><div class="ep-segment"><button aria-pressed="true">List</button><button>Map</button></div></div></div>
+          <div class="ep-scroll"><table class="ep-table">
+            <thead><tr><th>Device</th><th>Stream</th><th>Hauler</th><th class="num">Lifts</th><th class="num">Device mass</th><th class="num">Gap vs ticket</th><th>Tier</th><th>Status</th></tr></thead>
+            <tbody>
+              <tr><td><a class="row-link" href="#">CMP-00430</a></td><td>Cardboard</td><td>Alpha</td><td class="num">18</td><td class="num">4,13 t ±0,06</td><td class="num">+0,9 σ</td><td><span class="ep-tag" title="Ticket-calibrated">T1</span></td><td><span class="ep-status ep-status--ok">Within band</span></td></tr>
+              <tr aria-selected="true"><td><a class="row-link" href="#">CMP-00311</a></td><td>Bio</td><td>Charlie</td><td class="num">12</td><td class="num">1,92 t ±0,31</td><td class="num">+2,4 σ</td><td><span class="ep-tag" title="Virtual scale">T0</span></td><td><span class="ep-status ep-status--notice">Needs a look</span></td></tr>
+              <tr><td><a class="row-link" href="#">CMP-00087</a></td><td>Mixed</td><td>Bravo</td><td class="num">22</td><td class="num">3,10 t ±0,22</td><td class="num">+1,2 σ</td><td><span class="ep-tag" title="Ticket-calibrated">T1</span></td><td><span class="ep-status ep-status--ok">Within band</span></td></tr>
+              <tr><td><a class="row-link" href="#">CMP-00219</a></td><td>Cardboard</td><td>Delta</td><td class="num">41</td><td class="num">2,84 t ±0,19</td><td class="num">—</td><td><span class="ep-tag" title="Virtual scale">T0</span></td><td><span class="ep-status ep-status--none">No tickets shared</span></td></tr>
+              <tr><td><a class="row-link" href="#">CMP-00142</a></td><td>Mixed</td><td>Alpha</td><td class="num">16</td><td class="num">3,62 t ±0,24</td><td class="num">+3,1 σ</td><td><span class="ep-tag" title="Ticket-calibrated">T1</span></td><td><span class="ep-status ep-status--warn">Outside band</span></td></tr>
+            </tbody>
+          </table></div>
+          <div class="ep-card__foot">± covers sensor noise only · € columns are hypothetical tariffs · click a row to trace its lifts</div>
+        </div>
+      </div>
+
+      <aside style="display:flex;flex-direction:column;gap:16px">
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>Sensor health</h3><span class="ep-chip ep-chip--obs">Observed</span></div>
+          <div class="ep-card__body" style="display:flex;flex-direction:column;gap:10px">
+            <div style="display:flex;justify-content:space-between"><span class="ep-status ep-status--ok">OK</span><span class="num">61</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="ep-status ep-status--notice">Degraded</span><span class="num">3</span></div>
+            <div style="display:flex;justify-content:space-between"><span class="ep-status ep-status--warn">Fault</span><span class="num">1</span></div>
+            <small>Drift suspected: CMP-00311 · <a href="#">why we think so</a></small>
+          </div>
+        </div>
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>Ticket sharing by hauler</h3><span class="ep-chip ep-chip--obs">Observed</span></div>
+          <div class="ep-card__body" style="display:flex;flex-direction:column;gap:8px;font-size:12px">
+            <div><div style="display:flex;justify-content:space-between"><span>Alpha</span><span class="num">82 %</span></div><span class="ep-bar" style="width:82%"></span></div>
+            <div><div style="display:flex;justify-content:space-between"><span>Bravo</span><span class="num">91 %</span></div><span class="ep-bar" style="width:91%"></span></div>
+            <div><div style="display:flex;justify-content:space-between"><span>Charlie</span><span class="num">51 %</span></div><span class="ep-bar" style="width:51%"></span></div>
+            <div><div style="display:flex;justify-content:space-between"><span>Delta</span><span class="num">0 %</span></div><span class="ep-bar" style="width:2%;background:var(--line-2)"></span></div>
+            <small>Alphabetical, not a ranking.</small>
+          </div>
+        </div>
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>Sites</h3><div class="ep-segment"><button>List</button><button aria-pressed="true">Map</button></div></div>
+          <div class="ep-card__body" style="padding:0">
+            <svg viewBox="0 0 300 150" width="100%" style="display:block;background:#eff3f6" role="img" aria-label="Site map, stylised">
+              <defs><pattern id="g" width="20" height="20" patternUnits="userSpaceOnUse"><path d="M20 0H0V20" fill="none" stroke="#e1e9f1"/></pattern></defs>
+              <rect width="300" height="150" fill="url(#g)"/>
+              <path d="M0 95 C60 80 90 110 150 90 S240 60 300 70" fill="none" stroke="#d6e0ea" stroke-width="6"/>
+              <path d="M110 0 C120 50 90 100 120 150" fill="none" stroke="#d6e0ea" stroke-width="4"/>
+              <g font-family="Roboto, sans-serif" font-size="9" font-weight="700" fill="#fff" text-anchor="middle">
+                <circle cx="70" cy="60" r="11" fill="#f08038"/><text x="70" y="63">4</text>
+                <circle cx="150" cy="88" r="11" fill="#f08038"/><text x="150" y="91">6</text>
+                <circle cx="225" cy="45" r="11" fill="#f08038"/><text x="225" y="48">3</text>
+                <circle cx="255" cy="110" r="11" fill="#214269"/><text x="255" y="113">1</text>
+              </g>
+            </svg>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <div class="ep-foot"><span class="ep-chip ep-chip--sim">Simulated</span> dataset v1.0.1 · <a href="#">Method &amp; limits</a> · AI drafts are template-filled from rule output; no free-text generation · Verified Weight v0.3</div>
+  </main>
+</div>
+
+<div class="comp-sep"></div>
+<div class="comp-label">Comp B · detail screen: Lifts → one lift traced, with approval drawer <span>skin .ep-portal</span></div>
+
+<!-- ============ PORTAL: LIFT DETAIL ============ -->
+<div class="ep-portal">
+  <header class="ep-topbar">
+    <div class="ep-topbar__brand"><span class="mark">S</span>SMART</div>
+    <div class="ep-topbar__module">Verified Weight · add-on</div>
+    <div class="ep-topbar__spacer"></div>
+    <button class="ep-topbar__ctl"><span class="lbl">Customer</span> Northfield Retail Oy <span class="caret">▼</span></button>
+    <button class="ep-topbar__ctl"><span class="lbl">As of</span> 23 Dec 2025 <span class="caret">▼</span></button>
+    <span class="ep-chip ep-chip--synthetic">Synthetic data</span>
+    <span class="ep-avatar">TK</span>
+  </header>
+  <nav class="ep-sidenav" aria-label="Verified Weight views">
+    <div class="ep-sidenav__group">Verified Weight</div>
+    <a class="ep-sidenav__item" href="#">Overview</a>
+    <a class="ep-sidenav__item" href="#" aria-current="page">Lifts</a>
+    <a class="ep-sidenav__item" href="#">Causes</a>
+    <a class="ep-sidenav__item" href="#">Proof of Fullness</a>
+    <a class="ep-sidenav__item" href="#">Recommendations <span class="count">3</span></a>
+    <a class="ep-sidenav__item" href="#">Devices</a>
+    <a class="ep-sidenav__item" href="#">Integration</a>
+    <a class="ep-sidenav__item" href="#">Method &amp; limits</a>
+  </nav>
+  <main class="ep-main">
+    <div class="ep-crumb"><a href="#">Lifts</a> / CMP-00430 / 23 Dec 2025 09:12</div>
+    <div class="ep-view__head">
+      <div>
+        <h1>The invoice bills 0,88 t more than the ticket, and device error does not explain that.</h1>
+        <p class="lede">CMP-00430 · Cardboard · Hauler Alpha · tare: stored (not weighed) · INV-00392-202512-L045</p>
+      </div>
+      <div class="ep-view__tools">
+        <div class="ep-segment" role="group" aria-label="Device tier"><button>T0 ±13 %</button><button aria-pressed="true">T1 ±8 %</button><button>Dataset ±1,4 %</button></div>
+      </div>
+    </div>
+
+    <div class="ep-tabs" role="tablist"><button role="tab" aria-selected="true">Lift trace</button><button role="tab">Last 12 lifts</button><button role="tab">Evidence rows</button></div>
+
+    <div class="ep-grid ep-grid--main-aside">
+      <div style="display:flex;flex-direction:column;gap:16px;min-width:0">
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>One lift, three masses</h3><span class="ep-chip ep-chip--obs">Observed</span></div>
+          <div class="ep-card__body">
+            <svg class="ep-chart" viewBox="0 0 640 150" role="img" aria-label="Compactor 4.125 t ±0.06, ticket 4.20 t ±0.12, invoice 5.08 t exact, on one kg axis">
+              <g class="grid"><line x1="60" x2="60" y1="10" y2="118"/><line x1="200" x2="200" y1="10" y2="118"/><line x1="340" x2="340" y1="10" y2="118"/><line x1="480" x2="480" y1="10" y2="118"/><line x1="620" x2="620" y1="10" y2="118"/></g>
+              <line class="axis" x1="60" x2="620" y1="118" y2="118"/>
+              <g class="lbl"><text x="60" y="134" text-anchor="middle">3,8 t</text><text x="200" y="134" text-anchor="middle">4,2</text><text x="340" y="134" text-anchor="middle">4,6</text><text x="480" y="134" text-anchor="middle">5,0</text><text x="620" y="134" text-anchor="middle">5,4</text></g>
+              <!-- device 4.125 ± 0.06 (±2σ band) -->
+              <rect class="band" x="132" y="18" width="84" height="22" rx="2"/>
+              <line class="s1" x1="153" x2="195" y1="29" y2="29" stroke-width="2"/>
+              <circle class="s1 ring" cx="174" cy="29" r="6"/>
+              <text class="lbl-strong" x="66" y="33">Compactor</text><text class="lbl" x="226" y="33">4,125 t ±0,06 · sensor</text>
+              <!-- ticket 4.20 ± 0.12 -->
+              <rect class="band" x="158" y="52" width="84" height="22" rx="2"/>
+              <line class="s2" x1="179" x2="221" y1="63" y2="63" stroke-width="2"/>
+              <rect class="s2 ring" x="194" y="57" width="12" height="12" transform="rotate(45 200 63)"/>
+              <text class="lbl-strong" x="66" y="67">Weighbridge ticket</text><text class="lbl" x="252" y="67">4,20 t ±0,12 · stored tare</text>
+              <!-- invoice 5.08 exact -->
+              <rect class="s3 ring" x="502" y="104" width="12" height="12" rx="1"/>
+              <text class="lbl-strong" x="66" y="114">Invoice mass line</text><text class="lbl" x="496" y="114" text-anchor="end">5,08 t · document, no sensor error</text>
+              <!-- gap arrow -->
+              <line x1="206" x2="500" y1="84" y2="84" stroke="var(--text-2)" stroke-width="1" stroke-dasharray="3 3"/>
+              <text class="lbl" x="353" y="95" text-anchor="middle">billed above both masses: +0,88 t · € 111,61</text>
+            </svg>
+            <div class="ep-legend"><span><i style="background:var(--s1)"></i>Compactor (device)</span><span class="dia"><i style="background:var(--s2)"></i>Weighbridge ticket</span><span class="sq"><i style="background:var(--s3)"></i>Invoice line</span><span><i style="background:var(--band);border:1px solid var(--s1)"></i>±2σ expected band</span></div>
+            <p style="margin:12px 0 0;font-size:var(--fs-sm)">Device vs ticket: 0,075 t, expected spread 0,13 t (0,9σ) → <strong>consistent, no action</strong>. Ticket vs invoice: 0,88 t (21 %) → <strong>document mismatch</strong>, line HAUL_PER_TONNE.</p>
+          </div>
+        </div>
+
+        <div class="ep-card">
+          <div class="ep-card__head"><h3>Last 12 lifts · gap = device ÷ ticket − 1</h3><span class="ep-chip ep-chip--obs">Observed</span></div>
+          <div class="ep-card__body">
+            <svg class="ep-chart" viewBox="0 0 640 140" role="img" aria-label="Residual per lift with ±2σ band; the selected lift is inside the band">
+              <rect class="band" x="40" y="40" width="580" height="48"/>
+              <g class="grid"><line x1="40" x2="620" y1="40" y2="40"/><line x1="40" x2="620" y1="88" y2="88"/></g>
+              <line class="axis" x1="40" x2="620" y1="64" y2="64"/>
+              <g class="lbl"><text x="34" y="44" text-anchor="end">+8 %</text><text x="34" y="68" text-anchor="end">0</text><text x="34" y="92" text-anchor="end">−8 %</text></g>
+              <g class="s1">
+                <circle class="ring" cx="64" cy="58" r="5"/><circle class="ring" cx="112" cy="70" r="5"/><circle class="ring" cx="160" cy="61" r="5"/><circle class="ring" cx="208" cy="67" r="5"/><circle class="ring" cx="256" cy="55" r="5"/><circle class="ring" cx="304" cy="73" r="5"/><circle class="ring" cx="352" cy="60" r="5"/><circle class="ring" cx="400" cy="66" r="5"/><circle class="ring" cx="448" cy="69" r="5"/><circle class="ring" cx="496" cy="57" r="5"/><circle class="ring" cx="544" cy="63" r="5"/>
+              </g>
+              <circle cx="592" cy="59" r="8" fill="none" stroke="var(--heading)" stroke-width="2"/><circle class="s1 ring" cx="592" cy="59" r="5"/>
+              <text class="lbl-strong" x="592" y="112" text-anchor="middle">23 Dec · selected</text>
+              <g class="lbl"><text x="64" y="112" text-anchor="middle">2 Oct</text><text x="304" y="112" text-anchor="middle">12 Nov</text></g>
+              <text class="lbl" x="620" y="36" text-anchor="end">shaded = ±2σ for T1</text>
+            </svg>
+          </div>
+          <div class="ep-card__foot">Whiskers omitted for clarity; hover a dot for σ. Switch tiers above to see how a T0 virtual scale widens the band (about 9× noisier per lift).</div>
+        </div>
+      </div>
+
+      <aside class="ep-drawer" aria-label="Recommended action">
+        <div class="ep-drawer__head"><span class="ep-status ep-status--notice">Notice</span><h3>Query invoice line</h3><button class="ep-btn ep-btn--ghost ep-btn--sm ep-drawer__close" aria-label="Close">✕</button></div>
+        <div class="ep-drawer__body">
+          <dl class="ep-kv">
+            <dt>Action</dt><dd>DISPUTE_INVOICE_LINE</dd>
+            <dt>Decided by</dt><dd>rule R2 (ticket ≠ invoice &gt; 2 %)</dd>
+            <dt>Expected value</dt><dd>€ 90–120 this line <span class="ep-chip ep-chip--hyp">Hypothetical</span></dd>
+            <dt>Reversible</dt><dd>yes · recall e-mail</dd>
+          </dl>
+          <div>
+            <div class="ep-insight__kicker" style="margin-bottom:6px">Evidence rows</div>
+            <ul class="ep-evlist">
+              <li><span class="ep-chip ep-chip--obs">Obs</span><code>collection_events #88412 · 4 125 kg</code></li>
+              <li><span class="ep-chip ep-chip--obs">Obs</span><code>weighbridge_tickets #2291 · 4 200 kg · tare STORED</code></li>
+              <li><span class="ep-chip ep-chip--obs">Obs</span><code>invoice_lines L045 · 5 080 kg · HAUL_PER_TONNE</code></li>
+              <li><span class="ep-chip ep-chip--est">Est</span><code>σ_device 1,4 % · σ_ticket 2,9 % (stored tare)</code></li>
+            </ul>
+          </div>
+          <div class="ep-draft">
+            <div class="ep-draft__meta"><span class="ep-chip ep-chip--sim">Template</span> rule-filled, no LLM · checked against 4 source rows</div>
+            Dear Hauler Alpha finance team,<br><br>Invoice INV-00392-202512, line L045, bills 5 080 kg for the lift of 23 Dec 2025 from CMP-00430. Your weighbridge ticket #2291 for the same lift shows 4 200 kg. Could you confirm which mass applies, and if the ticket is correct, issue a credit note for the difference?<br><br>Kind regards,<br>Northfield Retail Oy
+          </div>
+          <small>Not a verdict on the operator. Gaps have causes besides the hauler.</small>
+        </div>
+        <div class="ep-drawer__foot">
+          <button class="ep-btn ep-btn--accent">Approve &amp; send</button>
+          <button class="ep-btn ep-btn--secondary">Reject</button>
+          <button class="ep-btn ep-btn--ghost ep-btn--sm">Ask for evidence</button>
+        </div>
+      </aside>
+    </div>
+    <div class="ep-foot">Audit: no decisions recorded yet for this lift · drafts v0.3 · <span class="ep-chip ep-chip--sim">Simulated</span> dataset v1.0.1</div>
+  </main>
+</div>
+
+<div class="comp-sep"></div>
+<div class="comp-label">Comp C · business explainer, corporate europressgroup.com look <span>skin .ep-corp</span></div>
+
+<!-- ============ CORPORATE EXPLAINER ============ -->
+<div class="ep-corp">
+  <nav class="co-nav">
+    <div class="co-wrap">
+      <a class="co-nav__brand" href="#"><span class="mark">S</span><span>SMART Verified Weight<small>a Europress SMART concept · internal</small></span></a>
+      <ul class="co-nav__menu">
+        <li><a href="#" aria-current="page">Pitch</a></li><li><a href="#">Problem</a></li><li><a href="#">Weight</a></li><li><a href="#">Value</a></li><li><a href="#">Business case</a></li><li><a href="#">Roadmap</a></li><li><a href="#">Questions</a></li>
+      </ul>
+    </div>
+  </nav>
+
+  <section class="co-hero">
+    <svg class="co-hero__art" viewBox="0 0 640 360" aria-hidden="true">
+      <g opacity=".55">
+        <rect x="60" y="150" width="420" height="150" rx="6" fill="#0a3356"/>
+        <rect x="60" y="150" width="420" height="22" fill="#2b5a8a"/>
+        <rect x="380" y="90" width="140" height="70" rx="4" fill="#2c83d7"/>
+        <path d="M380 160 L520 160 L560 300 L340 300 Z" fill="#163f66"/>
+        <rect x="90" y="300" width="360" height="14" fill="#06233d"/>
+        <circle cx="130" cy="330" r="16" fill="#06233d"/><circle cx="430" cy="330" r="16" fill="#06233d"/>
+        <circle cx="500" cy="118" r="7" fill="#72c0a2"/>
+        <g stroke="#bfcfde" stroke-width="2" opacity=".6"><line x1="100" y1="200" x2="330" y2="200"/><line x1="100" y1="230" x2="330" y2="230"/><line x1="100" y1="260" x2="330" y2="260"/></g>
+      </g>
+    </svg>
+    <div class="co-wrap">
+      <h1>Weight add-ons for Europress SMART</h1>
+      <h2>Three weights, one truth</h2>
+      <p>Europress compactors already know how full they are. With a firmware upgrade they can also estimate how heavy they are, for €0 of extra hardware. Operator tickets keep that estimate honest, and Europress's own scale platforms supply ground truth. Inside SMART, that weight becomes a neutral second opinion on every ticket and every invoice.</p>
+      <a class="co-btn co-btn--lg co-btn--cyan" href="#">Read the 30-second pitch</a>&nbsp;&nbsp;<a class="co-btn co-btn--lg co-btn--outline" href="#">Open the demo</a>
+    </div>
+  </section>
+
+  <section class="co-band">
+    <div class="co-wrap">
+      <h2>Why device and ticket disagree</h2>
+      <span class="co-head-rule"></span>
+      <p class="lead" style="max-width:70ch">Large gaps are mostly weighbridge hygiene, not sensor error. Synthetic dataset, 318 gaps over 90 days. <span class="co-chip co-chip--e">Estimate</span></p>
+      <div class="co-grid co-grid--3" style="margin-top:36px">
+        <div class="co-stat"><div class="co-stat__num">34<span class="unit">%</span></div><div class="co-stat__label">Side waste on the vehicle</div><div class="co-stat__note">Driver-reported extra loads the compactor never saw.</div></div>
+        <div class="co-stat"><div class="co-stat__num">30<span class="unit">%</span></div><div class="co-stat__label">Stale stored tare</div><div class="co-stat__note">A stored vehicle weight that no longer matches the truck.</div></div>
+        <div class="co-stat"><div class="co-stat__num">3,9<span class="unit">%</span></div><div class="co-stat__label">Sensor only</div><div class="co-stat__note">What is left once the two above are taken out.</div></div>
+      </div>
+    </div>
+  </section>
+
+  <section class="co-band co-band--grey">
+    <div class="co-wrap">
+      <div class="co-grid co-grid--2">
+        <div>
+          <h2>The CFO insight</h2>
+          <span class="co-head-rule"></span>
+          <p>Subscription alone is negative over six years. Add an assumed +5 pp service-contract renewal uplift and higher SMART attach, and the base case turns positive. One won renewal is worth about €5 k machine margin plus six years of service margin. <span class="co-chip co-chip--a">Assumption</span></p>
+          <p class="co-quote">"Weight makes SMART and the service contract stickier, which is where Europress makes its profit" — not "a new revenue line".<cite>Board framing, business plan §5</cite></p>
+          <a class="co-btn" href="#">Try the pricing calculator</a>
+        </div>
+        <div class="co-card">
+          <h3>6-year NPV, € M <span class="co-chip co-chip--e">Estimate</span></h3>
+          <svg class="ep-chart" viewBox="0 0 480 200" role="img" aria-label="NPV by scenario: subscription only negative, base positive 0.23, upside higher">
+            <g class="grid"><line x1="150" x2="150" y1="20" y2="170"/><line x1="250" x2="250" y1="20" y2="170"/><line x1="350" x2="350" y1="20" y2="170"/><line x1="450" x2="450" y1="20" y2="170"/></g>
+            <line class="axis" x1="250" x2="250" y1="20" y2="170" style="stroke:#303133"/>
+            <g class="lbl"><text x="150" y="188" text-anchor="middle">−0,5</text><text x="250" y="188" text-anchor="middle">0</text><text x="350" y="188" text-anchor="middle">+0,5</text><text x="450" y="188" text-anchor="middle">+1,0 € M</text></g>
+            <g font-size="12" fill="#303133">
+              <text x="20" y="46">Subscription only</text><rect x="196" y="34" width="52" height="16" rx="3" fill="#8a5a00"/><text x="190" y="46" text-anchor="end" fill="#555">−0,27</text>
+              <text x="20" y="86">Low case</text><rect x="214" y="74" width="34" height="16" rx="3" fill="#8a5a00"/><text x="208" y="86" text-anchor="end" fill="#555">−0,17</text>
+              <text x="20" y="126">Base</text><rect x="252" y="114" width="46" height="16" rx="3" fill="#0d426e"/><text x="304" y="126" fill="#555">+0,23</text>
+              <text x="20" y="166">Upside</text><rect x="252" y="154" width="124" height="16" rx="3" fill="#0d426e"/><text x="382" y="166" fill="#555">+0,62</text>
+            </g>
+          </svg>
+          <p style="font-size:13px;color:#555;margin-top:8px">Adoption and renewal uplift dominate; both are measurable in the pilot, so that is what the gates test. Break-even adoption ≈ 0,8× base (~14 % by Y3).</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <section class="co-band co-band--navy">
+    <div class="co-wrap" style="text-align:center">
+      <h2>Every kilo known at the source</h2>
+      <p class="lead" style="max-width:60ch;margin:12px auto 28px">Start free with a virtual scale, add accuracy only where it pays, and let the operator ticket keep the number honest.</p>
+      <a class="co-btn co-btn--outline" href="#">Questions for Tommi</a>
+    </div>
+  </section>
+
+  <footer class="co-footer">
+    <div class="co-wrap">
+      <span>© 2026 Hackathon team · SMART Verified Weight is a concept, not a Europress product</span>
+      <a href="#">Glossary</a><a href="#">Third-party material</a><a href="#">How we used AI</a>
+      <div class="social"><span>f</span><span>in</span><span>yt</span></div>
+    </div>
+  </footer>
+</div>
+
+</body>
+</html>

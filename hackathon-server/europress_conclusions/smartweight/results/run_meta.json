@@ -1,0 +1,15 @@
+{
+  "n_events": 16000,
+  "n_eval_events": 11200,
+  "anchors_k": 5,
+  "true_mass_kg_p10_p50_p90": [
+    1190.3185863713486,
+    3033.780300508555,
+    6914.788740150651
+  ],
+  "hybrid_component_log_sd": [
+    0.1544959464624985,
+    0.16796270329036725
+  ],
+  "note": "SIMULATED, see params.yaml"
+}

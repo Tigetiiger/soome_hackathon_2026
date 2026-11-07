@@ -1,0 +1,26 @@
+{
+ "fixed_hybrid_device_dist_eur_per_dy": {
+  "p10": 0.0,
+  "p50": 759.0559210526316,
+  "p75": 2531.347039473684,
+  "p90": 6332.5098684210525,
+  "mean": 2596.5427631578946,
+  "share_devices_nonzero": 0.747
+ },
+ "on_call_device_dist_eur_per_dy": {
+  "p10": 0.0,
+  "p50": 175.5361842105263,
+  "p75": 514.3618421052631,
+  "p90": 1124.1759868421052,
+  "mean": 431.0361842105263,
+  "share_devices_nonzero": 0.562
+ },
+ "median_lift_cost_by_policy": {
+  "FIXED_SCHEDULE": 234.3,
+  "HYBRID": 195.3,
+  "ON_CALL": 234.3
+ },
+ "decision_overall_mean_best_eur_y": 1096.8313923231483,
+ "decision_overall_weight_increment_eur_y": 237.47024609007312,
+ "hidden_cost_trap_share": 0.18829194120628484
+}

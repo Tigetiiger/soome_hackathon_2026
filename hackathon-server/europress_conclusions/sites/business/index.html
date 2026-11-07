@@ -1,0 +1,1619 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Europress weight add-ons plan</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet">
+<style>
+/* ===== Business explainer · one token-based stylesheet (v5, R1 design plan) =====
+   Tokens = sites/design/theme.css v2 (copied inline: the page must stay a single HTML file).
+   Hex values live ONLY in the three token blocks below; every rule uses var(). */
+:root{
+  --n0:#ffffff;--n1:#f7f9fa;--n2:#f1f4f6;--n3:#e3e8ec;--n4:#c2cbd3;--n5:#8a95a0;--n6:#626c76;--n7:#3d4750;--n8:#1f2429;
+  --chrome:#214269;--chrome-text:#ffffff;--chrome-ink:#214269;
+  --action:#1f6fc4;--action-hover:#185ca6;--action-wash:#e8f0fb;--on-action:#ffffff;
+  --ok:#1a7f4b;--ok-wash:#e3f1e8;
+  --warn-ink:#8a5a00;--warn-fill:#e9b949;--warn-wash:#f6ecd6;--on-warn:#1f2429;
+  --serious:#b4432a;--serious-ink:#9a3a24;--serious-wash:#f7e4df;
+  --cz-2:#7fa8dc;--on-mid:#1f2429;
+  --seg-on:#214269;--seg-on-ink:#ffffff;
+  color-scheme:light;
+}
+:root[data-theme="dark"]{
+  --n0:#1e2226;--n1:#262b30;--n2:#16191c;--n3:#343a40;--n4:#4d555d;--n5:#7c868f;--n6:#a4adb5;--n7:#cfd5da;--n8:#eef1f3;
+  --chrome:#111417;--chrome-ink:#9cc3f0;
+  --action:#5aa0ea;--action-hover:#7fb5f0;--action-wash:#1b2c40;--on-action:#0b1a2b;
+  --ok:#5fc48d;--ok-wash:#163626;
+  --warn-ink:#e8bd5a;--warn-fill:#c9962a;--warn-wash:#3a2f14;--on-warn:#1f2429;
+  --serious:#f08a73;--serious-ink:#f4a28f;--serious-wash:#3d1f19;
+  --cz-2:#9cc3f0;--on-mid:#1f2429;
+  --seg-on:#5aa0ea;--seg-on-ink:#0b1a2b;
+  color-scheme:dark;
+}
+@media (prefers-color-scheme:dark){
+  :root:not([data-theme="light"]){
+    --n0:#1e2226;--n1:#262b30;--n2:#16191c;--n3:#343a40;--n4:#4d555d;--n5:#7c868f;--n6:#a4adb5;--n7:#cfd5da;--n8:#eef1f3;
+    --chrome:#111417;--chrome-ink:#9cc3f0;
+    --action:#5aa0ea;--action-hover:#7fb5f0;--action-wash:#1b2c40;--on-action:#0b1a2b;
+    --ok:#5fc48d;--ok-wash:#163626;
+    --warn-ink:#e8bd5a;--warn-fill:#c9962a;--warn-wash:#3a2f14;--on-warn:#1f2429;
+    --serious:#f08a73;--serious-ink:#f4a28f;--serious-wash:#3d1f19;
+    --cz-2:#9cc3f0;--on-mid:#1f2429;
+    --seg-on:#5aa0ea;--seg-on-ink:#0b1a2b;
+    color-scheme:dark;
+  }
+}
+/* role aliases: old class vocabulary kept, mapped onto the theme ramp */
+:root{
+  --bg:var(--n2);--surface:var(--n0);--surface-2:var(--n1);--line:var(--n4);--line-soft:var(--n3);
+  --ink:var(--n8);--text:var(--n7);--text-2:var(--n7);--muted:var(--n6);
+  --pink:var(--action);--pink-ink:var(--action-hover);--pink-wash:var(--action-wash);--wave:var(--action);--wave-wash:var(--action-wash);
+  --mint:var(--ok);--mint-wash:var(--ok-wash);--green-ink:var(--ok);--forest:var(--ok);
+  --autumn:var(--serious);--autumn-ink:var(--serious-ink);
+  --amber-ink:var(--warn-ink);--amber-wash:var(--warn-wash);--grey-wash:var(--n2);--ice:var(--n1);
+  --bar:var(--n7);--bar-2:var(--action);--bar-pos:var(--ok);--bar-neg:var(--serious);--track:var(--n3);--shadow:none;
+  --font-base:"Roboto","Helvetica Neue",Arial,sans-serif;--font-title:var(--font-base);
+  --font-mono:ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --fs-xs:11px;--fs-s:12px;--fs-b:13px;--fs-m:14px;--fs-l:15px;
+  --r:3px;
+}
+
+/* ---------- base ---------- */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth}
+body{margin:0;background:var(--bg);color:var(--text);font:400 14px/1.55 var(--font-base);font-variant-numeric:tabular-nums lining-nums;-webkit-text-size-adjust:100%;-webkit-font-smoothing:antialiased}
+h1,h2,h3,h4{font-family:var(--font-base);color:var(--ink);line-height:1.25;margin:0 0 8px;letter-spacing:0}
+h1{font-size:22px;font-weight:700;text-transform:uppercase;letter-spacing:.02em}
+h2{font-size:16px;font-weight:700}
+h3{font-size:15px;font-weight:500}
+h4{font-size:14px;font-weight:500}
+p{margin:0 0 12px}
+a{color:var(--action);text-underline-offset:2px}
+a:focus-visible,button:focus-visible,input:focus-visible{outline:2px solid var(--action);outline-offset:2px}
+small,.small{font-size:var(--fs-s)}
+.xs{font-size:var(--fs-xs)}
+.muted{color:var(--muted)}
+strong{color:var(--ink)}
+ul{padding-left:1.2em;margin:0 0 12px}
+li{margin:4px 0}
+code{font-family:var(--font-mono);font-size:.9em;overflow-wrap:anywhere}
+.sr-only{position:absolute;width:1px;height:1px;padding:0;margin:-1px;overflow:hidden;clip:rect(0,0,0,0);white-space:nowrap;border:0}
+.skip{position:absolute;left:12px;top:-60px;z-index:50;background:var(--ink);color:var(--surface);padding:8px 12px;border-radius:var(--r);font-weight:500}
+.skip:focus{top:8px}
+a.gl{color:inherit;text-decoration:underline dotted;text-underline-offset:3px;text-decoration-color:var(--muted)}
+a.gl:hover{text-decoration-color:var(--action)}
+.stack-l>*+*{margin-top:16px}
+.mt{margin-top:16px}
+
+/* ---------- chrome ---------- */
+.topbar{position:sticky;top:0;z-index:20;background:var(--surface);border-bottom:1px solid var(--line-soft);display:flex;align-items:center;gap:12px;padding:8px 20px}
+.brand{font:700 12px/1.2 var(--font-base);color:var(--ink);text-transform:uppercase;letter-spacing:.06em;white-space:nowrap;display:flex;align-items:center;flex-wrap:wrap}
+.brand span{display:inline-grid;place-items:center;height:20px;min-width:20px;background:var(--chrome);color:var(--chrome-text);border-radius:var(--r);padding:0 4px;margin-right:8px}
+.brand small{flex-basis:100%;padding-left:28px;font:500 10px/1.2 var(--font-base);letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-top:2px}
+.topbar .spacer{flex:1}
+.pill{display:inline-flex;align-items:center;gap:4px;height:28px;padding:0 10px;border-radius:var(--r);border:1px solid var(--n4);background:var(--surface);color:var(--text);font:500 12px var(--font-base);text-transform:none;letter-spacing:0;cursor:pointer;white-space:nowrap}
+.pill:hover{border-color:var(--action);color:var(--action)}
+.synthetic{display:inline-block;background:var(--warn-fill);color:var(--on-warn);border:0;border-radius:var(--r);font:500 10.5px/18px var(--font-base);letter-spacing:.05em;text-transform:uppercase;padding:0 6px;white-space:nowrap}
+.layout{display:grid;grid-template-columns:240px minmax(0,1fr);gap:24px;max-width:1240px;margin:0 auto;padding:16px 20px 64px}
+.toc{position:sticky;top:60px;align-self:start;max-height:calc(100vh - 76px);overflow:auto;background:transparent;border-right:1px solid var(--line-soft);padding:4px 0}
+.toc h2{font-size:var(--fs-xs);text-transform:uppercase;letter-spacing:.12em;color:var(--muted);margin:0 8px 8px;font-weight:500}
+.toc ol{list-style:none;margin:0;padding:0}
+.toc li{margin:0}
+.toc .grp{font:500 var(--fs-xs) var(--font-base);text-transform:uppercase;letter-spacing:.1em;color:var(--ink);padding:12px 8px 4px}
+.toc a{display:block;padding:4px 8px;color:var(--text);text-decoration:none;font-size:12px;line-height:1.3;border-left:3px solid transparent}
+.toc a:hover{background:var(--surface-2);color:var(--action)}
+.toc a.active{background:var(--surface-2);border-left-color:var(--action);color:var(--ink);font-weight:500}
+main{min-width:0;overflow-x:clip;position:relative}
+section{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:24px clamp(16px,2.5vw,28px);margin:0 0 12px;scroll-margin-top:72px}
+main>section:nth-of-type(even):not(.hero){background:var(--surface-2)}
+main>section:nth-of-type(even) .card:not(.ice):not(.warn),main>section:nth-of-type(even) .pitch,main>section:nth-of-type(even) .kpis{background:var(--surface)}
+section>h2{text-transform:uppercase;letter-spacing:.06em}
+section>h2::after{content:"";display:block;width:32px;height:2px;background:var(--action);margin:8px 0 0}
+.kicker{font:500 11px var(--font-base);text-transform:uppercase;letter-spacing:.1em;color:var(--muted);margin-bottom:4px}
+.lead{font-size:15px;color:var(--text);max-width:72ch}
+footer{max-width:1240px;margin:0 auto 24px;font-size:var(--fs-xs);color:var(--muted);background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px 16px;line-height:1.6}
+footer a{color:var(--action)}
+
+/* ---------- layout blocks ---------- */
+.grid{display:grid;gap:12px}
+.g2{grid-template-columns:repeat(2,minmax(0,1fr))}
+.g3{grid-template-columns:repeat(3,minmax(0,1fr))}
+.g4{grid-template-columns:repeat(4,minmax(0,1fr))}
+.g5{grid-template-columns:repeat(5,minmax(0,1fr))}
+#gaps .grid.g2{align-items:start}
+.card{background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px}
+.card.ice{background:var(--ice);border-color:var(--line-soft)}
+.card.warn{background:var(--serious-wash);border-color:var(--serious)}
+.card h3,.card h4{margin-bottom:4px}
+.note{border-left:3px solid var(--action);background:var(--action-wash);padding:8px 12px;border-radius:0 3px 3px 0;margin:12px 0}
+.note.warn{border-left-color:var(--serious);background:var(--serious-wash)}
+.note.ok{border-left-color:var(--ok);background:var(--ok-wash)}
+.big{font:500 22px/1.15 var(--font-base);color:var(--ink);font-variant-numeric:tabular-nums;overflow-wrap:anywhere}
+.stage{background:var(--ice);border:1px solid var(--line-soft);border-radius:var(--r);padding:16px;margin:12px 0}
+.fig{font-size:var(--fs-xs);color:var(--muted);margin:8px 0 0}
+.fig b{color:var(--ink)}
+.kpis{display:grid;grid-auto-flow:column;grid-auto-columns:minmax(0,1fr);border:1px solid var(--n3);background:var(--surface);border-radius:var(--r)}
+.kpis>*{padding:8px 12px;border-left:1px solid var(--n3)}
+.kpis>*:first-child{border-left:0}
+.kpis .big{font-size:22px;line-height:1.15}
+.kpis .small{display:block;font-size:12px;color:var(--muted);margin-top:4px}
+
+/* ---------- hero ---------- */
+.hero{background:var(--surface);border:1px solid var(--line-soft);border-top:3px solid var(--chrome-ink);color:var(--text)}
+.hero-grid{display:grid;grid-template-columns:minmax(0,1.15fr) minmax(0,1fr);gap:24px;align-items:start}
+.five{counter-reset:f;list-style:none;padding:0;display:grid;gap:8px;margin:0}
+.five li{counter-increment:f;display:grid;grid-template-columns:26px 1fr;gap:12px;align-items:start;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:8px 12px;margin:0;color:var(--text);font-size:13px}
+.five li::before{content:counter(f);width:26px;height:26px;border-radius:var(--r);background:var(--ink);color:var(--surface);font:700 13px/26px var(--font-base);text-align:center}
+.five b{color:var(--ink)}
+.tri{margin:0;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px}
+.tri h3{font-size:15px;margin:0 0 4px}
+.tri svg{width:100%;height:auto;display:block}
+.tri text{font-family:var(--font-base);font-size:11px;fill:var(--ink)}
+.tri .n-title{font-size:13px;font-weight:700;fill:var(--ink)}
+.tri .n-sub{font-size:11px;fill:var(--muted)}
+.tri .who{font-size:12px;font-weight:500;fill:var(--ink)}
+.tri .nd-dev{fill:var(--action-wash);stroke:var(--action);stroke-width:2}
+.tri .nd-tk{fill:var(--surface-2);stroke:var(--ink);stroke-width:1.5}
+.tri .nd-inv{fill:var(--surface-2);stroke:var(--n5);stroke-width:1.5;stroke-dasharray:4 3}
+.tri .ed-dt{stroke:var(--action);stroke-width:2}
+.tri .ed-di{stroke:var(--n5);stroke-width:2;stroke-dasharray:2 4;stroke-linecap:round}
+.tri .ed-ti{stroke:var(--serious);stroke-width:2;stroke-dasharray:8 5}
+.tri .t-act{fill:var(--action);font-weight:500}
+.tri .t-mute{fill:var(--muted);font-weight:500}
+.tri .t-ser{fill:var(--serious-ink);font-weight:500}
+.tri-notes{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;font-size:12px;line-height:1.4;margin-top:8px;color:var(--text)}
+.tri-notes b{display:block;font-weight:500;margin-bottom:4px}
+.tri-notes .c-act{color:var(--action)} .tri-notes .c-mute{color:var(--muted)} .tri-notes .c-ser{color:var(--serious-ink)}
+.tri-notes strong{font-weight:700}
+.tri .foot{font-size:var(--fs-s);color:var(--text);margin:8px 0 0;text-align:center}
+.tri .foot b{color:var(--ink)}
+.disclaimer{margin-top:16px;font-size:var(--fs-s);background:var(--warn-wash);color:var(--warn-ink);border:1px solid var(--warn-fill);border-radius:var(--r);padding:8px 12px}
+.disclaimer strong{color:var(--warn-ink)}
+.disclaimer a{color:inherit}
+
+/* ---------- tags & legends ---------- */
+.tag{display:inline-block;font:500 var(--fs-xs)/1.45 var(--font-base);padding:0 4px;border-radius:2px;vertical-align:.1em;margin-left:4px;border:1px solid;white-space:nowrap}
+.tag.F{color:var(--ink);background:var(--n2);border-color:var(--ink)}
+.tag.T{color:var(--chrome-ink);background:var(--action-wash);border-color:var(--chrome-ink)}
+.tag.D{color:var(--warn-ink);background:var(--warn-wash);border-color:var(--warn-ink);border-style:dashed}
+.tag.E{color:var(--action);background:var(--action-wash);border-color:var(--action)}
+.tag.A{color:var(--muted);background:var(--n2);border-color:var(--muted);border-style:dotted;font-style:italic}
+.legend{display:flex;flex-wrap:wrap;gap:8px 16px;font-size:var(--fs-s);margin:8px 0;align-items:center}
+.legend .tag{margin:0 4px 0 0}
+.sw{display:inline-block;width:22px;height:10px;border-radius:1px;vertical-align:middle;margin-right:4px}
+.swl{display:inline-block;width:26px;height:0;vertical-align:middle;margin-right:4px;border-top:3px solid var(--ink)}
+.sw.s-ink{background:var(--n7)} .sw.s-act{background:var(--action)} .sw.s-grey{background:var(--n5)} .sw.s-light{background:var(--cz-2)}
+.sw.s-out{box-shadow:inset 0 0 0 2px var(--muted)}
+.sw.s-node{height:12px;background:var(--surface);border:1.5px solid var(--n4)}
+.sw.s-node.ep{background:var(--action-wash);border:2px solid var(--action)}
+.sw.s-node.op{border-color:var(--ink)}
+
+/* ---------- tables ---------- */
+.tbl{position:relative;overflow-x:auto;scrollbar-gutter:stable;margin:12px 0;border:1px solid var(--line-soft);border-radius:var(--r);background:var(--surface)}
+table{border-collapse:collapse;width:100%;font-size:var(--fs-s)}
+th,td{padding:8px 12px;text-align:left;vertical-align:top;border-bottom:1px solid var(--line-soft)}
+th{font:500 11px var(--font-base);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);background:var(--surface-2)}
+tr:last-child td{border-bottom:0}
+td.num,th.num{text-align:right;font-variant-numeric:tabular-nums;white-space:nowrap}
+.know td,.know th{text-align:center}
+.know td:first-child,.know th:first-child{text-align:left}
+.tbl table.know{min-width:560px}
+.dot{display:inline-block;width:14px;height:14px;border-radius:50%;vertical-align:middle}
+.dot.full{background:var(--ink)}
+.dot.half{background:linear-gradient(90deg,var(--ink) 50%,transparent 50%);border:2px solid var(--ink)}
+.dot.none{border:2px solid var(--muted)}
+.dot.kgm{background:var(--action);width:10px;height:10px}
+
+/* ---------- words / pitch ---------- */
+.words{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin:12px 0 0}
+.word{background:var(--ice);border:1px solid var(--line-soft);border-radius:var(--r);padding:8px 12px;font-size:12px;line-height:1.4}
+.word a{display:block;font:500 14px var(--font-base);color:var(--ink);text-decoration:none;margin-bottom:4px}
+.word a:hover{text-decoration:underline;color:var(--action)}
+.pitch{font-size:15px;line-height:1.65;background:var(--surface-2);border-left:3px solid var(--action);border-radius:0 3px 3px 0;padding:16px}
+.pitch ul{margin:4px 0 12px}
+
+/* ---------- value chain ---------- */
+.seg-ctl{display:inline-flex;border:1px solid var(--n4);border-radius:2px;background:var(--surface);margin-bottom:8px}
+.seg-ctl button{border:0;border-radius:0;background:transparent;color:var(--text);font:500 12px var(--font-base);padding:4px 12px;height:28px;cursor:pointer}
+.seg-ctl button[aria-pressed="true"]{background:var(--seg-on);color:var(--seg-on-ink)}
+.chainfig svg{width:100%;height:auto;display:block}
+.chainfig .v{display:none}
+.chainfig text{font-family:var(--font-base);font-size:13px;fill:var(--text)}
+.chainfig .t-title{font:700 15px var(--font-base);fill:var(--ink)}
+.chainfig .t-sub{fill:var(--muted)}
+.chainfig .t-kg{fill:var(--action);font-weight:700}
+.chainfig .t-nokg{fill:var(--muted);font-style:italic}
+.chainfig .e-lab{font-size:12px;font-weight:500;paint-order:stroke;stroke:var(--surface);stroke-width:4px;stroke-linejoin:round}
+.chainfig .e-lab.mon{fill:var(--n6)}
+.chainfig .e-lab.dat{fill:var(--action)}
+.chainfig .e-lab.mat{fill:var(--ink)}
+.n-cust rect{fill:var(--surface);stroke:var(--n4);stroke-width:2}
+.n-ep rect{fill:var(--action-wash);stroke:var(--action);stroke-width:2}
+.n-op rect{fill:var(--surface);stroke:var(--ink);stroke-width:1.5}
+.e-mat{fill:none;stroke:var(--ink);stroke-width:2.5}
+.e-mon{fill:none;stroke:var(--n6);stroke-width:2;stroke-dasharray:7 4}
+.e-dat{fill:none;stroke:var(--action);stroke-width:2.5;stroke-dasharray:2 4;stroke-linecap:round}
+.mk-mat{fill:var(--ink)} .mk-mon{fill:var(--n6)} .mk-dat{fill:var(--action)}
+.glyph{fill:none;stroke:var(--ink);stroke-width:2;stroke-linecap:round}
+.kgdot{fill:var(--action)}
+.chainfig[data-mode="today"] .ao{display:none}
+.chainfig[data-mode="addons"] .td{display:none}
+.swl.mon{border-top:3px dashed var(--n6)}
+.swl.dat{border-top:3px dotted var(--action)}
+
+/* ---------- horizontal bars, 0–100% ---------- */
+.hbars{display:grid;gap:8px;margin:12px 0}
+.hbar{display:grid;grid-template-columns:minmax(120px,38%) 1fr 56px;gap:8px;align-items:center;font-size:var(--fs-s)}
+.hbar .track{background-color:var(--track);border-radius:1px;height:20px;position:relative;overflow:hidden;
+  background-image:repeating-linear-gradient(90deg,transparent 0 calc(25% - 1px),var(--n4) calc(25% - 1px) 25%)}
+.hbar .fill{position:absolute;left:0;top:0;bottom:0;background:var(--n7);border-radius:1px}
+.hbar .fill.alt{background:var(--action)}
+.hbar .fill.mint{background:var(--action);box-shadow:none}
+.hbar .fill.warn{background:var(--n5)}
+.hbar .fill.out{background:transparent;box-shadow:inset 0 0 0 2px var(--muted)}
+.hbar .val{font-weight:500;color:var(--ink);text-align:right;font-variant-numeric:tabular-nums}
+.scale100{display:grid;grid-template-columns:minmax(120px,38%) 1fr 56px;gap:8px;font-size:var(--fs-xs);color:var(--muted)}
+.scale100 div{display:flex;justify-content:space-between}
+.bracket{border-left:3px solid var(--line);padding-left:8px;margin-left:-11px;display:grid;gap:8px}
+.bracket .blabel{font:500 var(--fs-xs) var(--font-base);color:var(--muted);text-transform:uppercase;letter-spacing:.06em}
+.quote{font-style:italic;color:var(--ink);font-weight:500;font-size:14px;margin:0 0 4px}
+.qmap{display:grid;grid-template-columns:minmax(0,1fr) 28px minmax(0,1.3fr);gap:8px;align-items:center;padding:8px 0;border-bottom:1px solid var(--line-soft)}
+.qmap:last-child{border-bottom:0}
+.qmap .to{color:var(--action);font-weight:700;text-align:center;font-size:18px}
+.stackbar{display:flex;height:28px;border-radius:var(--r);overflow:hidden;margin:8px 0 4px;font-size:var(--fs-xs);font-weight:500}
+.stackbar div{display:flex;align-items:center;justify-content:center;white-space:nowrap;overflow:hidden;padding:0 4px}
+.sb0{background:var(--track);color:var(--text)}
+.sb1{background:var(--n7);color:var(--surface)}
+.sb2{background:var(--action);color:var(--on-action)}
+.sb3{background:var(--n5);color:var(--on-mid)}
+.sbp{background:var(--action);color:var(--on-action)}
+.sblegend{display:flex;flex-wrap:wrap;gap:4px 16px;font-size:var(--fs-xs);margin:0 0 8px}
+
+/* ---------- weigh ---------- */
+.steps3{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px;counter-reset:s;margin:12px 0}
+.steps3 div{counter-increment:s;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px 12px 12px 48px;position:relative;font-size:var(--fs-s)}
+.steps3 div::before{content:counter(s);position:absolute;left:12px;top:12px;width:26px;height:26px;border-radius:var(--r);background:var(--ink);color:var(--surface);font:700 13px/26px var(--font-base);text-align:center}
+.steps3 b{display:block;color:var(--ink);font-weight:500}
+.ladder{display:grid;gap:8px;margin:8px 0}
+.rung{display:grid;grid-template-columns:7.5rem minmax(0,1fr) minmax(0,1.7fr);gap:12px;align-items:center;background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:12px}
+.rung.axisrow{background:transparent;border-color:transparent;padding-top:0;padding-bottom:0}
+.rung .cost{font:500 22px/1.1 var(--font-base);color:var(--ink);font-variant-numeric:tabular-nums}
+.rung .cost small{display:block;font:400 var(--fs-xs) var(--font-base);color:var(--muted)}
+.rung .name{font:500 14px var(--font-base);color:var(--ink)}
+.rung .meta{font-size:var(--fs-xs);color:var(--muted);line-height:1.45}
+.bands{display:grid;gap:8px}
+.brow .btrack{position:relative;height:16px;background:var(--track);border-radius:1px}
+.brow .bhi,.brow .blo{position:absolute;top:2px;bottom:2px;border-radius:1px}
+.brow .bhi{background:repeating-linear-gradient(45deg,var(--c) 0 2px,transparent 2px 6px);box-shadow:inset 0 0 0 1px var(--c)}
+.brow .blo{background:var(--c)}
+.brow.lift{--c:var(--cz-2)}
+.brow.month{--c:var(--action)}
+.brow.model{--c:var(--n7)}
+.sw.b-lift{background:var(--cz-2)} .sw.b-month{background:var(--action)} .sw.b-model{background:var(--n7)}
+.sw.b-hatch{background:repeating-linear-gradient(45deg,var(--muted) 0 2px,transparent 2px 6px);box-shadow:inset 0 0 0 1px var(--muted)}
+.brow .zero{position:absolute;left:50%;top:-3px;bottom:-3px;border-left:2px solid var(--ink)}
+.brow .blab{font-size:var(--fs-xs);font-weight:500;color:var(--text);margin-top:2px;line-height:1.35}
+.ref{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--ink);z-index:1}
+.ref.gate{border-left-color:var(--ok)}
+.axtop,.axbot{position:relative;height:18px;font-size:var(--fs-xs);color:var(--muted)}
+.axtop span,.axbot span{position:absolute;transform:translateX(-50%);white-space:nowrap}
+.axtop span{font-weight:500}
+.axtop .t{color:var(--ink)} .axtop .g{color:var(--ok)}
+.lifts svg{width:100%;height:auto;display:block}
+.lifts text{font-family:var(--font-base);font-size:12px;fill:var(--muted)}
+.lifts .lt{fill:var(--ink);font-weight:700}
+.calcline{font-family:var(--font-mono);font-size:var(--fs-s);background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:8px 12px;line-height:1.7;overflow-x:auto}
+.calcline div{white-space:nowrap}
+.fit td{text-align:center;font-weight:500}
+.fit th:not(:first-child){width:15%;text-align:center}
+.fit td:first-child{text-align:left;font-weight:400}
+.y{color:var(--ok)} .p{color:var(--warn-ink)} .n{color:var(--serious-ink)}
+
+/* reference-data loop */
+.loop{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:16px;align-items:center}
+.loop svg{width:100%;height:auto;display:block;max-width:460px;margin:0 auto}
+.loop text{font-family:var(--font-base);font-size:13px;fill:var(--text)}
+.loop .lt{font-weight:700;fill:var(--ink);font-size:14px}
+.loop .ls{fill:var(--muted);font-size:13px}
+.loop rect.box{fill:var(--surface);stroke:var(--n4);stroke-width:1.5}
+.loop rect.ref{fill:var(--action-wash);stroke:var(--action);stroke-width:2}
+.loop .arr{fill:none;stroke:var(--n6);stroke-width:2}
+.loop .mk{fill:var(--n6)}
+.uses{list-style:none;padding:0;margin:0;display:grid;gap:8px}
+.uses li{background:var(--surface);border:1px solid var(--line-soft);border-radius:var(--r);padding:8px 12px;font-size:var(--fs-s);margin:0}
+.uses b{color:var(--ink)}
+
+/* detection line chart */
+.chart svg{width:100%;height:auto;display:block;max-width:640px}
+.chart text{font-family:var(--font-base);font-size:12px;fill:var(--muted)}
+.chart .grid line{stroke:var(--line-soft);stroke-width:1}
+.chart .s1{stroke:var(--ink)} .chart .s2{stroke:var(--action)} .chart .s3{stroke:var(--n5)}
+.chart polyline{stroke-width:2px}
+.chart polyline.s3{stroke-dasharray:4 3}
+.chart .f1{fill:var(--ink)} .chart .f2{fill:var(--action)} .chart .f3{fill:var(--n5)}
+.chart circle.f1,.chart circle.f2,.chart circle.f3{r:4px;stroke:var(--surface);stroke-width:1.5px}
+.chart .lab{font-weight:500;font-size:12px}
+.chart .lab.f1{fill:var(--ink)} .chart .lab.f2{fill:var(--action)} .chart .lab.f3{fill:var(--muted)}
+
+/* ---------- offering matrix ---------- */
+.matrix{display:grid;grid-template-columns:minmax(0,1.3fr) repeat(4,minmax(0,1fr));gap:8px;margin:16px 0}
+.matrix .mh{font:500 var(--fs-xs) var(--font-base);text-transform:uppercase;letter-spacing:.06em;color:var(--muted);align-self:end;padding:0 4px 4px;border-bottom:1px solid var(--n3)}
+.exist{background:var(--surface-2);border:1px solid var(--n4);border-left:3px solid var(--chrome-ink);border-radius:var(--r);padding:12px}
+.exist .lvl{font:500 var(--fs-xs) var(--font-base);letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.exist h3{margin:4px 0;font-size:14px}
+.exist p{font-size:var(--fs-xs);margin:0;line-height:1.45}
+.cell{display:flex;flex-direction:column;gap:8px;justify-content:flex-start;border-left:1px solid var(--n3);padding:2px 0 0 8px;min-height:40px}
+.cell:empty{border-left-style:solid}
+.cell:empty::after{content:"—";color:var(--n5);font-size:12px}
+.chip{border-radius:var(--r);padding:8px;font-size:var(--fs-xs);line-height:1.35;display:block;border:1px solid var(--n4);background:var(--surface);color:var(--text)}
+.chip>b:first-child{display:block;margin-bottom:2px}
+.chip b{font-size:var(--fs-s);color:var(--ink);font-weight:500}
+.chip.paid{background:var(--action-wash);border-color:var(--action);color:var(--text)}
+.chip.free{border-style:dashed;background:var(--surface)}
+.chip.bund{background:var(--surface-2);border-style:dotted}
+.price{display:table;margin:8px 0 0 auto;background:var(--surface);border:1px solid var(--n4);border-radius:var(--r);padding:0 8px;font-weight:500;font-size:var(--fs-xs);color:var(--ink);text-align:right}
+.chip.paid .price{background:var(--action);color:var(--on-action);border-color:var(--action)}
+.sw.c-paid{background:var(--action-wash);border:1px solid var(--action)}
+.sw.c-free{background:var(--surface);border:1px dashed var(--n4)}
+.sw.c-bund{background:var(--surface-2);border:1px dotted var(--n4)}
+.tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:4px;margin-top:8px}
+.tiers div{background:var(--surface);border:1px solid var(--n4);border-radius:var(--r);padding:2px 4px;font-size:var(--fs-xs);text-align:center;font-weight:500;color:var(--ink)}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:8px;margin:12px 0}
+.flow .step{flex:1 1 150px;border-radius:var(--r);padding:12px;background:var(--surface-2);border:1px solid var(--line-soft)}
+.flow .step.ok{background:var(--action-wash);border-color:var(--action)}
+.flow .step b{display:block;color:var(--ink);font-weight:500}
+.flow .sep{display:flex;align-items:center;color:var(--action);font-weight:700}
+
+/* ---------- calculator ---------- */
+.calc{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1.1fr);gap:24px}
+.ctrl{margin:0 0 12px}
+.ctrl label{display:flex;justify-content:space-between;gap:8px;font-weight:500;color:var(--ink);font-size:var(--fs-s);flex-wrap:wrap;align-items:baseline}
+.ctrl output{font:500 22px var(--font-base);color:var(--ink);font-variant-numeric:tabular-nums}
+.ctrl .hint{font-size:var(--fs-xs);color:var(--muted)}
+input[type=range]{width:100%;accent-color:var(--action);height:28px}
+.presets{display:flex;flex-wrap:wrap;gap:4px;margin:4px 0 0}
+.presets button{font:400 12px var(--font-base);text-transform:none;letter-spacing:0;color:var(--text-2);border:1px solid var(--n4);border-radius:var(--r);background:var(--surface);padding:3px 8px;cursor:pointer;text-align:left}
+.presets button:hover{border-color:var(--action);color:var(--action)}
+.res{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px;align-content:start}
+.res .card{padding:12px}
+.res .wide{grid-column:1/-1}
+.res .lbl{font-size:var(--fs-xs);color:var(--muted)}
+.res .v{font:500 22px var(--font-base);color:var(--ink);font-variant-numeric:tabular-nums}
+.res .dim .v{color:var(--muted)}
+.verdict{grid-column:1/-1;border-radius:var(--r);padding:12px;font-weight:500;border:1px solid}
+.verdict.pass{background:var(--ok-wash);border-color:var(--ok);color:var(--text)}
+.verdict.fail{background:var(--serious-wash);border-color:var(--serious);color:var(--text)}
+.verdict.near{background:var(--warn-wash);border-color:var(--warn-ink);color:var(--text)}
+.verdict.zero{background:var(--n2);border-style:dashed;border-color:var(--muted);color:var(--text)}
+.math{grid-column:1/-1;font-family:var(--font-mono);font-size:var(--fs-s);font-variant-numeric:tabular-nums;background:var(--surface-2);border:1px solid var(--line-soft);border-radius:var(--r);padding:8px 12px;line-height:1.8;overflow-x:auto}
+.math div{white-space:nowrap}
+.math .fin{border-radius:var(--r);padding:0 8px;margin:2px -8px 0;font-weight:700}
+.math .fin.ok{background:var(--ok-wash);color:var(--ok)}
+.math .fin.bad{background:var(--serious-wash);color:var(--serious-ink)}
+.meterwrap{position:relative;padding-top:20px}
+.meter{position:relative;height:16px;background:var(--track);border-radius:1px;overflow:hidden}
+.meter .fee{position:absolute;left:0;top:0;bottom:0;background:var(--action)}
+.meter .cap{position:absolute;top:0;bottom:0;border-left:2px solid var(--ink)}
+.caplab{position:absolute;top:0;transform:translateX(-50%);font-size:var(--fs-xs);font-weight:500;color:var(--ink);white-space:nowrap}
+
+/* ---------- diverging bars ---------- */
+.div{display:grid;gap:8px;margin:12px 0}
+.drow{display:grid;grid-template-columns:minmax(110px,36%) 1fr;gap:8px;align-items:center;font-size:var(--fs-s)}
+.dtrack{position:relative;height:24px;background:var(--track);border-radius:1px}
+.dref{position:absolute;top:-4px;bottom:-4px;border-left:2px solid var(--line)}
+.dref.base{border-left:2px solid var(--ink)}
+.dbar{position:absolute;top:4px;bottom:4px;border-radius:1px}
+.dbar.neg,.dbar.lo{background:var(--bar-neg)}
+.dbar.pos,.dbar.hi{background:var(--bar-pos)}
+.sw.d-neg{background:var(--bar-neg)} .sw.d-pos{background:var(--bar-pos)}
+.swl.d-base{border-top:0;border-left:2px solid var(--ink);height:14px;width:0}
+.dval{position:absolute;top:4px;font-size:var(--fs-xs);font-weight:500;white-space:nowrap;color:var(--text)}
+.dhead{display:grid;grid-template-columns:minmax(110px,36%) 1fr;gap:8px;font-size:var(--fs-xs);color:var(--muted)}
+.dhead .dax{position:relative;height:16px}
+.dhead .dax span{position:absolute;transform:translateX(-50%);white-space:nowrap;font-weight:500}
+.dhead .dax .base{color:var(--ink)}
+.dhead .dax .r{transform:translateX(-100%) translateX(-4px)} .dhead .dax .l{transform:translateX(4px)}
+
+/* ---------- roadmap ---------- */
+.tl{margin:12px 0}
+.lane{display:grid;grid-template-columns:10rem minmax(0,1fr);gap:8px;align-items:center;margin:0 0 4px}
+.lane .ln{font-size:var(--fs-xs);font-weight:500;color:var(--ink);line-height:1.3}
+.track48{position:relative;display:grid;grid-template-columns:repeat(48,minmax(0,1fr));height:26px;background:var(--surface);border-radius:1px}
+.track48 .sg{grid-row:1;border-radius:1px;font-size:var(--fs-xs);font-weight:500;display:flex;align-items:center;padding:0 4px;overflow:hidden;white-space:nowrap;text-overflow:ellipsis;margin:3px 1px}
+.sg.live{background:var(--ink);color:var(--surface)}
+.sg.pilot{background:repeating-linear-gradient(45deg,var(--action) 0 3px,transparent 3px 7px);box-shadow:inset 0 0 0 1px var(--action);color:var(--ink)}
+.sg.open{background:var(--ink);border-right:3px dashed var(--n5);color:var(--surface)}
+.sg.phase{background:var(--surface-2);border:1px solid var(--line);color:var(--ink);padding:0 3px;font-weight:500}
+.sg.phase:first-of-type{overflow:visible;z-index:1;background:var(--surface-2)}
+.sg.risk{background:var(--serious-wash);border:1px solid var(--serious);color:var(--serious-ink)}
+.sw.r-pilot{background:repeating-linear-gradient(45deg,var(--action) 0 3px,transparent 3px 7px);box-shadow:inset 0 0 0 1px var(--action)}
+.sw.r-live{background:var(--ink)}
+.sw.r-open{background:var(--ink);border-right:3px dashed var(--n5)}
+.sw.r-risk{background:var(--serious-wash);border:1px solid var(--serious)}
+.gl48{position:absolute;top:-3px;bottom:-3px;border-left:2px dashed var(--action);opacity:.7}
+.tlaxis{position:relative;height:40px}
+.tlaxis .yr{position:absolute;top:20px;font:500 var(--fs-xs) var(--font-base);color:var(--muted);border-left:1px solid var(--line);padding-left:4px;height:20px}
+.tlaxis .gd{position:absolute;top:0;transform:translateX(-6px);display:flex;gap:4px;align-items:center;font:700 var(--fs-xs) var(--font-base);color:var(--action)}
+.tlaxis .gd i{width:12px;height:12px;background:var(--action);transform:rotate(45deg);border:2px solid var(--surface);display:block;margin-bottom:1px}
+.kills{display:grid;grid-template-columns:repeat(5,minmax(0,1fr));gap:8px;margin-top:12px}
+.kill{background:var(--surface-2);border-left:3px solid var(--n4);border-radius:0 3px 3px 0;padding:8px;font-size:var(--fs-xs);line-height:1.45}
+.kill b{color:var(--ink);display:block;font-weight:500}
+.kill.cond{background:var(--surface);border-left-color:var(--muted)}
+.kill.cond b{color:var(--ink)}
+
+/* ---------- operators: action ladder ---------- */
+.ladder2{display:grid;gap:4px;margin:12px 0}
+.ladder2 div{border-radius:var(--r);padding:8px 12px;font-size:var(--fs-s);display:flex;justify-content:space-between;gap:8px;align-items:center;border:1px solid var(--line-soft)}
+.ladder2 div:nth-child(1){background:var(--action-wash);margin-right:40%}
+.ladder2 div:nth-child(2){background:var(--action-wash);margin-right:30%}
+.ladder2 div:nth-child(3){background:var(--ice);margin-right:20%}
+.ladder2 div:nth-child(4){background:var(--ice);margin-right:10%}
+.ladder2 div:nth-child(5){background:var(--n2);border:1px dashed var(--n6)}
+.ladder2 em{font-style:normal;font-size:var(--fs-xs);color:var(--muted);white-space:nowrap}
+
+/* ---------- tooltip ---------- */
+#tip{position:fixed;z-index:60;max-width:min(300px,calc(100vw - 24px));background:var(--n1);color:var(--n8);border:1px solid var(--n4);border-radius:var(--r);padding:8px 12px;font-size:var(--fs-xs);line-height:1.45;display:none}
+#tip b{color:var(--n8);display:block;font-weight:500}
+#tip a{color:var(--action)}
+.say{color:var(--muted);font-size:.92em}
+
+/* ---------- glossary / questions ---------- */
+dl.gloss{display:grid;grid-template-columns:minmax(150px,220px) 1fr;gap:0;margin:0}
+dl.gloss dt{font-weight:500;color:var(--ink);padding:8px 12px 8px 0;border-bottom:1px solid var(--line-soft);scroll-margin-top:80px}
+dl.gloss dt:target,dl.gloss dt:target+dd{background:var(--action-wash)}
+dl.gloss dd{margin:0;padding:8px 0;border-bottom:1px solid var(--line-soft);font-size:var(--fs-s)}
+ol.qs{padding-left:1.4em}
+ol.qs li{margin:8px 0}
+
+/* ---------- responsive ---------- */
+@media (max-width:1000px){
+  .topbar{position:static}
+  .layout{grid-template-columns:1fr;padding:12px 12px 64px;gap:12px}
+  .toc{position:sticky;top:0;z-index:15;max-height:none;padding:4px;border-right:0;border-bottom:1px solid var(--line-soft);background:var(--surface);overflow-x:auto;overflow-y:hidden}
+  .toc h2,.toc .grp{display:none}
+  .toc ol{display:flex;gap:4px;white-space:nowrap}
+  .toc a{border-left:0;border-bottom:3px solid transparent;padding:8px}
+  .toc a.active{border-bottom-color:var(--action);background:transparent}
+  section{scroll-margin-top:60px}
+  dl.gloss dt{scroll-margin-top:70px}
+  .hero-grid{grid-template-columns:1fr}
+  .g4,.g5,.words{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .g3{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .kills{grid-template-columns:repeat(2,minmax(0,1fr))}
+  .matrix{grid-template-columns:1fr}
+  .matrix .mh{display:none}
+  .cell{border-left:0;padding-left:0;min-height:0}
+  .cell:empty{display:none}
+  .cell[data-seg]::before{content:attr(data-seg);font:500 var(--fs-xs) var(--font-base);text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
+  .exist{margin-top:12px}
+}
+@media (max-width:720px){
+  .g2,.g3,.calc,.steps3{grid-template-columns:1fr}
+  .qmap{grid-template-columns:1fr}
+  .qmap .to{text-align:left;transform:rotate(90deg);width:20px}
+  .rung{grid-template-columns:1fr;gap:8px}
+  .rung.axisrow>div:not(.bands){display:none}
+  .chainfig .h{display:none}
+  .chainfig .v{display:block;max-width:420px;margin:0 auto}
+  .lane{grid-template-columns:1fr;gap:2px}
+  .loop{grid-template-columns:1fr}
+  dl.gloss{grid-template-columns:1fr}
+  dl.gloss dt{border-bottom:0;padding-bottom:0}
+  .synthetic{display:none}
+  .tlaxis .gd span{display:none}
+  .track48 .sg{font-size:10px;padding:0 3px}
+  .sg.phase:first-of-type{overflow:hidden}
+  .kpis{grid-auto-flow:row;grid-template-columns:1fr}
+  .kpis>*{border-left:0;border-top:1px solid var(--n3)}
+  .kpis>*:first-child{border-top:0}
+}
+@media (max-width:460px){
+  .g4,.res,.kills{grid-template-columns:1fr}
+  .words{grid-template-columns:1fr 1fr}
+  .topbar{padding:8px 12px;gap:8px}
+  .brand small{display:none}
+  .pill{padding:0 8px}
+  section{padding:24px 12px}
+  .hbar,.scale100{grid-template-columns:1fr 48px}
+  .hbar .lab{grid-column:1/-1}
+  .scale100>span:first-child{display:none}
+  .drow,.dhead{grid-template-columns:1fr}
+  .dhead>span:first-child{display:none}
+  th,td{padding:8px}
+  .ladder2 div{margin-right:0 !important}
+  .tri-notes{grid-template-columns:1fr;gap:8px}
+  table.stackable thead{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0,0,0,0)}
+  table.stackable tr{display:block;border-bottom:1px solid var(--line)}
+  table.stackable td{display:block;border:0;padding:4px 8px}
+  table.stackable td::before{content:attr(data-th);display:block;font:500 var(--fs-xs) var(--font-base);color:var(--muted);text-transform:uppercase;letter-spacing:.05em}
+}
+@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<header class="topbar">
+  <div class="brand"><span>S</span>Weight add-ons plan<small>a Europress SMART concept · internal</small></div>
+  <div class="spacer"></div>
+  <span class="synthetic">All € = synthetic data or hypothetical prices</span>
+  <button class="pill" id="themeBtn" type="button">Theme: <span id="themeName">auto</span></button>
+</header>
+
+<div class="layout">
+<nav class="toc" aria-label="Contents">
+  <h2>Contents</h2>
+  <ol>
+    <li><a href="#top">Plan in five lines</a></li>
+    <li><a href="#words">10 words first</a></li>
+    <li><a href="#pitch">30-second pitch</a></li>
+    <li class="grp">Problem</li>
+    <li><a href="#chain">1. Value chain</a></li>
+    <li><a href="#gaps">2. Why gaps happen, who hurts</a></li>
+    <li><a href="#tommi">3. Tommi's brief</a></li>
+    <li class="grp">Solution</li>
+    <li><a href="#weigh">4. Weigh: pressure to kg</a></li>
+    <li><a href="#proof">5. One lift lies, a quarter tells</a></li>
+    <li><a href="#offering">6. Add-ons on the offering</a></li>
+    <li><a href="#operators">7. Operator-neutral</a></li>
+    <li class="grp">Money</li>
+    <li><a href="#pricing">8. Pricing and calculator</a></li>
+    <li><a href="#economics">9. Economics, CFO view</a></li>
+    <li class="grp">Execution and risk</li>
+    <li><a href="#roadmap">10. Roadmap and gates</a></li>
+    <li><a href="#risks">11. Risks, KPIs, vision</a></li>
+    <li><a href="#questions">12. Questions for Tommi</a></li>
+    <li><a href="#glossary">13. Glossary</a></li>
+  </ol>
+</nav>
+
+<main id="main">
+
+<!-- HERO -->
+<section class="hero" id="top">
+  <div class="kicker">Europress × Since AI Hackathon 2026 · internal team explainer</div>
+  <h1>Weight add-ons for Europress SMART</h1>
+  <p class="lead">Challenge: <strong>"SMART Material Value Engine — Weigh at Source, Create Value"</strong>. This page explains our business plan so all four of us can pitch it without notes. Read it once top to bottom: problem → solution → money → risks. Dotted-underlined words link to the <a href="#glossary">glossary</a>.</p>
+  <div class="hero-grid">
+    <ol class="five">
+      <li><div><b>Europress already sells weighing.</b> Scale Solutions 4-corner platform (a scale under the machine, built from <a class="gl" href="#g-lc">load cells</a>), Scaletipper X1, a "waste volume calculator", <a class="gl" href="#g-tiers">SMART tiers</a>, SMART Center, an <a class="gl" href="#g-api">operator API</a> and <a class="gl" href="#g-retro">Retrofit</a> kits <span class="tag F">F</span>. We propose upgrades to these, not a new business.</div></li>
+      <li><div><b>Weigh.</b> Turn the volume calculator into a pressure-based <b>virtual scale</b> that reports kg with an <a class="gl" href="#g-band">uncertainty band</a> <span class="say">(e.g. "11.8 t ± 0.7")</span>. <a class="gl" href="#g-bom">€0 BOM</a> <span class="say">(no extra hardware)</span> on every SMART machine. Operator <a class="gl" href="#g-ticket">tickets</a> <a class="gl" href="#g-calib">calibrate</a> it <span class="say">(correct its reading)</span>; the existing scale platforms supply <a class="gl" href="#g-ref">ground truth</a> <span class="say">(trusted reference weights)</span>.</div></li>
+      <li><div><b>Create value.</b> Europress becomes the <b>neutral second opinion</b> on what the operator weighs and invoices: Verified Weight, Proof of Fullness, a <a class="gl" href="#g-eurt">€/t</a> benchmark and a reporting pack. The system drafts every action; <b>a human approves it</b>.</div></li>
+      <li><div><b>Money.</b> Add-on fees inside Insights / Integrated and the lease / service contract. As software alone it is small. The real return is <b>more SMART customers and more service-contract renewals</b>, where Europress makes its profit <span class="tag T">T</span>.</div></li>
+      <li><div><b>Sequence.</b> Start with the 20% who hold the value (multi-site chains). Free kg teaser for the other 80%. Use Proof of Fullness to open <b>Poland</b>.</div></li>
+    </ol>
+    <figure class="tri" aria-labelledby="triCap">
+      <h3 id="triCap">Three weights, one truth</h3>
+      <svg viewBox="0 0 440 290" role="img" aria-label="Triangle. Corners: device kg with band (Europress, free), ticket kg (operator weighbridge), invoice euro per tonne (billing). Device to ticket edge: calibration and cause attribution: side waste 34 percent, stale tare 30, combined loads 12, sensor only 3.9. Ticket to invoice edge: billing errors. Device to invoice edge: the only check when no ticket exists, 28 percent of renegotiation value. Centre: a person approves every action.">
+        <line class="ed-dt" x1="220" y1="36" x2="79" y2="252"/>
+        <line class="ed-di" x1="220" y1="36" x2="361" y2="252"/>
+        <line class="ed-ti" x1="79" y1="252" x2="361" y2="252"/>
+        <rect class="nd-dev" x="135" y="8" width="170" height="52" rx="3"/>
+        <rect class="nd-tk" x="4" y="226" width="150" height="52" rx="3"/>
+        <rect class="nd-inv" x="286" y="226" width="150" height="52" rx="3"/>
+        <text text-anchor="middle"><tspan class="n-title" x="220" y="30">DEVICE kg ± band</tspan><tspan class="n-sub" x="220" y="48">Europress · free</tspan></text>
+        <text text-anchor="middle"><tspan class="n-title" x="79" y="248">TICKET kg</tspan><tspan class="n-sub" x="79" y="266">operator weighbridge</tspan></text>
+        <text text-anchor="middle"><tspan class="n-title" x="361" y="248">INVOICE €/t</tspan><tspan class="n-sub" x="361" y="266">customer billing</tspan></text>
+        <text><tspan class="t-act" x="138" y="146" text-anchor="end">calibrate + explain</tspan><tspan class="t-mute" x="302" y="146" text-anchor="start">no ticket?</tspan><tspan class="t-ser" x="220" y="244" text-anchor="middle">billing errors</tspan></text>
+        <text class="who" x="220" y="182" text-anchor="middle">a person approves</text>
+      </svg>
+      <div class="tri-notes">
+        <div><b class="c-act">calibrate + explain</b>side waste 34% · stale tare 30% · combined load 12% · <strong>sensor only 3.9%</strong></div>
+        <div><b class="c-ser">billing errors</b>ticket kg ↔ invoice lines</div>
+        <div><b class="c-mute">no ticket?</b>device is the only check: <strong>28% of</strong> renegotiation €</div>
+      </div>
+      <p class="foot">Noise averages out, bias doesn't → <b>verify monthly, calibrate with tickets.</b></p>
+    </figure>
+  </div>
+  <div class="disclaimer"><strong>Read every € on this page as illustrative.</strong> Figures tagged D are computed on the <a class="gl" href="#g-synth">synthetic</a> (computer-generated, realistic but not real) Since AI dataset (v1.0.1) using its hypothetical tariffs. Our add-on prices are hypotheses. None of it is a real Europress price or a real customer saving.</div>
+  <div class="legend">
+    <span><span class="tag F">F</span> fact, sourced</span>
+    <span><span class="tag T">T</span> Tommi at kick-off</span>
+    <span><span class="tag D">D</span> computed on synthetic data</span>
+    <span><span class="tag E">E</span> estimate (incl. literature)</span>
+    <span><span class="tag A">A</span> our assumption</span>
+  </div>
+</section>
+
+<!-- WORDS -->
+<section id="words">
+  <div class="kicker">Before you start</div>
+  <h2>Ten words you need for the rest of the page</h2>
+  <div class="words">
+    <div class="word"><a href="#g-lift">Lift</a>One collection: the truck empties the container once.</div>
+    <div class="word"><a href="#g-ticket">Weighbridge ticket</a>The operator's record of one truck trip's weight.</div>
+    <div class="word"><a href="#g-gtn">Gross / tare / net</a>Loaded truck − empty truck = waste billed.</div>
+    <div class="word"><a href="#g-stored">Stored tare</a>An old saved empty-truck weight, reused. Goes stale.</div>
+    <div class="word"><a href="#g-oncall">On-call vs fixed</a>Truck comes when SMART says full, or on a calendar.</div>
+    <div class="word"><a href="#g-eurt">€/t</a>Price per tonne. What customers compare across contracts.</div>
+    <div class="word"><a href="#g-bom">BOM</a>Hardware cost per machine. T0/T1 add €0.</div>
+    <div class="word"><a href="#g-tiers">SMART tiers</a>Intro, Insights, Integrated: Europress's digital packages.</div>
+    <div class="word"><a href="#g-dy">Device-year</a>One machine for one year (here = one contract-year).</div>
+    <div class="word"><a href="#g-sigma">1σ (±x%)</a>About 2 in 3 readings fall within ±x% of the truth.</div>
+  </div>
+</section>
+
+<!-- PITCH -->
+<section id="pitch">
+  <div class="kicker">Say it like this</div>
+  <h2>The 30-second pitch</h2>
+  <div class="pitch">
+    <p>Europress compactors already know how full they are. With a firmware upgrade they can also estimate how heavy they are, for €0 of extra hardware. Operator tickets keep that estimate honest, and Europress's own scale platforms supply ground truth. Inside SMART, that weight becomes a neutral second opinion:</p>
+    <ul>
+      <li>every month is reconciled against the tickets and the invoice;</li>
+      <li>differences are explained by cause, without blame;</li>
+      <li>fixed-schedule customers get proof of which pickups they didn't need;</li>
+      <li>AI drafts every recommended action, and a person approves it.</li>
+    </ul>
+    <p style="margin:0">It is sold as an add-on to the existing SMART tiers, the lease and the service contract. Small customers get a free kg number; chains and fixed-schedule sites pay from the value they measure. The result: more customers on SMART, stickier service contracts, and Europress earlier in the waste value chain, <b>without owning a single truck</b>.</p>
+  </div>
+</section>
+
+<!-- 1 VALUE CHAIN -->
+<section id="chain">
+  <div class="kicker">Problem · 1</div>
+  <h2>Who owns the weight in the value chain?</h2>
+  <p class="lead">The customer pays by the tonne, but only the waste operator ever weighs the waste. Europress's machine sits at the very start of the chain and already measures how full it is. It just does not report kilograms.</p>
+
+  <div class="stage">
+    <div class="seg-ctl" role="group" aria-label="Value chain view">
+      <button type="button" data-mode="today" aria-pressed="false">Today</button>
+      <button type="button" data-mode="addons" aria-pressed="true">With our add-ons</button>
+    </div>
+    <div class="chainfig" id="chainFig" data-mode="addons"></div>
+    <div class="legend">
+      <span><i class="sw s-node ep"></i> Europress</span>
+      <span><i class="sw s-node op"></i> operator</span>
+      <span><i class="sw s-node"></i> customer</span>
+      <span><i class="swl"></i> material (waste)</span>
+      <span><i class="swl mon"></i> money (invoice)</span>
+      <span><i class="swl dat"></i> data</span>
+      <span><i class="dot kgm"></i> where kg is measured</span>
+    </div>
+    <ol class="sr-only" id="chainText">
+      <li>Customer site (retail chain, logistics, property) owns or leases 2–3 compactors per site, pays the invoice, has no independent weight.</li>
+      <li>Europress compactor with SMART knows fill level and ram back-pressure; today it reports no kg. With add-ons it reports kg with an uncertainty band.</li>
+      <li>Operator truck lifts the container, may carry side waste or combined loads, earns per transport.</li>
+      <li>Operator weighbridge weighs gross minus tare equals net; the only measured kg today; issues the ticket.</li>
+      <li>The invoice flows back to the customer: transport plus €/t processing minus material credit, based on the operator's kg.</li>
+      <li>Data: the compactor sends fill, pressure and faults to the SMART cloud. With add-ons the cloud sends kg and a €/t check to the customer, and receives operator tickets when shared.</li>
+    </ol>
+    <p class="fig"><b>Fig 1</b> · Value chain, three flows · invoice: transport + €/t × operator kg − material credit · Toggle shows what the add-ons change · Sources: Tommi kick-off <span class="tag T">T</span>, epsmart.fi <span class="tag F">F</span></p>
+  </div>
+
+  <h3>Who knows what, today vs with our add-ons</h3>
+  <div class="tbl">
+  <table class="know">
+    <thead><tr><th>Information</th><th>Customer</th><th>Operator</th><th>Europress today</th><th>Europress with add-ons</th></tr></thead>
+    <tbody id="knowBody"></tbody>
+  </table>
+  </div>
+  <p class="small muted"><span class="dot full"></span> knows · <span class="dot half"></span> partly · <span class="dot none"></span> does not know. In the dataset, 21% of retail lifts have no ticket and one operator shares 0% of its tickets <span class="tag D">D</span>.</p>
+  <div class="note"><strong>"Who owns the data is the holy grail."</strong> <span class="tag T">T</span> Our answer: Europress does not need to own the operator's data. It produces its own independent weight at the source, and uses the operator's tickets (when shared) to calibrate it.</div>
+</section>
+
+<!-- 2 GAPS AND PAIN -->
+<section id="gaps">
+  <div class="kicker">Problem · 2</div>
+  <h2>Why do device and ticket disagree, and who feels it?</h2>
+  <p class="lead">All D numbers come from the synthetic competition dataset (~500 devices, Oct 2025 – Aug 2026, 365 device-years) with hypothetical prices. They show relative size, not real savings. Every bar on this page uses the same 0–100% scale.</p>
+
+  <div class="grid g2">
+    <div class="stack-l">
+      <div class="card">
+        <h3>Why big device-vs-ticket gaps happen <span class="tag D">D</span></h3>
+        <p class="small muted">Gaps &gt;10%, n = 2,250 of 9,062 lift pairs</p>
+        <div class="hbars">
+          <div class="bracket">
+            <div class="blabel">Weighbridge side · 77%</div>
+            <div class="hbar"><span class="lab"><a class="gl" href="#g-side">Side waste</a> on the same truck</span><div class="track"><div class="fill warn" style="width:34.3%"></div></div><span class="val">34.3%</span></div>
+            <div class="hbar"><span class="lab">Stale <a class="gl" href="#g-stored">stored tare</a></span><div class="track"><div class="fill warn" style="width:30.4%"></div></div><span class="val">30.4%</span></div>
+            <div class="hbar"><span class="lab"><a class="gl" href="#g-side">Combined-load</a> 50/50 split</span><div class="track"><div class="fill warn" style="width:12%"></div></div><span class="val">12.0%</span></div>
+          </div>
+          <div class="hbar"><span class="lab">Unlabelled</span><div class="track"><div class="fill alt" style="width:13.5%"></div></div><span class="val">13.5%</span></div>
+          <div class="hbar"><span class="lab">Small-load noise</span><div class="track"><div class="fill alt" style="width:6%"></div></div><span class="val">6.0%</span></div>
+          <div class="hbar"><span class="lab"><b>Device fault / <a class="gl" href="#g-drift">drift</a> / <a class="gl" href="#g-calib">calibration</a></b></span><div class="track"><div class="fill mint" style="width:3.9%"></div></div><span class="val">3.9%</span></div>
+          <div class="scale100"><span></span><div><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div><span></span></div>
+        </div>
+        <div class="legend"><span><i class="sw s-grey"></i> weighbridge side (process)</span><span><i class="sw s-act"></i> other causes, incl. our sensor</span></div>
+        <p class="small">Takeaway: differences are mostly process (tare, allocation), not intent and not our sensor. Stored-tare tickets scatter ~2× more than weighed-tare ones (<a class="gl" href="#g-sigma">robust SD</a> 7.5% vs 3.8%) <span class="tag D">D</span>. That is why we sell <b>neutral cause attribution</b>.</p>
+      </div>
+      <div class="card">
+        <h3>Fixed schedules: lifts nobody needed <span class="tag D">D</span></h3>
+        <p class="small muted">Share of <a class="gl" href="#g-unjust">unjustified lifts</a>, by collection policy</p>
+        <div class="hbars">
+          <div class="hbar"><span class="lab">Fixed schedule</span><div class="track"><div class="fill warn" style="width:31.7%"></div></div><span class="val">31.7%</span></div>
+          <div class="hbar"><span class="lab">Hybrid</span><div class="track"><div class="fill warn" style="width:29.7%"></div></div><span class="val">29.7%</span></div>
+          <div class="hbar"><span class="lab"><a class="gl" href="#g-oncall">On-call</a> (SMART)</span><div class="track"><div class="fill mint" style="width:6.5%"></div></div><span class="val">6.5%</span></div>
+          <div class="scale100"><span></span><div><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div><span></span></div>
+        </div>
+        <div class="legend"><span><i class="sw s-grey"></i> calendar schedules</span><span><i class="sw s-act"></i> on-call (SMART)</span></div>
+        <div class="tbl"><table>
+          <thead><tr><th>Policy</th><th class="num">€/device-yr</th><th class="num">Avoidable lifts/yr</th></tr></thead>
+          <tbody>
+            <tr><td>Fixed</td><td class="num">€2,540</td><td class="num">17.7</td></tr>
+            <tr><td>Hybrid</td><td class="num">€2,698</td><td class="num">19.6</td></tr>
+            <tr><td>On-call</td><td class="num">€434</td><td class="num">2.7</td></tr>
+          </tbody></table></div>
+        <p class="small">Fill alone already catches ~92% of that €; weight adds +3 percentage points and the <b>tonnage proof</b> needed to change a schedule. Weight is evidence here, not the detector.</p>
+      </div>
+    </div>
+    <div class="stack-l">
+      <div class="card">
+        <h3>Who has the pain? Value is concentrated <span class="tag D">D</span></h3>
+        <div class="grid g3">
+          <div><div class="big">€1,064</div><span class="small">mean value per contract-year</span></div>
+          <div><div class="big">€0</div><span class="small">median contract</span></div>
+          <div><div class="big">52%</div><span class="small">contracts with no positive value</span></div>
+        </div>
+        <p class="small mt"><b>What is €1,064?</b> The dataset's simulated value of the <a class="gl" href="#g-bestset">best contract actions</a> (mostly renegotiate or tender on tariff gaps) per contract-year, on €13.5k of annual waste cost (7.9%) <span class="tag D">D</span>. The <a class="gl" href="#g-median">mean</a> <span class="say">(average)</span> is pulled up by a few big chains; the <b><a class="gl" href="#g-median">median</a> is €0</b> <span class="say">(the middle contract gains nothing)</span>. <a class="gl" href="#g-realisable">Realisable</a>: we assume half can actually be captured → <b>€532</b> <span class="tag A">A</span>.</p>
+        <p class="small" style="margin:12px 0 4px">Contracts with value vs without</p>
+        <div class="stackbar"><div class="sb0" style="width:52%">52%</div><div class="sb1" style="width:48%">48%</div></div>
+        <div class="sblegend"><span><i class="sw sb0"></i>no positive value</span><span><i class="sw sb1"></i>positive value</span></div>
+        <p class="small" style="margin:12px 0 4px">Share of value held by 20 customers</p>
+        <div class="stackbar"><div class="sbp" style="width:75%">75%</div><div class="sb0" style="width:25%">25%</div></div>
+        <div class="sblegend"><span><i class="sw sbp"></i>top 5 customers</span><span><i class="sw sb0"></i>other 15 customers</span></div>
+        <p class="small">Matches Tommi's 80/20: "big chains want more SMART, small want to save money" <span class="tag T">T</span>. So: charge chains and fixed-schedule sites; give the median customer a free teaser. ~99% of the €1,064 is tariff gaps that weight makes visible as €/t, not weight disputes <span class="tag D">D</span>.</p>
+      </div>
+      <div class="card">
+        <h3>Where only the device can check the bill <span class="tag D">D</span></h3>
+        <p class="small muted">Share of renegotiate + tender value, by evidence available</p>
+        <div class="stackbar"><div class="sb1" style="width:64%">64%</div><div class="sb2" style="width:8%"></div><div class="sb3" style="width:28%">28%</div></div>
+        <div class="sblegend"><span><i class="sw sb1"></i>64% ticket shared</span><span><i class="sw sb2"></i>8% invoice tonnage only</span><span><i class="sw sb3"></i>28% device weight only</span></div>
+        <p class="small">On the 28%, without our weight there is no independent €/t at all (mostly the operator that shares 0 tickets).</p>
+        <p class="small" style="margin:12px 0 4px"><a class="gl" href="#g-massbilled">Mass-billed €</a> that can be verified</p>
+        <div class="hbars" style="margin:4px 0">
+          <div class="hbar"><span class="lab">Tickets only</span><div class="track"><div class="fill" style="width:77%"></div></div><span class="val">77%</span></div>
+          <div class="hbar"><span class="lab">Tickets + device weight</span><div class="track"><div class="fill mint" style="width:96%"></div></div><span class="val">96%</span></div>
+          <div class="scale100"><span></span><div><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div><span></span></div>
+        </div>
+        <div class="legend"><span><i class="sw s-ink"></i> tickets</span><span><i class="sw s-act"></i> with device weight</span></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 TOMMI -->
+<section id="tommi">
+  <div class="kicker">Problem · 3</div>
+  <h2>What Tommi asked for, and his red lines</h2>
+  <div class="grid g2">
+    <div class="card ice">
+      <h3>Part 1: get the weight</h3>
+      <p class="small">Sufficiently accurate weight at the compactor, affordable and scalable, integrated or retrofitted. Explain sensor choice, placement, installation, calibration, limits, cost and a <b>validation experiment</b>. Compare options (<a class="gl" href="#g-lc">load cells</a>, strain gauges, hydraulic signals, alternatives).</p>
+    </div>
+    <div class="card ice">
+      <h3>Part 2: create value from the weight</h3>
+      <p class="small">Combine weight with SMART + commercial data for measurable customer value and new services. At least one concrete use case (€/t, transparency, anomalies, recommended actions). AI vs rules, explainability, uncertainty, <b>human approval</b>.</p>
+    </div>
+  </div>
+  <div class="note warn"><strong>Red lines from the kick-off</strong> <span class="tag T">T</span>: Europress will not run trucks or enter the waste business. No new sensors on the BOM unless nearly free. Don't pitch "smarter pickups" as the core; SMART already does that.</div>
+
+  <h3 class="mt">Scoring weights</h3>
+  <div class="hbars">
+    <div class="hbar"><span class="lab">Weighing concept (feasibility, accuracy, cost, retrofit)</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="val">25%</span></div>
+    <div class="hbar"><span class="lab">Customer and business value</span><div class="track"><div class="fill" style="width:25%"></div></div><span class="val">25%</span></div>
+    <div class="hbar"><span class="lab">Data-driven value concept, traceable calculations</span><div class="track"><div class="fill out" style="width:20%"></div></div><span class="val">20%</span></div>
+    <div class="hbar"><span class="lab">Working demo + SMART integration path</span><div class="track"><div class="fill out" style="width:15%"></div></div><span class="val">15%</span></div>
+    <div class="hbar"><span class="lab">Commercial productisation</span><div class="track"><div class="fill" style="width:10%"></div></div><span class="val">10%</span></div>
+    <div class="hbar"><span class="lab">Clarity, uncertainty, limitations</span><div class="track"><div class="fill out" style="width:5%"></div></div><span class="val">5%</span></div>
+    <div class="scale100"><span></span><div><span>0</span><span>25</span><span>50</span><span>75</span><span>100%</span></div><span></span></div>
+  </div>
+  <div class="legend"><span><i class="sw s-ink"></i>this page mainly serves (25 + 25 + 10)</span><span><i class="sw s-out"></i>served elsewhere (demo, data notebook)</span></div>
+  <p class="small muted">Every number here carries a tag, which also feeds the 20% traceability and 5% honesty scores.</p>
+
+  <h3 class="mt">His words, mapped to our evidence</h3>
+  <div>
+    <div class="qmap"><div><p class="quote">"The operator only has the information about the weight… who owns the data is the holy grail"</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small">Weight decides charges and credits <span class="tag F">F</span>. 21% of retail lifts have no ticket; one operator shares 0% <span class="tag D">D</span>.</div></div>
+    <div class="qmap"><div><p class="quote">Customers "never even trust" the operator's figures</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small"><b>77%</b> of large gaps are weighbridge-side. <b>Only 3.9% are sensor faults</b> <span class="tag D">D</span>. See <a href="#gaps">section 2</a>.</div></div>
+    <div class="qmap"><div><p class="quote">SMART already makes machines as full as possible</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small">So we do <b>not</b> sell pickup timing. On fixed and hybrid schedules (Poland, Central Europe) 30–32% of lifts are unjustified, ~€2.5–2.7k per device-year <span class="tag D">D</span>.</div></div>
+    <div class="qmap"><div><p class="quote">"Cheapest wins"; ballpark accuracy is fine (±10–12%)</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small">T0 has €0 BOM: per lift ±12–20%, monthly ≈ ±11% until calibrated <span class="tag E">E</span>. At ballpark <a class="gl" href="#g-sigma">σ</a>≈10% <span class="say">(typical error per lift)</span>, a +10% overbilling is caught 62% of the time per quarter <span class="tag D">D</span>. With the dataset's simulated precise sensor, a +5% inflation is caught 96% of the time over 10 months <span class="tag D">D</span>.</div></div>
+    <div class="qmap"><div><p class="quote">Bio-waste is hard; humidity changes weight</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small">Bio gets wider bands. Moisture becomes money: under <a class="gl" href="#g-en643">EN 643</a>, recovered paper above 10% moisture can be claimed back <span class="tag F">F</span>.</div></div>
+    <div class="qmap"><div><p class="quote">"Recognise material that doesn't fit"</p><span class="tag T">T</span></div><div class="to" aria-hidden="true">→</div><div class="small">Our density proxy <span class="say">(guessing the material from how dense it is)</span> <b>fails</b> on this data (~1% precision) <span class="tag D">D</span>. Roadmap item needing pressure-curve shape from new firmware. <b>Not a demo claim.</b></div></div>
+  </div>
+</section>
+
+<!-- 4 WEIGH -->
+<section id="weigh">
+  <div class="kicker">Solution · weigh (Part 1)</div>
+  <h2>How does a compactor know kilograms?</h2>
+  <div class="steps3">
+    <div><b>Push and measure</b>Each ram stroke <span class="say">(<a class="gl" href="#g-compact">compaction</a>: the press squeezes the waste)</span> pushes it into the container. The hydraulics already measure the <a class="gl" href="#g-bp">back-pressure</a> (0–200 bar) <span class="tag T">T</span>.</div>
+    <div><b>Pressure → density → kg</b>Pressure × strokes × fill level → how dense the load is → kg. A formula from physics gives the first guess; a machine-learning model <span class="say">(software that learns from examples)</span> corrects the rest.</div>
+    <div><b>Tickets set the gain</b>Clean <a class="gl" href="#g-ticket">tickets</a> (weighed tare, single load) tell each machine how far off it reads, and keep it honest over time.</div>
+  </div>
+  <div class="note warn"><strong>Be honest about the evidence.</strong> The hackathon dataset has <b>no pressure curves</b> <span class="tag T">T</span>. Our accuracy numbers come from literature <span class="tag E">E</span>; the dataset's <code>mass_kg</code> is a simulated <i>future</i> sensor. The cheapest proof is Gate 0: a ≈€25k desk test on real pressure archives (<a href="#roadmap">roadmap</a>).</div>
+
+  <h3 class="mt">What the dataset's weights are for: reference answers</h3>
+  <p class="small">The synthetic dataset contains two kinds of weight for each lift: the device's estimated kg and the <a class="gl" href="#g-ticket">weighbridge ticket</a> (truck weighed full on the way in and empty on the way out). The tickets act as <a class="gl" href="#g-ref">reference answers</a> (ground truth, or "labels"): the right answers we check our model against, like an answer key for an exam.</p>
+  <div class="stage loop">
+    <svg viewBox="0 0 440 300" role="img" aria-label="Loop: 1 reference weights, to 2 model, to 3 error check, to 4 better model, and back to 1.">
+      <defs><marker id="lpm" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path class="mk" d="M0,0L10,5L0,10z"/></marker></defs>
+      <rect class="ref" x="8" y="8" width="196" height="104" rx="14"/>
+      <text class="lt" x="22" y="34">1 · Reference weights</text><text class="ls" x="22" y="56">tickets: truck weighed</text><text class="ls" x="22" y="74">full in, empty out</text><text class="ls" x="22" y="92">+ device kg in the dataset</text>
+      <rect class="box" x="236" y="8" width="196" height="104" rx="14"/>
+      <text class="lt" x="250" y="34">2 · Model</text><text class="ls" x="250" y="56">virtual scale turns</text><text class="ls" x="250" y="74">fill + pressure into</text><text class="ls" x="250" y="92">kg ± band per lift</text>
+      <rect class="box" x="236" y="188" width="196" height="104" rx="14"/>
+      <text class="lt" x="250" y="214">3 · Error check</text><text class="ls" x="250" y="236">model vs reference:</text><text class="ls" x="250" y="254">how wrong? (error bands)</text><text class="ls" x="250" y="272">is it drifting?</text>
+      <rect class="box" x="8" y="188" width="196" height="104" rx="14"/>
+      <text class="lt" x="22" y="214">4 · Better model</text><text class="ls" x="22" y="236">recalibrate each machine,</text><text class="ls" x="22" y="254">remove bias, retrain</text><text class="ls" x="22" y="272">→ prove € value</text>
+      <path class="arr" d="M206,60 L232,60" marker-end="url(#lpm)"/>
+      <path class="arr" d="M334,114 L334,184" marker-end="url(#lpm)"/>
+      <path class="arr" d="M234,240 L208,240" marker-end="url(#lpm)"/>
+      <path class="arr" d="M106,186 L106,116" marker-end="url(#lpm)"/>
+      <text x="220" y="155" text-anchor="middle" class="ls">repeat as new</text><text x="220" y="171" text-anchor="middle" class="ls">tickets arrive</text>
+    </svg>
+    <div>
+      <ul class="uses">
+        <li><b>(a) Train and calibrate</b> the virtual-scale model: learn how readings map to kg, per machine.</li>
+        <li><b>(b) Measure how wrong it is:</b> the error bands on the ladder below.</li>
+        <li><b>(c) Detect drift:</b> spot a machine whose gap to the tickets slowly grows.</li>
+        <li><b>(d) Prove value:</b> find billing gaps, unneeded lifts and €/t differences in money terms.</li>
+      </ul>
+      <p class="note warn small" style="margin-bottom:0"><strong>Limits.</strong> The dataset has <b>no raw pressure curves</b> and is <a class="gl" href="#g-synth">synthetic</a>, so it cannot prove real-world hardware accuracy. That is what the pilot with the scale-platform <a class="gl" href="#g-golden">golden cohort</a> is for: real machines, real reference weights.</p>
+    </div>
+  </div>
+
+  <h3 class="mt">The accuracy ladder: what each rung costs and how precise it is</h3>
+  <p class="small">Each rung reuses something Europress already has. Every band sits on the <b>same ±20% axis</b> around the true weight. Solid = the optimistic end of the range; hatched = out to the pessimistic end.</p>
+  <div class="stage">
+    <div class="ladder" id="ladder" role="img" aria-label="Accuracy ladder on a shared minus 20 to plus 20 percent axis. Details in the table that follows."></div>
+    <div class="legend">
+      <span><i class="sw b-lift"></i> per-lift error (<a class="gl" href="#g-sigma">1σ</a>: 2 in 3 lifts fall inside)</span>
+      <span><i class="sw b-month"></i> monthly-total error</span>
+      <span><i class="sw b-model"></i> fleet model (literature)</span>
+      <span><i class="sw b-hatch"></i> hatched = upper end of range</span>
+    </div>
+    <div class="sr-only"><table id="ladderTbl"></table></div>
+    <p class="fig"><b>Fig 2</b> · Accuracy ladder · Estimates <span class="tag E">E</span>, T1 noise from data <span class="tag D">D</span> · Golden-cohort figure: fleet model trained on 25 scale-fitted machines reached 4.96% error on unscaled ones (Mansouri 2025, via the science lens).</p>
+  </div>
+
+  <h3 class="mt">Why monthly totals are tighter, and why that is not enough on its own</h3>
+  <div class="grid g2">
+    <div>
+      <div class="lifts" id="liftsFig"></div>
+      <p class="xs muted">One machine, one month: 7 lifts of ~1.69 t. Each dot is one device reading with its ±12% whisker; the dashed line is the true weight. Some read high, some low.</p>
+    </div>
+    <div>
+      <div class="bands" id="monthBands"></div>
+      <div class="calcline" aria-label="Worked formula">
+        <div>random noise on the sum: 12% ÷ √7 ≈ 4.5%</div>
+        <div>uncalibrated (bias 10%): √(4.5² + 10²) ≈ <b>11%</b> → 11.8 t ± 1.3</div>
+        <div>after ~20 clean tickets (bias 3.4%): √(4.5² + 3.4²) ≈ <b>5.7%</b> → <b>11.8 t ± 0.7</b></div>
+      </div>
+    </div>
+  </div>
+  <div class="note ok"><strong>Averaging kills noise, not bias. That is what T1 is for.</strong> Random errors partly cancel when you add 7 lifts. A machine that reads 10% heavy reads 10% heavy every time, so the month is still 10% off. Clean tickets measure that bias and remove it; CUSUM watches for it creeping back (drift).</div>
+</section>
+
+<!-- 5 PROOF -->
+<section id="proof">
+  <div class="kicker">Solution · weigh, what it is good for</div>
+  <h2>One lift lies, a quarter tells the truth</h2>
+  <p class="small">Chance of catching a systematic invoice inflation (we accept flagging 1 honest invoice in 40 by mistake; <a class="gl" href="#g-median">robust median</a> of clean ticket/device pairs) <span class="tag D">D</span>. Two sensors: the dataset's simulated precise sensor (a future scenario, σ≈1.4%) and Tommi's ballpark σ = 10%.</p>
+  <div class="stage">
+    <div class="chart" id="detChart"></div>
+    <div class="sr-only"><table id="detTbl"></table></div>
+    <p class="fig"><b>Fig 3</b> · Detection power vs aggregation window · <span class="tag D">D</span> parametric sweep on real lift counts · σ10 at 10 months not computed (hollow point).</p>
+  </div>
+  <div class="note ok"><strong>The lesson:</strong> per lift, a ballpark scale proves almost nothing. Aggregated over a quarter or a contract year, it catches systematic overbilling. So we <b>verify at contract level, not per lift</b>, and use robust medians (plain sums fail: sd 36%, because side-waste and tare outliers dominate).</div>
+
+  <h3 class="mt">What each rung is good enough for</h3>
+  <div class="tbl">
+  <table class="fit">
+    <thead><tr><th>Use case</th><th>T0</th><th>T1</th><th>T2</th></tr></thead>
+    <tbody>
+      <tr><td>Monthly kg teaser per machine ("11.8 t ± 0.7" once calibrated)</td><td class="y">yes (wider)</td><td class="y">yes</td><td class="y">yes</td></tr>
+      <tr><td>Monthly / quarterly €/t reporting, ESG kg per fraction</td><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+      <tr><td>Proof of Fullness (fill already decides; weight adds tonnage evidence)</td><td class="y">yes</td><td class="y">yes</td><td class="y">yes</td></tr>
+      <tr><td>Contract-level invoice verification (catch a systematic +5–10%)</td><td class="n">no (bias)</td><td class="y">yes</td><td class="y">yes</td></tr>
+      <tr><td><a class="gl" href="#g-drift">Drift</a> alarm on the device</td><td class="n">no</td><td class="y">yes</td><td class="y">yes</td></tr>
+      <tr><td>Proving a single lift was overbilled</td><td class="n">no</td><td class="n">no</td><td class="y">yes</td></tr>
+      <tr><td>Billing basis / tenant billing (legal metrology: the law on weighing for money)</td><td class="n">no</td><td class="n">no</td><td class="p">only if <a class="gl" href="#g-nawi">NAWI</a>-certified</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>Validation experiment (pilot)</h3>
+      <ul class="small">
+        <li><b>Setup:</b> 10 machines, ~150–240 lifts. Reference = T2 platform + weighed-tare tickets.</li>
+        <li><b>Analysis:</b> <a class="gl" href="#g-ba">Bland-Altman</a> agreement, <a class="gl" href="#g-lomo">leave-one-machine-out</a> error, <a class="gl" href="#g-ablation">ablation</a> of how many tickets T1 needs.</li>
+        <li><b>Acceptance:</b> monthly error ≤6% and per-lift <a class="gl" href="#g-p90">p90</a> ≤20%.</li>
+      </ul>
+    </div>
+    <div class="card warn">
+      <h3>Legal position</h3>
+      <p class="small">This is <b>verification, not a billing basis</b>. Billing on device weight would fall under <a class="gl" href="#g-nawi">NAWI 2014/31/EU</a> legal metrology <span class="tag F">F</span>. We always say "second opinion".</p>
+    </div>
+  </div>
+</section>
+
+<!-- 6 OFFERING -->
+<section id="offering">
+  <div class="kicker">Solution · create value (Part 2)</div>
+  <h2>The add-ons plug into what Europress already sells</h2>
+  <p class="lead">Rows: the navy-bordered box is something Europress sells today <span class="tag F">F</span>. Columns: who buys. Chips: what we attach <span class="tag E">E</span>. Prices are hypothetical.</p>
+  <div class="legend">
+    <span><i class="sw c-paid"></i> paid</span>
+    <span><i class="sw c-free"></i> free</span>
+    <span><i class="sw c-bund"></i> bundled</span>
+  </div>
+
+  <div class="matrix">
+    <div class="mh">Europress sells today</div><div class="mh">Everyone (80%)</div><div class="mh">Chains (20%)</div><div class="mh">Fixed-schedule sites</div><div class="mh">Operators</div>
+
+    <div class="exist"><div class="lvl">Layer 1 · products</div><h3>Compactors, balers, scales</h3><p><a class="gl" href="#g-combi">COMBI, DUO</a>, Balex balers (press cardboard into bales), <b>Scale Solutions</b> 4-corner platform, Scaletipper X1, <b>"waste volume calculator"</b>, SMART Retrofit for any brand.</p></div>
+    <div class="cell" data-seg="Everyone"><div class="chip free"><b>Virtual scale (T0/T1)</b>Volume calculator → pressure-based kg ± band. Works on Retrofit too.<span class="price">€0 BOM</span></div></div>
+    <div class="cell" data-seg="Chains"><div class="chip paid"><b>Measured tier (T2)</b>Scale platform as a lease uplift, for tenant billing (splitting the bill across shop tenants) and disputes.<span class="price">+€39–49/mo</span></div></div>
+    <div class="cell"></div><div class="cell"></div>
+
+    <div class="exist"><div class="lvl">Layer 2 · contracts</div><h3>~6-year lease + service contract</h3><p>Customers mostly lease <span class="tag T">T</span>. The service contract is "the real profit" <span class="tag T">T</span>.</p></div>
+    <div class="cell" data-seg="Everyone"><div class="chip bund"><b>Calibration and drift checks</b>During visits that already happen.<span class="price">bundled</span></div></div>
+    <div class="cell" data-seg="Chains"><div class="chip bund"><b>Verified Weight in new leases</b>Bundled discount on the Insights price.<span class="price">€12/mo</span></div></div>
+    <div class="cell"></div><div class="cell"></div>
+
+    <div class="exist"><div class="lvl">Layer 3 · SMART subscription</div><h3>SMART tiers + SMART Center</h3><p>~15% of customers are on SMART <span class="tag T">T</span>. Up to 90% of problems solved remotely <span class="tag F">F</span>.</p><div class="tiers"><div>Intro</div><div>Insights</div><div>Integrated</div></div></div>
+    <div class="cell" data-seg="Everyone"><div class="chip free"><b>Intro: kg teaser</b>Monthly kg band per machine, incl. the ~85% not on SMART.<span class="price">free · ~€15/yr to serve</span></div></div>
+    <div class="cell" data-seg="Chains"><div class="chip paid"><b>Insights: Verified Weight</b>Device vs ticket vs invoice, cause, drift alarm.<span class="price">+€15/mo</span></div><div class="chip paid"><b>Integrated: €/t benchmark, action inbox, reporting pack</b><span class="price">+€25/mo or licence €10–40k/yr</span></div></div>
+    <div class="cell" data-seg="Fixed-schedule sites"><div class="chip paid"><b>Insights: Proof of Fullness</b>PL, Benelux, CE, FI non-on-call.<span class="price">gain-share 25% yr 1</span></div></div>
+    <div class="cell"></div>
+
+    <div class="exist"><div class="lvl">Interface · operators</div><h3>Operator API</h3><p>Automatic emptying calls; operators can pull data. Fortum, Remeo, Alba are Europress references <span class="tag F">F</span>.</p></div>
+    <div class="cell"></div><div class="cell"></div><div class="cell"></div>
+    <div class="cell" data-seg="Operators"><div class="chip free"><b>Operator data feed (<a class="gl" href="#g-g2g">give-to-get</a>)</b>Push tickets, get a reconciliation receipt and a private tare-hygiene report, see findings <b>first</b>.<span class="price">free; paid analytics later</span></div></div>
+  </div>
+
+  <h3>What each add-on proves, and on what condition</h3>
+  <div class="tbl">
+  <table class="stackable">
+    <thead><tr><th>Add-on</th><th>Measurable customer benefit</th><th>Evidence</th><th>Condition / note</th></tr></thead>
+    <tbody>
+      <tr><td><b>kg teaser</b></td><td>"Your cardboard this month: 11.8 t ± 0.7"</td><td><span class="tag E">E</span> ~€15/device-yr to serve</td><td>Band is ±1.3 t until tickets calibrate the machine</td></tr>
+      <tr><td><b>Verified Weight</b></td><td>Verifiable share of mass-billed € 77% → <b>96%</b>; recoverable billing errors avg €150/device-yr, of which only 3% (€4.6) needs weight</td><td><span class="tag D">D</span></td><td>Verdicts at monthly / contract level, never per lift</td></tr>
+      <tr><td><b>Proof of Fullness</b></td><td>18–20 avoidable lifts/device-yr ≈ €2.5k; fixed → on-call positive in 74% of simulated cases</td><td><span class="tag D">D</span></td><td>Fill is the detector; weight is the tonnage proof. 19% of cases hide a cost trap</td></tr>
+      <tr><td><b>€/t benchmark + action inbox</b></td><td>28% of renegotiation value is on contracts where device weight is the only mass</td><td><span class="tag D">D</span></td><td>Drafts cite evidence rows; nothing sent without approval</td></tr>
+      <tr><td><b>Reporting pack</b></td><td>Covers the 21% of lifts untracked today; kg per fraction for <a class="gl" href="#g-esrs">ESRS E5-5</a> and <a class="gl" href="#g-bdo">BDO</a></td><td><span class="tag D">D</span> <span class="tag F">F</span> BDO mandatory in PL</td><td>Price per legal entity is open <span class="tag A">A</span></td></tr>
+      <tr><td><b>Operator data feed</b></td><td>Fewer disputes, better weighbridge hygiene</td><td><span class="tag E">E</span></td><td>Operator sees its own findings first</td></tr>
+      <tr><td><b>Measured tier</b></td><td>±1–2% weight per lift</td><td><span class="tag E">E</span> cost ≈ €21–33/mo</td><td>Only inside a 72-month lease, never as stand-alone retrofit</td></tr>
+      <tr><td><b>Calibration and drift checks</b></td><td>Drift caught ~33 days earlier, on 7 of 19 episodes</td><td><span class="tag D">D</span></td><td>Needs clean tickets on that machine</td></tr>
+    </tbody>
+  </table>
+  </div>
+
+  <h3>Why AI, and where it sits</h3>
+  <div class="flow">
+    <div class="step"><b>1. Rules decide</b><span class="small">Transparent rules flag gaps and pick actions. Rules beat pure ML (0.73 vs 0.35 <a class="gl" href="#g-f1">macro-F1</a>); the best was rules + ML (0.78) <span class="tag D">D</span>.</span></div>
+    <div class="sep" aria-hidden="true">→</div>
+    <div class="step"><b>2. Claude drafts</b><span class="small">Claude is the AI language model. Explanations, dispute letters, operator notes, each citing the evidence rows.</span></div>
+    <div class="sep" aria-hidden="true">→</div>
+    <div class="step ok"><b>3. A human approves</b><span class="small">SMART Center staff or the customer. Nothing is sent automatically.</span></div>
+  </div>
+  <p class="small">This is a managed service SMART Center can run without hiring a data team.</p>
+</section>
+
+<!-- 7 OPERATORS -->
+<section id="operators">
+  <div class="kicker">Solution · critical stance</div>
+  <h2>Operator-neutral: verified service quality for everyone</h2>
+  <div class="grid g2">
+    <div>
+      <div class="note warn"><strong>Why this matters.</strong> Europress's new CEO (Petri Salermo, from Oct 2025) and incoming CCO (Eljas Tuovinen, Jan 2027) both come from environmental services at <b>Lassila &amp; Tikanoja</b>, a major Finnish operator <span class="tag F">F</span>. Operators are also Europress customers and public references <span class="tag F">F</span>.</div>
+      <p>So we never say "catching operators". We say:</p>
+      <ul>
+        <li><b>Cause attribution first.</b> Most gaps are tare and allocation, not intent (77% vs 3.9%) <span class="tag D">D</span>.</li>
+        <li><b>Operator sees findings about its own vehicles first.</b></li>
+        <li><b>Give-to-get:</b> operators that share tickets get a free tare-hygiene report.</li>
+        <li><b>Tendering or switching</b> is the last action, and it is gated.</li>
+        <li>Differences go both ways: a wrong stored tare can also make the customer lose credit.</li>
+      </ul>
+    </div>
+    <div>
+      <h3>Action ladder (escalates only with approval)</h3>
+      <div class="ladder2">
+        <div><span>1. Explain the gap by cause</span><em>default</em></div>
+        <div><span>2. Share with operator first</span><em>operator-first</em></div>
+        <div><span>3. Request weighbridge data</span><em>approved</em></div>
+        <div><span>4. Dispute an invoice / renegotiate</span><em>approved</em></div>
+        <div><span>5. Tender or switch operator</span><em>gated, last</em></div>
+      </div>
+      <p class="small muted">Example from the data: vehicle OP-E-V06's stored tare is ~360 kg too light, so every stored-tare net is ~360 kg too high. Mirror case OP-A-V12: nets ~285 kg too low, customer loses credit. Same mechanism, opposite sign <span class="tag D">D</span>.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 8 PRICING -->
+<section id="pricing">
+  <div class="kicker">Money · 1</div>
+  <h2>What may we charge? Value ≥ 3× fee</h2>
+  <div class="grid g4">
+    <div class="card ice"><h4>The rule</h4><p class="small">Realisable value ≥ 3× the annual fee <span class="tag A">A</span>. This is stricter than the dataset example's 2× (<code>purchase_condition_value_multiple: 2</code>) <span class="tag D">D</span>.</p></div>
+    <div class="card ice"><h4>€15/month</h4><p class="small">= €180/yr, so the customer must realise ≥ €540/yr <span class="tag A">A</span>. Our base €532 is <b>1% short</b>: clears 2×, misses 3×. Price at €14, or show more realisable value.</p></div>
+    <div class="card ice"><h4>Integrated +€25</h4><p class="small">ESG lens ≈ €545/device-yr <span class="tag E">E</span>, only 1.8× the fee. <b>€25 fails our rule on transactional value</b> (money from billing and contract fixes). It is justified only if compliance value (reporting duties it fulfils) is added; otherwise sell a chain licence (one flat yearly fee per chain).</p></div>
+    <div class="card ice"><h4><a class="gl" href="#g-gainshare">Gain-share</a></h4><p class="small">Proof of Fullness only: 25% of verified avoided-lift cost. Removes the "cheapest wins" objection in Poland, then converts to subscription.</p></div>
+  </div>
+
+  <h3 class="mt">Try it: pricing calculator</h3>
+  <p class="small muted">Simple per-device snapshot. Fleet of 12,000 connected devices <span class="tag A">A</span>. Revenue is subscription only (ignores churn, onboarding, fleet growth, Integrated uplift and the renewal effect). <a class="gl" href="#g-cts">Cost to serve</a> €3.5/device/month <span class="tag A">A</span>. <a class="gl" href="#g-contr">Contribution</a> = revenue − cost to serve.</p>
+  <div class="calc">
+    <div>
+      <div class="ctrl">
+        <label for="price">Add-on price <output id="priceOut" for="price">€15 per device per month</output></label>
+        <input type="range" id="price" min="0" max="50" step="1" value="15">
+        <div class="hint">Plan list price €15; bundled €12; Integrated +€25.</div>
+      </div>
+      <div class="ctrl">
+        <label for="value">Realisable value <output id="valueOut" for="value">€532 per device per year</output></label>
+        <input type="range" id="value" min="0" max="3000" step="1" value="532">
+        <div class="presets" aria-label="Value presets">
+          <button type="button" data-v="0">Median contract €0</button>
+          <button type="button" data-v="150">Billing errors €150 (only €4.6 needs weight)</button>
+          <button type="button" data-v="532">Base: €1,064 × 50% = €532</button>
+          <button type="button" data-v="545">ESG lens €545</button>
+          <button type="button" data-v="2540">Fixed schedule €2,540</button>
+        </div>
+      </div>
+      <div class="ctrl">
+        <label for="adopt">Adoption <output id="adoptOut" for="adopt">18% of 12,000 devices</output></label>
+        <input type="range" id="adopt" min="0" max="40" step="1" value="18">
+        <div class="hint">CFO Y3 scenarios: low 9%, base 18%, high 28%.</div>
+      </div>
+    </div>
+    <div class="res" aria-live="polite">
+      <div class="verdict" id="verdict">…</div>
+      <div class="math" id="math"></div>
+      <div class="card"><div class="lbl">Value ÷ fee</div><div class="v" id="rMult">–</div></div>
+      <div class="card"><div class="lbl">Customer keeps per year</div><div class="v" id="rNet">–</div></div>
+      <div class="card"><div class="lbl">Highest price that passes 3×</div><div class="v" id="rCap">–</div></div>
+      <div class="card"><div class="lbl">Paying devices</div><div class="v" id="rDev">–</div></div>
+      <div class="card wide" id="arrCard"><div class="lbl" id="rArrLbl">Add-on revenue per year</div><div class="v" id="rArr">–</div><div class="lbl" id="rContr"></div></div>
+      <div class="card wide"><div class="lbl">Fee (bar) vs cap (line = value ÷ 3)</div>
+        <div class="meterwrap"><span class="caplab" id="mCapLab">cap</span><div class="meter"><div class="fee" id="mFee"></div><div class="cap" id="mCap"></div></div></div>
+        <div class="lbl" style="margin-top:8px">If this value were avoided lifts, Proof of Fullness gain-share (25%) would bill <b id="rGain">–</b></div></div>
+    </div>
+  </div>
+  <div class="note"><strong>Traceability.</strong> In the real deliverable every € figure lives in one <code>params.yaml</code> and the demo shows a sensitivity grid. We say out loud that prices are hypotheses.</div>
+</section>
+
+<!-- 9 ECONOMICS -->
+<section id="economics">
+  <div class="kicker">Money · 2 (illustrative)</div>
+  <h2>Small as software, valuable as stickiness</h2>
+  <div class="tbl">
+  <table class="stackable">
+    <thead><tr><th>Metric</th><th class="num">Low</th><th class="num">Base</th><th class="num">High</th><th>Model source</th></tr></thead>
+    <tbody>
+      <tr><td>Paying devices, year 3</td><td class="num">~1,000</td><td class="num"><b>~3,000</b></td><td class="num">~7,000</td><td class="small">Strategy P&amp;L</td></tr>
+      <tr><td>Add-on <a class="gl" href="#g-arr">ARR</a> (yearly recurring revenue), year 3</td><td class="num">~€0.18M</td><td class="num"><b>~€0.6–0.75M</b></td><td class="num">~€1.8M</td><td class="small">Strategy P&amp;L (price mix)</td></tr>
+      <tr><td>Subscription revenue, year 3</td><td class="num">€0.15M</td><td class="num"><b>€0.40M</b></td><td class="num">€0.75M</td><td class="small">CFO model (€15 only)</td></tr>
+      <tr><td>Snapshot revenue</td><td class="num">–</td><td class="num">€0.39M</td><td class="num">–</td><td class="small">Calculator above</td></tr>
+      <tr><td>Recurring <a class="gl" href="#g-gm">gross margin</a></td><td class="num">~75%</td><td class="num">~79%</td><td class="num">~82%</td><td class="small">Strategy P&amp;L</td></tr>
+      <tr><td>Software <a class="gl" href="#g-gm">break-even</a></td><td class="num">not reached</td><td class="num">~3,100 devices (early Y4)</td><td class="num">Y2–3</td><td class="small">Strategy P&amp;L</td></tr>
+      <tr><td>6-year <a class="gl" href="#g-npv">NPV</a> (today's value of 6 years of cash) at 10%, incl. renewal effect</td><td class="num">−€0.83M</td><td class="num"><b>+€0.23M</b></td><td class="num">+€2.37M</td><td class="small">CFO model</td></tr>
+      <tr><td><a class="gl" href="#g-npv">Payback</a></td><td class="num">none</td><td class="num">year 5</td><td class="num">year 4</td><td class="small">CFO model</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <p class="small"><b>Why three revenue numbers?</b> The strategy P&amp;L (profit-and-loss model) uses a price mix (blended €17/mo incl. Integrated €25 and the €64 platform tier) and €500k fixed cost. The CFO model uses one €15 price, a fleet growing 4%/yr and €200–380k fixed cost per year. The calculator is a static snapshot: 12,000 × 18% × €180. <b>For the board, quote the CFO's €0.4M</b>; the strategy figure is the upside. All inputs <span class="tag E">E</span>/<span class="tag A">A</span>; replace with Europress numbers.</p>
+
+  <div class="grid g2">
+    <div class="card">
+      <h3>The CFO insight: 6-year NPV, € M <span class="tag E">E</span></h3>
+      <div class="div" id="npvChart"></div>
+      <p class="small">Subscription alone is <b>negative</b>. Add an assumed +5 percentage points more customers renewing their service contract and higher SMART attach (≈ €60 per adopter per year <span class="tag A">A</span>) and the base turns positive. The low scenario also halves adoption (9% vs 18%) and cuts price to €12, so it sits below subscription-only base. One won renewal ≈ €5k machine margin + 6 yrs × €600 service margin <span class="tag A">A</span>.</p>
+    </div>
+    <div class="card">
+      <h3>What moves NPV most? € M, same scale <span class="tag E">E</span></h3>
+      <div class="div" id="tornado"></div>
+      <div class="legend"><span><i class="sw d-neg"></i> downside case (first value)</span><span><i class="sw d-pos"></i> upside case (second value)</span><span><i class="swl d-base"></i> base +€0.23M</span></div>
+      <p class="small">Adoption and renewal uplift dominate. Both are measurable in the pilot, so that is what the gates test. Break-even adoption ≈ 0.8× base (~14% by Y3).</p>
+    </div>
+  </div>
+
+  <div class="note ok"><strong>Board pitch:</strong> "Weight makes SMART and the service contract stickier, which is where Europress makes its profit", <b>not</b> "a new revenue line". Base Y3 subscription revenue (~€0.4M, CFO model) is ~0.6% of €70M.</div>
+
+  <h3>Company context</h3>
+  <div class="kpis">
+    <div><div class="big">€40.0M</div><span class="small">Finnish parent revenue 2025, 6% EBIT (operating profit) margin <span class="tag F">F</span></span></div>
+    <div><div class="big">€61–63M</div><span class="small">group before eliminations; Tommi's ~€70M plausible <span class="tag E">E</span></span></div>
+    <div><div class="big">~15%</div><span class="small">customers on SMART today <span class="tag T">T</span></span></div>
+    <div><div class="big">120</div><span class="small">devices per +1 pp SMART <a class="gl" href="#g-attach">attach</a> on ~12k fleet <span class="tag A">A</span></span></div>
+  </div>
+</section>
+
+<!-- 10 ROADMAP -->
+<section id="roadmap">
+  <div class="kicker">Execution</div>
+  <h2>Stage-gated roadmap with kill criteria</h2>
+  <p class="lead">Each blue diamond is a gate. Miss the numbers and we stop. The first gate is a ≈€25k desk test; the downside is capped at about €150k before the first paid sale (CFO lens) <span class="tag E">E</span></p>
+  <div class="stage">
+    <div class="tl" id="roadmapTl"></div>
+    <div class="legend">
+      <span><i class="sw r-pilot"></i> pilot</span>
+      <span><i class="sw r-live"></i> selling</span>
+      <span><i class="sw r-open"></i> open-ended</span>
+      <span><i class="sw r-risk"></i> money at risk</span>
+    </div>
+    <div class="kills" id="kills"></div>
+    <p class="fig"><b>Fig 4</b> · Roadmap, Jan 2027 – Dec 2030, one lane per add-on · Gate criteria from BUSINESS_PLAN §6 and the CFO lens · <span class="tag E">E</span></p>
+  </div>
+  <div class="kpis">
+    <div><div class="big">2–3 FTE</div><span class="small">for 6 months with Vincit (software partner): firmware logging, model, portal screens <span class="tag E">E</span></span></div>
+    <div><div class="big">€10–19k</div><span class="small">golden cohort hardware <span class="tag E">E</span></span></div>
+    <div><div class="big">≤ €150k</div><span class="small">capped downside if the pilot fails <span class="tag E">E</span></span></div>
+  </div>
+</section>
+
+<!-- 11 RISKS -->
+<section id="risks">
+  <div class="kicker">Risk</div>
+  <h2>Risks, mitigations and KPIs</h2>
+  <div class="tbl">
+  <table class="stackable">
+    <thead><tr><th>Risk</th><th>Mitigation</th></tr></thead>
+    <tbody>
+      <tr><td>Pressure does not predict kg in the field</td><td>Gate 0 desk test (≈€25k) kills it if pressure features cut error by &lt;30% vs fill-only</td></tr>
+      <tr><td>Per-lift accuracy too weak for verification</td><td>Verify at monthly/contract level; T1 calibration removes bias; T2 where needed; publish the bands</td></tr>
+      <tr><td>Median customer sees €0 of value</td><td>Free teaser for them; paid add-ons only for chains and fixed schedules</td></tr>
+      <tr><td>Legal metrology (NAWI 2014/31/EU)</td><td>"Second opinion, not billing basis"; T2 <a class="gl" href="#g-nawi">legal-for-trade</a> (certified for billing) only if required</td></tr>
+      <tr><td>Operator backlash</td><td>Neutral attribution, operator-first disclosure, give-to-get, gated tendering</td></tr>
+      <tr><td><a class="gl" href="#g-dataact">EU Data Act</a> / competition law</td><td>Use data only under customer contract clauses; index is volume-only, <a class="gl" href="#g-kanon">k-anonymous</a>, no prices</td></tr>
+      <tr><td>Price sensitivity ("cheapest wins")</td><td>Free tier, gain-share, bundling into the lease</td></tr>
+      <tr><td>Evidence is <a class="gl" href="#g-synth">synthetic</a></td><td>Every number tagged; the pilot is designed to replace it with real data</td></tr>
+      <tr><td>Renewal effect unproven (NPV hinges on it)</td><td>Measure adopters vs matched non-adopters at Gates 2–3; disclose NPV without it (−€0.33M)</td></tr>
+      <tr><td>Patent prior art (e.g. US8794135B1, US11162834B2)</td><td>Freedom-to-operate check (do we infringe anyone's patent?) before productising</td></tr>
+      <tr><td>Contamination detection does not work yet</td><td>Roadmap only; needs pressure-curve shape from new firmware</td></tr>
+    </tbody>
+  </table>
+  </div>
+  <h3>KPIs we would track</h3>
+  <div class="grid g4">
+    <div class="card"><h4>Commercial</h4><p class="small">SMART attach rate · Insights/Integrated upgrade rate · service-contract renewal</p></div>
+    <div class="card"><h4>Weight quality</h4><p class="small">Monthly error vs reference · % of lifts with tickets (operator sharing)</p></div>
+    <div class="card"><h4>Outcomes</h4><p class="small">Disputes opened → resolved without escalation · fixed → on-call conversions</p></div>
+    <div class="card"><h4>Efficiency</h4><p class="small">Cost to serve per device</p></div>
+  </div>
+  <h3 class="mt">Vision (3–5 years): "Every kilo known at the source"</h3>
+  <p>Today the truck owner reveals the weight at the end of the chain. In the vision it becomes a shared, neutral, continuously checked fact at the compactor. Contracts are priced per verified tonne, recycling is reported from source data, and operators compete on service quality instead of information. Europress gets there without owning a single truck.</p>
+  <p class="small"><b>Optional pitch bolt-ons:</b> anchor scheduler (calibration visits where uncertainty × € is highest) · "water you paid for" (dry vs wet tonnes, EN 643 moisture claim) · trolley-photo pre-sort (future) · BDO waste-card autofill for Poland.</p>
+</section>
+
+<!-- 12 QUESTIONS -->
+<section id="questions">
+  <div class="kicker">Saturday</div>
+  <h2>Questions for Tommi</h2>
+  <ol class="qs">
+    <li>Do the "filling weights" Tamro and Citycon see today already come from a pressure-based kg estimate? If so, we pitch an <b>upgrade</b>.</li>
+    <li>What do Intro, Insights and Integrated contain today, and at what price? What is "SMART FullService"?</li>
+    <li>How many machines are installed, and how many connected? How many scale platforms exist, with what accuracy and price?</li>
+    <li>What are the service-contract margin and churn? Do leases bundle SMART?</li>
+    <li>Is per-stroke pressure data archived, and at what sampling rate (Hz)? (This decides whether Gate 0 can run.)</li>
+    <li>Who owns the data under the operator API terms?</li>
+    <li>Poland: is there a factory? What is the installed base? Is BDO reporting a pain point for customers?</li>
+  </ol>
+  <p class="small muted">Why these matter: answers 3–4 replace our biggest assumptions (12k fleet, €600 service margin, +5 pp renewal), which swing the NPV most.</p>
+</section>
+
+<!-- 13 GLOSSARY -->
+<section id="glossary">
+  <div class="kicker">Words we must use correctly</div>
+  <h2>Glossary</h2>
+  <dl class="gloss">
+    <dt id="g-lift">Lift</dt><dd>One collection: the truck lifts/empties the container. Our unit of analysis.</dd>
+    <dt id="g-unjust">Unjustified lift</dt><dd>A lift made while the container was not full enough to need it (in the dataset, labelled by fill at lift). Mostly on fixed schedules.</dd>
+    <dt id="g-gtn">Gross / tare / net</dt><dd>Weighbridge weighs the loaded truck (gross) and the empty truck (tare). Net = gross − tare = the waste weight billed.</dd>
+    <dt id="g-stored">Stored tare</dt><dd>A saved empty-truck weight reused instead of weighing the truck empty each time. Goes stale (fuel, equipment, mud) → systematic error. 30% of big gaps <span class="tag D">D</span>.</dd>
+    <dt id="g-weighed">Weighed tare</dt><dd>Truck actually weighed empty on that trip. More accurate (robust SD 3.8% vs 7.5% stored) <span class="tag D">D</span>.</dd>
+    <dt id="g-ticket">Weighbridge ticket</dt><dd>The operator's record of gross, tare and net for a trip. Operators share these only sometimes. A <b>clean ticket</b> has a weighed tare and a single load.</dd>
+    <dt id="g-side">Side waste / combined load</dt><dd>Other waste on the same truck, or several containers in one trip split 50/50. Both distort per-container weight.</dd>
+    <dt id="g-oncall">On-call vs fixed schedule</dt><dd>On-call: SMART calls the truck at ~80% fill (60–70% of Finnish pickups). Fixed: truck comes on a calendar whether full or not (most of Poland/CE). Hybrid: a mix.</dd>
+    <dt id="g-eurt">€/t</dt><dd>Euros per tonne: processing price per tonne of waste. Comparing €/t across contracts is what exposes tariff gaps.</dd>
+    <dt id="g-massbilled">Mass-billed €</dt><dd>Invoice lines whose amount is computed from a weight (€/t × tonnes), as opposed to fixed transport fees.</dd>
+    <dt id="g-combi">COMBI / DUO</dt><dd>COMBI: compactor and container welded, whole unit lifted. DUO: compactor stays, container detaches.</dd>
+    <dt id="g-compact">Compaction / ram stroke</dt><dd>The compactor's hydraulic ram (a big piston) pushes waste into the container to squeeze it; each push is one stroke.</dd><dt id="g-bp">Back-pressure (hydraulic)</dt><dd>Hydraulic ram pressure (0–200 bar) per compaction stroke. Already used for fill level; we use it to estimate kg. Not in the hackathon dataset.</dd>
+    <dt id="g-bom">BOM</dt><dd>Bill of materials: hardware cost per unit. T0/T1 add €0.</dd>
+    <dt id="g-ota">OTA</dt><dd>Over-the-air firmware update. T0 needs one to log pressure at 10–20 Hz.</dd>
+    <dt id="g-tiers">SMART Intro / Insights / Integrated</dt><dd>Europress's digital tiers (contents and prices not public). Our reading <span class="tag E">E</span>: entry, optimisation + subscription, and full integration (APIs, ERP).</dd>
+    <dt>SMART Center</dt><dd>Europress remote support team; up to 90% of problems fixed remotely <span class="tag F">F</span>. Would approve our AI drafts.</dd>
+    <dt id="g-lc">Load cell</dt><dd>A metal block that bends very slightly under weight and turns that into an electrical signal: the sensor inside most scales. T2 uses four of them.</dd><dt>Scale Solutions / Scaletipper X1</dt><dd>Existing Europress weighing: 4-corner load-cell platform under the compactor; bin tipper with 1.0 kg resolution.</dd>
+    <dt>Waste volume calculator</dt><dd>Existing Europress tool estimating weight from average container weights, without a scale. T0 upgrades it.</dd>
+    <dt id="g-retro">Retrofit / SMART Retrofit</dt><dd>Adding a kit to a machine that is already installed (any brand) so it connects to SMART, instead of buying a new machine.</dd>
+    <dt id="g-tier">T0 / T1 / T2</dt><dd>Our accuracy ladder: virtual scale, ticket-calibrated, measured (load cells).</dd>
+    <dt id="g-golden">Golden cohort</dt><dd>Small set of machines (2–5% of fleet) fitted with T2 scales to provide ground truth.</dd><dt id="g-ref">Ground truth / reference weight / label</dt><dd>The "right answer" a model is trained and tested against: here a weighbridge ticket or a scale-platform weight. The model's error is measured against it.</dd><dt id="g-synth">Synthetic data</dt><dd>Data generated by a computer simulation to look realistic. Good for building and testing methods; it cannot prove how real hardware performs.</dd>
+    <dt id="g-kalman">Kalman / CUSUM</dt><dd>Kalman filter: a standard method that updates a machine's calibration a little each time a clean ticket arrives. CUSUM (cumulative sum): adds up small differences over time and raises an alarm when they keep pointing the same way, which catches slow drift.</dd>
+    <dt id="g-drift">Drift</dt><dd>A machine's reading slowly moving away from the truth (wear, sensor ageing). Looks like bias that grows over weeks.</dd>
+    <dt id="g-ba">Bland-Altman</dt><dd>Standard method to measure agreement (bias and limits) between two measurement methods.</dd>
+    <dt id="g-lomo">Leave-one-machine-out</dt><dd>Test the model on a machine it was not trained on, for each machine in turn. Shows how it does on a new customer.</dd>
+    <dt id="g-ablation">Ablation</dt><dd>Remove one ingredient (here: some of the tickets) and see how much accuracy drops.</dd>
+    <dt id="g-p90">p10 / p50 / p90</dt><dd>Percentiles. p90: 9 in 10 lifts have an error at or below this value. p50 is the median (middle value); p10 is the low end.</dd>
+    <dt id="g-sigma">σ / 1σ / robust SD</dt><dd>σ (sigma, standard deviation) is the typical size of an error. About 2 in 3 readings fall within ±1σ of the truth. Robust SD is computed so outliers like side waste do not inflate it.</dd><dt id="g-band">± band (uncertainty band)</dt><dd>"11.8 t ± 0.7" means our best guess is 11.8 t and the true weight is very likely between 11.1 and 12.5 t. A wider band = less sure.</dd><dt id="g-bias">Bias vs random error</dt><dd>Random error: readings scatter high and low, so they cancel out when you add many lifts. Bias: a machine reads, say, 10% heavy every time; adding lifts does not cancel it. Calibration removes bias.</dd><dt id="g-calib">Calibration / anchor</dt><dd>Correcting a machine's reading by comparing it with a trusted weight (an "anchor", e.g. a clean weighbridge ticket). Each anchor tunes that machine's gain factor.</dd><dt id="g-z">z-score</dt><dd>How unusual a value is, counted in σ: z = 3 means 3 typical errors away from normal. Used to flag outliers.</dd><dt id="g-median">Mean / median / robust median</dt><dd>Mean = average. Median = the middle value when sorted; one extreme value cannot drag it. A robust median uses this to ignore outliers like side waste.</dd>
+    <dt id="g-f1">Macro-F1</dt><dd>A 0–1 score for how well a method sorts cases into the right category (1 = perfect), averaged so rare categories count as much as common ones. Benchmark: rules 0.73, ML 0.35, rules + ML 0.78 <span class="tag D">D</span>.</dd>
+    <dt id="g-bestset">Best action set / identified value</dt><dd>For each contract, the most valuable combination of actions (renegotiate, tender, dispute, request data) the dataset's valuation rules allow. €1,064 per contract-year on average <span class="tag D">D</span>.</dd>
+    <dt id="g-realisable">Realisable value</dt><dd>The part of identified value a customer actually captures. We assume 50% <span class="tag A">A</span>.</dd>
+    <dt id="g-cts">Cost to serve</dt><dd>What it costs Europress per device per month to run the add-on: cloud, ML, AI drafting, support. €3.5 assumed <span class="tag A">A</span>.</dd>
+    <dt id="g-contr">Contribution</dt><dd>Revenue minus cost to serve, before fixed development costs.</dd>
+    <dt>Proof of Fullness</dt><dd>Fill + tonnage evidence that a scheduled lift wasn't needed.</dd>
+    <dt id="g-gainshare">Gain-share</dt><dd>Fee = a share (25%) of the verified saving instead of a fixed subscription.</dd>
+    <dt id="g-g2g">Give-to-get</dt><dd>Operators share tickets and get a free reconciliation receipt and hygiene report back.</dd>
+    <dt id="g-bdo">BDO</dt><dd>Poland's national waste register (database), where companies record waste they produce and hand over; reporting waste mass is mandatory <span class="tag F">F</span>.</dd>
+    <dt id="g-esrs">CSRD / ESRS E5</dt><dd>CSRD: EU law making large companies publish sustainability reports. ESRS are its reporting standards; ESRS E5 covers resource use and circular economy (E5-5: outflows incl. waste). The Omnibus narrowed CSRD to large companies <span class="tag F">F</span>.</dd>
+    <dt id="g-nawi">NAWI 2014/31/EU / legal-for-trade</dt><dd>EU directive on non-automatic weighing instruments. A scale whose weight is used to bill must be certified ("legal-for-trade"). Ours is a second opinion only.</dd>
+    <dt id="g-en643">EN 643</dt><dd>European standard for recovered paper grades; &gt;10% moisture can be claimed back.</dd>
+    <dt id="g-dataact">EU Data Act</dt><dd>EU rules on access to and use of data from connected products; needs consent clauses.</dd>
+    <dt id="g-kanon">k-anonymous</dt><dd>Aggregates published only when at least k (here 5) customers are in each cell.</dd>
+    <dt id="g-dy">Device-year</dt><dd>One device active for one year; in the dataset each device has one contract, so = contract-year.</dd>
+    <dt id="g-npv">NPV / payback</dt><dd>NPV (net present value): all future cash in and out, converted to today's money (future € count less; here 6 yrs at 10% a year). Positive = worth doing. Payback: the year the cumulative cash turns positive.</dd><dt id="g-arr">ARR</dt><dd>Annual recurring revenue: the subscription money that comes in every year.</dd><dt id="g-gm">Gross margin / break-even</dt><dd>Gross margin: share of revenue left after the direct cost of serving it. Break-even: the size at which revenue covers all costs, including fixed development.</dd><dt id="g-api">API / CloudEvents</dt><dd>API: a machine-to-machine data connection (here SMART ↔ operator systems). CloudEvents: a standard message format for sending such events, e.g. "lift weighed".</dd>
+    <dt id="g-attach">Attach rate</dt><dd>Share of customers/machines that take SMART (or an add-on). Today ~15%.</dd>
+  </dl>
+</section>
+
+</main>
+</div>
+<footer>Internal team explainer, v3 · Sources: BUSINESS_PLAN.md and agent lenses (company profile, data value, CFO, strategy, brand) · Font Roboto (Google Fonts, OFL/Apache 2.0), the SMART portal's own UI font; palette: neutral greys, Europress navy #214269 for chrome, one action blue #1f6fc4, status colours only · All € synthetic or hypothetical.</footer>
+
+<div id="tip" role="tooltip"></div>
+<script>
+(function(){
+  var $=function(id){return document.getElementById(id);};
+  var r1=function(n){return Math.round(n*10)/10;};
+
+  /* ---------- theme: auto -> light -> dark -> auto ---------- */
+  var root=document.documentElement, btn=$('themeBtn'), nameEl=$('themeName');
+  var MODES=[null,'light','dark'];
+  function themeLabel(){nameEl.textContent=root.getAttribute('data-theme')||'auto';}
+  btn.addEventListener('click',function(){
+    var cur=root.getAttribute('data-theme'), next=MODES[(MODES.indexOf(cur)+1)%MODES.length];
+    if(next){root.setAttribute('data-theme',next);}else{root.removeAttribute('data-theme');}
+    themeLabel();
+  });
+  themeLabel();
+
+  /* ---------- scroll spy ---------- */
+  var links=[].slice.call(document.querySelectorAll('.toc a')), map={};
+  links.forEach(function(a){map[a.getAttribute('href').slice(1)]=a;});
+  if('IntersectionObserver' in window){
+    var io=new IntersectionObserver(function(es){
+      es.forEach(function(e){
+        if(!e.isIntersecting){return;}
+        var a=map[e.target.id]; if(!a){return;}
+        links.forEach(function(l){l.classList.remove('active');});
+        a.classList.add('active');
+        if(window.innerWidth<=1000){var nav=a.closest('.toc');nav.scrollLeft=a.offsetLeft-20;}
+      });
+    },{rootMargin:'-30% 0px -60% 0px'});
+    document.querySelectorAll('main section').forEach(function(s){io.observe(s);});
+  }
+
+  /* ---------- jargon tooltips: text is read from the glossary (single source); delegated so JS-built charts work too ---------- */
+  var tip=$('tip'), tipFor=null, ptr='mouse', tapped=null;
+  function gloss(a){var dt=document.getElementById(a.getAttribute('href').slice(1));return dt&&dt.nextElementSibling?{t:dt.textContent,d:dt.nextElementSibling.textContent}:null;}
+  function showTip(a){
+    var g=gloss(a); if(!g){return;}
+    tip.innerHTML='<b>'+g.t+'</b>'+g.d+' <a href="'+a.getAttribute('href')+'">Glossary →</a>';
+    tip.style.display='block'; tipFor=a;
+    var r=a.getBoundingClientRect(), w=tip.offsetWidth, h=tip.offsetHeight, vw=document.documentElement.clientWidth;
+    tip.style.left=Math.max(12,Math.min(r.left,vw-w-12))+'px';
+    tip.style.top=(r.bottom+8+h>window.innerHeight?Math.max(8,r.top-h-8):r.bottom+8)+'px';
+  }
+  function hideTip(){tip.style.display='none';tipFor=null;tapped=null;}
+  function glOf(e){return e.target.closest?e.target.closest('a.gl'):null;}
+  document.addEventListener('pointerdown',function(e){ptr=e.pointerType||'mouse';});
+  document.addEventListener('mouseover',function(e){var a=glOf(e);if(a&&ptr==='mouse'){showTip(a);}});
+  document.addEventListener('mouseout',function(e){var a=glOf(e);if(a&&ptr==='mouse'){setTimeout(function(){if(!tip.matches(':hover')&&tipFor===a){hideTip();}},150);}});
+  document.addEventListener('focusin',function(e){var a=glOf(e);if(a){showTip(a);}});
+  document.addEventListener('focusout',function(e){if(glOf(e)){setTimeout(function(){if(!tip.contains(document.activeElement)){hideTip();}},150);}});
+  document.addEventListener('click',function(e){
+    var a=glOf(e);
+    if(a){if(ptr!=='mouse'&&tapped!==a){e.preventDefault();showTip(a);tapped=a;}return;}
+    if(tipFor&&!tip.contains(e.target)){hideTip();}
+  });
+  tip.addEventListener('mouseleave',hideTip);
+  document.addEventListener('keydown',function(e){if(e.key==='Escape'){hideTip();}});
+  window.addEventListener('scroll',function(){if(tipFor&&!tipFor.matches(':hover')){hideTip();}},{passive:true});
+
+  /* ---------- stackable tables: copy header text to data-th ---------- */
+  document.querySelectorAll('table.stackable').forEach(function(t){
+    var hs=[].map.call(t.querySelectorAll('thead th'),function(th){return th.textContent;});
+    t.querySelectorAll('tbody tr').forEach(function(tr){[].forEach.call(tr.children,function(td,i){td.setAttribute('data-th',hs[i]||'');});});
+  });
+
+  /* ---------- who-knows-what table ---------- */
+  var DOT={f:['full','yes'],h:['half','partly'],n:['none','no']};
+  var KNOW=[
+    ['How full the machine is','hhff'],
+    ['When a lift happened','hfff'],
+    ['Weight of each lift','nfnh','estimate ± band'],
+    ['Material quality grade','nfnn',"stays operator's"],
+    ['Invoice and tariff (€/t)','ffnf','under customer contract'],
+    ['Why a weight differs (cause)','nhnf','neutral attribution']
+  ];
+  $('knowBody').innerHTML=KNOW.map(function(r){
+    return '<tr><td>'+r[0]+'</td>'+r[1].split('').map(function(c,i){
+      var d=DOT[c];
+      return '<td><span class="dot '+d[0]+'" aria-hidden="true"></span><span class="sr-only">'+d[1]+'</span>'+(i===3&&r[2]?' <span class="xs">'+r[2]+'</span>':'')+'</td>';
+    }).join('')+'</tr>';
+  }).join('');
+
+  /* ---------- value chain SVG (one spec, two layouts) ---------- */
+  function wave(x1,y1,x2,y2,n,a){
+    var dx=x2-x1,dy=y2-y1,len=Math.sqrt(dx*dx+dy*dy),px=-dy/len,py=dx/len,d='M'+x1+','+y1;
+    for(var i=1;i<=n;i++){
+      var t0=(i-0.5)/n,t1=i/n,sg=i%2?1:-1;
+      d+=' Q'+r1(x1+dx*t0+px*a*sg)+','+r1(y1+dy*t0+py*a*sg)+' '+r1(x1+dx*t1)+','+r1(y1+dy*t1);
+    }
+    return d;
+  }
+  var NODE_TEXT={
+    cust:[{t:'Customer site',c:'title'},{t:'pays per tonne'},{t:'no weight of its own'}],
+    comp:[{t:'Compactor + SMART',c:'title'},{t:'knows fill & pressure'},{t:'○ no kg reported',c:'nokg',m:'td'},{t:'● kg ± band',c:'kg',m:'ao',same:true}],
+    truck:[{t:'Operator truck',c:'title'},{t:'lifts the container'},{t:'may add side waste'}],
+    wb:[{t:'Weighbridge',c:'title'},{t:'gross − tare = net'},{t:'● the only kg today',c:'kg',m:'td'},{t:'● billed kg',c:'kg',m:'ao',same:true}],
+    cloud:[{t:'SMART cloud',c:'title'},{t:'fill, faults',m:'td'},{t:'+ weight add-ons',c:'kg',m:'ao',same:true}]
+  };
+  var NODE_KIND={cust:'n-cust',comp:'n-ep',truck:'n-op',wb:'n-op',cloud:'n-ep'};
+  var LAYOUTS={
+    h:{w:960,h:390,nodes:{cust:[16,150,190,100],comp:[262,150,190,100],truck:[508,150,190,100],wb:[754,150,190,100],cloud:[262,8,190,76]},
+       scales:{wb:[912,124,''],comp:[420,124,'ao']},
+       edges:[
+        {t:'mat',d:'M206,200 L254,200'},{t:'mat',d:'M452,200 L500,200'},{t:'mat',d:'M698,200 L746,200'},
+        {t:'mat',lab:[478,190,'waste','middle']},
+        {t:'mon',d:'M849,250 C849,368 111,368 111,254',lab:[480,382,'invoice','middle']},
+        {t:'dat',d:wave(357,150,357,88,4,6),lab:[370,124,'fill, pressure','start']},
+        {t:'dat',ao:1,d:'M262,46 C156,46 111,96 111,146',lab:[250,30,'kg ± band, €/t check','end']},
+        {t:'dat',ao:1,d:'M849,150 C849,60 630,46 456,46',lab:[720,44,'tickets, if shared','middle']}
+       ]},
+    v:{w:360,h:690,nodes:{cust:[50,14,210,96],comp:[50,190,210,96],truck:[50,366,210,96],wb:[50,542,210,96],cloud:[272,96,84,92]},
+       scales:{wb:[228,518,''],comp:[228,166,'ao']},
+       edges:[
+        {t:'mat',d:'M155,110 L155,186'},{t:'mat',d:'M155,286 L155,362'},{t:'mat',d:'M155,462 L155,538'},
+        {t:'mat',lab:[163,505,'waste','start']},
+        {t:'mon',d:'M50,600 C6,600 6,62 46,62',lab:[30,330,'invoice (operator kg)','middle',-90]},
+        {t:'dat',d:wave(260,250,300,192,3,5)},
+        {t:'dat',ao:1,d:'M300,96 C300,70 290,62 264,62'},
+        {t:'dat',ao:1,d:'M260,590 C350,590 350,320 338,192',lab:[346,450,'tickets, if shared','middle',-90]}
+       ]}
+  };
+  function marker(id,cls){return '<marker id="'+id+'" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse"><path class="'+cls+'" d="M0,0L10,5L0,10z"/></marker>';}
+  function scaleGlyph(x,y,m){return '<g class="'+m+'" transform="translate('+x+' '+y+')"><path class="glyph" d="M0,16h24M4,16v-5h16v5M12,11v-7M5,4h14"/><circle class="kgdot" cx="26" cy="2" r="4.5"/></g>';}
+  function chainSVG(key){
+    var L=LAYOUTS[key], id='ch'+key, s='<svg class="'+key+'" viewBox="0 0 '+L.w+' '+L.h+'" aria-hidden="true" focusable="false"><defs>'+
+      marker(id+'mat','mk-mat')+marker(id+'mon','mk-mon')+marker(id+'dat','mk-dat')+'</defs>';
+    L.edges.forEach(function(e){
+      s+='<g class="'+(e.ao?'ao':'')+'">';
+      if(e.d){s+='<path class="e-'+e.t+'" d="'+e.d+'" marker-end="url(#'+id+e.t+')"/>';}
+      if(e.lab){var lb=e.lab;s+='<text class="e-lab '+e.t+'" x="'+lb[0]+'" y="'+lb[1]+'" text-anchor="'+lb[3]+'"'+(lb[4]?' transform="rotate('+lb[4]+' '+lb[0]+' '+lb[1]+')"':'')+'>'+lb[2]+'</text>';}
+      s+='</g>';
+    });
+    Object.keys(L.nodes).forEach(function(k){
+      var n=L.nodes[k], cx=n[0]+n[2]/2, y=n[1]+26, narrow=n[2]<120;
+      s+='<g class="'+NODE_KIND[k]+'"><rect x="'+n[0]+'" y="'+n[1]+'" width="'+n[2]+'" height="'+n[3]+'" rx="14"/>';
+      NODE_TEXT[k].forEach(function(l,i){
+        if(i>0&&!l.same){y+=(i===1?24:21);}
+        var txt=l.t;
+        if(narrow&&k==='cloud'){txt=i===0?'SMART':(l.m==='ao'?'+ add-ons':'fill');}
+        s+='<text class="t-'+(l.c||'sub')+(l.m?' '+l.m:'')+'" x="'+cx+'" y="'+y+'" text-anchor="middle">'+txt+'</text>';
+        if(narrow&&k==='cloud'&&i===0){s+='<text class="t-title" x="'+cx+'" y="'+(y+18)+'" text-anchor="middle">cloud</text>';y+=18;}
+      });
+      s+='</g>';
+    });
+    Object.keys(L.scales).forEach(function(k){var g=L.scales[k];s+=scaleGlyph(g[0],g[1],g[2]);});
+    return s+'</svg>';
+  }
+  var chainFig=$('chainFig');
+  chainFig.innerHTML=chainSVG('h')+chainSVG('v');
+  document.querySelectorAll('.seg-ctl button').forEach(function(b){
+    b.addEventListener('click',function(){
+      chainFig.setAttribute('data-mode',b.getAttribute('data-mode'));
+      document.querySelectorAll('.seg-ctl button').forEach(function(o){o.setAttribute('aria-pressed',String(o===b));});
+    });
+  });
+
+  /* ---------- bands on a shared ±20% axis ---------- */
+  var AX=20, REFS=[{v:11,cls:'',lab:'Tommi ±11%',k:'t'},{v:6,cls:'gate',lab:'pilot gate ±6%',k:'g'}];
+  function pos(v){return 50+v/AX*50;}
+  function band(b){
+    var refs=REFS.map(function(r){return '<i class="ref '+r.cls+'" style="left:'+pos(-r.v)+'%"></i><i class="ref '+r.cls+'" style="left:'+pos(r.v)+'%"></i>';}).join('');
+    return '<div class="brow '+b.k+'"><div class="btrack">'+refs+
+      '<div class="bhi" style="left:'+pos(-b.hi)+'%;width:'+(b.hi/AX*100)+'%"></div>'+
+      '<div class="blo" style="left:'+pos(-b.lo)+'%;width:'+(b.lo/AX*100)+'%"></div><i class="zero"></i></div>'+
+      '<div class="blab">'+b.label+'</div></div>';
+  }
+  function axisTop(){return '<div class="axtop" aria-hidden="true">'+REFS.map(function(r){return '<span class="'+r.k+'" style="left:'+pos(r.k==='t'?r.v:-r.v)+'%">'+r.lab+'</span>';}).join('')+'</div>';}
+  function axisBot(){return '<div class="axbot" aria-hidden="true">'+[-20,-10,0,10,20].map(function(v){return '<span style="left:'+pos(v)+'%">'+(v>0?'+':v<0?'−':'')+Math.abs(v)+'%</span>';}).join('').replace('left:0%"','left:0%;transform:none"').replace('left:100%"','left:100%;transform:translateX(-100%)"')+'</div>';}
+
+  var LADDER=[
+    {cost:'€0',costNote:'per month',name:'T0 Virtual scale',meta:'€0 BOM · an <a class="gl" href="#g-ota">OTA</a> update (remote software update) logs pressure 10–20 times a second · reuses pressure sensor, fill algorithm, volume calculator',
+     bands:[{k:'lift',lo:12,hi:20,label:'per lift ±12–20%'},{k:'month',lo:11,hi:11,label:'monthly ≈ ±11% until calibrated (bias stays)'}]},
+    {cost:'€0',costNote:'uses operator tickets',name:'T1 Ticket-calibrated',meta:'Clean tickets remove each machine\'s <a class="gl" href="#g-bias">bias</a> (<a class="gl" href="#g-kalman">Kalman</a>) and catch <a class="gl" href="#g-drift">drift</a> (<a class="gl" href="#g-kalman">CUSUM</a>). Per-lift noise stays ≈12% [D]; the gain is in monthly totals and drift alarms.',
+     bands:[{k:'lift',lo:12,hi:12,label:'per lift ≈ ±12% (unchanged)'},{k:'month',lo:5,hi:6,label:'monthly ≈ ±5–6% after ~20 clean tickets'}]},
+    {cost:'€14–26',costNote:'per month in the lease',name:'T2 Measured',meta:'4-corner <a class="gl" href="#g-lc">load-cell</a> platform, €1.0–1.9k spread over a 72-month lease · Scale Solutions, already a product',
+     bands:[{k:'lift',lo:1.4,hi:1.4,label:'per lift ≈ ±1.4%, verification grade'}]},
+    {cost:'€10–19k',costNote:'one-off, pilot',name:'Golden cohort',meta:'<a class="gl" href="#g-golden">Reference machines</a>: T2 on 2–5% of the fleet as ground truth, ~10 machines. Lets T0 lose its bias without tickets.',
+     bands:[{k:'model',lo:4.96,hi:4.96,label:'fleet model on unscaled machines ≈ ±5% (literature)'}]}
+  ];
+  var lad='<div class="rung axisrow"><div></div><div></div><div class="bands">'+axisTop()+'</div></div>';
+  LADDER.forEach(function(r){
+    lad+='<div class="rung"><div class="cost">'+r.cost+'<small>'+r.costNote+'</small></div><div><div class="name">'+r.name+'</div><div class="meta">'+r.meta+'</div></div><div class="bands">'+r.bands.map(band).join('')+'</div></div>';
+  });
+  lad+='<div class="rung axisrow"><div></div><div></div><div class="bands">'+axisBot()+'</div></div>';
+  $('ladder').innerHTML=lad;
+  $('ladderTbl').innerHTML='<caption>Accuracy ladder</caption><tr><th>Rung</th><th>Cost</th><th>Error bands</th></tr>'+LADDER.map(function(r){return '<tr><td>'+r.name+'</td><td>'+r.cost+' '+r.costNote+'</td><td>'+r.bands.map(function(b){return b.label;}).join('; ')+'</td></tr>';}).join('');
+
+  $('monthBands').innerHTML=axisTop()+[
+    {k:'lift',lo:12,hi:12,label:'one lift: ±12%'},
+    {k:'month',lo:4.5,hi:4.5,label:'month of 7 lifts, noise only: ±4.5%'},
+    {k:'month',lo:4.5,hi:11,label:'month, uncalibrated (bias 10%): ±11% → 11.8 t ± 1.3'},
+    {k:'month',lo:5.7,hi:5.7,label:'month after ~20 clean tickets (bias 3.4%): ±5.7% → 11.8 t ± 0.7'}
+  ].map(band).join('')+axisBot();
+
+  /* worked example: 7 lifts with ±12% whiskers */
+  (function(){
+    var TRUE=1.69, DEV=[0.09,-0.14,0.03,-0.06,0.15,-0.02,-0.08], W=420, H=190, x0=44, y=function(t){return 160-(t-1.2)*130;};
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Seven lifts, each read by the device within plus or minus 12 percent of the true 1.69 tonnes; their sum is 11.8 tonnes."><g>';
+    [1.2,1.7,2.2].forEach(function(t){s+='<line x1="'+x0+'" x2="'+(W-8)+'" y1="'+y(t)+'" y2="'+y(t)+'" stroke="var(--line-soft)"/><text x="'+(x0-6)+'" y="'+(y(t)+4)+'" text-anchor="end">'+t.toFixed(1)+' t</text>';});
+    s+='<line x1="'+x0+'" x2="'+(W-8)+'" y1="'+y(TRUE)+'" y2="'+y(TRUE)+'" stroke="var(--ink)" stroke-dasharray="5 4"/><text class="lt" x="'+(W-8)+'" y="'+(y(TRUE)-6)+'" text-anchor="end">true 1.69 t</text>';
+    var sum=0;
+    DEV.forEach(function(d,i){
+      var m=TRUE*(1+d), cx=x0+30+i*50; sum+=m;
+      s+='<line x1="'+cx+'" x2="'+cx+'" y1="'+y(m*1.12)+'" y2="'+y(m*0.88)+'" stroke="var(--bar-2)" stroke-width="2"/>'+
+         '<line x1="'+(cx-5)+'" x2="'+(cx+5)+'" y1="'+y(m*1.12)+'" y2="'+y(m*1.12)+'" stroke="var(--bar-2)" stroke-width="2"/>'+
+         '<line x1="'+(cx-5)+'" x2="'+(cx+5)+'" y1="'+y(m*0.88)+'" y2="'+y(m*0.88)+'" stroke="var(--bar-2)" stroke-width="2"/>'+
+         '<circle cx="'+cx+'" cy="'+y(m)+'" r="5" fill="var(--ink)"/>'+
+         '<text x="'+cx+'" y="182" text-anchor="middle">'+(d>0?'+':'−')+Math.round(Math.abs(d)*100)+'%</text>';
+    });
+    s+='</g><text class="lt" x="'+x0+'" y="14">Σ 7 lifts = '+sum.toFixed(1)+' t (true 11.8 t)</text></svg>';
+    $('liftsFig').innerHTML=s;
+  })();
+
+  /* ---------- detection power line chart ---------- */
+  (function(){
+    var XS=['per lift','month','quarter','10 months'];
+    var S=[
+      {name:'σ1.4 · +10%',cls:'1',v:[53,87,97,99]},
+      {name:'σ1.4 · +5%',cls:'2',v:[10,18,54,96]},
+      {name:'σ10 · +10%',cls:'3',v:[17,29,62,null]}
+    ];
+    var W=520,H=280,L=44,R=400,T=16,B=240;
+    var x=function(i){return L+i*(R-L)/(XS.length-1);}, y=function(v){return B-v/100*(B-T);};
+    var s='<svg viewBox="0 0 '+W+' '+H+'" role="img" aria-label="Detection rate by aggregation window; see the table that follows."><g class="grid">';
+    [0,25,50,75,100].forEach(function(v){s+='<line x1="'+L+'" x2="'+R+'" y1="'+y(v)+'" y2="'+y(v)+'"/><text x="'+(L-6)+'" y="'+(y(v)+4)+'" text-anchor="end">'+v+'%</text>';});
+    s+='</g>';
+    XS.forEach(function(l,i){s+='<text x="'+x(i)+'" y="'+(B+20)+'" text-anchor="middle">'+l+'</text>';});
+    s+='<text x="'+L+'" y="'+(H-2)+'">aggregation window →</text>';
+    var lastY={};
+    S.forEach(function(se){
+      var pts=[],last=0;
+      se.v.forEach(function(v,i){if(v!==null){pts.push(x(i)+','+y(v));last=i;}});
+      s+='<polyline fill="none" stroke-width="3" class="s'+se.cls+'" points="'+pts.join(' ')+'"/>';
+      se.v.forEach(function(v,i){
+        if(v===null){return;}
+        s+='<circle class="f'+se.cls+'" cx="'+x(i)+'" cy="'+y(v)+'" r="4.5"/>';
+        if(i===XS.length-1){return;}
+        var left=i>0&&se.cls==='3', dy=left?4:(se.cls==='2'?16:-9);
+        s+='<text class="lab f'+se.cls+'" x="'+(x(i)+(left?-8:0))+'" y="'+(y(v)+dy)+'" text-anchor="'+(left?'end':'middle')+'">'+v+'%</text>';
+      });
+      var gy=y(se.v[last]);
+      if(last<XS.length-1){
+        s+='<line x1="'+x(last)+'" y1="'+gy+'" x2="'+x(XS.length-1)+'" y2="'+gy+'" stroke-dasharray="3 5" stroke-width="2" class="s'+se.cls+'" opacity=".6"/><circle cx="'+x(XS.length-1)+'" cy="'+gy+'" r="6" fill="var(--surface)" stroke-width="2" class="s'+se.cls+'"/>';
+      }
+      lastY[se.cls]=gy;
+    });
+    var ly={'1':Math.min(lastY['1'],lastY['2']-16)-4,'2':Math.max(lastY['2'],lastY['1']+16)+4,'3':lastY['3']};
+    S.forEach(function(se){var lv=se.v[XS.length-1];s+='<text class="lab f'+se.cls+'" x="'+(R+12)+'" y="'+(ly[se.cls]+4)+'">'+(lv===null?'? ':lv+'% ')+se.name+'</text>'+(lv===null?'<text class="lab f'+se.cls+'" x="'+(R+12)+'" y="'+(ly[se.cls]+19)+'">not computed</text>':'');});
+    $('detChart').innerHTML=s+'</svg>';
+    $('detTbl').innerHTML='<caption>Detection rate</caption><tr><th>Series</th>'+XS.map(function(l){return '<th>'+l+'</th>';}).join('')+'</tr>'+S.map(function(se){return '<tr><td>'+se.name+'</td>'+se.v.map(function(v){return '<td>'+(v===null?'not computed':v+'%')+'</td>';}).join('')+'</tr>';}).join('');
+  })();
+
+  /* ---------- pricing calculator ---------- */
+  var RULE=3, DATA_RULE=2, FLEET=12000, CTS=3.5, GAIN=0.25;
+  var price=$('price'), value=$('value'), adopt=$('adopt');
+  function eur(n){return '€'+Math.round(n).toLocaleString('en-US');}
+  function eurx(n){return '€'+(Math.abs(n-Math.round(n))<0.005?Math.round(n).toLocaleString('en-US'):n.toFixed(2));}
+  function mio(n){return '€'+(n/1e6).toFixed(2)+'M';}
+  function calc(){
+    var p=+price.value, v=+value.value, a=+adopt.value/100;
+    var fee=p*12, cap=v/RULE, cap2=v/DATA_RULE, dev=Math.round(FLEET*a);
+    var maxMo=Math.floor(cap/12*10)/10, mult=fee>0?v/fee:0;
+    var pass=fee<=cap+1e-9, pass2=fee<=cap2+1e-9;
+    $('priceOut').textContent='€'+p+' per device per month';
+    $('valueOut').textContent=eur(v)+' per device per year';
+    $('adoptOut').textContent=Math.round(a*100)+'% of 12,000 devices';
+    price.setAttribute('aria-valuetext','€'+p+' per device per month');
+    value.setAttribute('aria-valuetext',eur(v)+' per device per year');
+    adopt.setAttribute('aria-valuetext',Math.round(a*100)+' percent adoption');
+
+    $('math').innerHTML=
+      '<div>fee:  €'+p+' × 12 = '+eurx(fee)+' / yr</div>'+
+      '<div>cap:  '+eurx(v)+' ÷ 3 = '+eurx(cap)+' / yr</div>'+
+      '<div class="fin '+(pass?'ok':'bad')+'">check: '+eurx(fee)+(pass?' ≤ ':' > ')+eurx(cap)+(pass?'  ✓ passes 3×':'  ✗ misses 3×')+'</div>';
+    $('rMult').textContent=fee>0?mult.toFixed(2)+'×':'n/a';
+    $('rNet').textContent=(v-fee<0?'−':'')+eur(Math.abs(v-fee));
+    $('rNet').style.color=v-fee<0?'var(--autumn-ink)':'';
+    $('rCap').textContent='€'+(maxMo%1?maxMo.toFixed(1):maxMo)+'/mo';
+    $('rDev').textContent=dev.toLocaleString('en-US');
+    $('rArrLbl').textContent=pass||fee===0?'Add-on revenue per year':'Revenue if bought anyway (rule not met)';
+    $('arrCard').classList.toggle('dim',!(pass||fee===0));
+    $('rArr').textContent=mio(dev*fee);
+    $('rContr').textContent='contribution '+(p<CTS?'−':'')+mio(Math.abs(dev*(p-CTS)*12))+' after €3.5/mo cost to serve';
+    $('rGain').textContent=eur(v*GAIN)+'/yr';
+
+    var scale=Math.max(fee,cap,1)*1.15, capPct=cap/scale*100;
+    $('mFee').style.width=(fee/scale*100)+'%';
+    $('mCap').style.left=capPct+'%';
+    var lab=$('mCapLab'); lab.style.left=Math.min(Math.max(capPct,12),88)+'%'; lab.textContent='cap '+eur(cap);
+
+    var vd=$('verdict'), short=Math.round((1-mult/RULE)*100);
+    if(v===0){vd.className='verdict zero';vd.textContent='No measurable value: do not charge. This customer gets the free kg teaser (acquisition hook).';}
+    else if(fee===0){vd.className='verdict pass';vd.textContent='Free tier: the customer keeps all value; Europress gains attach and renewal, not revenue.';}
+    else if(pass){vd.className='verdict pass';vd.textContent='Passes our 3× rule: value is '+mult.toFixed(2)+'× the fee. Defensible to charge.';}
+    else if(pass2){vd.className='verdict near';vd.textContent='Misses our 3× rule by '+Math.max(short,1)+'% (value is '+mult.toFixed(2)+'× the fee) but clears the dataset\'s 2×. Price at ≤ €'+(maxMo%1?maxMo.toFixed(1):maxMo)+'/mo, or show more realisable value.';}
+    else{vd.className='verdict fail';vd.textContent='Fails both rules: value is only '+mult.toFixed(2)+'× the fee. Price at ≤ €'+(maxMo%1?maxMo.toFixed(1):maxMo)+'/mo, use gain-share (Proof of Fullness only), or keep this segment on the free teaser.';}
+  }
+  [price,value,adopt].forEach(function(el){el.addEventListener('input',calc);});
+  document.querySelectorAll('.presets button').forEach(function(b){b.addEventListener('click',function(){value.value=b.getAttribute('data-v');calc();});});
+  calc();
+
+  /* ---------- diverging bars: NPV and tornado on one € M scale ---------- */
+  var DMIN=-1.0, DMAX=2.6;
+  function dpos(v){return (v-DMIN)/(DMAX-DMIN)*100;}
+  var fm=function(v){return (v>0?'+':v<0?'−':'')+Math.abs(v).toFixed(2);};
+  function diverge(el,rows,refs){
+    var head='<div class="dhead"><span></span><div class="dax">'+refs.map(function(r){return '<span class="'+(r.base?'base ':'')+(r.al||'')+'" style="left:'+dpos(r.v)+'%">'+r.lab+'</span>';}).join('')+'</div></div>';
+    el.innerHTML=head+rows.map(function(r){
+      var bars=r.bars.map(function(b){
+        var x0=dpos(Math.min(b.from,b.to)), w=Math.abs(dpos(b.to)-dpos(b.from)), right=b.to>=b.from;
+        var p=right?'left:calc('+(x0+w)+'% + 4px)':'right:calc('+(100-x0)+'% + 4px)';
+        return '<div class="dbar '+b.cls+'" style="left:'+x0+'%;width:'+w+'%"></div><div class="dval" style="'+p+'">'+fm(b.to)+'</div>';
+      }).join('');
+      return '<div class="drow"><span>'+r.label+'</span><div class="dtrack">'+refs.map(function(f){return '<i class="dref'+(f.base?' base':'')+'" style="left:'+dpos(f.v)+'%"></i>';}).join('')+bars+'</div></div>';
+    }).join('');
+  }
+  diverge($('npvChart'),[
+    {label:'Subscription only (base)',bars:[{from:0,to:-0.33,cls:'neg'}]},
+    {label:'Low scenario (with renewal)',bars:[{from:0,to:-0.83,cls:'neg'}]},
+    {label:'Base scenario (with renewal)',bars:[{from:0,to:0.23,cls:'pos'}]},
+    {label:'High scenario (with renewal)',bars:[{from:0,to:2.37,cls:'pos'}]}
+  ],[{v:0,lab:'NPV = 0'}]);
+  var BASE=0.23;
+  var TORNADO=[
+    ['Adoption ×0.5 → ×1.5',-0.395,0.855],['Renewal uplift €0 → €120',-0.332,0.791],['Price €10 → €20',-0.287,0.746],
+    ['Fixed dev ×1.5 → ×0.75',-0.280,0.485],['Cost to serve €6 → €2',-0.051,0.398],['Churn 15% → 4%',0.050,0.332],
+    ['Discount rate (value of future €) 14% → 7%',0.116,0.337],['Poland none → 2,500',0.116,0.305]
+  ];
+  diverge($('tornado'),TORNADO.map(function(t){return {label:t[0],bars:[{from:BASE,to:t[1],cls:'lo'},{from:BASE,to:t[2],cls:'hi'}]};}),
+    [{v:0,lab:'0',al:'r'},{v:BASE,lab:'base +0.23',base:true,al:'l'}]);
+
+  /* ---------- roadmap on a 48-month axis (month 0 = Jan 2027) ---------- */
+  var GATES=[
+    {m:2,id:'G0',t:'Gate 0 · desk test, Feb 2027',k:'Test on real pressure archives: kill if pressure cuts kg error by less than 30% vs using fill level alone (≈€25k spent).'},
+    {m:6,id:'G1',t:'Gate 1 · pilot, Jun 2027',k:'Monthly error ≤6%; ≥1 operator sharing tickets via API; customer would pay ≥€12.'},
+    {m:12,id:'G2',t:'Gate 2 · Finland launch, Dec 2027',k:'≥10% of Insights devices adopt; disputes resolved neutrally; no operator escalation.'},
+    {m:24,id:'G3',t:'Gate 3 · Poland / Benelux, Dec 2028',k:'≥30% of pilot sites switch fixed → on-call; gain-share revenue ≥ cost to serve.'}
+  ];
+  var LANES=[
+    ['Phase',[[0,2,'phase','desk'],[2,6,'phase','0 · pilot'],[6,12,'phase','1 · FI Insights'],[12,24,'phase','2 · Poland / Benelux'],[24,48,'phase','3 · platform']]],
+    ['kg teaser (free)',[[2,6,'pilot',''],[6,48,'live','free on all SMART devices']]],
+    ['Verified Weight',[[2,6,'pilot',''],[6,48,'live','Insights +€15']]],
+    ['Proof of Fullness',[[12,48,'live','gain-share, PL / Benelux']]],
+    ['€/t benchmark + reporting',[[12,48,'live','Integrated, BDO cross-check']]],
+    ['Operator feed',[[2,6,'pilot',''],[24,48,'open','give-to-get at scale']]],
+    ['Money at risk: €25k → €150k',[[0,2,'risk',''],[2,6,'risk','']]]
+  ];
+  var tl='<div class="lane"><div></div><div class="tlaxis">'+[0,12,24,36].map(function(m){return '<span class="yr" style="left:'+(m/48*100)+'%">'+(2027+m/12)+'</span>';}).join('')+
+    GATES.map(function(g){return '<span class="gd" style="left:'+(g.m/48*100)+'%"><i></i><span>'+g.id+'</span></span>';}).join('')+'</div></div>';
+  LANES.forEach(function(l){
+    tl+='<div class="lane"><div class="ln">'+l[0]+'</div><div class="track48">'+
+      GATES.map(function(g){return '<i class="gl48" style="left:'+(g.m/48*100)+'%"></i>';}).join('')+
+      l[1].map(function(s){return '<span class="sg '+s[2]+'" style="grid-column:'+(s[0]+1)+' / '+(s[1]+1)+'" title="'+(s[3]||l[0])+'">'+s[3]+'</span>';}).join('')+'</div></div>';
+  });
+  $('roadmapTl').innerHTML=tl;
+  $('kills').innerHTML=GATES.map(function(g){return '<div class="kill"><b>'+g.t+'</b>'+g.k+'</div>';}).join('')+
+    '<div class="kill cond"><b>Phase 3 conditions, 2029+</b>EU Data Act consent clauses in every contract; competition-law review passed; material-flow index only where ≥5 customers per cell (20 of 32 qualify) <span class="tag D">D</span>.</div>';
+  document.querySelectorAll('a.gl').forEach(function(a){a.setAttribute('aria-describedby','tip');});
+})();
+</script>
+</body>
+</html>

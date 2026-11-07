@@ -1,0 +1,9 @@
+{
+ "grade_loss_total_window": 199415.59999999998,
+ "grade_loss_per_credit_device_year": 1283.3446228599605,
+ "grade_loss_in_incident_lifts_eur": 9994.52,
+ "moisture_extra_cost_note": "see 40_moisture_eur",
+ "moisture_lifts": 69,
+ "moisture_processing_eur_on_water": 1372.8180524525178,
+ "moisture_mean_extra_kg": 491.01294953126217
+}

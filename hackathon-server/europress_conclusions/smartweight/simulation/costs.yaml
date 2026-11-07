@@ -1,0 +1,116 @@
+# Installed cost per machine, EUR excl. VAT, [low, high]. Sources: ../_research/hardware_prices.md (fetched 2026-11-07).
+# Price tags: L = listed price found online, E = estimate/derived, A = assumption (no public figure).
+# USD converted at 0.93 EUR/USD [assumed]. Labour/verification figures are A (no public Finnish price found).
+# verification_ok: can serve as an independent check of the operator's billed weight (user clarification 2026-11-07).
+configs:
+  REF_CERT_LC4:
+    label: "Certified 4-cell scale in docking frame / feet (OIML R60 C3 cells + R76 indicator)"
+    hardware: [3200, 5200]   # 4 cells USD 440-870 (L) + mounts (L: Rice Lake mount USD 695) + R76 indicator USD 770-840 (L) + JB USD 153 (L); cross-check WeDi K3 15 t complete EUR 4,800-5,620 (L)
+    structure: [800, 2000]   # reinforced docking frame / feet (A)
+    install: [800, 1500]     # (A)
+    calibration: [500, 1100] # test weights + initial verification (A); Kiwa periodic EUR 89+ (L, size unspecified)
+    type_approval_amortised: [60, 200]  # EU type examination cost not public (A: EUR 30-100k over 500 units)
+    annual: [150, 400]       # 3-yearly re-verification + test weights, per year (A)
+    billing_grade_possible: true
+    owner: Europress / customer
+  LC4_CHEAP:
+    label: "4 IP68 C3 shear beams under all supports, industrial transmitter, not type-approved"
+    hardware: [2100, 3200]   # 4 x USD 440-870 (L) + low-profile mounts (E) + Laumas TLE ~USD 210 (L) + JB (L) + I/O to SMART modem (E)
+    structure: [400, 1200]
+    install: [600, 1200]
+    calibration: [300, 700]
+    type_approval_amortised: [0, 0]
+    annual: [80, 200]
+    billing_grade_possible: false
+    owner: Europress / customer
+  LC2_REAR_PINS:
+    label: "2 load pins in rear roller axles, front unmeasured, COM from fill"
+    hardware: [1600, 2400]   # 2 x ANYLOAD 535TS 10 t USD 868 (L); custom pins EUR 1.5-4k (E)
+    structure: [100, 400]
+    install: [400, 900]
+    calibration: [300, 600]
+    type_approval_amortised: [0, 0]
+    annual: [60, 150]
+    billing_grade_possible: false
+    owner: Europress / customer
+  SG_BEND2:
+    label: "2 weldable strain gauges on runner rails (bending), 2-ch amplifier"
+    hardware: [550, 900]     # 2 x Micro-Measurements LWK-06 ~EUR 250 (L) + amplifier (E)
+    structure: [0, 0]
+    install: [500, 1000]
+    calibration: [300, 700]
+    type_approval_amortised: [0, 0]
+    annual: [80, 200]
+    billing_grade_possible: false
+    owner: Europress / customer
+  SG_SHEAR4:
+    label: "4 compensated shear-web strain bridges at every support, 4-ch amplifier"
+    hardware: [1100, 1900]   # 4 x EUR 250 (L) or bolt-on SLB700A EUR 500-1000 (E) + 4-ch amp (E)
+    structure: [0, 200]
+    install: [900, 1800]
+    calibration: [400, 900]
+    type_approval_amortised: [0, 0]
+    annual: [100, 250]
+    billing_grade_possible: false
+    owner: Europress / customer
+  HYD_LIFT_TRUCK:
+    label: "Hooklift cylinder pressure + arm inclinometer on the hauler's truck"
+    hardware: [550, 900]     # transducer GBP 156-198 / EUR 264 (L) + IP67 inclinometer EUR 333 (L) + logger (E)
+    structure: [0, 0]
+    install: [400, 900]
+    calibration: [300, 600]
+    type_approval_amortised: [0, 0]
+    annual: [50, 150]
+    per_truck_shared_by: 30  # containers served per truck (A)
+    billing_grade_possible: false   # certified hooklift scales exist (Pfreundt class III/IIII, vendor claim)
+    owner: hauler
+  HYD_COMP_FW:
+    label: "Existing SMART ram pressure sensor, firmware logging of plateau pressure"
+    hardware: [0, 0]
+    structure: [0, 0]
+    install: [0, 30]
+    calibration: [0, 0]
+    type_approval_amortised: [0, 0]
+    annual: [5, 15]
+    billing_grade_possible: false
+    owner: Europress
+  HYD_COMP_FW_OILT:
+    label: "SMART pressure + oil-temperature probe"
+    hardware: [20, 40]       # probe EUR 19.60 (L, IP not stated); IP67 tank probe (E)
+    structure: [0, 0]
+    install: [40, 90]
+    calibration: [0, 0]
+    type_approval_amortised: [0, 0]
+    annual: [5, 15]
+    billing_grade_possible: false
+    owner: Europress
+  CT_POWER:
+    label: "Motor power meter (Eastron SDM630 MID) instead of pressure"
+    hardware: [91, 140]      # EUR 91 ex VAT (L)
+    structure: [0, 0]
+    install: [100, 250]
+    calibration: [0, 0]
+    type_approval_amortised: [0, 0]
+    annual: [5, 15]
+    billing_grade_possible: false
+    owner: Europress
+  FILL_D:
+    label: "Existing SMART fill estimate x density table"
+    hardware: [0, 0]
+    structure: [0, 0]
+    install: [0, 0]
+    calibration: [0, 0]
+    type_approval_amortised: [0, 0]
+    annual: [2, 5]
+    billing_grade_possible: false
+    owner: Europress
+  WEIGHBRIDGE:
+    label: "Operator's certified weighbridge ticket (today's billing basis; the thing being verified)"
+    hardware: [0, 0]
+    structure: [0, 0]
+    install: [0, 0]
+    calibration: [0, 0]
+    type_approval_amortised: [0, 0]
+    annual: [0, 0]
+    billing_grade_possible: true
+    owner: operator / waste centre

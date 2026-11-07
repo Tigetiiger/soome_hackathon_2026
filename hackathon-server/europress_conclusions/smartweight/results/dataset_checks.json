@@ -1,0 +1,259 @@
+{
+  "C1_weighing_share": {
+    "claim": "about 91% of devices have integrated (simulated) weighing",
+    "measured_share": 0.9038,
+    "weight_measurement_values": {
+      "INTEGRATED_SIMULATED": 404,
+      "NONE": 43
+    },
+    "held_up": true
+  },
+  "C2_load_mass": {
+    "claim": "the +-100 kg target refers to a ~3,000 kg cardboard load",
+    "by_material": {
+      "biowaste": {
+        "n": 3736,
+        "p10": 385.0,
+        "median": 1380.0,
+        "p90": 3020.0,
+        "max": 6590.0,
+        "share_ge_2500kg": 0.1499
+      },
+      "cardboard": {
+        "n": 5567,
+        "p10": 905.0,
+        "median": 2490.0,
+        "p90": 5702.000000000003,
+        "max": 11580.0,
+        "share_ge_2500kg": 0.4987
+      },
+      "mixed_plastic": {
+        "n": 358,
+        "p10": 328.5,
+        "median": 775.0,
+        "p90": 1125.0,
+        "max": 2750.0,
+        "share_ge_2500kg": 0.0028
+      },
+      "mixed_waste": {
+        "n": 4110,
+        "p10": 855.0,
+        "median": 2345.0,
+        "p90": 5710.0,
+        "max": 16750.0,
+        "share_ge_2500kg": 0.4482
+      },
+      "paper": {
+        "n": 543,
+        "p10": 441.0,
+        "median": 1220.0,
+        "p90": 1864.0,
+        "max": 2360.0,
+        "share_ge_2500kg": 0.0
+      },
+      "plastic_film": {
+        "n": 1868,
+        "p10": 465.0,
+        "median": 950.0,
+        "p90": 1546.4999999999998,
+        "max": 3310.0,
+        "share_ge_2500kg": 0.0096
+      }
+    },
+    "overall_median_kg": 1795.0,
+    "overall_share_ge_2500kg": 0.3212
+  },
+  "C3_density": {
+    "claim": "compacted densities as in assumptions.yaml",
+    "by_material": {
+      "biowaste": {
+        "n": 1874,
+        "median_kg_m3": 677.7,
+        "claimed_kg_m3": 620,
+        "between_device_cv": 0.3602,
+        "median_within_device_cv": 0.0749,
+        "held_up_within_15pct": true
+      },
+      "cardboard": {
+        "n": 4321,
+        "median_kg_m3": 212.5,
+        "claimed_kg_m3": 190,
+        "between_device_cv": 0.2467,
+        "median_within_device_cv": 0.0675,
+        "held_up_within_15pct": true
+      },
+      "mixed_plastic": {
+        "n": 251,
+        "median_kg_m3": 112.8,
+        "claimed_kg_m3": 115,
+        "between_device_cv": 0.2431,
+        "median_within_device_cv": 0.0917,
+        "held_up_within_15pct": true
+      },
+      "mixed_waste": {
+        "n": 2814,
+        "median_kg_m3": 379.3,
+        "claimed_kg_m3": 380,
+        "between_device_cv": 0.2516,
+        "median_within_device_cv": 0.0955,
+        "held_up_within_15pct": true
+      },
+      "paper": {
+        "n": 271,
+        "median_kg_m3": 343.5,
+        "claimed_kg_m3": 330,
+        "between_device_cv": 0.3691,
+        "median_within_device_cv": 0.1102,
+        "held_up_within_15pct": true
+      },
+      "plastic_film": {
+        "n": 1345,
+        "median_kg_m3": 133.4,
+        "claimed_kg_m3": 140,
+        "between_device_cv": 0.2179,
+        "median_within_device_cv": 0.0773,
+        "held_up_within_15pct": true
+      }
+    }
+  },
+  "C4_device_vs_ticket": {
+    "claim": "integrated weighing within ~100 kg on a 3 t cardboard load for ~95% of normal readings",
+    "note": "ticket net is itself noisy (sigma 12 kg, 20 kg resolution, two weighings); difference includes ticket error and all injected sensor faults",
+    "n_clean_pairs": 5161,
+    "cardboard_2.5_3.5t": {
+      "n": 231,
+      "share_within_100kg": 0.7792,
+      "median_abs_err_kg": 55.0,
+      "p95_abs_err_kg": 207.5
+    },
+    "all_ge_1t": {
+      "n": 3694,
+      "share_within_3.3pct": 0.7577,
+      "share_within_5pct": 0.8863,
+      "median_rel_err": -0.0107
+    },
+    "stored_tare_ge1t_median_abs_rel": 0.046,
+    "weighed_tare_ge1t_median_abs_rel": 0.018,
+    "held_up": false
+  },
+  "C5_tickets": {
+    "claim": "weighbridge resolution 20 kg; 45% stored tare",
+    "share_net_multiple_of_20": 1.0,
+    "share_gross_multiple_of_20": 1.0,
+    "tare_method_share": {
+      "WEIGHED": 0.5564,
+      "STORED": 0.4436
+    },
+    "allocation_method_share": {
+      "SINGLE_LOAD": 0.9608,
+      "EQUAL_SPLIT_COMBINED_LOAD": 0.0392
+    }
+  },
+  "C6_press_load_index": {
+    "claim": "press_load_index is derived from the fill estimate (no independent pressure info)",
+    "n_rows": 237083,
+    "corr_fill_vs_press_index": 0.9843,
+    "corr_mass_vs_press_index_fill_gt20": 0.536,
+    "pooled_r2_mass_from_fill": 0.2936,
+    "pooled_r2_mass_from_fill_plus_press": 0.2937,
+    "held_up": true
+  },
+  "C7_fill_baseline": {
+    "table_density_no_calibration": {
+      "n_eval": 4751,
+      "median_abs_rel": 0.1364,
+      "share_within_5pct": 0.1972,
+      "share_within_10pct": 0.3812
+    },
+    "device_calibrated_k3": {
+      "n_eval": 3719,
+      "median_abs_rel": 0.0623,
+      "p95_abs_rel": 0.2549,
+      "share_within_5pct": 0.4101,
+      "share_within_10pct": 0.7069
+    },
+    "device_calibrated_k8": {
+      "n_eval": 2262,
+      "median_abs_rel": 0.0584,
+      "p95_abs_rel": 0.2635,
+      "share_within_5pct": 0.4447,
+      "share_within_10pct": 0.7241
+    },
+    "note": "measures the SIMULATOR's density variability, not real waste. It is the synthetic world's bar for fill-only estimation."
+  },
+  "C8_economics": {
+    "note": "hypothetical synthetic tariffs; EUR whose amount scales with billed mass; the window is ~1 year, so totals are per device-year",
+    "share_devices_with_any_mass_sensitive_tariff": 0.8054,
+    "pricing_model_share": {
+      "HYBRID": 0.3736,
+      "FIXED_PER_LIFT": 0.2908,
+      "HYBRID_MIN": 0.1879,
+      "PER_TONNE": 0.1477
+    },
+    "fleet_median_eur_mass_sensitive_per_device_year": 2764.94,
+    "fleet_mean_eur_mass_sensitive_per_device_year": 6017.72,
+    "fleet_median_t_per_device_year": 50.62,
+    "by_material": [
+      {
+        "material_stream": "biowaste",
+        "devices": 64,
+        "median_t_per_year": 66.09,
+        "median_lifts_per_year": 53.0,
+        "median_mass_fee_eur_per_t": 69.34,
+        "median_credit_eur_per_t": 0.0,
+        "median_eur_mass_sensitive_per_year": 2574.82,
+        "mean_eur_mass_sensitive_per_year": 5246.24
+      },
+      {
+        "material_stream": "cardboard",
+        "devices": 140,
+        "median_t_per_year": 85.51,
+        "median_lifts_per_year": 42.0,
+        "median_mass_fee_eur_per_t": 0.0,
+        "median_credit_eur_per_t": 60.63,
+        "median_eur_mass_sensitive_per_year": 5095.88,
+        "mean_eur_mass_sensitive_per_year": 6497.4
+      },
+      {
+        "material_stream": "mixed_plastic",
+        "devices": 12,
+        "median_t_per_year": 25.34,
+        "median_lifts_per_year": 31.0,
+        "median_mass_fee_eur_per_t": 34.36,
+        "median_credit_eur_per_t": 13.97,
+        "median_eur_mass_sensitive_per_year": 1013.32,
+        "mean_eur_mass_sensitive_per_year": 1229.2
+      },
+      {
+        "material_stream": "mixed_waste",
+        "devices": 125,
+        "median_t_per_year": 71.14,
+        "median_lifts_per_year": 33.0,
+        "median_mass_fee_eur_per_t": 120.43,
+        "median_credit_eur_per_t": 0.0,
+        "median_eur_mass_sensitive_per_year": 5952.28,
+        "mean_eur_mass_sensitive_per_year": 9859.98
+      },
+      {
+        "material_stream": "paper",
+        "devices": 29,
+        "median_t_per_year": 17.24,
+        "median_lifts_per_year": 17.0,
+        "median_mass_fee_eur_per_t": 35.62,
+        "median_credit_eur_per_t": 0.0,
+        "median_eur_mass_sensitive_per_year": 444.51,
+        "mean_eur_mass_sensitive_per_year": 952.0
+      },
+      {
+        "material_stream": "plastic_film",
+        "devices": 77,
+        "median_t_per_year": 19.4,
+        "median_lifts_per_year": 24.0,
+        "median_mass_fee_eur_per_t": 0.0,
+        "median_credit_eur_per_t": 91.21,
+        "median_eur_mass_sensitive_per_year": 1635.81,
+        "mean_eur_mass_sensitive_per_year": 2203.53
+      }
+    ]
+  }
+}

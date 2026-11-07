@@ -1,0 +1,140 @@
+# ---------------------------------------------------------------------------
+# Virtual-scale sensor simulation: physical and sensor assumptions
+#
+# Tags: [pack] taken from the Europress synthetic pack (configs/assumptions.yaml)
+#       [est]  engineering estimate (order of magnitude, not a Europress spec)
+#       [hyp]  modelling hypothesis that a real pilot must falsify
+#
+# Everything here is SYNTHETIC. The pack contains no hydraulic pressure curves
+# (press_load_index correlates 0.985 with fill), so these signals are generated
+# from a simple, explainable compaction model. They let us build and test the
+# pipeline and compare sensor options. They do NOT prove that real compactors
+# behave this way. Phase 0 of the rollout (archived real curves) must check it.
+# ---------------------------------------------------------------------------
+seed: 20261107
+gravity: 9.81
+
+# Material compaction law: rho(sigma) = rho_loose + (rho_inf - rho_loose) * (1 - exp(-sigma / sigma_c))
+# sigma = face stress on the ram (kPa). rho_ref = the pack's typical compacted density [pack], reached at
+# the nominal reference stress. rho_inf and sigma_c are derived from it in physics.py. [hyp]
+materials:
+  cardboard:     {rho_loose: 45,  rho_ref: 190, inf_factor: 1.45, sigma_c_cv: 0.15, daily_cv: 0.07, mu: 0.45, event_kg: 18, cold_stiffening: 0.05, moisture_sensitive: true}
+  paper:         {rho_loose: 110, rho_ref: 330, inf_factor: 1.35, sigma_c_cv: 0.12, daily_cv: 0.05, mu: 0.40, event_kg: 22, cold_stiffening: 0.03, moisture_sensitive: true}
+  plastic_film:  {rho_loose: 25,  rho_ref: 140, inf_factor: 1.55, sigma_c_cv: 0.18, daily_cv: 0.09, mu: 0.30, event_kg: 9,  cold_stiffening: 0.25, moisture_sensitive: false}
+  mixed_plastic: {rho_loose: 30,  rho_ref: 115, inf_factor: 1.50, sigma_c_cv: 0.18, daily_cv: 0.10, mu: 0.32, event_kg: 8,  cold_stiffening: 0.20, moisture_sensitive: false}
+  mixed_waste:   {rho_loose: 120, rho_ref: 380, inf_factor: 1.40, sigma_c_cv: 0.15, daily_cv: 0.08, mu: 0.50, event_kg: 25, cold_stiffening: 0.05, moisture_sensitive: false}
+  biowaste:      {rho_loose: 450, rho_ref: 620, inf_factor: 1.15, sigma_c_cv: 0.10, daily_cv: 0.06, mu: 0.60, event_kg: 30, cold_stiffening: 0.30, moisture_sensitive: false}
+  # Streams NOT in the Europress pack. Densities are rough literature-order PLACEHOLDERS [est] that the
+  # compaction-rig experiment is meant to replace. Glass is brittle (crushes stepwise, abrasive) and is
+  # rarely compacted in practice: treat it as a hypothetical stream.
+  glass:          {rho_loose: 280, rho_ref: 900, inf_factor: 1.45, sigma_c_cv: 0.15, daily_cv: 0.08, mu: 0.55, event_kg: 25, cold_stiffening: 0.00, moisture_sensitive: false}
+  aluminium_cans: {rho_loose: 30,  rho_ref: 200, inf_factor: 2.00, sigma_c_cv: 0.20, daily_cv: 0.10, mu: 0.35, event_kg: 5,  cold_stiffening: 0.00, moisture_sensitive: false}
+  steel_cans:     {rho_loose: 90,  rho_ref: 380, inf_factor: 1.60, sigma_c_cv: 0.18, daily_cv: 0.08, mu: 0.45, event_kg: 10, cold_stiffening: 0.00, moisture_sensitive: false}
+
+# Synthetic devices for the streams that the pack does not contain (lift timeline generated, not from the pack)
+extra_fleet:
+  enabled: true
+  devices_per_material: 20
+  days: 300
+  operators: [OP-A, OP-B, OP-E]           # ticket-sharing operators, so these machines get labels
+  streams:
+    glass:          {volumes: [4, 6, 8],    equipment: [COMBI], daily_kg: [60, 250]}
+    aluminium_cans: {volumes: [10, 16, 20], equipment: [DUO],   daily_kg: [8, 40]}
+    steel_cans:     {volumes: [8, 10, 16],  equipment: [DUO],   daily_kg: [20, 90]}
+  lift_fill_frac: [0.60, 0.92]             # share of capacity at which the container is emptied
+
+# Virtual compaction test rig ("find the density of each material experimentally")
+rig:
+  a_face_m2: 0.49                  # 0.7 x 0.7 m press box [est]
+  a_cyl_m2: 0.0050
+  relief_bar: 200                  # face stress up to 200 kPa: covers the field range (DUO relief ~174 kPa)
+  loose_fill_m3: 0.8               # loose volume loaded per sample; its mass is weighed first
+  stress_steps_kpa: [5, 10, 20, 35, 50, 75, 100, 130, 160, 190]
+  samples_per_condition: 8
+  temperatures_c: [-15, 5, 20]
+  scale_sigma_rel: 0.002           # bench platform scale used to weigh each batch
+  position_sd_mm: 3                # draw-wire position sensor on the ram
+  rho_inf_sample_cv: 0.05          # batch-to-batch variation of the dense limit (real materials are not one curve)
+
+# Press geometry per machine class [est]. a_cyl = total hydraulic piston area; a_face = ram face area.
+press:
+  COMBI: {a_cyl_m2: 0.0080, a_face_m2: 0.95, relief_bar: 180, stroke_m: 0.85}
+  DUO:   {a_cyl_m2: 0.0126, a_face_m2: 1.45, relief_bar: 200, stroke_m: 1.10}
+  area_tolerance_cv: 0.02          # manufacturing tolerance on effective areas [est]
+  reference_stress_frac: 0.55      # rho_ref is reached at this fraction of the relief face stress [hyp]
+  confinement_k_frac: 0.85         # confinement stress at 100 % volume fill, fraction of relief stress [hyp]
+  confinement_exp: 3.0             # stiffening exponent of confinement vs volume fraction [hyp]
+  lock_mid: 0.45                   # volume fraction where half the pack is locked against the back wall [hyp]
+  lock_width: 0.10
+  density_gradient_a: 0.12         # field pack is less dense far from the ram (wall friction); lab sample is not [hyp]
+  mu_device_cv: 0.15               # floor friction varies with floor wear and material [hyp]
+  mu_wet_factor: 1.20              # wet material slides worse [hyp]
+  mu_frozen_factor: 0.80           # ice on the floor below -2 C slides better [hyp]
+  motor_efficiency: 0.72           # hydraulic power / electrical power [est]
+
+hydraulics:
+  loss_bar_at_40c: 6.0             # flow losses at 40 C oil [est]
+  loss_temp_coeff: 0.035           # losses scale with exp(coeff * (40 - T_oil)); cold oil is viscous [est]
+  oil_warmup_per_cycle_c: 1.2      # oil heats with use and cools toward ambient [est]
+  oil_cooling_tau_h: 1.5
+
+sensors:
+  pressure_transducer:             # 0-250 bar, 4-20 mA thin-film, approx. EUR 60-150 [est]
+    full_scale_bar: 250
+    noise_fs: 0.004
+    gain_cv: 0.010
+    offset_sd_bar: 1.0
+    drift_prob: 0.04               # share of devices whose zero drifts during the year [hyp]
+    drift_bar_per_year_sd: 6.0
+    plateau_noise_rel: 0.035       # noise of the median mid-stroke plateau reading
+  oil_temp_probe: {noise_c: 0.5}   # PT1000 in the tank, EUR 10-25 [est]
+  motor_current_ct: {noise_rel: 0.04}   # clamp-on CT + energy meter, EUR 20-40 [est]
+  fill:                            # existing SMART fill estimate [pack]
+    sigma_pp: 3.5
+    bias_sd_pp: 4.0
+    gain_sd: 0.07
+  frame_strain:                    # 2 weldable strain gauges + amplifier on the frame / container supports [est]
+    load_share: 0.45               # share of contents weight carried through the instrumented member [hyp]
+    share_cv: 0.12                 # varies with how the pack lies in the container [hyp]
+    noise_kg: 40
+    temp_drift_kg_per_c: 6.0       # uncompensated thermal drift [hyp]
+    zero_walk_kg_per_sqrt_day: 8
+  platform_scale:                  # T2 4-corner load-cell platform [pack: sigma = max(15 kg, 1.4 %)]
+    sigma_abs_kg: 15
+    sigma_rel: 0.014
+
+scales:                            # the operator's weighbridge [pack]
+  weighbridge_sigma_kg: 12
+  weighbridge_resolution_kg: 20
+  stored_tare_prob: 0.45
+  stored_tare_sd_kg: 25            # per-ticket noise of a stored tare (fuel level, crew, snow) [hyp]
+  stale_vehicle_share: 0.15        # ~10 of 70 vehicles cause most tare errors (business plan finding) [pack-derived]
+  stale_vehicle_bias_sd_kg: 160    # bias of a stale stored tare on those vehicles [hyp]
+  n_vehicles_per_operator: 14
+  combined_load_prob: 0.05
+  combined_alloc_error_cv: 0.25    # pro-rata allocation of a combined load to this lift [hyp]
+  side_waste_prob: 0.04
+  side_waste_kg: [60, 400]
+  golden_cohort_share: 0.04        # devices with a T2 platform that label the fleet [hyp]
+
+climate:                           # monthly mean air temperature (C), Oct..Sep, approx. Finnish normals [est]
+  FI-01: [7, 2, -1, -4, -5, -1, 4, 10, 15, 18, 16, 11]
+  FI-02: [7, 2, -1, -4, -5, -2, 4, 10, 15, 18, 16, 11]
+  FI-11: [5, 0, -4, -7, -7, -3, 3, 10, 14, 17, 15, 10]
+  FI-08: [4, -1, -5, -8, -8, -4, 2, 9, 14, 17, 14, 9]
+  FI-17: [3, -3, -7, -10, -10, -6, 0, 7, 13, 16, 13, 8]
+  FI-19: [0, -7, -11, -13, -13, -9, -4, 3, 10, 14, 11, 5]
+  daily_sd_c: 4.0
+  diurnal_amp_c: 3.0
+  rain_day_prob: 0.40
+  rain_water_gain: [0.03, 0.20]    # extra water mass on outdoor-staged paper/cardboard on rainy days [hyp]
+  rain_softening: 0.25             # wet fibre compacts more easily: sigma_c x (1 - softening * wetness) [hyp]
+
+# Hardware tiers compared by the model. Indicative extra BOM per machine, EUR [est].
+tiers:
+  T0_fill_only:       {cost_eur: 0,    sensors: [fill]}
+  T1a_pressure:       {cost_eur: 120,  sensors: [fill, pressure]}
+  T1b_pressure_plus:  {cost_eur: 170,  sensors: [fill, pressure, oil_temp, motor_energy]}
+  T1s_frame_strain:   {cost_eur: 350,  sensors: [fill, strain]}
+  T1c_all_cheap:      {cost_eur: 520,  sensors: [fill, pressure, oil_temp, motor_energy, strain]}
+  T2_platform:        {cost_eur: 1500, sensors: [platform]}

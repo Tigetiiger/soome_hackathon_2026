@@ -1,0 +1,28 @@
+{
+  "_comment": "Single source of truth for the shared visual style. Every demo (Python and JS) reads this file.",
+  "width": 1920,
+  "height": 1080,
+  "fps": 30,
+  "font_sans": "IBM Plex Sans",
+  "font_mono": "IBM Plex Mono",
+  "colors": {
+    "bg": "#0E1218",
+    "bg_glow": "#16202B",
+    "panel": "#151B23",
+    "grid": "#2A3441",
+    "ink": "#E8EDF3",
+    "muted": "#8793A3",
+    "teal": "#3FD0C9",
+    "amber": "#F2A93B",
+    "coral": "#EF6F6C",
+    "violet": "#9C8CF2",
+    "blue": "#58A6FF",
+    "green": "#7BD88F"
+  },
+  "streams": [
+    {"key": "cardboard", "label": "Cardboard (OCC)", "color": "#F2A93B"},
+    {"key": "mixed", "label": "Mixed waste", "color": "#3FD0C9"},
+    {"key": "film", "label": "Plastic film", "color": "#9C8CF2"}
+  ],
+  "anomaly_color": "#EF6F6C"
+}

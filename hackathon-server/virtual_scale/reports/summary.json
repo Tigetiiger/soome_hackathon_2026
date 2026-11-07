@@ -1,0 +1,18 @@
+{
+  "devices": 447,
+  "lifts": 18477,
+  "cycles": 2247315,
+  "labelled_lifts": 7431,
+  "label_sources": {
+    "NONE": 11046,
+    "WEIGHBRIDGE_CLEAN": 6799,
+    "PLATFORM": 632
+  },
+  "lifts_without_any_label_by_operator": {
+    "OP-E": 3711,
+    "OP-D": 2758,
+    "OP-B": 1718,
+    "OP-C": 1491,
+    "OP-A": 1368
+  }
+}

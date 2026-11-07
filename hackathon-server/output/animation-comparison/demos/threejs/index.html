@@ -1,0 +1,76 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Fleet Fill-Mass</title>
+<style>
+  @font-face { font-family: "Plex Sans"; src: url("../../assets/fonts/IBMPlexSans-Regular.ttf"); font-weight: 400; }
+  @font-face { font-family: "Plex Sans"; src: url("../../assets/fonts/IBMPlexSans-Light.ttf"); font-weight: 300; }
+  @font-face { font-family: "Plex Sans"; src: url("../../assets/fonts/IBMPlexSans-SemiBold.ttf"); font-weight: 600; }
+  @font-face { font-family: "Plex Mono"; src: url("../../assets/fonts/IBMPlexMono-Regular.ttf"); font-weight: 400; }
+  @font-face { font-family: "Plex Mono"; src: url("../../assets/fonts/IBMPlexMono-Medium.ttf"); font-weight: 500; }
+  :root {
+    --bg: #0E1218; --glow: #16202B; --grid: #2A3441; --ink: #E8EDF3; --muted: #8793A3;
+    --teal: #3FD0C9; --amber: #F2A93B; --coral: #EF6F6C; --violet: #9C8CF2;
+  }
+  html, body { margin: 0; height: 100%; background: var(--bg); color: var(--ink);
+    font-family: "Plex Sans", system-ui, sans-serif; overflow: hidden; }
+  #stage { position: fixed; inset: 0; }
+  #labels { position: fixed; inset: 0; pointer-events: none; }
+  .hud { position: fixed; pointer-events: none; }
+  /* sizes are in vh so the 1920x1080 capture and any browser window share one layout */
+  #head { left: 3.4vw; top: 4.6vh; }
+  #head h1 { margin: 0; font-weight: 600; font-size: 3.9vh; letter-spacing: -0.01em; }
+  #head p { margin: 0.6vh 0 0; font-weight: 300; font-size: 2.2vh; color: var(--muted); }
+  #clock { right: 3.4vw; top: 4.6vh; text-align: right; }
+  #clock .k { font-family: "Plex Mono"; font-size: 1.6vh; color: var(--muted); letter-spacing: 0.12em; }
+  #clock .v { font-family: "Plex Mono"; font-weight: 500; font-size: 4.4vh; }
+  #clock .row { margin-bottom: 1.6vh; }
+  #legend { left: 3.4vw; bottom: 5vh; display: flex; gap: 2.2vw; font-size: 1.9vh; color: var(--muted); }
+  #legend span::before { content: ""; display: inline-block; width: 1.1vh; height: 1.1vh;
+    border-radius: 50%; margin-right: 0.6vw; background: var(--c); vertical-align: 0.05vh; }
+  #tag { right: 3.4vw; bottom: 4vh; font-family: "Plex Mono"; font-size: 1.45vh; color: var(--muted); }
+  .day { font-family: "Plex Mono"; font-size: 1.45vh; color: var(--muted); transform: translateY(1.2vh); }
+  .row-id { font-family: "Plex Mono"; font-size: 1.6vh; color: var(--c); }
+  .ticket { font-family: "Plex Sans"; font-size: 1.7vh; color: var(--ink); background: rgba(14,18,24,.82);
+    border: 1px solid var(--grid); border-radius: 0.8vh; padding: 0.6vh 0.9vw; white-space: nowrap;
+    transform: translateY(-4.2vh); }
+  .ticket b { font-weight: 600; }
+  .ticket .d { font-family: "Plex Mono"; color: var(--teal); }
+  #ui { position: fixed; left: 50%; bottom: 2.4vh; transform: translateX(-50%); display: flex; gap: 12px;
+    align-items: center; background: rgba(21,27,35,.9); border: 1px solid var(--grid); border-radius: 999px;
+    padding: 8px 16px; font-size: 13px; color: var(--muted); }
+  #ui button { all: unset; cursor: pointer; color: var(--ink); font-weight: 600; width: 52px; text-align: center; }
+  #ui input[type=range] { width: min(46vw, 420px); accent-color: var(--teal); }
+  body.capture #ui { display: none; }
+  @media (max-width: 700px) { #clock { display: none; } #legend { flex-wrap: wrap; gap: 8px 16px; bottom: 9vh; } }
+</style>
+<script type="importmap">
+  { "imports": {
+      "three": "./node_modules/three/build/three.module.js",
+      "three/addons/": "./node_modules/three/examples/jsm/" } }
+</script>
+</head>
+<body>
+  <div id="stage"></div>
+  <div id="labels"></div>
+  <div id="head" class="hud">
+    <h1>Fleet fill-mass over 14 days</h1>
+    <p>6 compactors · hourly virtual-scale estimate · pickups checked against weighbridge tickets</p>
+  </div>
+  <div id="clock" class="hud">
+    <div class="row"><div class="k">TIME</div><div class="v" id="t-clock">DAY 01 · 00:00</div></div>
+    <div class="row"><div class="k">IN CONTAINERS</div><div class="v" id="t-mass">0.0 t</div></div>
+    <div class="row"><div class="k">PICKUPS</div><div class="v" id="t-pick">0</div></div>
+  </div>
+  <div id="legend" class="hud"></div>
+  <div id="tag" class="hud">three.js r170 · 1920×1080 · 30 fps</div>
+  <div id="ui">
+    <button id="play">Pause</button>
+    <input id="scrub" type="range" min="0" max="1000" value="0" aria-label="Timeline">
+    <label><input id="free" type="checkbox"> free camera</label>
+  </div>
+  <script type="module" src="./main.js"></script>
+</body>
+</html>

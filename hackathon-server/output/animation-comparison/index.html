@@ -1,0 +1,155 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Animation Library Gallery</title>
+<style>
+  @font-face { font-family: "Plex Sans"; src: url("assets/fonts/IBMPlexSans-Regular.ttf"); font-weight: 400; }
+  @font-face { font-family: "Plex Sans"; src: url("assets/fonts/IBMPlexSans-Light.ttf"); font-weight: 300; }
+  @font-face { font-family: "Plex Sans"; src: url("assets/fonts/IBMPlexSans-SemiBold.ttf"); font-weight: 600; }
+  @font-face { font-family: "Plex Mono"; src: url("assets/fonts/IBMPlexMono-Regular.ttf"); font-weight: 400; }
+  :root {
+    --bg: #0E1218; --panel: #151B23; --line: #2A3441; --ink: #E8EDF3; --muted: #8793A3;
+    --teal: #3FD0C9; --amber: #F2A93B; --coral: #EF6F6C; --violet: #9C8CF2; --blue: #58A6FF;
+  }
+  * { box-sizing: border-box; }
+  body { margin: 0; background: var(--bg); color: var(--ink); font: 16px/1.55 "Plex Sans", system-ui, sans-serif; }
+  header, main, footer { max-width: 1480px; margin: 0 auto; padding: 0 24px; }
+  header { padding-top: 48px; padding-bottom: 8px; }
+  h1 { font-weight: 600; font-size: clamp(26px, 3.4vw, 40px); margin: 0; letter-spacing: -0.01em; }
+  header p { color: var(--muted); font-weight: 300; font-size: 18px; margin: 8px 0 0; max-width: 80ch; }
+  .bar { display: flex; flex-wrap: wrap; gap: 12px; align-items: center; margin: 24px 0 8px; }
+  button { font: 600 14px "Plex Sans", sans-serif; color: var(--bg); background: var(--teal); border: 0;
+    border-radius: 999px; padding: 9px 18px; cursor: pointer; }
+  button.ghost { background: transparent; color: var(--ink); border: 1px solid var(--line); }
+  .bar a { color: var(--muted); font-size: 14px; }
+  .grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(100%, 620px), 1fr)); gap: 24px; margin: 16px 0 48px; }
+  article { background: var(--panel); border: 1px solid var(--line); border-radius: 14px; overflow: hidden;
+    display: flex; flex-direction: column; }
+  video { width: 100%; aspect-ratio: 16 / 9; display: block; background: #000; }
+  .body { padding: 18px 20px 20px; display: flex; flex-direction: column; gap: 10px; flex: 1; }
+  .top { display: flex; justify-content: space-between; gap: 12px; align-items: baseline; flex-wrap: wrap; }
+  h2 { margin: 0; font-size: 20px; font-weight: 600; }
+  h2 small { color: var(--muted); font-weight: 400; font-size: 14px; margin-left: 6px; }
+  .lib { font-family: "Plex Mono"; font-size: 13px; color: var(--c); }
+  .desc { color: var(--muted); margin: 0; }
+  dl { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 8px; margin: 4px 0 0; }
+  dl div { border-top: 1px solid var(--line); padding-top: 8px; }
+  dt { font-family: "Plex Mono"; font-size: 11px; letter-spacing: .08em; color: var(--muted); text-transform: uppercase; }
+  dd { margin: 2px 0 0; font-size: 15px; }
+  .proscons { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; font-size: 14px; }
+  .proscons ul { margin: 4px 0 0; padding-left: 18px; }
+  .proscons b { font-size: 12px; font-family: "Plex Mono"; letter-spacing: .06em; text-transform: uppercase; }
+  .pro b { color: var(--teal); } .con b { color: var(--coral); }
+  .links { display: flex; gap: 16px; font-size: 14px; margin-top: auto; padding-top: 6px; }
+  .links a { color: var(--ink); }
+  footer { color: var(--muted); font-size: 14px; padding-bottom: 48px; }
+  @media (max-width: 560px) { dl { grid-template-columns: repeat(2, 1fr); } .proscons { grid-template-columns: 1fr; } }
+</style>
+</head>
+<body>
+<header>
+  <h1>Maths &amp; 3D animation: five libraries, one visual style</h1>
+  <p>Each demo was actually rendered on a 16-core CPU-only VM (no GPU) with the same palette, IBM Plex typography,
+    16:9 framing and 30 fps, using reproducible synthetic data. Full analysis in
+    <a href="COMPARISON.md" style="color:var(--ink)">COMPARISON.md</a>.</p>
+  <div class="bar">
+    <button id="sync">Play all from start</button>
+    <button class="ghost" id="pause">Pause all</button>
+    <a href="README.md">Install &amp; run</a>
+    <a href="demos/threejs/index.html">Interactive three.js demo (run ./serve.sh first)</a>
+  </div>
+</header>
+<main class="grid">
+
+  <article>
+    <video src="media/manimce_compactor_diagram.mp4" poster="media/poster_manimce.jpg" controls muted loop playsinline preload="metadata"></video>
+    <div class="body">
+      <div class="top"><h2>Technical diagram <small>sensors · forces · readouts</small></h2>
+        <span class="lib" style="--c:var(--teal)">Manim Community 0.22.1 · Cairo</span></div>
+      <p class="desc">Ram compresses waste; pressure transducer, load cells and ultrasonic fill sensor feed a live mass estimate.</p>
+      <dl><div><dt>Render</dt><dd>80 s</dd></div><div><dt>Length</dt><dd>14.1 s</dd></div>
+        <div><dt>Code</dt><dd>~200 lines</dd></div><div><dt>Effort</dt><dd>Low</dd></div></dl>
+      <div class="proscons">
+        <div class="pro"><b>Strengths</b><ul><li>Crisp vector lines and typography</li><li>Stable, well-documented API; LLMs write it fluently</li></ul></div>
+        <div class="con"><b>Limits</b><ul><li>3D with Cairo is slow and flat-shaded</li><li>Formulas need a LaTeX install (Pango text used here)</li></ul></div>
+      </div>
+      <div class="links"><a href="demos/manimce/diagram.py">Source</a><a href="media/manimce_compactor_diagram.mp4">MP4</a></div>
+    </div>
+  </article>
+
+  <article>
+    <video src="media/manimgl_calibration_surface.mp4" poster="media/poster_manimgl.jpg" controls muted loop playsinline preload="metadata"></video>
+    <div class="body">
+      <div class="top"><h2>3D maths surface <small>morphing parameter · orbit</small></h2>
+        <span class="lib" style="--c:var(--violet)">ManimGL 1.7.2 · OpenGL</span></div>
+      <p class="desc">m̂(fill, pressure; ρ) morphs from plastic film to cardboard while the camera orbits; a tracked lift reads out live.</p>
+      <dl><div><dt>Render</dt><dd>3 min 16 s</dd></div><div><dt>Length</dt><dd>12.7 s</dd></div>
+        <div><dt>Code</dt><dd>~145 lines</dd></div><div><dt>Effort</dt><dd>Medium</dd></div></dl>
+      <div class="proscons">
+        <div class="pro"><b>Strengths</b><ul><li>The 3Blue1Brown look: shaded surfaces, glow dots, smooth camera</li><li>Real-time preview on a GPU machine</li></ul></div>
+        <div class="con"><b>Limits</b><ul><li>Undocumented API changes; had to read source</li><li>Needs an OpenGL context; headless needs patching</li></ul></div>
+      </div>
+      <div class="links"><a href="demos/manimgl/surface.py">Source</a><a href="media/manimgl_calibration_surface.mp4">MP4</a></div>
+    </div>
+  </article>
+
+  <article>
+    <video src="media/pyvista_lift_scatter.mp4" poster="media/poster_pyvista.jpg" controls muted loop playsinline preload="metadata"></video>
+    <div class="body">
+      <div class="top"><h2>3D scatter <small>clusters · anomalies · ellipsoids</small></h2>
+        <span class="lib" style="--c:var(--amber)">PyVista 0.49 · VTK 9.7</span></div>
+      <p class="desc">554 lifts rise into place, take stream colours, anomalies pulse, and 2σ covariance ellipsoids fade in.</p>
+      <dl><div><dt>Render</dt><dd>65 s</dd></div><div><dt>Length</dt><dd>12.0 s</dd></div>
+        <div><dt>Code</dt><dd>~150 lines</dd></div><div><dt>Effort</dt><dd>Low–medium</dd></div></dl>
+      <div class="proscons">
+        <div class="pro"><b>Strengths</b><ul><li>PBR shading, SSAA, glyphs, meshes: scientific 3D in a few calls</li><li>NumPy-native data; also exports interactive HTML</li></ul></div>
+        <div class="con"><b>Limits</b><ul><li>No animation system: you write the frame loop and easing</li><li>VTK text is basic (no rich layout, missing glyphs)</li></ul></div>
+      </div>
+      <div class="links"><a href="demos/pyvista/scatter.py">Source</a><a href="media/pyvista_lift_scatter.mp4">MP4</a></div>
+    </div>
+  </article>
+
+  <article>
+    <video src="media/threejs_fleet_timeseries.mp4" poster="media/poster_threejs.jpg" controls muted loop playsinline preload="metadata"></video>
+    <div class="body">
+      <div class="top"><h2>Time-series data viz <small>14 days · 6 compactors</small></h2>
+        <span class="lib" style="--c:var(--blue)">three.js r170 · WebGL</span></div>
+      <p class="desc">Glowing fill-mass ribbons revealed by a time cursor, pickups flagged with ticket vs estimate, HTML HUD.</p>
+      <dl><div><dt>Render</dt><dd>2 min 49 s</dd></div><div><dt>Length</dt><dd>12.0 s</dd></div>
+        <div><dt>Code</dt><dd>~330 lines</dd></div><div><dt>Effort</dt><dd>Medium</dd></div></dl>
+      <div class="proscons">
+        <div class="pro"><b>Strengths</b><ul><li>Same scene is an interactive web page (scrub, orbit)</li><li>Bloom and CSS typography; runs at 60 fps on any GPU</li></ul></div>
+        <div class="con"><b>Limits</b><ul><li>MP4 export needs a capture harness (Playwright + ffmpeg)</li><li>Most code; no maths primitives (axes, LaTeX)</li></ul></div>
+      </div>
+      <div class="links"><a href="demos/threejs/main.js">Source</a><a href="demos/threejs/index.html">Interactive</a><a href="media/threejs_fleet_timeseries.mp4">MP4</a></div>
+    </div>
+  </article>
+
+  <article>
+    <video src="media/blender_calibration_surface.mp4" poster="media/poster_blender.jpg" controls muted loop playsinline preload="metadata"></video>
+    <div class="body">
+      <div class="top"><h2>Same surface, path-traced <small>cinematic reference</small></h2>
+        <span class="lib" style="--c:var(--coral)">Blender 5.2 bpy · Cycles CPU</span></div>
+      <p class="desc">The ManimGL surface rebuilt with shape keys, area lights and a clear-coat shader, for a direct look comparison. Partial render: 142 of 240 frames, stopped and resumable.</p>
+      <dl><div><dt>Render</dt><dd>24 min 44 s</dd></div><div><dt>Length</dt><dd>4.7 s (partial)</dd></div>
+        <div><dt>Code</dt><dd>~270 lines</dd></div><div><dt>Effort</dt><dd>High</dd></div></dl>
+      <div class="proscons">
+        <div class="pro"><b>Strengths</b><ul><li>Real lighting, reflections, materials: the most photographic frames</li><li>pip install bpy: fully scriptable, headless</li></ul></div>
+        <div class="con"><b>Limits</b><ul><li>Very slow without a GPU (CPU path tracing, ~10.5 s/frame here)</li><li>Verbose node-graph code; API shifts between versions</li></ul></div>
+      </div>
+      <div class="links"><a href="demos/blender/surface.py">Source</a><a href="media/blender_calibration_surface.mp4">MP4</a></div>
+    </div>
+  </article>
+
+</main>
+<footer>Synthetic data (shared/mockdata.py, seed 2026), loosely inspired by the Europress virtual-scale concept. Not measurements.
+  Render times are wall-clock on this VM, rendered one after another (logs/timings.txt).</footer>
+<script>
+  const vids = [...document.querySelectorAll('video')];
+  document.getElementById('sync').onclick = () => vids.forEach((v) => { v.currentTime = 0; v.play().catch(() => {}); });
+  document.getElementById('pause').onclick = () => vids.forEach((v) => v.pause());
+</script>
+</body>
+</html>

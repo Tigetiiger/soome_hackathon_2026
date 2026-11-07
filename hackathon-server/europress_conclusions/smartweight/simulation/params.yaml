@@ -1,0 +1,84 @@
+# SmartWeight simulation parameters.
+# Tags (repeated in MATHEMATICAL_MODELS.md):
+#   [measured: X]  measured on source X (dataset numbers are measured on SYNTHETIC data)
+#   [derived]      computed from other entries
+#   [assumed: why] engineering assumption / sensitivity range, NOT a Europress spec
+# Nothing here is Europress product data. Geometry is ASSUMED and labelled as such.
+seed: 20261107
+n_machines: 400            # simulated machines (half COMBI, half DUO)
+events_per_machine: 40     # pickups per machine
+g: 9.81
+
+machines:
+  class_share: {COMBI: 0.5, DUO: 0.5}                    # [assumed: both Europress classes, equal weight]
+  volumes_m3: {COMBI: [10, 12, 16, 20, 22], DUO: [16, 20, 24, 30]}  # [measured: dataset devices; COMBI<=22, DUO<=30 per assumptions.yaml]
+  cross_section_m2: [4.5, 5.0]                           # [assumed: ~2.3 m x 2.1 m hooklift container interior]
+  tare_kg:                                               # [assumed: order of magnitude, no Europress data]
+    COMBI: {base: 3500, per_m3: 120, cv: 0.10}           # press unit + container weighed together [assumed]
+    DUO: {base: 700, per_m3: 75, cv: 0.08}               # detachable container: 2,300 kg @20 m3 .. 3,000 kg @32 m3 [measured: _research/equipment_priorart_literature.md, vendor listings]
+  material_share: {cardboard: 0.45, plastic: 0.20, mixed: 0.35}   # [assumed]
+  site_density_cv: 0.15      # site-to-site waste-mix factor on rho_inf [assumed; dataset between-device CV 0.25 measured on synthetic]
+
+# Compaction law rho(sigma) = rho_loose + (rho_inf - rho_loose)(1 - exp(-sigma/sigma_c))
+# rho_ref reached at reference stress; rho_inf = inf_factor * rho_ref. [assumed: virtual_scale/config/sensor_sim.yaml;
+# rho_ref = dataset compacted density, measured on synthetic data within 15%]
+materials:
+  cardboard: {rho_loose: 45,  rho_ref: 190, inf_factor: 1.45, sigma_c_cv: 0.15, event_cv: 0.07, wet_prob: 0.30, wet_gain: [0.05, 0.25], dry_gain: [0.0, 0.05], wet_softening: 0.3}
+  plastic:   {rho_loose: 25,  rho_ref: 140, inf_factor: 1.55, sigma_c_cv: 0.18, event_cv: 0.09, wet_prob: 0.10, wet_gain: [0.01, 0.05], dry_gain: [0.0, 0.02], wet_softening: 0.0}
+  mixed:     {rho_loose: 120, rho_ref: 380, inf_factor: 1.40, sigma_c_cv: 0.15, event_cv: 0.08, wet_prob: 0.30, wet_gain: [0.03, 0.12], dry_gain: [0.0, 0.04], wet_softening: 0.1}
+# wet_gain: extra water mass as a fraction of dry mass [assumed: sensitivity range, not a measured distribution]
+
+press:                       # 35 t (343 kN) press force [measured: Europress CombiMax/DuoMax brochure via _research]; areas [derived: 343 kN at ~190 bar]; face areas [assumed]
+  COMBI: {a_cyl_m2: 0.0180, a_face_m2: 1.80, relief_bar: 190}
+  DUO:   {a_cyl_m2: 0.0180, a_face_m2: 2.00, relief_bar: 190}
+  area_tol_cv: 0.02
+  reference_stress_frac: 0.55
+  friction_cv: 0.15          # wall/floor friction share variation [assumed]
+  loss_bar_40c: 6.0          # hydraulic flow losses at 40 C [assumed]
+  loss_temp_coeff: 0.035
+  plateau_noise_rel: 0.035
+  motor_eff_mean: 0.72       # [assumed]
+  motor_eff_device_cv: 0.05  # [assumed: pump/motor wear]
+  ct_noise_rel: 0.04         # [assumed: clamp CT + meter]
+
+environment:
+  t_amb_range_c: [-25, 28]   # [assumed: Finnish outdoor range]
+  t_tare_shift_sd_c: 8       # temperature change between empty (tare) and full reading [assumed]
+  days_between: [3, 21]      # days since emptying [assumed; dataset 17-53 lifts/yr per stream, measured on synthetic]
+  snow_prob_below_0c: 0.3    # [assumed]
+  snow_mean_kg: 40           # snow/ice change on container between tare and gross [assumed]
+  oil_warmup_c: [0, 25]
+
+fill_sensor:                 # existing SMART fill estimate [measured: dataset assumptions accepted by Europress, synthetic]
+  sigma_pp: 3.5
+  bias_sd_pp: 4.0
+  gain_sd: 0.07
+
+load_cells:
+  # 4 cells under all supports. cert = OIML R60 C3 cells + R76-approved indicator; cheap = IP68 C3 cells + low-cost
+  # transmitter, no type approval. Errors [assumed from datasheet orders of magnitude]
+  cert:  {cell_gain_sd: 0.001, tc_zero_kg_per_c: 0.35, noise_kg: 2, parasitic_max: 0.002, hysteresis_rel: 0.0005}
+  cheap: {cell_gain_sd: 0.003, tc_zero_kg_per_c: 2.0,  noise_kg: 6, parasitic_max: 0.01,  hysteresis_rel: 0.002}
+  wind_noise_kg: 5
+
+strain:
+  bending_2: {share_cv: 0.12,  tc_kg_per_c: 6.0, zero_walk_kg_sqrt_day: 8, noise_kg: 40, cal_gain_sd: 0.03}  # sensor_sim.yaml [assumed]
+  shear_4:   {share_cv: 0.015, tc_kg_per_c: 0.8, zero_walk_kg_sqrt_day: 3, noise_kg: 12, cal_gain_sd: 0.01} # [assumed: compensated shear-web bridges at each support]
+
+hooklift_truck:              # Model B on the hauler's truck [assumed]
+  n_trucks: 30
+  friction_rel_mean: 0.03
+  friction_rel_sd: 0.01
+  dyn_noise_rel: 0.01
+  cal_gain_sd: 0.005
+
+weighbridge:                 # [measured: dataset assumptions.yaml + dataset_checks.json, synthetic]
+  sigma_kg: 12
+  resolution_kg: 20
+  stored_tare_prob: 0.45
+  stored_tare_sd_kg: 25
+  stale_vehicle_share: 0.15
+  stale_bias_sd_kg: 160
+
+anchors:
+  k_default: 5               # clean (weighed-tare, single-load) tickets per machine used as calibration anchors

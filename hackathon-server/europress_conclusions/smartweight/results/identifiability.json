@@ -1,0 +1,56 @@
+{
+  "reference": {
+    "V_m3": 20.0,
+    "fill": 0.75,
+    "face_stress_kPa": 94.05000000000001,
+    "rho_kg_m3": 190.0
+  },
+  "counterexample_moisture": {
+    "load_A_dry_kg": 2850.0,
+    "load_B_wet_kg": 3420.0,
+    "same_pressure_curve": true,
+    "same_fill": true,
+    "explanation": "water adds mass but the fibre skeleton sets the stress-strain response; pressure and fill are identical while mass differs by 20 %"
+  },
+  "counterexample_material_stiffness": {
+    "load_A": {
+      "fill": 0.75,
+      "sigma_c_factor": 1.0,
+      "mass_kg": 2850.0
+    },
+    "load_C": {
+      "fill": 0.75,
+      "sigma_c_factor": 1.3,
+      "mass_kg": 2520.1816653832225,
+      "mass_diff_pct": -11.57257314444834
+    },
+    "fill_needed_for_equal_mass": 0.848153142831062,
+    "explanation": "a stiffer batch at the same face stress and fill is lighter; pressure alone cannot tell softer-heavier from stiffer-lighter without the material law of that batch"
+  },
+  "observation_rank": {
+    "observations": [
+      "plateau_pressure",
+      "fill_level"
+    ],
+    "unknowns": [
+      "mass",
+      "rho_inf",
+      "sigma_c",
+      "water_fraction"
+    ],
+    "rank": 2,
+    "identifiable": false,
+    "what_resolves_it": "a direct gravitational measurement (load cells/strain at ALL supports) or per-batch density reference (ticket anchors only fix the machine mean)"
+  },
+  "hooklift_com": {
+    "formula": "m_hat/m = x_c / x_c_hat  (single force about one pivot)",
+    "sd_x_rel_0.15_gives_mass_sd_rel": 0.15,
+    "explanation": "one force about one pivot measures W*x_c, not W; a second reaction is needed"
+  },
+  "two_rear_cells": {
+    "formula": "dm/m = dx_c/(L - x_c)",
+    "x_c_over_L": 0.4,
+    "sd_x_over_L": 0.08,
+    "mass_sd_rel": 0.13333333333333333
+  }
+}

@@ -1,0 +1,15 @@
+# ManimGL config for this demo (dark shared style, headless EGL, bundled ffmpeg)
+directories:
+  base: "."
+  subdirs:
+    output: "out"
+camera:
+  resolution: (1920, 1080)
+  background_color: "#0E1218"
+  fps: 30
+file_writer:
+  ffmpeg_bin: "../../bin/ffmpeg"
+  video_codec: "libx264"
+  pixel_format: "yuv420p"
+text:
+  font: "IBM Plex Sans"
