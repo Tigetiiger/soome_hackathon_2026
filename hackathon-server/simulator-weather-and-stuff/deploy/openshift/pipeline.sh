@@ -36,6 +36,9 @@ cd "$(dirname "$0")/../.."
 mkdir -p "$DATA_DIR"/{runs,models,site,logs}
 LOG="$DATA_DIR/logs/$(date +%Y%m%d-%H%M%S)-$RUN_NAME.log"
 exec > >(tee -a "$LOG") 2>&1
+TEE_PID=$!
+# bash is PID 1 in the container: let tee flush the last lines before the kernel stops it.
+trap 'exec >&- 2>&-; wait "$TEE_PID"' EXIT
 
 echo "pipeline: run=$RUN_NAME bins=$BINS days=$DAYS seed=$SEED small_run=$SMALL_RUN"
 echo "pipeline: steps=$STEPS threads=${OMP_NUM_THREADS:-all} log=$LOG"

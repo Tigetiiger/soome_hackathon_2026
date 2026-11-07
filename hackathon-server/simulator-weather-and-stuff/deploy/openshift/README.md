@@ -49,6 +49,9 @@ builds the image (a few minutes the first time), starts the site and prints its 
 deploy/openshift/run-pipeline.sh --follow        # full: 400 machines x 365 days, plus the 25-machine run
 ```
 
+`--follow` streams the log and exits non-zero if the run failed (Ctrl+C stops only the log, not the Job).
+If the site pod is not running (for example scaled down), `run-pipeline.sh` starts it first.
+
 By default the Job requests 4 CPU / 6 GiB and may use up to 8 CPU / 10 GiB. 400-machine training peaks
 around 3 GiB. LightGBM runs one thread per CPU of the limit. Training is CPU-bound; at 8 cores expect
 somewhere around 30–60 minutes for the full run (not yet measured on a cluster). The finished Job is
@@ -86,6 +89,9 @@ oc rsync runs/full400 $SITE_POD:/data/runs/              # or upload local data,
 
 ## Notes
 
+* **Cluster requirements.** The internal image registry must be enabled, you must be allowed
+  Docker-strategy builds (check with `oc auth can-i create builds/docker`), and builds need internet
+  access to PyPI and the Red Hat UBI repos. If any of these is missing, `deploy.sh` fails at the build step.
 * **Single-node volume.** The volume is ReadWriteOnce, so Job pods are pinned to the node where the site
   pod runs. Keep `compactor-site` running. If a Job pod stays `Pending`, check `oc describe pod -l job-name=<job>`.
   The usual cause is project CPU/memory quota, so lower `CPU`/`MEMORY`.
