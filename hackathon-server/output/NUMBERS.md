@@ -123,7 +123,7 @@ Evidence tags (same as the business case):
 1. **Revenue and value don't come from the same model.** `05` §6 shows €0.15M / €0.50M / **€0.91M** expected for 2027–29. The NPV above comes from the CFO model, whose base year-3 add-on revenue is **€0.6–0.75M** (`BUSINESS_PLAN.md:86`). Either rerun `europress_conclusions/agents/bizplan-cfo_model.py` with the `05` revenue lines, or label them as two scopes.
 2. ✅ **Measured-tier price (decided 7 Nov):** sold at Europress's current platform price and kept outside the add-on economics. NPV updated to match (§6).
 5. ⚠️ **Not edited, because the correct figure looks worse; waiting for a decision:**
-   - `europress_conclusions/BUSINESS_CASE.md:119`: "€10–19k for the scale-platform pilot machines … downside about €150k". The evidence says €34–63k and ≈ €211–267k (§3). `BUSINESS_PLAN.md` and both `04` files already use the correct figures, so the business case currently disagrees with them.
+   - ✅ `europress_conclusions/BUSINESS_CASE.md:119` fixed on 7 Nov: €34–63k for the pilot scales, Phase 0 ≈ €211–267k.
    - `europress_conclusions/analysis/pl_model.py` (annual revenue table, "~€0.6–0.75M in year 3", break-even ~3,100 devices): it still includes the measured tier at 3 % of devices. Taking it out, as in the NPV, lowers base year-3 revenue from €615k to €558–572k and raises break-even to 3,157–3,253 devices.
 3. **€25 a month is used for two products**: the Integrated contract benchmark (`BUSINESS_CASE.md` §3) and the camera tier (`05` §6). Rename or reprice one.
 4. **The app's trend widgets use three bases** (§5). Optional pipeline change: put all of them on one basis.
@@ -136,9 +136,9 @@ Evidence tags (same as the business case):
 | `output/04_business_findings_and_decisions.md` | ✅ fixed in this pass: 97 % of lifts, concentration bases, rules-vs-ML scopes, hotel trends and as-of date, tier accuracy and cost, measured tier, pilot and Phase 0 |
 | `output/04_business_findings_explained.md` | ✅ fixed in this pass: same set |
 | `output/05_business_plan_addon.md` / `.html`, `output/06_problems_solutions_why.md`, dashboard, simulator site | Being fixed by the session running `output/PROMPT_fix_number_conflicts.md` (already shows 5.3 %, 48 of 395 = 12 %, as-of date). **Still to do in `06`:** line 33 "fill-only 7 %" → 15.4 % fill-only vs 7.0 % with ticket calibration (§1); line 135 mixes trend bases (§5); line 172 "€270k" → €211–267k (§3) |
-| `input-files/CHEAT_SHEET.md` §3–§5 | ⚠️ other session's video sheet. Differs from this file on: "37 have a ticket" (→ 48, §4), Tier 2 "P95 1.4–2.3 %" (→ 2.3 %; 1.4 % is Tier 3, §1), pressure "25–49 % P95" (→ 29–49 %; 25 % is strain gauges, §1) |
-| `europress_conclusions/BUSINESS_CASE.md` | ✅ fixed: concentration basis, measured tier, NPV, error-budget tag + 5.3 %, hybrid 0.78. ⚠️ Line 119 (pilot €10–19k, downside €150k) left as is: see open decision 5 |
-| NPV in `BUSINESS_PLAN.md`, both `04` files, `05` md + html, `06` | ✅ updated to +€0.01M / +€0.58M (low −€0.64M, high +€2.84M). ⚠️ `input-files/CHEAT_SHEET.md` §6 still shows −€0.33M / +€0.23M |
+| `input-files/CHEAT_SHEET.md` | ✅ fixed 7 Nov: 48 of 395 pickups with a ticket, Tier 2 P95 2.3 % (Tier 3 1.4 %), pressure P95 29–49 %, NPV, concentration bases |
+| `europress_conclusions/BUSINESS_CASE.md` | ✅ fixed: concentration basis, measured tier, NPV, error-budget tag + 5.3 %, hybrid 0.78. pilot €34–63k and Phase 0 €211–267k (line 119) |
+| NPV in `BUSINESS_PLAN.md`, both `04` files, `05` md + html, `06` | ✅ updated to +€0.01M / +€0.58M (low −€0.64M, high +€2.84M). `input-files/CHEAT_SHEET.md` §6 updated too |
 | `europress_conclusions/BUILD_PLAN.md:79` | ⚠️ "±12–15 % per lift" needs the [E] tag and the 5.3 % [S] figure next to it |
 | `virtual_scale/ASSUMPTIONS_AND_EXCEPTIONS.md:147, 152` | ⚠️ transducer €60–150 and platform ~€1,500 / €1.0–1.9k are simulator inputs. Add a note pointing to §2 |
 | `europress_conclusions/sites/*` | ⚠️ ≈ 33 stale figures. Recommendation: don't submit these sites |
