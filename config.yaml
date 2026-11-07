@@ -19,7 +19,7 @@ fleet:
 
   # [equipment_class, container_volume_m3, weight] per material.
   # COMBI volumes 10/14/17/20/22, DUO 20/24/27/30/32/35 (europressgroup.com).
-  # mixed_waste (household waste incl. bio waste; expert interview) replaces the brief's
+  # mixed_waste (household waste incl. bio waste) replaces the brief's
   # mixed plastic. Weights chosen so average lift masses
   # land in the target ranges (assumed).
   containers:
@@ -235,9 +235,9 @@ hydraulics:
   p_idle_bar: [20, 30]
   k_bar: 150.0
   k_machine_cv: 0.05
-  fill_onset: 0.07                # back pressure visible from ~5-10 % fill (expert interview)
-  fill_exponent: 1.0              # 'increases quite nicely' with the waste inside (linear)
-  density_exponent: 1.0           # medium: pressure mostly tracks volume; weight is 'a question mark'
+  fill_onset: 0.07                # back pressure visible from ~5-10 % fill
+  fill_exponent: 1.0              # rises steadily with the waste inside (linear)
+  density_exponent: 1.0           # medium: pressure mostly tracks volume, not weight
   stiffness: {cardboard: 1.00, paper: 1.10, plastic_film: 0.85, mixed_waste: 0.90}
   wet_softening: {cardboard: 2.5, paper: 2.5, plastic_film: 0.0, mixed_waste: 0.5}
   frost_stiffening: 1.5
@@ -247,7 +247,7 @@ hydraulics:
   viscosity_ref_c: 40.0
   oil: {heat_per_stroke_c: 0.8, cool_time_constant_h: 2.0, max_c: 60.0}
   stroke_resistance_cv: 0.05
-  spikes:                         # e.g. a cardboard box crushed before it goes in (expert interview)
+  spikes:                         # e.g. a cardboard box crushed before it goes in
     prob_per_stroke: {cardboard: 0.06, paper: 0.02, plastic_film: 0.01, mixed_waste: 0.03}
     bar: [20, 80]
   curve:                          # pressure graph along the ram travel (see compactor_sim/curves.py)
@@ -276,8 +276,8 @@ sensors:
   # machines have no separate level sensor); ultrasonic = direct level sensor with the noise below.
   fill_mode: pressure_derived
   fill: {noise_sd_pct: 3.0, gain_bias_sd: 0.015, gain_bias_clip: 0.03, drift_sd_per_day: 0.001, round_to_pct: 1.0}
-  pressure_fill:                  # firmware: rolling average of back pressure -> fill (expert interview)
-    rolling_strokes: 10           # "every ~10 cycles ... takes an average"
+  pressure_fill:                  # firmware: rolling average of back pressure -> fill
+    rolling_strokes: 10           # averaged over ~10 strokes to suppress spikes
     p_idle_nominal_bar: 25.0
     full_backpressure_bar: 150.0  # x material stiffness: back pressure above idle that reads 100 %
     calibration: per_installation # setpoint set at commissioning (machine scale, idle, typical density);

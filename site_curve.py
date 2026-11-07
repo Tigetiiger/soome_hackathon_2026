@@ -5,7 +5,7 @@ import shutil
 from html import escape
 from pathlib import Path
 
-from site_common import IMG, ROOT, SITE, Build, figures, h2, h3, load_json, note, num, p, pct_of, table
+from site_common import IMG, ROOT, SITE, Build, figures, h2, h3, load_json, note, num, p, pct_of, register_source, table
 
 TARGET = 5.0
 
@@ -34,6 +34,7 @@ def _copy_png(b: Build, model_run: Path, material: str) -> list[Path]:
     dest = SITE / IMG / "model" / rel.name
     dest.parent.mkdir(parents=True, exist_ok=True)
     shutil.copy2(src, dest)
+    register_source(IMG / "model" / rel.name, src)
     return [IMG / "model" / rel.name]
 
 

@@ -135,7 +135,7 @@ def data_caveats(facts: dict, cfg: dict | None) -> list[str]:
     if "fill_err_pp" in facts:
         items.append(f"<strong>The fill reading is less accurate than quoted.</strong> The simulated firmware estimate is "
                      f"{num(facts['fill_err_pp'])} pp from the true fill on average ({num(facts.get('fill_err_hi_pp'))} pp above "
-                     "30 % fill), against the roughly 5 % the expert quoted. This is a property of the simulated calibration "
+                     "30 % fill), against a reference accuracy of roughly 5 %. This is a property of the simulated calibration "
                      "(per-installation setpoint, no oil-temperature compensation) and makes the fill features somewhat weaker "
                      "than on a real machine if the quote is right.")
     if "contact_corr" in facts:
@@ -170,7 +170,7 @@ def limitations(b: Build, metrics: dict | None, summary: dict | None, cfg: dict 
     return (head
             + h3("Synthetic data and assumed parameters", "lim-synthetic")
             + p("Every number in this document comes from simulated data. The simulator (Section 5) was built from the hackathon "
-                "brief, public product information and one expert interview; many of its parameters are marked 'assumed' and "
+                "brief and public product information; many of its parameters are marked 'assumed' and "
                 "none of its hydraulic settings are real Europress values. Results therefore show what the method can do when "
                 "the physics behaves as modelled, not what it will do in the field. A real pilot with weighbridge tickets is "
                 "needed before any of the error figures can be trusted.")

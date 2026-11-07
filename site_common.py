@@ -9,17 +9,22 @@ import shutil
 from dataclasses import dataclass, field
 from html import escape
 from pathlib import Path
-from typing import Any
+from typing import TYPE_CHECKING, Any
 
 import pandas as pd
 
 from site_style import page  # noqa: F401  (re-exported for make_site)
+
+if TYPE_CHECKING:
+    from matplotlib.figure import Figure
 
 ROOT = Path(__file__).resolve().parent
 SITE = ROOT / "site"
 IMG = Path("img")                 # site-relative image folders: img/model, img/sim, img/gen
 DOWNLOADS = Path("downloads")
 GOOD_PCT = 5.0
+HIRES_TAG = "@hires"              # <stem>@hires.png: high-resolution twin, loaded only in the image viewer
+HIRES_FACTOR = 2.5                # pixel density of the hi-res twin relative to the inline image
 SPLIT_LABEL = {"bins": "unseen machines", "time": "same machines, later months"}
 CAPTIONS = {
     "lifts": "Lifted mass per material (left) and days between lifts (right).",
@@ -225,16 +230,75 @@ def load_yaml(b: Build, rel: Path) -> dict | None:
 
 
 # ---------------------------------------------------------------- images
+@dataclass(frozen=True)
+class FigureEntry:
+    """One numbered figure of the page, in document order (read by the figure gallery)."""
+    label: str           # "Figure 3.2"
+    stem: str
+    src: str             # site-relative inline image
+    href: str            # site-relative image opened in the viewer (hi-res twin if present)
+    caption: str
+    description: str
+
+
+FIGURES: list[FigureEntry] = []
+_SOURCES: dict[str, Path] = {}    # site-relative image -> the source PNG it was copied from
+
+
+def hires_path(path: Path) -> Path:
+    return path.with_name(f"{path.stem}{HIRES_TAG}{path.suffix}")
+
+
+def is_hires(path: Path) -> bool:
+    return path.stem.endswith(HIRES_TAG)
+
+
+def register_source(site_rel: Path, src: Path) -> None:
+    """Remember where a copied image came from, so its hi-res twin can be copied when the image is used."""
+    _SOURCES[site_rel.as_posix()] = src
+
+
+def clear_hires() -> None:
+    """Remove hi-res twins of earlier builds; this build copies or writes only those of the figures it shows."""
+    for old in (SITE / IMG).rglob(f"*{HIRES_TAG}.png") if (SITE / IMG).is_dir() else ():
+        old.unlink()
+
+
+def hires_href(site_rel: Path) -> str:
+    """Site-relative hi-res twin of an inline image (copied from its source when needed), else the image itself."""
+    target = hires_path(site_rel)
+    src = _SOURCES.get(site_rel.as_posix())
+    if src is not None:
+        src_hi = hires_path(src)
+        if not src_hi.exists():
+            logging.info("no hi-res twin for %s (run make_hires_plots.py)", src)
+            return site_rel.as_posix()
+        if src_hi.stat().st_mtime < src.stat().st_mtime:
+            logging.warning("hi-res twin %s is older than %s; not used (re-run make_hires_plots.py)", src_hi, src)
+            return site_rel.as_posix()
+        shutil.copy2(src_hi, SITE / target)
+    return target.as_posix() if (SITE / target).exists() else site_rel.as_posix()
+
+
+def save_figure(fig: Figure, site_rel: Path, dpi: int) -> list[Path]:
+    """Save a figure made by this site into site/<site_rel>, plus its hi-res twin; returns [site_rel]."""
+    (SITE / site_rel).parent.mkdir(parents=True, exist_ok=True)
+    fig.savefig(SITE / site_rel, dpi=dpi)
+    fig.savefig(SITE / hires_path(site_rel), dpi=round(dpi * HIRES_FACTOR))
+    return [site_rel]
+
+
 def copy_plots(b: Build, rel_dir: Path, dest_rel: Path) -> list[Path]:
-    """Copy rel_dir/*.png into site/<dest_rel>; return site-relative paths (sorted by name)."""
+    """Copy rel_dir/*.png (not the hi-res twins) into site/<dest_rel>; return site-relative paths (sorted by name)."""
     src = b.check(rel_dir)
     if src is None:
         return []
     dest = SITE / dest_rel
     dest.mkdir(parents=True, exist_ok=True)
-    pngs = sorted(src.glob("*.png"))
+    pngs = sorted(png for png in src.glob("*.png") if not is_hires(png))
     for png in pngs:
         shutil.copy2(png, dest / png.name)
+        register_source(dest_rel / png.name, png)
     return [dest_rel / png.name for png in pngs]
 
 
@@ -245,17 +309,28 @@ def caption(stem: str) -> str:
     return CAPTIONS.get(stem, stem.replace("_", " "))
 
 
+def zoom_attrs(entry: FigureEntry) -> str:
+    """Attributes of the click-to-enlarge link: the viewer opens href (hi-res) and falls back to data-lo."""
+    return (f'class="zoom" href="{escape(entry.href)}" data-lo="{escape(entry.src)}" '
+            f'data-cap="{escape(entry.label + ". " + entry.caption)}"')
+
+
 def figures(paths: list[Path], single: bool = False) -> str:
-    """Numbered figures with click-to-enlarge; the caption text is taken from CAPTIONS."""
+    """Numbered figures with click-to-enlarge (hi-res twin in the viewer); caption from CAPTIONS, long text from
+    site_gallery. Every figure is recorded in FIGURES for the gallery at the top of the page."""
+    from site_gallery import describe   # late import: site_gallery uses the helpers of this module
+
     if not paths:
         return note("Plot not available at build time.")
     figs = []
     for path in paths:
-        cap = caption(path.stem)
-        label = NUM.figure()
-        src = escape(path.as_posix())
-        figs.append(f'<figure><a class="zoom" href="{src}" data-cap="{escape(label + ". " + cap)}"><img src="{src}" '
-                    f'alt="{escape(cap)}" loading="lazy"></a><figcaption><b>{label}.</b> {escape(cap)}</figcaption></figure>')
+        entry = FigureEntry(label=NUM.figure(), stem=path.stem, src=path.as_posix(), href=hires_href(path),
+                            caption=caption(path.stem), description=describe(path.stem))
+        FIGURES.append(entry)
+        long = f' <span class="fdesc">{escape(entry.description)}</span>' if entry.description else ""
+        figs.append(f'<figure id="fig-{escape(entry.stem)}"><a {zoom_attrs(entry)}><img src="{escape(entry.src)}" '
+                    f'alt="{escape(entry.caption)}" loading="lazy"></a><figcaption><b>{entry.label}.</b> '
+                    f"{escape(entry.caption)}{long}</figcaption></figure>")
     return f'<div class="figs{" one" if single else ""}">{"".join(figs)}</div>'
 
 

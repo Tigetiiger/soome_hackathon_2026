@@ -51,7 +51,7 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 | path | what |
 |---|---|
 | `README.md` | this file |
-| `docs/SIMULATOR.md` | detailed simulator documentation: physics, every assumption with its source, expert-interview facts, validation results |
+| `docs/SIMULATOR.md` | detailed simulator documentation: physics, every assumption with its source, machine behaviour, validation results |
 | `compactor_sim/` | simulator package (`python -m compactor_sim`) |
 | `weight_train/` | soft-sensor package (`python -m weight_train train/predict/report/curve`). [`weight_train/README.md`](weight_train/README.md) describes the method and lists every feature in one line |
 | `config.yaml` | every simulator parameter (fleet, weather, moisture, compaction, hydraulics, sensors, operations) |
@@ -61,6 +61,7 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 | `requirements.txt`, `pytest.ini`, `.gitignore` | environment, test config and ignore rules |
 | `site/` | technical documentation website (open `site/index.html`; rebuild with `python make_site.py` after regenerating data and models and running `weight_train predict` for `models/full400` (the hourly sample download includes predictions)) |
 | `make_site.py`, `site_*.py` | website generator (reads the run and model folders; all numbers come from the data) |
+| `make_hires_plots.py` | run `python make_hires_plots.py` before `python make_site.py` to regenerate the hi-res figures (`<plot>@hires.png`, opened in the image viewer; no simulation or training is rerun) |
 | `runs/full400/` * | simulated dataset: 400 machines × 365 days (seed 7), with `validate_report.txt`, `baseline_report.txt`/`baseline_results.json` and `plots/` |
 | `runs/bins25/` * | small dataset with the same format: 25 machines × 365 days (seed 7), for development |
 | `models/full400/` * | **trained soft sensor** for `runs/full400`: `time/` and `bins/` bundles, `metrics.json`, `REPORT.md`, plots, cardboard machines-needed curve |
@@ -437,9 +438,9 @@ All simulator parameters are in [`config.yaml`](config.yaml), organised in these
 | `operations` | order thresholds and truck logistics |
 
 [`docs/SIMULATOR.md`](docs/SIMULATOR.md) gives every value with its source: the hackathon brief, an
-assumption, or the expert interview.
+assumption, or known machine behaviour.
 
-Settings based on the **interview with a Europress expert**:
+Settings based on how the machine behaves:
 
 - **The fill reading comes from pressure only**, not from an ultrasonic sensor
   (`sensors.fill_mode: pressure_derived`). It is a rolling average of back pressure over
