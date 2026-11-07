@@ -58,7 +58,7 @@ All prices are hypothetical; the logic is in §4.
 | **Contract and €/t benchmark + action inbox:** dispute, request ticket data, renegotiate. Tendering is shown last and is gated | **SMART Integrated** | Procurement teams at chains | 28% of renegotiation value sits on contracts where **device weight is the only mass figure** [D]. Drafts cite evidence rows, and nothing is sent without approval | Included in Integrated (+€25/device/month), or a **chain licence at €10–40k per year** |
 | **Reporting pack:** kg per fraction, recycling rate, "unknown destination" share, Poland BDO mass cross-check | Integrated. Builds on the per-tenant reports Scale Solutions already produces | Sustainability teams; Polish customers (BDO reporting is mandatory) | Covers the 21% of lifts that are untracked today. Ready for ESRS E5-5 (the Omnibus has narrowed CSRD to large companies) and for BDO | Part of Integrated, or €X per legal entity per year [A] |
 | **Operator data feed (give-to-get):** operators push tickets via the API and get back a reconciliation receipt and a private tare-hygiene report | Existing operator API | Operators. Fortum, Remeo and Alba are already Europress references [F] | Fewer disputes and better weighbridge hygiene. Operators see findings **first** | Free for operators who share; a paid analytics feed later |
-| **Measured tier:** scale platform as a lease uplift | **Lease + service contract** | Sites that need verification-grade weight (tenant billing, disputes) | P95 1.4–2.3% weight [S] | Inside the lease, priced from Europress's real platform cost. Our retrofit hardware alone is ≈ €47–88/month over 72 months, so the earlier +€39–49/month would not cover it |
+| **Measured tier:** scale platform as a lease uplift | **Lease + service contract** | Sites that need verification-grade weight (tenant billing, disputes) | P95 1.4–2.3% weight [S] | Europress's current platform price, inside the lease. Kept outside the add-on economics in §5 [T] |
 | **Calibration and drift checks** | **Service contract**, during technician visits that already happen | All service-contract customers | The ticket-based drift alarm fires about 33 days before today's fix [D] | Bundled; it helps justify the service price |
 
 **Why AI, and where.**
@@ -90,8 +90,9 @@ This replaces the €10–25 spread between the agent plans with one consistent 
 Sources: `agents/business-strategy.md` (`analysis/pl_model.py`), `bizplan-esg-chains.md` and `bizplan-cfo.md` (`bizplan-cfo_model.py`).
 
 **CFO view [E].**
-- The subscription alone has a **negative 6-year NPV**: −€0.33M at a 10% discount rate.
-- Adding an assumed +5 pp service-contract renewal uplift and higher SMART attach (worth about €60 per adopter per year) gives a **base NPV of +€0.23M**, with a low case of −€0.83M and a high case of +€2.37M. Payback comes in year 5.
+- The subscription alone **breaks even** over 6 years: NPV +€0.01M at a 10% discount rate.
+- Adding an assumed +5 pp service-contract renewal uplift and higher SMART attach (worth about €60 per adopter per year) gives a **base NPV of +€0.58M**, with a low case of −€0.64M and a high case of +€2.84M. Payback comes in year 5.
+- The measured tier is Europress's existing platform at its own price, so it is outside these figures (`analysis/npv_option_a.py` reruns `agents/bizplan-cfo_model.py` with that one change).
 - The biggest levers are adoption and the renewal uplift.
 
 **The board pitch is therefore "weight makes SMART and the service contract stickier, which is where Europress makes its profit", not "a new revenue line".**

@@ -28,7 +28,7 @@
   - M7 Reporting pack
   
   Rules decide, Claude explains with citations, and a person approves.
-- **The money.** Expected add-on revenue is about €0.91M a year by 2029 [E]. The real value is stickier SMART and service contracts: the subscription alone has a 6-year NPV of −€0.33M, which becomes +€0.23M once service retention and upsell are counted.
+- **The money.** Expected add-on revenue is about €0.91M a year by 2029 [E]. The real value is stickier SMART and service contracts: the subscription alone breaks even over 6 years (NPV +€0.01M), and the NPV becomes +€0.58M once service retention and upsell are counted. The scale platform is sold at Europress's own price and is outside these figures (`europress_conclusions/analysis/npv_option_a.py`).
 - **Phase 0 cost.** About €211–267k, with a stop gate. The €0 first test runs archived SMART pressure curves against shared tickets.
 
 ## 1. What changed since 04 (from the second feedback session and new research)
@@ -142,7 +142,7 @@ All of these products measure fill. **We found no commercial compactor "virtual 
 - Integrated reporting pack: €10–40k per chain per year.
 - Operator feed: free with ticket sharing; Pro €500/month.
 - Camera tier: €25 per machine per month.
-- Scale on lease: +€39–49 per month.
+- Scale on lease: Europress's current platform price (outside the add-on economics).
 
 **Revenue** [E], €M per year:
 

@@ -151,7 +151,7 @@ Full source documents are in `business_sources/`.
 | **Proof of Fullness** | Insights; launch in Poland and Benelux | **25% gain-share** of verified avoided-lift cost in year 1, then a subscription | Answers "cheapest wins" |
 | **Contract benchmark, action inbox and reporting pack** | SMART Integrated | +€25 per device per month, or a **chain licence of €10–40k a year** | Procurement and ESG teams |
 | **Operator Review service** | Integrated / SMART Center | 15% of *verified* recovered or avoided cost, capped | Weight is the evidence layer |
-| **Measured tier (scale platform)** | Lease plus service contract | In the lease, priced from Europress's real platform cost. Our retrofit hardware alone is ≈ €47–88 per month over 72 months (€3.4–6.3k ÷ 72), so the earlier +€39–49 would not cover it | Only where value > cost |
+| **Measured tier (scale platform)** | Lease plus service contract | Europress's current platform price, in the lease; kept outside the add-on economics in §7 [T] | Only where value > cost |
 | **Operator data feed** | Operator API | Free for operators who share; paid analytics later | Turns the data-ownership fight into a trade |
 | *Idea from our notes* | SMART | **Discounted SMART for the first 12 months** | Lever 1 (fuller pickups) usually pays it back alone |
 
@@ -169,9 +169,10 @@ Full source documents are in `business_sources/`.
 | Recurring gross margin | ~75% | ~79% | ~82% |
 | Software break-even | not reached | ~3,100 devices (early year 4) | years 2–3 |
 
-**The CFO lens says the subscription alone doesn't pay back:**
-- Its 6-year NPV is **−€0.33M** at 10%.
-- Adding a +5 pp service-contract renewal uplift and higher SMART attach (≈ €60 per adopter per year) gives a **base NPV of +€0.23M** (low −€0.83M, high +€2.37M), with payback in year 5 [E].
+**The CFO lens says the subscription alone breaks even; the profit comes from retention:**
+- Its 6-year NPV is **+€0.01M** at 10%, about break-even.
+- Adding a +5 pp service-contract renewal uplift and higher SMART attach (≈ €60 per adopter per year) gives a **base NPV of +€0.58M** (low −€0.64M, high +€2.84M), with payback in year 5 [E].
+- The measured tier is Europress's existing platform at its own price, so it is outside these figures (`europress_conclusions/analysis/npv_option_a.py`).
 
 **→ Board message: "weight makes SMART and the service contract stickier", not "a new revenue line".** Each +1 pp of SMART attach is about 120 devices on an assumed ~12k-machine fleet [A].
 
@@ -232,7 +233,7 @@ Frame the product as **verified service quality for everyone**:
 | 4 | **Rules decide, AI drafts, a person approves** | ML-first; automatic actions | Rules beat ML on the benchmark; trust; operator relations | [D] |
 | 5 | **Free tier for the median customer**, charge chains and fixed schedules | Charge everyone | The median contract value is €0 | [D] |
 | 6 | Price **€15 list / €12 bundled** in Insights | €8 (draft plan), €10, €25 | Fee ≤ ⅓ of value; agrees with the parallel session | §6 |
-| 7 | Board pitch = **stickier SMART and service contracts** | "New revenue line" | Standalone NPV is negative | CFO lens |
+| 7 | Board pitch = **stickier SMART and service contracts** | "New revenue line" | Standalone NPV only breaks even (+€0.01M); retention lifts it to +€0.58M | CFO lens |
 | 8 | Main product of this track = an **end-customer dashboard** that educates and shows savings in euros | Internal SMART Center tool | Our session goal; "educate the client" was the priority note | User brief |
 | 9 | **Every number is clickable** to its formula, sources and rows | Plain KPI tiles | "Clicking on the value will show where the info is coming from" | User brief |
 | 10 | **Five savings levers**: empty when full, avoid fees, sort more, compare €/t, invoice second look | Single headline number | Explainable, and each one is actionable | Dashboard |

@@ -16,7 +16,7 @@ The main return for Europress is more customers on SMART and stickier service co
 - [E] our estimate
 - [A] our assumption
 
-We assume the Part 1 weighing concept works as specified: a kg estimate per lift with a stated band, about ±5–6% on monthly totals.
+We assume the Part 1 weighing concept works as specified: a kg estimate per lift with a stated band, about ±5–6% on monthly totals [E, error budget]. Our simulator gives 5.3% mean error per lift on machines the model never saw [S].
 
 ---
 
@@ -56,7 +56,7 @@ We assume the Part 1 weighing concept works as specified: a kg estimate per lift
 
 **Value is concentrated.**
 - Mean contract value is about €1,064 per year, but the median is €0. Half of contracts show no gain [D].
-- The top 5 of 20 customers hold 75% of the value [D].
+- Among the 20 customers with contract-action cases, the top 5 hold 75% of the value [D].
 
 This matches the 80/20 split Europress described [T]. So we charge the chains and the fixed-schedule sites, and give everyone else the kg number for free.
 
@@ -68,7 +68,7 @@ This matches the 80/20 split Europress described [T]. So we charge the chains an
 | **Verified Weight**: per-lift reconciliation, cause attribution, drift alarm | €15 per device per month list, €12 when bundled into a new lease | ~€150 billing recovery plus ~€190 contract leverage, for chains [D] |
 | **Proof of Fullness**: evidence and a schedule-change proposal | 25% of the verified avoided-pickup cost in year 1, then moved to an Insights subscription | ~€2.5k per device-year saved: about €625 to Europress, €1.9k kept by the customer [D] |
 | **Contract benchmark, action inbox and reporting pack** | +€25 per device per month in Integrated, or a chain licence of €10–40k per year | Procurement and sustainability teams at chains; mandatory BDO waste reporting in Poland [F] |
-| **Measured tier**: Europress's existing scale platform | +€39–49 per month inside the lease [E] | Sites that need verification-grade weight, ±1–2% |
+| **Measured tier**: Europress's existing scale platform | Europress's current platform price, inside the lease. Kept outside the add-on economics below [T] | Sites that need verification-grade weight (tenant billing, disputes). Our simulated load-cell design reaches 2.3% in the worst 5% of readings, 1.4% with certified cells [S] |
 
 **Pricing rules:**
 - The fee is at most one third of the value the customer can realise [A]. The dataset's template accepts a 2× value-to-price ratio, so ours is stricter.
@@ -83,9 +83,10 @@ This matches the 80/20 split Europress described [T]. So we charge the chains an
 | Add-on revenue per year, year 3 | ~€0.18M | ~€0.6–0.75M | ~€1.8M |
 | Recurring gross margin | ~75% | ~79% | ~82% |
 
-**On its own the subscription does not pay back:**
-- Its 6-year NPV at 10% is −€0.33M [E].
-- Add a 5-point uplift in service-contract renewals and higher SMART attach, worth about €60 per adopter per year [A], and the base NPV becomes +€0.23M, with payback in year 5 [E].
+**On its own the subscription breaks even; the retention effect is the profit:**
+- Its 6-year NPV at 10% is about break-even, +€0.01M [E].
+- Add a 5-point uplift in service-contract renewals and higher SMART attach, worth about €60 per adopter per year [A], and the base NPV becomes +€0.58M (low −€0.64M, high +€2.84M), with payback in year 5 [E].
+- The measured tier is Europress's existing platform at its own price, so it is not in these figures. Source: `analysis/npv_option_a.py`, which reruns `agents/bizplan-cfo_model.py` with that one change.
 
 The board message is therefore: **weight makes SMART and the service contract stickier**.
 
@@ -100,7 +101,7 @@ The board message is therefore: **weight makes SMART and the service contract st
 | **Operator API** | Operators push tickets and get back a reconciliation receipt and a private tare-hygiene report ("give to get") |
 
 **How it is built:**
-- Rules decide. They beat ML on the anomaly benchmark (0.73 vs 0.35 macro-F1) [D].
+- Rules decide. They beat ML on the anomaly benchmark (0.73 vs 0.35 macro-F1), and a rules + ML hybrid reaches 0.78 [D].
 - AI drafts the explanations and letters, citing the evidence rows.
 - A person approves every action.
 
@@ -115,7 +116,7 @@ This means SMART Center can run it as a managed service without hiring a data te
 | 2. Poland and Benelux | 2028 | Proof of Fullness on gain-share; BDO reporting | At least 30% of pilot sites move from fixed to on-call; gain-share revenue covers cost to serve |
 | 3. Platform | 2029+ | Operator data feed at scale; anonymised material-flow index | EU Data Act consent in every contract; competition-law review passed |
 
-Starting cost is about 2–3 FTE for 6 months plus €10–19k for the scale-platform pilot machines [E]. The Phase 0 gate caps the downside at about €150k [E].
+Starting cost is about 2–3 FTE for 6 months plus €34–63k for the 10 load-cell reference machines (10 × €3.4–6.3k installed) [E]. The full Phase 0 budget is about €211–267k, itemised in `output/05_business_plan_addon.md` §6, and the Phase 0 gate caps the downside at that budget [E].
 
 ## 5. Assumptions and what remains unproven
 

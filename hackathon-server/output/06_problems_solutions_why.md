@@ -171,7 +171,7 @@ Clicking a card opens the next level: why, and the numbered steps to take. Click
 
 **The weight could be wrong.** Our two studies disagree, as Problem 1 explains. So the roadmap runs a €0 test on archived data first, fits real scales to a reference group before trusting the estimate, publishes the monthly accuracy openly, and stops at a gate if the numbers are not met. The most Europress can lose is the first phase's budget, about €270k.
 
-**The add-on alone does not pay back.** The subscriptions, on their own, have a negative value over six years (−€0.33M). We say so, rather than dress it up as a new revenue line, because the real value is elsewhere: customers who can see their weight buy SMART and renew their service contracts, which is where Europress makes its profit. Counted that way, the value turns positive (+€0.23M in the expected case).
+**The add-on alone only breaks even.** The subscriptions, on their own, are worth about zero over six years (+€0.01M). We say so, rather than dress it up as a new revenue line, because the real value is elsewhere: customers who can see their weight buy SMART and renew their service contracts, which is where Europress makes its profit. Counted that way, the value is +€0.58M in the expected case.
 
 ---
 

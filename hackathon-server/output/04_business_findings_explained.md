@@ -276,7 +276,7 @@ All prices are **our assumptions** [A]. Europress's real prices should replace t
 | **Proof of Fullness** | Insights. Launch first in Poland and Benelux. | **25% of the verified savings** from avoided pickups in year 1 ("gain-share"), then a normal subscription | Works in markets where "the cheapest offer wins": the customer pays only out of money already saved. |
 | **Contract benchmark, action list and reporting pack** | SMART Integrated | +€25 per machine per month, or **€10–40k a year as a licence for a whole chain** | For procurement and sustainability teams at large companies. |
 | **Operator Review service** | Integrated / SMART Center | 15% of the money *verifiably* recovered or saved, with a cap | Weight is the evidence that makes the review possible. |
-| **Measured tier (real scale platform)** | Lease plus service contract | Priced from Europress's real platform cost. Our load-cell hardware alone costs about €47–88 per month over a 6-year lease (€3.4–6.3k ÷ 72 months), so the earlier +€39–49 would not cover it. | Only offered where the value is higher than the cost. |
+| **Measured tier (real scale platform)** | Lease plus service contract | Europress's current price for its scale platform, inside the lease. It is kept outside the add-on money calculation below. | Only offered where the value is higher than the cost. |
 | **Data feed for operators** | Operator API | Free for operators who share tickets. Paid analytics later. | Turns the argument over who owns the data into a fair trade. |
 | *An idea from our notes* | SMART | **Discounted SMART for the first 12 months** | The first saving lever (emptying when full) usually pays for it on its own. |
 
@@ -302,8 +302,8 @@ These are illustrative projections, not forecasts.
 
 To judge an investment, finance teams use **NPV (net present value)**. It adds up all future money in and out, counting money later as worth less than money now (here at 10% a year). A negative NPV means the investment loses value.
 
-- **The subscription on its own** has a 6-year NPV of **−€0.33M**. It loses money.
-- But the add-on should also help Europress **keep service contracts** (we assumed renewals rise by 5 percentage points) and **sell more SMART** (worth about €60 per adopting customer per year). Counting those effects, the expected NPV becomes **+€0.23M** (pessimistic −€0.83M, optimistic +€2.37M), and the investment pays back in year 5 [E].
+- **The subscription on its own** has a 6-year NPV of **+€0.01M**. It roughly breaks even.
+- But the add-on should also help Europress **keep service contracts** (we assumed renewals rise by 5 percentage points) and **sell more SMART** (worth about €60 per adopting customer per year). Counting those effects, the expected NPV becomes **+€0.58M** (pessimistic −€0.64M, optimistic +€2.84M), and the investment pays back in year 5 [E]. The real scale platform is sold at Europress's own price, so it is not part of this calculation.
 
 **→ The message for Europress's board:** "Weight makes SMART and the service contract **stickier**", meaning customers stay longer and buy more. It is **not** "a big new revenue line on its own".
 
@@ -381,7 +381,7 @@ The first seven decisions are about the business. Decisions 8–25 are about the
 | 4 | **Rules decide, AI drafts, a person approves** | Let machine learning decide; fully automatic actions | Rules performed better in our test, and this keeps trust and good relations with operators. | Practice data |
 | 5 | **Free for the typical customer**; charge chains and fixed-schedule customers | Charge everyone | The typical (median) customer gains €0. | Practice data |
 | 6 | Price at **€15 list, €12 in a lease**, in SMART Insights | €8 (draft plan), €10, €25 | The fee stays at or below a third of the value, and a parallel team reached the same price. | Section 6 |
-| 7 | Tell the board it makes **SMART and service contracts stickier** | "A new revenue line" | On its own, the subscription loses money. | Finance view |
+| 7 | Tell the board it makes **SMART and service contracts stickier** | "A new revenue line" | On its own, the subscription only breaks even; keeping customers is where the profit is. | Finance view |
 | 8 | The main thing we built is a **dashboard for the end customer** that teaches them and shows savings in euros | An internal tool for SMART Center staff | It was our team's goal, and "educate the client" was the top priority in our notes. | Our brief |
 | 9 | **Every number can be clicked** to show its formula, sources and records | Plain number tiles | From our brief: "clicking on the value will show where the info is coming from". | Our brief |
 | 10 | Show **five separate ways to save** (empty when full, avoid fees, sort more, compare price per tonne, invoice second look) | One headline savings number | Each one can be explained and acted on. | Dashboard |

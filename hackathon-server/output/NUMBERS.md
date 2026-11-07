@@ -46,6 +46,7 @@ Evidence tags (same as the business case):
 | Soft sensor on SMART machines | **€0** extra hardware (the pressure sensor already exists) [T] | briefing; `tommi_1600.txt` |
 | Pressure transducer for other makers' machines | **€264** (cheapest verified); £156–198 in the UK [L]. The €30 figure could not be verified | `smartweight/SENSOR_RESEARCH.md:104`; `ISSUES.md:19` |
 | Load cells in a 72-month lease | **≈ €47–88 a month, hardware only** [E] = €3.4–6.3k ÷ 72, no interest or margin | arithmetic on the BOM |
+| Measured tier price | **Europress's current platform price**, on the lease; outside the add-on economics [T] | Europress already sells the Scale Solutions platform |
 
 **Wrong values seen:** €1.0–1.9k and ~€1,500 for load cells (rejected in `smartweight/ISSUES.md:10`), €14–26 / €14–33 / €21–33 a month lease cost, a +€39–49 a month measured-tier price (below the hardware cost above).
 
@@ -102,7 +103,8 @@ Evidence tags (same as the business case):
 | Overbilling detection at σ ≈ 10 % | **62 %** of +10 % overbilling caught per quarter [D] | `10d_detection_sigma_sweep.csv` |
 | Verified Weight price | **€15 per device per month list, €12 bundled into a new lease** [A]. The dashboard's revenue tile uses €12 (bundled) | `BUSINESS_CASE.md` §3; `public/js/i18n.js:101` |
 | +1 pp SMART attach | **≈ 120 machines ≈ €21,600 a year** at the €15 list price (120 × €15 × 12) on an assumed ~12k fleet [A] | `BUSINESS_PLAN.md:103`; `06:93` |
-| NPV, 6 years at 10 % | **−€0.33M** subscription alone; **+€0.23M** base with retention uplift (low −€0.83M, high +€2.37M) [E] | `bizplan-cfo_model.py` via `BUSINESS_PLAN.md:93–94` |
+| NPV, 6 years at 10 % | **+€0.01M** subscription alone (break-even); **+€0.58M** base with retention uplift (low −€0.64M, high +€2.84M), payback year 5 [E]. The measured tier (Europress's existing platform) is sold at its own price and is outside these figures | `europress_conclusions/analysis/npv_option_a.py` (reruns `agents/bizplan-cfo_model.py` with `prem_share = 0`) |
+| Why the NPV changed | The published −€0.33M / +€0.23M included a measured tier at €49 a month on €1,900 of hardware. At the verified €3.4–6.3k it pays back in 76–140 months, longer than the 72-month lease, and turns the base NPV negative (−€0.29M to −€1.28M) [E] | same script; `smartweight/BILL_OF_MATERIALS.md` |
 | Add-on revenue | ⚠️ **two models, see open decision 1** | — |
 
 ## 7. AI vs rules (the brief asks for this comparison)
@@ -119,7 +121,10 @@ Evidence tags (same as the business case):
 ## 8. Open decisions (need a person, not a fix)
 
 1. **Revenue and value don't come from the same model.** `05` §6 shows €0.15M / €0.50M / **€0.91M** expected for 2027–29. The NPV above comes from the CFO model, whose base year-3 add-on revenue is **€0.6–0.75M** (`BUSINESS_PLAN.md:86`). Either rerun `europress_conclusions/agents/bizplan-cfo_model.py` with the `05` revenue lines, or label them as two scopes.
-2. **Measured-tier price.** The old +€39–49 a month is below the €47–88 a month hardware cost. It needs Europress's real Scale Solutions platform price (open question 3 in `04`).
+2. ✅ **Measured-tier price (decided 7 Nov):** sold at Europress's current platform price and kept outside the add-on economics. NPV updated to match (§6).
+5. ⚠️ **Not edited, because the correct figure looks worse; waiting for a decision:**
+   - `europress_conclusions/BUSINESS_CASE.md:119`: "€10–19k for the scale-platform pilot machines … downside about €150k". The evidence says €34–63k and ≈ €211–267k (§3). `BUSINESS_PLAN.md` and both `04` files already use the correct figures, so the business case currently disagrees with them.
+   - `europress_conclusions/analysis/pl_model.py` (annual revenue table, "~€0.6–0.75M in year 3", break-even ~3,100 devices): it still includes the measured tier at 3 % of devices. Taking it out, as in the NPV, lowers base year-3 revenue from €615k to €558–572k and raises break-even to 3,157–3,253 devices.
 3. **€25 a month is used for two products**: the Integrated contract benchmark (`BUSINESS_CASE.md` §3) and the camera tier (`05` §6). Rename or reprice one.
 4. **The app's trend widgets use three bases** (§5). Optional pipeline change: put all of them on one basis.
 
@@ -132,7 +137,8 @@ Evidence tags (same as the business case):
 | `output/04_business_findings_explained.md` | ✅ fixed in this pass: same set |
 | `output/05_business_plan_addon.md` / `.html`, `output/06_problems_solutions_why.md`, dashboard, simulator site | Being fixed by the session running `output/PROMPT_fix_number_conflicts.md` (already shows 5.3 %, 48 of 395 = 12 %, as-of date). **Still to do in `06`:** line 33 "fill-only 7 %" → 15.4 % fill-only vs 7.0 % with ticket calibration (§1); line 135 mixes trend bases (§5); line 172 "€270k" → €211–267k (§3) |
 | `input-files/CHEAT_SHEET.md` §3–§5 | ⚠️ other session's video sheet. Differs from this file on: "37 have a ticket" (→ 48, §4), Tier 2 "P95 1.4–2.3 %" (→ 2.3 %; 1.4 % is Tier 3, §1), pressure "25–49 % P95" (→ 29–49 %; 25 % is strain gauges, §1) |
-| `europress_conclusions/BUSINESS_CASE.md` | ⚠️ not yet fixed: line 59 concentration basis, line 71 measured tier "+€39–49 … ±1–2 %", line 118 "€10–19k … €150k" |
+| `europress_conclusions/BUSINESS_CASE.md` | ✅ fixed: concentration basis, measured tier, NPV, error-budget tag + 5.3 %, hybrid 0.78. ⚠️ Line 119 (pilot €10–19k, downside €150k) left as is: see open decision 5 |
+| NPV in `BUSINESS_PLAN.md`, both `04` files, `05` md + html, `06` | ✅ updated to +€0.01M / +€0.58M (low −€0.64M, high +€2.84M). ⚠️ `input-files/CHEAT_SHEET.md` §6 still shows −€0.33M / +€0.23M |
 | `europress_conclusions/BUILD_PLAN.md:79` | ⚠️ "±12–15 % per lift" needs the [E] tag and the 5.3 % [S] figure next to it |
 | `virtual_scale/ASSUMPTIONS_AND_EXCEPTIONS.md:147, 152` | ⚠️ transducer €60–150 and platform ~€1,500 / €1.0–1.9k are simulator inputs. Add a note pointing to §2 |
 | `europress_conclusions/sites/*` | ⚠️ ≈ 33 stale figures. Recommendation: don't submit these sites |
