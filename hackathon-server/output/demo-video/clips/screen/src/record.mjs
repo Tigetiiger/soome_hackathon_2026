@@ -282,12 +282,19 @@ const plan = {
     await r.hold(0.2);
     await r.move('#aiLog .msg.bot', 0.5, 0.015, 0.1);              // → ~3.7
     await r.holdUntil(4.0);
+    const target = await r.page.evaluate(() => {                  // scroll position that puts "Tell the customer" on top
+      const l = document.getElementById('aiLog'); const b = l.querySelector('.msg.bot');
+      const tell = [...b.querySelectorAll('p, li, div')].find((e) => e.textContent.trim().startsWith('Tell the customer'));
+      const max = l.scrollHeight - l.clientHeight;
+      if (!tell) return max;
+      return Math.min(max, tell.getBoundingClientRect().top - l.getBoundingClientRect().top + l.scrollTop - 12);
+    });
     await r.frames(r.sec(1.4), async (p) => {                     // → 5.4 scroll the brief to "Tell the customer"
-      await r.page.evaluate((p) => {
+      await r.page.evaluate(([p, to]) => {
         const l = document.getElementById('aiLog'); const b = l.querySelector('.msg.bot');
-        const from = b.offsetTop - 8; const to = l.scrollHeight - l.clientHeight;
+        const from = b.offsetTop - 8;
         l.scrollTop = from + (to - from) * p;
-      }, ease(p));
+      }, [ease(p), target]);
     });
     await r.holdUntil(6.0);
   },

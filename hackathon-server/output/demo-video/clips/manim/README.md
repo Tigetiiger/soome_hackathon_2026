@@ -4,7 +4,7 @@
 |---|---|---|---|
 | `problem.mp4` | 15.0 s, 450 frames | `src/problem.py` → `Problem` | practice data |
 | `solution.mp4` | 13.0 s, 390 frames | `src/solution.py` → `Solution` | simulated |
-| `impact.mp4` | 25.0 s, 750 frames | `src/impact.py` → `Impact` | practice data · estimate |
+| `impact.mp4` | 25.0 s, 750 frames | `src/impact.py` → `Impact` (v2) | practice data · estimate |
 
 All clips are 1920×1080, 30 fps, H.264 yuv420p, no audio. Captions are not rendered; nothing important is placed in the bottom 180 px.
 
@@ -31,15 +31,20 @@ One of the 395 pickups (`COL-00432-0021`, no ticket) has no fill reading. Its do
 | Error ladder 32.1 / 7.0 / 5.9 / 5.7 / 5.3 % | mean_pct | `simulator-weather-and-stuff/models/full400/comparison.csv`, `split = bins`, `material = all`, steps `naive_fill_x_density`, `fill_presses`, `pressure`, `pressure_graph`, `full_selected` → `src/data/comparison_bins.json` |
 | "same machines, later months: 3.7 %" | 3.75 → 3.7 | same file, `split = time`, `full_selected`; `models/full400/REPORT.md:3` |
 
-### impact.mp4
+### impact.mp4 (v2, 7 Nov 2026 — the v1 table is in impact_v1.mp4's era, see timeline_v1.json)
+All values come from `src/data/impact_v2.json`, written by `src/export_impact_v2.py` from the dashboard data that business.html quotes.
+
 | On screen | Value | Source |
 |---|---|---|
-| €140,574 a year | | `ORG-0049.json` → `kpis.total_cost` |
-| €60,471 saveable (43 %) | 60,471 / 140,574 | `kpis.savings` |
-| Levers €39,955 / €6,386 / €6,318 / €5,881 / €1,931 | sum = €60,471 | `levers[].saving_eur` (`early_lifts`, `tender`, `sorting`, `avoidable_fees`, `invoice_check`) |
-| 74 % → 97 % pickups with an independent weight | 0.743, 0.971 | `soome_hackathon_2026/analysis/outputs/09_summary.log:3`; NUMBERS.md §4 |
-| +1 pp ≈ 120 machines ≈ €21,600 / year | 12,000 / 100 × €15 × 12 | NUMBERS.md §6; `europress_conclusions/BUSINESS_PLAN.md:103` (~12k fleet, +1 pp ≈ 120 devices) [A]; `europress_conclusions/BUSINESS_CASE.md:7,68` (€15 per device per month list) |
-| Hardware study: pressure-only P95 error 29 % | 29.0 % | `europress_conclusions/smartweight/SENSOR_RESEARCH.md:138`; NUMBERS.md §1 |
-| "archived SMART pressure curves from 10–30 machines" | 10–30 | `output/05_business_plan_addon.md:117` (Phase 0a: "a €0 test on archived pressure data from 10–30 machines against their tickets"); NUMBERS.md §1 one-liner |
+| €140,574 waste cost | | `ORG-0049.json` → `kpis.total_cost` |
+| €52,154 SMART can save (37 %) | 52,154 / 140,574 | `kpis.savings` |
+| Levers €39,955 / €6,318 / €5,881 | sum = €52,154 | `levers[].saving_eur` (`early_lifts`, `sorting`, `avoidable_fees`) |
+| SMART fee 25 % = €13,038; keeps €39,116 | round(52,154 × 0.25) | demo share, business.html §4 (the live sales brief says the same) |
+| €1.25M savings, 52 demo customers | €1,245,163 | Σ `customers/*.json` → `kpis.savings` |
+| 3,945 fewer truck trips, 5 demo partners | 676 + 714 + 333 + 745 + 1,477 | Σ `operators/OP-*.json` → `value.trips_saved_year` |
+| ≈ €311k SMART fees | 1,245,163 × 0.25 | business.html §0 |
+| load cells on 10 machines ≈ €34–63k | €3.4–6.3k per machine installed | business.html §7, Table 4 (estimate) |
+
+The problem clip's v2 labels: "operator weighs / at the weighbridge, after the truck has left" and "SMART compactor" (was "hauler weighs / and is paid per tonne", "compactor with fill sensor").
 
 All data is synthetic: Europress practice data plus our simulator. Prices are hypothetical.
