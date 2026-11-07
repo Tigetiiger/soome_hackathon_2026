@@ -254,54 +254,45 @@ quantisation.
 
 ## Validation results (seed 7, 400 bins, 365 days; `validate.py`)
 
+Physics after the expert interview (pressure-derived fill, medium density link, mixed waste).
+
 | check | result | target |
 |---|---|---|
-| mass balance residual | 2.4e-9 kg max | 0 |
-| lift mass cardboard / paper / film / mixed plastic | 3.06 / 3.34 / 1.81 / **2.00** t | 2–3.5 / 2.5–4 / 1.2–2.2 / 0.9–1.8 t |
-| heaviest net lift | 9.34 t | < ~10 t |
+| mass balance residual | 2.3e-9 kg max | 0 |
+| lift mass cardboard / paper / film / mixed waste | 3.04 / 3.39 / 1.84 / 4.86 t | 2–3.5 / 2.5–4 / 1.2–2.2 / 3–6 t (mixed waste assumed) |
+| heaviest net lift | **11.7 t** (34 of 20,281 lifts > 10 t, all mixed waste in 20 m³ DUO) | < ~10 t |
 | days between lifts | median 7.0, 98 % within 2–14 d | mostly 2–14 |
-| overflow | side waste 3.0 % of inflow; 20 % of lifts had side waste since the previous lift; 13 % found true fill ≥ 99 % | the exception (side waste ≤ 6 % of inflow) |
-| annual precipitation UUS/VAR/PIR/POP/LAP | **724** / **723** / 601 / 526 / **359** mm (30-seed mean: 659/676/625/521/507) | 600–700 S, 450–550 N |
-| wet days (≥ 0.1 mm / ≥ 1 mm) | 47–51 % / 25–36 % | — |
+| overflow | side waste 2.6 % of inflow; 18 % of lifts with some side waste | exception, not the rule |
+| fill reading (pressure-derived) | corr 0.95 with true fill; ≈ 6 pp mean error | ~5 % (expert) |
+| pressure graph | corr(contact point, true fill) −0.34 (ram enters only 20–30 cm) | — |
+| annual precipitation UUS/VAR/PIR/POP/LAP | 724 / 723 / 601 / 526 / **359** mm (30-seed mean 659/676/625/521/507) | 600–700 S, 450–550 N |
 | Jan / Jul mean T | UUS −3.9 / 18.4 °C, LAP −12.7 / 15.1 °C | −4 / 17 S, −12 / 15 N |
-| cardboard lift mass, wet+humid vs dry week | open hopper **+5.6 %**, lidded +5.0 %, indoor shaft +0.4 % | a few %, open > shaft |
-| peak pressure at true fill ≥ 85 % | p10 122, p50 173, p90 238 bar | typical 150–220, cap ~240 |
-| corr(pressure, density) at fill ≥ 85 % | 0.77 (paper) – 0.94 (film) | pressure separates densities |
-| false-full-triggered lifts | 10.1 % (mean true fill 57 % vs 90 %, 1.53 t vs 2.80 t) | — |
+| cardboard lift mass, wet+humid vs dry week | open hopper +4.4 %, lidded +2.9 %, indoor shaft −1.4 % | a few %, open > shaft |
+| peak pressure at true fill ≥ 85 % | p10 140, p50 182, p90 234 bar | typical 150–220, cap ~240 |
+| corr(peak pressure, density) at fill ≥ 85 % | 0.73 (cardboard) – 0.87 (film), across machines | weaker than before (medium link) |
+| false-full-triggered lifts | 10.2 % (mean true fill 52 %, 1.68 t vs 3.13 t) | — |
 
-Two results fall outside their targets:
-* **Mixed plastic (2.0 t > 1.8 t)**: the brief itself is inconsistent. Mixed plastic is
-  DUO-only, the smallest DUO is 20 m³, and at 115 kg/m³ an 80–90 % full container
-  holds ≥ 1.9 t. To hit 0.9–1.8 t, lower `rho_typ.mixed_plastic` to about 90 kg/m³ or
-  allow COMBI containers for it.
-* **Precipitation for seed 7**: UUS and VAR are about 3 % above 700 mm and LAP (359 mm)
-  is far below 450 mm. This is one synthetic year with realistic interannual variability
-  (sd ≈ 12 %); LAP is an unusually dry draw. The generator is unbiased: the 30-seed means
-  above are all inside their targets.
+Outside target:
+* **Heaviest lift 11.7 t**: mixed waste at 400 kg/m³ in a 20 m³ DUO occasionally exceeds a
+  hook-lift truck's ~10 t. Restricting mixed waste to ≤ 14 m³ containers (or ≤ 17 m³) would fix it.
+* **Precipitation for seed 7**: one synthetic year with realistic interannual variability; the
+  generator is unbiased over seeds.
 
 ## Baseline soft sensor (`baseline.py`)
 
-LightGBM on log(mass), 5-fold cross-validation **grouped by machine**. Features come only
-from telemetry before the lift: last fill readings, pressure stats over the last
-24–48 h, oil/air temperature, presses and hours since the last lift, and rain/RH for each
-of the last 7 days. Static attributes (material, class, volume, infeed, drainage) are in
-every set. Mean % error is computed over lifts ≥ 200 kg (8 of 19 967 lifts excluded).
+Quick LightGBM check (5-fold CV grouped by machine, lifts ≥ 200 kg). The full pipeline with both
+splits, intervals and the pressure graph is `weight_train/` (results in `models/full400/REPORT.md`).
 
 | features | mean % err | median | p90 | WAPE |
 |---|---|---|---|---|
-| fill only | 28.8 | 18.9 | 47.7 | 22.7 |
-| + pressure | 6.5 | 4.7 | 13.1 | 6.1 |
-| + pressure + presses | 4.9 | 3.8 | 10.0 | 4.9 |
-| + rain + RH (7 d) | **4.85** | 3.8 | 10.0 | 4.8 |
+| fill only | 23.3 | 15.1 | 40.2 | 19.0 |
+| + pressure | 7.2 | 5.8 | 14.6 | 7.1 |
+| + pressure + presses | 5.2 | 4.1 | 10.8 | 5.2 |
+| + rain + RH (7 d) | 5.2 | 4.1 | 10.7 | 5.1 |
 
-Pressure is the big win: it reveals the machine's hidden density factor and exposes
-false-full readings (error on those lifts drops from 101 % to 16 %, and to 8 % with
-press counts). Rain and RH add practically nothing in this baseline: 4.87 → 4.85 %
-overall, open-hopper cardboard 5.07 → 4.95 %, and indoor-shaft cardboard slightly worse
-(5.00 → 5.08 %), i.e. within noise. The simulated weather effect is a few percent,
-comparable to the residual day-to-day density noise (cv 7 %), and some of it is already
-visible through pressure. A model that also uses rain over the whole cycle, or
-infeed × rain interactions, may gain more; this has not been tested.
+With the fill reading itself derived from pressure, fill alone is a weak predictor of weight
+(23 %). Peak pressure and the number of presses since the last lift carry most of the information;
+weather adds almost nothing measurable.
 
 ## Limitations
 * Weather is regional (5 points). There is no microclimate, wind-driven rain, roof
@@ -323,8 +314,7 @@ infeed × rain interactions, may gain more; this has not been tested.
 * The fill ceiling differs slightly by material. Right after a stroke the pack is
   compressed by the springback and relaxes over about 3 h, so the reported true fill of a
   completely full container is about 100·(1 − 0.85·springback): ~96.6 % cardboard,
-  98.3 % paper, 93.2 % film, 94.9 % mixed plastic.
-* Mixed plastic lift masses exceed the brief's range for the reason given above.
+  98.3 % paper, 93.2 % film, 98.3 % mixed waste.
 * With the defaults (3–10 days to threshold) no site is slow enough to hit the 28-day
   max interval. Raise `target_cycle_days.max` (for example to 30) to get scheduled
   lifts of part-full containers.

@@ -28,6 +28,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -43,7 +50,7 @@
         "frost_days_cycle",
         "material"
       ],
-      "best_iter": 575,
+      "best_iter": 1103,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -79,6 +86,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -93,7 +107,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 231,
+      "best_iter": 383,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -101,7 +115,7 @@
       "monotone": true,
       "objective": "regression"
     },
-    "per_material__mixed_plastic__point": {
+    "per_material__mixed_waste__point": {
       "features": [
         "container_volume_m3",
         "equipment_class",
@@ -129,6 +143,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -143,7 +164,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 62,
+      "best_iter": 528,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -179,6 +200,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -193,7 +221,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 102,
+      "best_iter": 144,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -229,6 +257,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -243,7 +278,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 136,
+      "best_iter": 178,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -279,6 +314,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -293,7 +335,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 437,
+      "best_iter": 464,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -329,6 +371,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -343,7 +392,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 265,
+      "best_iter": 301,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -351,7 +400,7 @@
       "monotone": false,
       "objective": "quantile"
     },
-    "per_material__paper__q_lo": {
+    "per_material__mixed_waste__q_lo": {
       "features": [
         "container_volume_m3",
         "equipment_class",
@@ -379,6 +428,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -393,7 +449,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 186,
+      "best_iter": 802,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -401,7 +457,7 @@
       "monotone": false,
       "objective": "quantile"
     },
-    "per_material__paper__q_hi": {
+    "per_material__mixed_waste__q_hi": {
       "features": [
         "container_volume_m3",
         "equipment_class",
@@ -429,6 +485,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -443,107 +506,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 113,
-      "params": {
-        "num_leaves": 127,
-        "min_data_in_leaf": 50
-      },
-      "monotone": false,
-      "objective": "quantile"
-    },
-    "per_material__mixed_plastic__q_lo": {
-      "features": [
-        "container_volume_m3",
-        "equipment_class",
-        "infeed",
-        "drainage",
-        "hour",
-        "weekday",
-        "hours_since_lift",
-        "fill_ffill",
-        "fill_max_cycle",
-        "fill_change_24h",
-        "naive_kg_m3",
-        "presses",
-        "presses_cycle",
-        "presses_per_fill",
-        "p_now",
-        "p_last",
-        "p_ewm",
-        "p_max_cycle",
-        "p_count_cycle",
-        "oil_temp_c",
-        "rho_p",
-        "rho_p_smooth",
-        "pressure_kg_m3",
-        "stroke_peak_mean",
-        "stroke_duration_mean",
-        "energy_kwh",
-        "temp_c",
-        "rh_prev_day",
-        "rh_mean_cycle",
-        "rain_mm_d1",
-        "rain_mm_d2",
-        "rain_mm_d3",
-        "rain_mm_d4",
-        "rain_mm_d5",
-        "rain_mm_d6",
-        "rain_mm_d7",
-        "rain_72h",
-        "rain_exposed_cycle",
-        "frost_days_cycle"
-      ],
-      "best_iter": 334,
-      "params": {
-        "num_leaves": 127,
-        "min_data_in_leaf": 50
-      },
-      "monotone": false,
-      "objective": "quantile"
-    },
-    "per_material__mixed_plastic__q_hi": {
-      "features": [
-        "container_volume_m3",
-        "equipment_class",
-        "infeed",
-        "drainage",
-        "hour",
-        "weekday",
-        "hours_since_lift",
-        "fill_ffill",
-        "fill_max_cycle",
-        "fill_change_24h",
-        "naive_kg_m3",
-        "presses",
-        "presses_cycle",
-        "presses_per_fill",
-        "p_now",
-        "p_last",
-        "p_ewm",
-        "p_max_cycle",
-        "p_count_cycle",
-        "oil_temp_c",
-        "rho_p",
-        "rho_p_smooth",
-        "pressure_kg_m3",
-        "stroke_peak_mean",
-        "stroke_duration_mean",
-        "energy_kwh",
-        "temp_c",
-        "rh_prev_day",
-        "rh_mean_cycle",
-        "rain_mm_d1",
-        "rain_mm_d2",
-        "rain_mm_d3",
-        "rain_mm_d4",
-        "rain_mm_d5",
-        "rain_mm_d6",
-        "rain_mm_d7",
-        "rain_72h",
-        "rain_exposed_cycle",
-        "frost_days_cycle"
-      ],
-      "best_iter": 110,
+      "best_iter": 178,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -579,6 +542,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -593,7 +563,7 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 237,
+      "best_iter": 272,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -629,6 +599,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",
@@ -643,7 +620,121 @@
         "rain_exposed_cycle",
         "frost_days_cycle"
       ],
-      "best_iter": 130,
+      "best_iter": 178,
+      "params": {
+        "num_leaves": 127,
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "per_material__paper__q_lo": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "oil_temp_c",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle"
+      ],
+      "best_iter": 238,
+      "params": {
+        "num_leaves": 127,
+        "min_data_in_leaf": 50
+      },
+      "monotone": false,
+      "objective": "quantile"
+    },
+    "per_material__paper__q_hi": {
+      "features": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "oil_temp_c",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
+        "temp_c",
+        "rh_prev_day",
+        "rh_mean_cycle",
+        "rain_mm_d1",
+        "rain_mm_d2",
+        "rain_mm_d3",
+        "rain_mm_d4",
+        "rain_mm_d5",
+        "rain_mm_d6",
+        "rain_mm_d7",
+        "rain_72h",
+        "rain_exposed_cycle",
+        "frost_days_cycle"
+      ],
+      "best_iter": 135,
       "params": {
         "num_leaves": 127,
         "min_data_in_leaf": 50
@@ -654,30 +745,30 @@
   },
   "selection": {
     "cardboard": "per_material",
-    "mixed_plastic": "per_material",
+    "mixed_waste": "per_material",
     "paper": "per_material",
     "plastic_film": "per_material"
   },
   "inverter": {
     "cardboard": [
-      -2.4681414508405237,
-      2.5306666728739255,
-      1.4264779186221666
+      0.36131740545257457,
+      1.0337390802008442,
+      0.8860001980178187
     ],
     "paper": [
-      -3.016488429706981,
-      2.7003516049668357,
-      1.403794131965372
+      0.1010176387851747,
+      1.0630508888129067,
+      0.8585163572992017
     ],
     "plastic_film": [
-      -2.8519480503535135,
-      2.2373268422184145,
-      1.557468646799372
+      -0.441589375851134,
+      1.08572190694197,
+      1.0783841239266097
     ],
-    "mixed_plastic": [
-      -2.7482025313076965,
-      2.2590311146523305,
-      1.616622118305107
+    "mixed_waste": [
+      -1.4193346976533177,
+      1.0589811452821034,
+      1.0687939233510286
     ]
   },
   "conformal": {
@@ -689,26 +780,26 @@
     ],
     "coverage": 0.8,
     "q": {
-      "cardboard|0": 0.06453154126916627,
-      "cardboard|1": 0.08516712491331024,
-      "cardboard|2": 0.24682664090310452,
-      "mixed_plastic|0": 0.13067059689612812,
-      "mixed_plastic|1": 0.23271895586201904,
-      "mixed_plastic|2": 0.2836561415186628,
-      "paper|0": 0.11697105657363635,
-      "paper|1": 0.13886518994671168,
-      "paper|2": 0.2762919101254666,
-      "plastic_film|0": 0.09218083198718248,
-      "plastic_film|1": 0.13175851119827242,
-      "plastic_film|2": 0.2519056665847935
+      "cardboard|0": 0.10028551231076939,
+      "cardboard|1": 0.16819278442829674,
+      "cardboard|2": 0.33042093394598576,
+      "mixed_waste|0": 0.22813890733912354,
+      "mixed_waste|1": 0.2671628287484285,
+      "mixed_waste|2": 0.49605829627878095,
+      "paper|0": 0.10783370037202683,
+      "paper|1": 0.2133596811874324,
+      "paper|2": 0.34272419937160165,
+      "plastic_film|0": 0.15349414871538847,
+      "plastic_film|1": 0.1925456049165642,
+      "plastic_film|2": 0.2938767811773083
     },
     "q_material": {
-      "cardboard": 0.09215782851911937,
-      "mixed_plastic": 0.1870137331512442,
-      "paper": 0.1395689617355576,
-      "plastic_film": 0.12849587853039993
+      "cardboard": 0.14693587306973646,
+      "mixed_waste": 0.27252737694931944,
+      "paper": 0.15963344740353014,
+      "plastic_film": 0.17691775038216778
     },
-    "q_pool": 0.11677286721838293
+    "q_pool": 0.1675000377080768
   },
   "info": {
     "split": "time",
@@ -716,7 +807,7 @@
       "cardboard": 190.0,
       "paper": 330.0,
       "plastic_film": 140.0,
-      "mixed_plastic": 115.0
+      "mixed_waste": 400.0
     },
     "feature_sets": {
       "fill_presses": [
@@ -763,6 +854,41 @@
         "stroke_duration_mean",
         "energy_kwh"
       ],
+      "pressure_graph": [
+        "container_volume_m3",
+        "equipment_class",
+        "infeed",
+        "drainage",
+        "hour",
+        "weekday",
+        "hours_since_lift",
+        "fill_ffill",
+        "fill_max_cycle",
+        "fill_change_24h",
+        "naive_kg_m3",
+        "presses",
+        "presses_cycle",
+        "presses_per_fill",
+        "p_now",
+        "p_last",
+        "p_ewm",
+        "p_max_cycle",
+        "p_count_cycle",
+        "oil_temp_c",
+        "rho_p",
+        "rho_p_smooth",
+        "pressure_kg_m3",
+        "stroke_peak_mean",
+        "stroke_duration_mean",
+        "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3"
+      ],
       "full": [
         "container_volume_m3",
         "equipment_class",
@@ -790,6 +916,13 @@
         "stroke_peak_mean",
         "stroke_duration_mean",
         "energy_kwh",
+        "curve_contact_pos",
+        "curve_contact_ewm",
+        "curve_contact_min_cycle",
+        "curve_rise_slope_ewm",
+        "curve_mean_bar_ewm",
+        "curve_completion_min_cycle",
+        "graph_kg_m3",
         "temp_c",
         "rh_prev_day",
         "rh_mean_cycle",

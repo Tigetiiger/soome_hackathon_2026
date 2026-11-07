@@ -1,6 +1,6 @@
 # Hydraulic soft sensor - container mass report (`full400`)
 
-On the `time` (same machines, later months) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of **3.6 %** (median 2.8 %, 75 % of lifts within 5 %, n = 4958), against 29.7 % for the naive fill × nominal density estimate; 4 of 4 materials meet the < 5 % target. The calibrated p10–p90 interval covers 76 % of lift masses (target 80 %). On the `bins` (unseen machines) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of **4.7 %** (median 3.9 %, 61 % of lifts within 5 %, n = 1260), against 28.5 % for the naive fill × nominal density estimate; 3 of 4 materials meet the < 5 % target (missing: paper). The calibrated p10–p90 interval covers 76 % of lift masses (target 80 %).
+On the `time` (same machines, later months) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of **3.7 %** (median 3.0 %, 73 % of lifts within 5 %, n = 4876), against 28.3 % for the naive fill × nominal density estimate; 4 of 4 materials meet the < 5 % target. The calibrated p10–p90 interval covers 78 % of lift masses (target 80 %). On the `bins` (unseen machines) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of **5.3 %** (median 4.3 %, 55 % of lifts within 5 %, n = 1221), against 32.1 % for the naive fill × nominal density estimate; 1 of 4 materials meet the < 5 % target (missing: cardboard, paper, mixed_waste). The calibrated p10–p90 interval covers 77 % of lift masses (target 80 %).
 
 > **All data is synthetic** (simulator output for the Europress hackathon). The numbers demonstrate the method, not field performance.
 
@@ -10,97 +10,99 @@ On the `time` (same machines, later months) split the selected soft sensor estim
 
 | item | value |
 |---|---|
-| training wall time (all splits) | 555 s |
-| feature build | 21.8 s |
-| peak memory (RSS) | 3.43 GB |
+| training wall time (all splits) | 798 s |
+| feature build | 37.7 s |
+| peak memory (RSS) | 4.12 GB |
 | hourly rows / machines | 3,504,000 / 400 |
-| split `time` wall time | 214 s |
-| split `bins` wall time | 319 s |
-| prediction run | 3,504,000 rows in 62.2 s (features + predict 61.0 s) |
-| prediction cost | 17.4 µs per machine-hour |
-| prediction peak memory | 3.36 GB |
+| split `time` wall time | 469 s |
+| split `bins` wall time | 290 s |
+| prediction run | 3,504,000 rows in 72.3 s (features + predict 70.9 s) |
+| prediction cost | 20.2 µs per machine-hour |
+| prediction peak memory | 4.00 GB |
 
 ## Split `time` (same machines, later months)
 
-Same machines, trained on the first 75 % of time and tested on the last 25 %. Training machines: 400, test machines: 400, test from 2026-07-01 17:15:00+03:00. Rows: train 2,070,009, val 262,800, cal 262,800, test 876,000.
+Same machines, trained on the first 75 % of time and tested on the last 25 %. Training machines: 400, test machines: 400, test from 2026-07-01 17:15:00+03:00. Rows: train 2,070,084, val 262,800, cal 262,800, test 876,000.
 
-Selected setup: cardboard → **per_material**, paper → **per_material**, plastic_film → **per_material**, mixed_plastic → **per_material**.
+Selected setup: cardboard → **per_material**, paper → **per_material**, plastic_film → **per_material**, mixed_waste → **per_material**.
 
 **At lift (hour before emptying vs weighbridge):**
 
 | material | n | MAE kg | mean % | median % | within 5 % | within 10 % | bias kg | coverage | width kg |
 |---|---|---|---|---|---|---|---|---|---|
-| cardboard | 2528 | 104 | 3.6 | 2.8 | 74 % | 96 % | -31 | 76 % | 353 |
-| paper | 720 | 121 | 3.9 | 3.2 | 72 % | 95 % | -26 | 77 % | 408 |
-| plastic_film | 1231 | 55 | 3.4 | 2.6 | 78 % | 96 % | -8 | 76 % | 186 |
-| mixed_plastic | 479 | 61 | 3.3 | 2.5 | 81 % | 95 % | -15 | 71 % | 181 |
-| **overall** | 4958 | 90 | 3.6 | 2.8 | 75 % | 96 % | -23 | 76 % | 303 |
+| cardboard | 2479 | 121 | 4.0 | 3.2 | 69 % | 95 % | -35 | 78 % | 455 |
+| paper | 702 | 134 | 4.0 | 3.1 | 69 % | 94 % | -16 | 78 % | 502 |
+| plastic_film | 1168 | 58 | 3.3 | 2.6 | 78 % | 97 % | -6 | 80 % | 226 |
+| mixed_waste | 527 | 144 | 3.1 | 2.4 | 83 % | 98 % | -22 | 77 % | 529 |
+| **overall** | 4876 | 110 | 3.7 | 3.0 | 73 % | 96 % | -24 | 78 % | 415 |
 
 **Hourly (every test hour):**
 
 | material | MAE kg | mean % | coverage |
 |---|---|---|---|
-| cardboard | 74 | 6.0 | 80 % |
-| paper | 87 | 6.5 | 80 % |
-| plastic_film | 41 | 5.4 | 79 % |
-| mixed_plastic | 43 | 5.3 | 78 % |
-| overall | 65 | 5.9 | 79 % |
+| cardboard | 74 | 5.6 | 79 % |
+| paper | 80 | 5.7 | 77 % |
+| plastic_film | 36 | 4.4 | 79 % |
+| mixed_waste | 83 | 4.2 | 80 % |
+| overall | 66 | 5.2 | 79 % |
 
 ![predicted vs true at lift, time](plots/pred_vs_true_time.png)
 
 ## Split `bins` (unseen machines)
 
-Unseen machines (25 % held out, stratified by material), tested on the last 25 % of the period. Training machines: 240, test machines: 100, test from 2026-07-01 17:15:00+03:00. Rows: train 1,556,747, val 200,818, cal 188,500, test 219,000.
+Unseen machines (25 % held out, stratified by material), tested on the last 25 % of the period. Training machines: 240, test machines: 100, test from 2026-07-01 17:15:00+03:00. Rows: train 1,556,196, val 201,569, cal 188,497, test 219,000.
 
-Selected setup: cardboard → **per_material**, paper → **shared**, plastic_film → **per_material**, mixed_plastic → **per_material**.
+Selected setup: cardboard → **per_material**, paper → **shared**, plastic_film → **per_material**, mixed_waste → **per_material**.
 
 **At lift (hour before emptying vs weighbridge):**
 
 | material | n | MAE kg | mean % | median % | within 5 % | within 10 % | bias kg | coverage | width kg |
 |---|---|---|---|---|---|---|---|---|---|
-| cardboard | 631 | 128 | 4.7 | 3.9 | 59 % | 92 % | -31 | 80 % | 440 |
-| paper | 189 | 178 | 5.3 | 4.6 | 56 % | 87 % | -23 | 78 % | 578 |
-| plastic_film | 320 | 65 | 4.2 | 3.3 | 68 % | 95 % | -4 | 72 % | 191 |
-| mixed_plastic | 120 | 100 | 4.7 | 4.2 | 61 % | 92 % | -1 | 61 % | 245 |
-| **overall** | 1260 | 117 | 4.7 | 3.9 | 61 % | 92 % | -20 | 76 % | 379 |
+| cardboard | 610 | 147 | 5.2 | 4.4 | 55 % | 89 % | -59 | 82 % | 548 |
+| paper | 184 | 192 | 5.4 | 4.1 | 58 % | 84 % | -48 | 86 % | 734 |
+| plastic_film | 294 | 79 | 4.7 | 3.5 | 64 % | 87 % | -2 | 82 % | 275 |
+| mixed_waste | 133 | 407 | 6.7 | 6.7 | 35 % | 86 % | -156 | 31 % | 547 |
+| **overall** | 1221 | 166 | 5.3 | 4.3 | 55 % | 88 % | -54 | 77 % | 510 |
 
 **Hourly (every test hour):**
 
 | material | MAE kg | mean % | coverage |
 |---|---|---|---|
-| cardboard | 83 | 7.0 | 85 % |
-| paper | 120 | 8.1 | 73 % |
-| plastic_film | 49 | 6.4 | 79 % |
-| mixed_plastic | 59 | 6.6 | 82 % |
-| overall | 78 | 7.0 | 81 % |
+| cardboard | 88 | 6.6 | 81 % |
+| paper | 106 | 6.7 | 83 % |
+| plastic_film | 50 | 6.1 | 76 % |
+| mixed_waste | 172 | 6.5 | 56 % |
+| overall | 90 | 6.5 | 77 % |
 
 ![predicted vs true at lift, bins](plots/pred_vs_true_bins.png)
 
 ## Comparison ladder (mean % error at lift)
 
-Each step adds signals: naive fill × nominal density → fill + press counts (LightGBM) → + hydraulic pressure → + weather (full model, shared across materials); then the full per-material models and the setup selected per material on validation.
+Each step adds signals: naive fill × nominal density → fill + press counts (LightGBM) → + peak hydraulic pressure → + pressure graph (pressure along the ram stroke: contact point, rise slope, mean pressure, completion) → + weather (full model, shared across materials); then the full per-material models and the setup selected per material on validation. The reported fill level itself is the machine's approximate, pressure-derived estimate.
 
 **`time` (same machines, later months)**
 
-| step | cardboard | paper | plastic_film | mixed_plastic | **overall** |
+| step | cardboard | paper | plastic_film | mixed_waste | **overall** |
 |---|---|---|---|---|---|
-| naive fill x density | 26.8 | 28.6 | 34.1 | 35.3 | 29.7 |
-| fill + presses | 5.8 | 6.0 | 6.2 | 5.3 | 5.9 |
-| + pressure | 3.8 | 4.2 | 3.6 | 3.7 | 3.8 |
-| + weather (full, shared) | 3.7 | 4.1 | 3.7 | 3.7 | 3.8 |
-| full, per material | 3.6 | 3.9 | 3.4 | 3.3 | 3.6 |
-| selected | 3.6 | 3.9 | 3.4 | 3.3 | 3.6 |
+| naive fill x density | 26.4 | 25.4 | 33.0 | 30.8 | 28.3 |
+| fill + presses | 5.9 | 5.9 | 5.9 | 5.3 | 5.8 |
+| + pressure (peak) | 4.6 | 4.7 | 3.6 | 3.5 | 4.3 |
+| + pressure graph | 4.3 | 4.4 | 3.6 | 3.3 | 4.0 |
+| + weather (full, shared) | 4.2 | 4.2 | 3.6 | 3.4 | 4.0 |
+| full, per material | 4.0 | 4.0 | 3.3 | 3.1 | 3.7 |
+| selected | 4.0 | 4.0 | 3.3 | 3.1 | 3.7 |
 
 **`bins` (unseen machines)**
 
-| step | cardboard | paper | plastic_film | mixed_plastic | **overall** |
+| step | cardboard | paper | plastic_film | mixed_waste | **overall** |
 |---|---|---|---|---|---|
-| naive fill x density | 26.0 | 27.3 | 36.5 | 21.9 | 28.5 |
-| fill + presses | 6.4 | 7.2 | 8.7 | 6.7 | 7.1 |
-| + pressure | 4.7 | 5.2 | 4.5 | 5.7 | 4.8 |
-| + weather (full, shared) | 4.7 | 5.3 | 4.6 | 6.0 | 4.9 |
-| full, per material | 4.7 | 5.5 | 4.2 | 4.7 | 4.7 |
-| selected | 4.7 | 5.3 | 4.2 | 4.7 | 4.7 |
+| naive fill x density | 31.0 | 28.3 | 41.9 | 20.3 | 32.1 |
+| fill + presses | 6.3 | 6.6 | 7.2 | 10.0 | 7.0 |
+| + pressure (peak) | 5.6 | 5.7 | 5.3 | 8.7 | 5.9 |
+| + pressure graph | 5.5 | 5.6 | 5.3 | 7.6 | 5.7 |
+| + weather (full, shared) | 5.3 | 5.4 | 5.2 | 7.6 | 5.5 |
+| full, per material | 5.2 | 5.8 | 4.7 | 6.7 | 5.3 |
+| selected | 5.2 | 5.4 | 4.7 | 6.7 | 5.3 |
 
 ![comparison ladder](plots/ladder.png)
 
@@ -110,14 +112,14 @@ Setup is chosen per material on the validation lifts (mean % error); `–` means
 
 | material | split | val shared | val per-material | test shared | test per-material | selected | better on test |
 |---|---|---|---|---|---|---|---|
-| cardboard | time | 3.4 | 3.3 | 3.7 | 3.6 | per_material | per_material |
-| paper | time | 3.6 | 3.5 | 4.1 | 3.9 | per_material | per_material |
-| plastic_film | time | 3.4 | 3.0 | 3.7 | 3.4 | per_material | per_material |
-| mixed_plastic | time | 3.5 | 3.2 | 3.7 | 3.3 | per_material | per_material |
-| cardboard | bins | 4.5 | 4.4 | 4.7 | 4.7 | per_material | shared |
-| paper | bins | 6.6 | 7.3 | 5.3 | 5.5 | shared | shared |
-| plastic_film | bins | 5.0 | 4.8 | 4.6 | 4.2 | per_material | per_material |
-| mixed_plastic | bins | 3.1 | 3.0 | 6.0 | 4.7 | per_material | per_material |
+| cardboard | time | 3.9 | 3.8 | 4.2 | 4.0 | per_material | per_material |
+| paper | time | 4.2 | 4.0 | 4.2 | 4.0 | per_material | per_material |
+| plastic_film | time | 3.6 | 3.4 | 3.6 | 3.3 | per_material | per_material |
+| mixed_waste | time | 3.6 | 3.1 | 3.4 | 3.1 | per_material | per_material |
+| cardboard | bins | 4.7 | 4.5 | 5.3 | 5.2 | per_material | per_material |
+| paper | bins | 5.1 | 5.6 | 5.4 | 5.8 | shared | shared |
+| plastic_film | bins | 4.9 | 4.7 | 5.2 | 4.7 | per_material | per_material |
+| mixed_waste | bins | 6.8 | 6.0 | 7.6 | 6.7 | per_material | per_material |
 
 ## Interval coverage (target 80 %)
 
@@ -125,18 +127,18 @@ Intervals come from LightGBM quantile models (p10/p90) calibrated by **normalise
 
 | material | split | lift coverage | lift width kg | hourly coverage | hourly width kg |
 |---|---|---|---|---|---|
-| cardboard | time | 76 % | 353 | 80 % | 253 |
-| paper | time | 77 % | 408 | 80 % | 290 |
-| plastic_film | time | 76 % | 186 | 79 % | 139 |
-| mixed_plastic | time | 71 % | 181 | 78 % | 144 |
-| overall | time | 76 % | 303 | 79 % | 219 |
-| cardboard | bins | 80 % | 440 | 85 % | 320 |
-| paper | bins | 78 % | 578 | 73 % | 348 |
-| plastic_film | bins | 72 % | 191 | 79 % | 165 |
-| mixed_plastic | bins | 61 % | 245 | 82 % | 206 |
-| overall | bins | 76 % | 379 | 81 % | 274 |
+| cardboard | time | 78 % | 455 | 79 % | 267 |
+| paper | time | 78 % | 502 | 77 % | 278 |
+| plastic_film | time | 80 % | 226 | 79 % | 134 |
+| mixed_waste | time | 77 % | 529 | 80 % | 331 |
+| overall | time | 78 % | 415 | 79 % | 242 |
+| cardboard | bins | 82 % | 548 | 81 % | 303 |
+| paper | bins | 86 % | 734 | 83 % | 395 |
+| plastic_film | bins | 82 % | 275 | 76 % | 148 |
+| mixed_waste | bins | 31 % | 547 | 56 % | 351 |
+| overall | bins | 77 % | 510 | 77 % | 283 |
 
-Lift coverage more than 5 pp below target: mixed_plastic/time (71 %), plastic_film/bins (72 %), mixed_plastic/bins (61 %). Calibration pools all hours of a stratum, while the lift hour is the fullest, hardest hour of a cycle; on unseen machines the calibration machines are also few, so their error scale need not transfer.
+Lift coverage more than 5 pp below target: mixed_waste/bins (31 %). Calibration pools all hours of a stratum, while the lift hour is the fullest, hardest hour of a cycle; on unseen machines the calibration machines are also few, so their error scale need not transfer.
 
 ![interval coverage](plots/coverage_by_material.png)
 
@@ -150,58 +152,58 @@ Lift coverage more than 5 pp below target: mixed_plastic/time (71 %), plastic_fi
 
 | infeed | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| indoor_shaft | 3.5 | 1633 | 4.6 | 290 |
-| lidded_hopper | 3.7 | 1203 | 4.7 | 444 |
-| open_hopper | 3.5 | 2122 | 4.7 | 526 |
+| indoor_shaft | 3.7 | 1611 | 4.9 | 286 |
+| lidded_hopper | 3.7 | 1167 | 5.2 | 426 |
+| open_hopper | 3.8 | 2098 | 5.5 | 509 |
 
 **Drainage (0 = no, 1 = yes)**
 
 | drainage | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| 0.0 | 3.6 | 3568 | 4.7 | 865 |
-| 1.0 | 3.6 | 1390 | 4.6 | 395 |
+| 0.0 | 3.8 | 3499 | 5.4 | 834 |
+| 1.0 | 3.5 | 1377 | 4.9 | 387 |
 
 **Equipment class**
 
 | equipment_class | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| COMBI | 3.6 | 3538 | 4.6 | 949 |
-| DUO | 3.4 | 1420 | 5.0 | 311 |
+| COMBI | 3.8 | 3827 | 5.1 | 986 |
+| DUO | 3.6 | 1049 | 5.8 | 235 |
 
 **Container size**
 
 | container_size | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| <=14 m3 | 3.7 | 2305 | 5.0 | 568 |
-| 15-20 m3 | 3.5 | 2128 | 4.2 | 594 |
-| >20 m3 | 3.3 | 525 | 5.5 | 98 |
+| <=14 m3 | 3.8 | 2623 | 5.1 | 619 |
+| 15-20 m3 | 3.6 | 1809 | 5.4 | 539 |
+| >20 m3 | 3.8 | 444 | 5.4 | 63 |
 
 **False-full episode in the cycle**
 
 | false_full_in_cycle | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| no | 3.2 | 4378 | 4.4 | 1113 |
-| yes | 6.6 | 580 | 7.0 | 147 |
+| no | 3.5 | 4294 | 5.0 | 1073 |
+| yes | 5.5 | 582 | 7.2 | 148 |
 
 **Weather in the week before lift**
 
 | week | time mean % | time n | bins mean % | bins n |
 |---|---|---|---|---|
-| dry (bottom 25 %) | 3.6 | 1257 | 4.7 | 319 |
-| middle | 3.5 | 2438 | 4.6 | 624 |
-| wet (top 25 % rain7) | 3.6 | 1263 | 4.9 | 317 |
+| dry (bottom 25 %) | 3.7 | 1247 | 5.4 | 309 |
+| middle | 3.7 | 2409 | 5.0 | 604 |
+| wet (top 25 % rain7) | 3.9 | 1220 | 5.6 | 308 |
 
 ## Learning curve (unseen machines, shared model)
 
-| training machines | **overall** | cardboard | paper | plastic_film | mixed_plastic |
+| training machines | **overall** | cardboard | paper | plastic_film | mixed_waste |
 |---|---|---|---|---|---|
-| 10 | 7.6 | 6.8 | 10.4 | 7.8 | 7.3 |
-| 25 | 6.5 | 5.7 | 8.3 | 6.9 | 7.3 |
-| 50 | 5.9 | 5.4 | 6.7 | 5.9 | 7.2 |
-| 100 | 5.4 | 5.3 | 7.0 | 4.7 | 5.7 |
-| 240 | 5.0 | 4.9 | 5.5 | 4.5 | 6.1 |
+| 10 | 9.7 | 8.7 | 10.3 | 8.0 | 17.7 |
+| 25 | 7.8 | 6.8 | 9.7 | 6.8 | 12.1 |
+| 50 | 6.7 | 6.5 | 7.3 | 6.5 | 7.6 |
+| 100 | 6.1 | 5.8 | 6.4 | 5.5 | 8.0 |
+| 240 | 5.6 | 5.3 | 5.6 | 5.3 | 7.7 |
 
-A pilot needs about **100 machines**: the smallest size whose error on unseen machines is within 0.5 pp of the all-machines value (5.0 %). The largest gain is from 10 to 25 machines (7.6 → 6.5 %).
+A pilot needs about **100 machines**: the smallest size whose error on unseen machines is within 0.5 pp of the all-machines value (5.6 %). The largest gain is from 10 to 25 machines (9.7 → 7.8 %).
 
 ![learning curve](plots/learning_curve.png)
 
@@ -211,14 +213,14 @@ Materials served by the shared model show the same ranking (one model).
 
 | material | split | model | top features |
 |---|---|---|---|
-| cardboard | time | per_material | p_max_cycle (56 %), p_last (19 %), pressure_kg_m3 (11 %), fill_max_cycle (6 %), fill_ffill (4 %) |
-| mixed_plastic | time | per_material | presses_cycle (64 %), p_max_cycle (20 %), p_last (7 %), pressure_kg_m3 (5 %), naive_kg_m3 (2 %) |
-| paper | time | per_material | p_max_cycle (53 %), p_last (21 %), pressure_kg_m3 (10 %), presses_cycle (9 %), fill_max_cycle (3 %) |
-| plastic_film | time | per_material | p_max_cycle (57 %), p_last (12 %), pressure_kg_m3 (9 %), p_ewm (8 %), fill_max_cycle (7 %) |
-| cardboard | bins | per_material | p_max_cycle (50 %), p_last (20 %), pressure_kg_m3 (15 %), fill_max_cycle (5 %), fill_ffill (4 %) |
-| mixed_plastic | bins | per_material | presses_cycle (64 %), p_max_cycle (19 %), p_last (7 %), pressure_kg_m3 (7 %), naive_kg_m3 (2 %) |
-| paper | bins | shared | pressure_kg_m3 (37 %), naive_kg_m3 (31 %), rho_p_smooth (19 %), p_max_cycle (8 %), p_last (2 %) |
-| plastic_film | bins | per_material | p_max_cycle (59 %), p_last (10 %), p_ewm (10 %), pressure_kg_m3 (7 %), fill_max_cycle (4 %) |
+| cardboard | time | per_material | p_ewm (45 %), curve_rise_slope_ewm (42 %), pressure_kg_m3 (8 %), presses_cycle (2 %), container_volume_m3 (1 %) |
+| mixed_waste | time | per_material | p_ewm (45 %), curve_rise_slope_ewm (42 %), pressure_kg_m3 (9 %), presses_cycle (2 %), fill_ffill (0 %) |
+| paper | time | per_material | p_ewm (53 %), curve_rise_slope_ewm (27 %), pressure_kg_m3 (14 %), presses_cycle (3 %), fill_ffill (1 %) |
+| plastic_film | time | per_material | p_ewm (51 %), curve_rise_slope_ewm (35 %), pressure_kg_m3 (11 %), presses_cycle (2 %), fill_ffill (0 %) |
+| cardboard | bins | per_material | p_ewm (46 %), curve_rise_slope_ewm (39 %), pressure_kg_m3 (9 %), presses_cycle (1 %), container_volume_m3 (1 %) |
+| mixed_waste | bins | per_material | curve_rise_slope_ewm (53 %), p_ewm (33 %), pressure_kg_m3 (11 %), presses_cycle (2 %), fill_ffill (1 %) |
+| paper | bins | shared | pressure_kg_m3 (59 %), naive_kg_m3 (24 %), curve_rise_slope_ewm (8 %), graph_kg_m3 (3 %), p_ewm (2 %) |
+| plastic_film | bins | per_material | p_ewm (42 %), curve_rise_slope_ewm (40 %), pressure_kg_m3 (15 %), presses_cycle (2 %), fill_ffill (1 %) |
 
 ![feature importance time](plots/feature_importance_time.png)
 
@@ -232,15 +234,17 @@ Materials served by the shared model show the same ranking (one model).
 
 | material | split | mean % at lift | n lifts | < 5 % |
 |---|---|---|---|---|
-| cardboard | time | 3.6 | 2528 | yes |
-| paper | time | 3.9 | 720 | yes |
-| plastic_film | time | 3.4 | 1231 | yes |
-| mixed_plastic | time | 3.3 | 479 | yes |
-| cardboard | bins | 4.7 | 631 | yes |
-| paper | bins | 5.3 | 189 | **no** |
-| plastic_film | bins | 4.2 | 320 | yes |
-| mixed_plastic | bins | 4.7 | 120 | yes |
+| cardboard | time | 4.0 | 2479 | yes |
+| paper | time | 4.0 | 702 | yes |
+| plastic_film | time | 3.3 | 1168 | yes |
+| mixed_waste | time | 3.1 | 527 | yes |
+| cardboard | bins | 5.2 | 610 | **no** |
+| paper | bins | 5.4 | 184 | **no** |
+| plastic_film | bins | 4.7 | 294 | yes |
+| mixed_waste | bins | 6.7 | 133 | **no** |
 
 **Not met, and the likely reasons from the data:**
 
-- **paper, `bins` split (5.3 %)**: the error is broad-based (median 4.6 %), not driven by a few outliers; 19 of 189 lifts had a false-full episode in the cycle (8.8 % vs 4.9 % without); the fleet has 60 paper machine(s) of 400, at most 45 of them in training.
+- **cardboard, `bins` split (5.2 %)**: the error is broad-based (median 4.4 %), not driven by a few outliers; 69 of 610 lifts had a false-full episode in the cycle (7.1 % vs 4.9 % without); the fleet has 200 cardboard machine(s) of 400, at most 150 of them in training.
+- **paper, `bins` split (5.4 %)**: the error is broad-based (median 4.1 %), not driven by a few outliers; 19 of 184 lifts had a false-full episode in the cycle (8.4 % vs 5.1 % without); the fleet has 60 paper machine(s) of 400, at most 45 of them in training.
+- **mixed_waste, `bins` split (6.7 %)**: the error is broad-based (median 6.7 %), not driven by a few outliers; 18 of 133 lifts had a false-full episode in the cycle (8.1 % vs 6.5 % without); the fleet has 40 mixed_waste machine(s) of 400, at most 30 of them in training.
