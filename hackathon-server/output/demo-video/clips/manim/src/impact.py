@@ -33,7 +33,7 @@ class Impact(Timed):
         # ------------------------------------------------------------ beat 1: 0 - 6.7 s
         head = txt("Hospitality Customer 0049 · cost per year", 44, C["ink"], "SEMIBOLD").to_corner(UL, buff=0.6)
         W = BX1 - BX0
-        y1 = 1.25
+        y1 = 0.95
         bar = Rectangle(width=W, height=0.7, stroke_width=0).set_fill(C["ink"], 0.85).move_to([0, y1, 0])
         tot_lab = txt(f"{eur(total)} a year", 40, C["ink"], "SEMIBOLD").next_to(bar, UP, buff=0.18).align_to(bar, LEFT)
         self.at(0.2)
@@ -49,13 +49,13 @@ class Impact(Timed):
         seg.move_to([(sx0 + BX1) / 2, y1, 0])
         gap = Rectangle(width=0.08, height=0.74, stroke_width=0).set_fill(C["ground"], 1).move_to([sx0, y1, 0])
         save_lab = VGroup(txt(f"{eur(save)} saveable", 40, C["good"], "SEMIBOLD"),
-                          mono(f"{share * 100:.0f} %", 30, C["good"])).arrange(RIGHT, buff=0.25, aligned_edge=DOWN)
+                          txt(f"({share * 100:.0f} %)", 34, C["good"])).arrange(RIGHT, buff=0.25, aligned_edge=DOWN)
         save_lab.next_to(seg, UP, buff=0.18).align_to(seg, RIGHT)
         self.at(1.7)
         self.p(FadeIn(seg), FadeIn(gap), FadeIn(save_lab, shift=UP * 0.1), rt=0.8, rate_func=EASE)
 
         # expanded saveable bar
-        y2 = -0.55
+        y2 = -0.85
         H2 = 0.95
         funnel = Polygon([sx0, y1 - 0.35, 0], [BX1, y1 - 0.35, 0], [BX1, y2 + H2 / 2, 0], [BX0, y2 + H2 / 2, 0],
                          stroke_width=0).set_fill(C["mark"], 0.14)
@@ -105,7 +105,7 @@ class Impact(Timed):
             ("today", "weighing ticket", a, C["link"]),
             ("with machine weight", "ticket or device weight", b, C["mark"]),
         ]):
-            y = 0.75 - i * 1.75
+            y = 0.45 - i * 1.8
             l1 = txt(lab, 36, C["ink"], "MEDIUM")
             l2 = txt(sub, 28, C["muted"])
             lg = VGroup(l1, l2).arrange(DOWN, aligned_edge=RIGHT, buff=0.08).move_to([TX0 - 0.35, y, 0], aligned_edge=RIGHT)
@@ -134,14 +134,14 @@ class Impact(Timed):
             self.add(fill, val)
             self.p(tr.animate.set_value(v), rt=1.1, rate_func=EASE)
             rows[k] = (lg, track, tr, fill, val, v)
-        arrow = Arrow([TX0 + TW * a / 100, 0.35, 0], [TX0 + TW * b / 100, -0.6, 0], buff=0.05,
+        arrow = Arrow([TX0 + TW * a / 100, 0.05, 0], [TX0 + TW * b / 100, -0.95, 0], buff=0.05,
                       color=C["good"], stroke_width=4, max_tip_length_to_length_ratio=0.2)
         self.p(Create(arrow), rt=0.4)
 
         # ------------------------------------------------------------ beat 3: 12.5 - 18.9 s
         self.at(12.1)
         beat2 = VGroup(head2, src2, arrow, *[VGroup(r[0], r[1], r[3], r[4]) for r in rows])
-        head3 = txt("For Europress: weight makes SMART stickier", 48, C["ink"], "SEMIBOLD").to_corner(UL, buff=0.6)
+        head3 = txt("For Europress: weight makes SMART stickier", 42, C["ink"], "SEMIBOLD").to_corner(UL, buff=0.6)
         self.p(FadeOut(beat2), FadeIn(head3), rt=0.5)
 
         fleet = src["fleet_machines_assumed"]

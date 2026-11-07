@@ -66,7 +66,7 @@
         {
           "t": 6.4,
           "d": 6.4,
-          "text": "On simulated machines it never saw: 5.3 % average error, against 32 % from fill level alone."
+          "text": "Fill level alone is 32 % off. On simulated machines it never saw, ours is 5.3 % off."
         }
       ]
     },

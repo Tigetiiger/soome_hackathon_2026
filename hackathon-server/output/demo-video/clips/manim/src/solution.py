@@ -8,6 +8,7 @@ Ladder: src/data/comparison_bins.json (models/full400/comparison.csv, split=bins
 from __future__ import annotations
 
 from manim import (
+    always_redraw,
     DOWN, LEFT, RIGHT, UP, UL, Arrow, Create, FadeIn, FadeOut, LaggedStart, Line,
     Rectangle, RoundedRectangle, VGroup, VMobject, interpolate_color, ManimColor,
 )
@@ -68,12 +69,12 @@ class Solution(Timed):
         seg = VGroup(*[Rectangle(width=0.12, height=0.22, stroke_width=0).set_fill(fill_color(i / 19), 1)
                        for i in range(20)]).arrange(RIGHT, buff=0)
         leg = VGroup(mono(f"fill {fmin:.0f} %", 26), seg, mono(f"{fmax:.0f} %", 26)).arrange(RIGHT, buff=0.15)
-        leg.next_to([px(0.02), py(P_MAX), 0], DOWN, buff=0.05).align_to([px(0.03), 0, 0], LEFT)
+        leg.move_to([px(0.04), py(112), 0], aligned_edge=LEFT)
 
         self.p(LaggedStart(*[Create(l) for l in lines], lag_ratio=0.12), FadeIn(leg), rt=2.6, rate_func=EASE)
 
         note = txt("fuller → contact earlier, peak higher", 28, C["ink2"])
-        note.next_to([px(0.62), py(150), 0], LEFT, buff=0.1).shift(UP * 0.0)
+        note.move_to([px(0.04), py(135), 0], aligned_edge=LEFT)
         self.p(FadeIn(note, shift=UP * 0.1), rt=0.5)
 
         # flow: signals -> kg ± range (right side)
@@ -115,17 +116,17 @@ class Solution(Timed):
             w = v * scale
             bar = Rectangle(width=prev_w, height=0.44, stroke_width=0).set_fill(cols[i], 0.9 if i else 0.75)
             bar.move_to([BX, y, 0], aligned_edge=LEFT)
-            val = mono(f"{v:.1f} %", 30, C["ink"])
+            val = txt(f"{v:.1f} %", 34, C["ink"], "MEDIUM")
             rows.append((label, bar, val, w, y))
             prev_w = w
 
         def show_row(i: int, rt: float) -> None:
             label, bar, val, w, y = rows[i]
-            val.move_to([BX + w + 0.2, y, 0], aligned_edge=LEFT)
-            self.add(bar)
+            val_r = always_redraw(lambda b=bar, t=val: t.copy().next_to(b, RIGHT, buff=0.2))
+            self.add(bar, val_r)
             self.p(FadeIn(label, shift=RIGHT * 0.1),
                    bar.animate.stretch_to_fit_width(w).move_to([BX, y, 0], aligned_edge=LEFT),
-                   FadeIn(val), rt=rt, rate_func=EASE)
+                   rt=rt, rate_func=EASE)
 
         show_row(0, 0.8)
         self.at(7.7)

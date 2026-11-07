@@ -140,11 +140,11 @@ const plan = {
     await r.go('#overview');
     r.cx = 1180; r.cy = 300;
     await r.hold(1.0);
-    await r.scrollTo('#machinesNowOverview', 80, 1.4);          // 1.0 → 2.4  machine cards
-    await r.move('#machinesNowOverview >> text=/kg inside now/', 1.0, 0.5, 0.5); // → 3.4
+    await r.scrollTo('#view-overview h2[data-i18n="machines.title"]', 115, 1.4);          // 1.0 → 2.4  machine cards
+    await r.move('#machinesNowOverview >> text=/kg inside now/', 1.0, 0.55, 1.75); // → 3.4
     await r.holdUntil(5.0);
-    await r.scrollTo('.save-card', 70, 1.4);                     // 5.0 → 6.4  savings card
-    await r.move('#saveTitle', 0.9, 0.85, 0.5);                  // → 7.3
+    await r.scrollTo('.save-card', 105, 1.4);                     // 5.0 → 6.4  savings card
+    await r.move('#saveTitle', 0.9, 0.62, 1.8);                  // → 7.3
     await r.holdUntil(9.0);
   },
   async D2(r) {
@@ -157,10 +157,10 @@ const plan = {
     await r.hold(0.3);
     await r.move('#machineWeight >> text=/Most likely/', 0.9, 0.5, 0.5); // → 2.6
     await r.holdUntil(3.6);
-    await r.scrollTo('#machineWeight >> text=/Weight in the container, last 30 days/', 70, 1.1); // → 4.7
-    await r.move('#machineWeight >> text=/p10–p90 band/', 0.8, 0.5, 0.5); // → 5.5  (legend)
+    await r.scrollTo('#machineWeight >> text=/Weight in the container, last 30 days/', 115, 1.1); // → 4.7
+    await r.move('#machineWeight canvas >> nth=0', 0.8, 0.515, 0.2); // → 5.5  (weighbridge ticket marker on the band)
     await r.holdUntil(5.9);
-    await r.scrollTo('#machineWeight >> text=/Last pickups/', 90, 1.1); // → 7.0
+    await r.scrollTo('#machineWeight >> text=/Last pickups/', 115, 1.1); // → 7.0
     await r.move('#machineWeight table tbody tr >> nth=0 >> td >> nth=2', 0.7, 0.6, 0.5); // → 7.7
     await r.holdUntil(9.0);
   },
@@ -208,7 +208,7 @@ const plan = {
     await r.click(3000);                                           // weighbridge check
     await r.page.evaluate(() => window.scrollTo(0, 0));
     await r.hold(0.5);
-    await r.scrollTo('#view-ep-sensor-check >> text=/Emptyings checked/', 90, 1.2); // → 4.9
+    await r.scrollTo('#view-ep-sensor-check >> text=/Emptyings checked/', 125, 1.2); // → 4.9
     await r.move('#view-ep-sensor-check >> text=/Emptyings checked/', 0.8, 0.4, 3.2); // → 5.7 (4,876)
     await r.holdUntil(7.0);
     await r.move('#view-ep-sensor-check canvas >> nth=0', 1.0, 0.55, 0.45); // → 8.0 scatter

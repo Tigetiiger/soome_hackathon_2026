@@ -785,7 +785,7 @@ def build(out: Path) -> None:
           dz_ + 0.02, M["galv"], SN, D, bevel=0.003)
     lx, ly, lz = SENSORS["lid"][1]
     B.box("sensor_lid_switch", lx - 0.04, lx + 0.03, -HW_PRESS - 0.035, -HW_PRESS, lz - 0.04,
-          lz + 0.03, S["lid"], SN, G, bevel=0.004)
+          lz + 0.03, S["lid"], SN, "side_panel", bevel=0.004)   # on the near hopper cheek
     ox, oy, oz = SENSORS["oiltemp"][1]
     # probe through the tank lid, dipping into the oil
     B.cyl("sensor_oil_temp_probe_head", (ox, oy, zt_), (ox, oy, oz), 0.022, S["oiltemp"], SN, G, seg=6)

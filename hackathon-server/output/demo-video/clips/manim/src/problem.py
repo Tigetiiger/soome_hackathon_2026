@@ -11,14 +11,14 @@ from datetime import datetime
 
 from manim import (
     DOWN, LEFT, RIGHT, UP, UL, Circle, Create, DashedLine, Dot, FadeIn, FadeOut,
-    LaggedStart, Line, Polygon, Rectangle, RoundedRectangle, Text, ValueTracker,
+    LaggedStart, Line, MarkupText, Polygon, Rectangle, RoundedRectangle, Text, ValueTracker,
     VGroup, Write, always_redraw,
 )
 
-from common import C, EASE, Timed, card, data_tag, load, mono, txt
+from common import C, EASE, SANS, TEXT_SCALE, Timed, card, data_tag, load, mono, txt
 
-X0, X1 = -6.0, 6.3      # chart x range (units)
-Y0, Y1 = -2.25, 1.75    # chart y range: fill 0 % .. 100 %
+X0, X1 = -5.7, 6.4      # chart x range (units)
+Y0, Y1 = -2.05, 1.8     # chart y range: fill 0 % .. 100 %
 D0 = datetime(2025, 10, 1)
 DAYS = 365.0
 
@@ -136,7 +136,7 @@ class Problem(Timed):
 
         n = ValueTracker(0)
         counter = always_redraw(lambda: txt(f"{int(round(n.get_value()))} pickups", 40, C["ink"], "SEMIBOLD")
-                                .move_to([X1, 2.55, 0], aligned_edge=RIGHT))
+                                .move_to([X1, 2.4, 0], aligned_edge=RIGHT))
         self.add(counter)
         self.p(LaggedStart(*[FadeIn(d, scale=0.3) for d in dots], lag_ratio=0.004),
                n.animate.set_value(n_all), rt=1.5, rate_func=EASE)
@@ -153,13 +153,13 @@ class Problem(Timed):
         final = VGroup(
             txt(f"{n_tk}", 40, C["link"], "SEMIBOLD"),
             txt(f"of {n_all} with a weighing ticket", 40, C["ink"], "SEMIBOLD"),
-        ).arrange(RIGHT, buff=0.18).move_to([X1, 2.55, 0], aligned_edge=RIGHT)
+        ).arrange(RIGHT, buff=0.18).move_to([X1, 2.4, 0], aligned_edge=RIGHT)
         grey_anims = [d.animate.set_fill(C["grey"], 0.9) for d, t in zip(dots, tk_flags) if not t]
         tk_dots = VGroup(*[d for d, t in zip(dots, tk_flags) if t])
         self.remove(counter)
-        static_counter = txt(f"{n_all} pickups", 40, C["ink"], "SEMIBOLD").move_to([X1, 2.55, 0], aligned_edge=RIGHT)
+        static_counter = txt(f"{n_all} pickups", 40, C["ink"], "SEMIBOLD").move_to([X1, 2.4, 0], aligned_edge=RIGHT)
         self.add(static_counter)
-        self.p(*grey_anims, tk_dots.animate.scale(1.35), FadeOut(static_counter), FadeIn(final), rt=0.9, rate_func=EASE)
+        self.p(*grey_anims, *[d.animate.scale(1.4) for d in tk_dots], FadeOut(static_counter), FadeIn(final), rt=0.9, rate_func=EASE)
         # keep ticket dots on top
         self.remove(tk_dots)
         self.add(tk_dots)
@@ -170,15 +170,21 @@ class Problem(Timed):
         self.p(FadeOut(chart), rt=0.5)
 
         comp = compactor(avg / 100.0).scale(0.85).move_to([-4.2, 0.1, 0])
-        c_lab = txt("Hospitality Customer 0049 · compactor", 28, C["muted"]).next_to(comp, DOWN, buff=0.35)
+        c_lab = txt("compactor with fill sensor", 28, C["muted"]).next_to(comp, DOWN, buff=0.35)
         self.p(FadeIn(comp, shift=UP * 0.15), FadeIn(c_lab), rt=0.7, rate_func=EASE)
 
-        fill_t = VGroup(txt("fill:", 48, C["ink2"]), txt("known ✓", 48, C["good"], "SEMIBOLD")).arrange(RIGHT, buff=0.2)
-        dot_t = txt("·", 48, C["muted"])
-        wt_t = VGroup(txt("weight:", 48, C["ink2"]), txt("?", 56, C["bad"], "SEMIBOLD")).arrange(RIGHT, buff=0.2)
-        status = VGroup(fill_t, dot_t, wt_t).arrange(RIGHT, buff=0.4).next_to(comp, RIGHT, buff=0.7)
-        for m in (fill_t, dot_t, wt_t):
-            m.align_to(fill_t[0], DOWN)
+        status = MarkupText(
+            f'<span foreground="{C["ink2"]}">fill: </span>'
+            f'<span foreground="{C["good"]}" font_weight="600">known ✓</span>'
+            f'<span foreground="{C["muted"]}">  ·  </span>'
+            f'<span foreground="{C["ink2"]}">weight: </span>'
+            f'<span foreground="{C["bad"]}" font_weight="600">?</span>',
+            font=SANS, font_size=48 * TEXT_SCALE)
+        status.next_to(comp, RIGHT, buff=0.7)
+        n_fill = len("fill:known✓")
+        fill_t = status[:n_fill]
+        dot_t = status[n_fill:n_fill + 1]
+        wt_t = status[n_fill + 1:]
         self.p(FadeIn(fill_t, shift=LEFT * 0.2), rt=0.6, rate_func=EASE)
         self.at(12.6)
         self.p(FadeIn(dot_t), FadeIn(wt_t, shift=LEFT * 0.2), rt=0.6, rate_func=EASE)

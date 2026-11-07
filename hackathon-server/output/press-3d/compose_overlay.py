@@ -49,28 +49,28 @@ TAG_STYLE = {   # confidence tag -> (text colour, fill, outline)
 LABELS = [
     {"key": "oiltemp", "anchors": ["oiltemp"], "title": "Oil temperature probe (~€30)",
      "note": "cold oil reads high → correction", "tag": "proposed", "kind": "proposed",
-     "pos": (48, 196)},
+     "pos": (48, 172), "col": "left"},
     {"key": "pressure", "anchors": ["pressure"], "title": "Hydraulic pressure transducer",
      "note": "ram pressure → fill & weight estimate", "tag": "position schematic",
-     "kind": "schematic", "pos": (48, 352)},
+     "kind": "schematic", "pos": (48, 314), "col": "left"},
     {"key": "gps", "anchors": ["gps"], "title": "GPS / 5G SMART module",
      "note": "location, also while being transported", "tag": "position schematic",
-     "kind": "schematic", "pos": (48, 508)},
+     "kind": "schematic", "pos": (48, 456), "col": "left"},
     {"key": "tilt", "anchors": ["tilt"], "title": "Tilt & movement sensor",
      "note": "lifted & moved → container emptied", "tag": "position schematic",
-     "kind": "schematic", "pos": (48, 664)},
+     "kind": "schematic", "pos": (48, 598), "col": "left"},
     {"key": "loadcell", "anchors": ["loadcell_0", "loadcell_1"], "title": "Load cells ×4 (SMART Scale option)",
      "note": "reference weight (5 % of fleet)", "tag": "per Europress brochure",
-     "kind": "confirmed", "pos": (48, 856)},
+     "kind": "confirmed", "pos": (48, 780), "col": "left"},
     {"key": "ram", "anchors": ["ram"], "title": "Ram: 20–30 cm into the container",
      "note": "pushes each load into the pack", "tag": "per Europress", "kind": "confirmed",
-     "pos": (930, 64)},
+     "pos": (900, 52)},
     {"key": "lid", "anchors": ["lid"], "title": "Hopper lid switch",
      "note": "lid open → press stops", "tag": "position schematic", "kind": "schematic",
-     "pos": (1160, 664)},
+     "pos": (1190, 560)},
     {"key": "door", "anchors": ["door"], "title": "Door interlock switch",
-     "note": "door open → no cycle; faults logged", "tag": "position schematic",
-     "kind": "schematic", "pos": (1462, 420)},
+     "note": "door open → no cycle", "tag": "position schematic",
+     "kind": "schematic", "pos": (1540, 590)},
 ]
 SENSOR_DOTS = ["pressure", "ram", "gps", "tilt", "door", "lid", "oiltemp",
                "loadcell_0", "loadcell_1", "loadcell_2", "loadcell_3"]
@@ -79,7 +79,7 @@ DOT_GROUP = {k: ("loadcell" if k.startswith("loadcell") else k) for k in SENSOR_
 PHASES = [  # (t0, t1, heading, sub)
     (3.25, 7.0, "Exploded view", "parts move apart along their own axes"),
     (7.0, 12.35, "Where the sensors sit", "tag = how sure we are of each position"),
-    (12.35, 15.0, "Reassembled", "sensors stay marked · ring = inside the machine"),
+    (12.35, 15.0, "Reassembly", "sensors stay marked · ring = inside the machine"),
 ]
 CAPTION = "Internal layout: schematic, not Europress CAD"
 CARD = [
@@ -172,34 +172,44 @@ def dashed(d, p0, p1, color, width=2, dash=10, gap=8):
 # ---------------------------------------------------------------------------------
 # elements
 # ---------------------------------------------------------------------------------
+def label_width(lab):
+    ft, fn, fg = font("semi", 30), font("reg", 28), font("mono", 24)
+    return max(text_size(lab["title"], ft)[0], text_size(lab["note"], fn)[0],
+               text_size(lab["tag"], fg)[0] + 22) + 2 * 16 + 6
+
+
+LEFT_W = None
+
+
 def label_box(lab, lit: float):
-    ft, fn, fg = font("semi", 30), font("reg", 28), font("mono", 26)
-    tw, _ = text_size(lab["title"], ft)
-    nw, _ = text_size(lab["note"], fn)
-    gw, _ = text_size(lab["tag"], fg)
-    pad = 18
-    w = max(tw, nw, gw + 24) + 2 * pad + 6
-    h = 40 + 38 + 44 + 2 * 12
+    global LEFT_W
+    ft, fn, fg = font("semi", 30), font("reg", 28), font("mono", 24)
+    if LEFT_W is None:   # one tidy column: every left label gets the widest left width
+        LEFT_W = max(label_width(lb) for lb in LABELS if lb.get("col") == "left")
+    w = LEFT_W if lab.get("col") == "left" else label_width(lab)
+    h = 128
     im = rounded_panel(w, h, accent=C["teal"] if lit > 0 else None)
     d = ImageDraw.Draw(im)
-    x = pad + 6
-    d.text((x * SS, 10 * SS), lab["title"], font=ft, fill=col("ink"))
-    d.text((x * SS, 50 * SS), lab["note"], font=fn, fill=col("muted"))
+    x = 22
+    d.text((x * SS, 22 * SS), lab["title"], font=ft, fill=col("ink"), anchor="lm")
+    d.text((x * SS, 58 * SS), lab["note"], font=fn, fill=col("muted"), anchor="lm")
     tc, tf, to = TAG_STYLE[lab["kind"]]
-    ty = 92
-    d.rounded_rectangle((x * SS, ty * SS, (x + gw + 22) * SS, (ty + 34) * SS), radius=7 * SS,
+    gw, _ = text_size(lab["tag"], fg)
+    ty0, ty1 = 80, 114
+    d.rounded_rectangle((x * SS, ty0 * SS, (x + gw + 20) * SS, ty1 * SS), radius=7 * SS,
                         fill=hexa(tf) if tf else None, outline=hexa(to), width=int(1.5 * SS))
-    d.text(((x + 11) * SS, (ty + 3) * SS), lab["tag"], font=fg, fill=hexa(tc))
+    d.text(((x + 10) * SS, (ty0 + ty1) / 2 * SS), lab["tag"], font=fg, fill=hexa(tc), anchor="lm")
     return im, w, h
 
 
-def draw_leader(ov, d, box, anchor, a, grow=1.0):
-    """Leader from the nearest vertical box edge to the anchor, with a short horizontal run."""
+def draw_leader(ov, d, box, anchor, a, grow=1.0, gutter=None):
+    """Leader from the nearest vertical box edge to the anchor, with a short horizontal run
+    (left-column labels all turn at the same gutter x so their leaders never cross a box)."""
     bx, by, bw, bh = box
     ax, ay = anchor
     if ax >= bx + bw:
         sx = bx + bw
-        ex = sx + 26
+        ex = gutter if gutter else sx + 26
     elif ax <= bx:
         sx = bx
         ex = sx - 26
@@ -304,24 +314,31 @@ def draw_inset(ov, t):
     a = fade(t, 9.45, 12.55, 0.3)
     if a <= 0:
         return
-    w, h = 470, 330
+    w, h = 460, 300
     x0, y0 = W - 48 - w, H - 48 - h
     im = rounded_panel(w, h, a=0.92)
     d = ImageDraw.Draw(im)
     d.text((20 * SS, 12 * SS), "Ram pressure → fill & weight", font=font("semi", 30), fill=col("ink"))
     d.text((20 * SS, 50 * SS), "illustrative curve", font=font("reg", 26), fill=col("muted"))
     # plot area
-    px0, py0, px1, py1 = 70, 104, w - 24, h - 58
+    px0, py0, px1, py1 = 64, 96, w - 24, h - 52
     d.line((px0 * SS, py0 * SS, px0 * SS, py1 * SS), fill=col("muted"), width=2 * SS)
     d.line((px0 * SS, py1 * SS, px1 * SS, py1 * SS), fill=col("muted"), width=2 * SS)
     d.text((22 * SS, (py0 - 4) * SS), "p", font=font("mono", 28), fill=col("muted"))
-    d.text(((px1 - 190) * SS, (py1 + 10) * SS), "ram travel →", font=font("reg", 26), fill=col("muted"))
+    d.text(((px0 + 8) * SS, (py1 + 8) * SS), "ram travel →", font=font("reg", 26), fill=col("muted"))
     xm = px0 + (px1 - px0) * MOUTH_FRAC
-    d.rectangle((xm * SS, py0 * SS, px1 * SS, py1 * SS), fill=col("amber", 0.10))
+    zone = Image.new("RGBA", im.size, (0, 0, 0, 0))   # blend, don't overwrite the panel
+    ImageDraw.Draw(zone).rectangle((xm * SS, py0 * SS, px1 * SS, py1 * SS), fill=col("amber", 0.16))
+    im.alpha_composite(zone)
+    d = ImageDraw.Draw(im)
     dashed(d, (xm, py0), (xm, py1), col("muted"), 2, 7, 6)
-    d.text(((xm - 150) * SS, (py0 - 2) * SS), "container", font=font("reg", 24), fill=col("muted"))
-    d.text(((xm - 150) * SS, (py0 + 26) * SS), "mouth", font=font("reg", 24), fill=col("muted"))
-    d.text(((xm + 6) * SS, (py1 - 34) * SS), "20–30 cm", font=font("mono", 22), fill=col("amber"))
+    fm = font("reg", 24)
+    for i, word in enumerate(("container", "mouth")):
+        tw, _ = text_size(word, fm)
+        d.text(((xm - 10 - tw) * SS, (py0 + 2 + 28 * i) * SS), word, font=fm, fill=col("muted"))
+    fz = font("mono", 24)
+    tw, _ = text_size("20–30 cm", fz)
+    d.text(((px1 - tw) * SS, (py1 + 10) * SS), "20–30 cm", font=fz, fill=col("amber"))
     # curve drawn up to the current ram position during the extension, kept afterwards
     prog = TL.ram_progress(t)
     extending = t <= TL.RAM_EXT[1] + 0.01
@@ -387,10 +404,12 @@ def draw_sensors(ov, anchors, t):
         grow = TL.clamp01((t - t_on) / 0.35)
         im, w, h = label_box(lab, 1.0)
         x, y = lab["pos"]
+        x = min(x, W - 48 - w)                     # never run off the right edge
+        gutter = 48 + LEFT_W + 30 if lab.get("col") == "left" else None
         if a > 0:
             for an in lab["anchors"]:
                 if an in anchors:
-                    draw_leader(ov, d, (x, y, w, h), anchors[an][:2], a, grow)
+                    draw_leader(ov, d, (x, y, w, h), anchors[an][:2], a, grow, gutter)
             boxes.append((im, x, y, a))
     # dots: lit sensors glow; after the labels fade, every sensor keeps a small dot
     for k in SENSOR_DOTS:
@@ -401,6 +420,8 @@ def draw_sensors(ov, anchors, t):
             continue
         x, y, depth, vis = anchors[k]
         if depth <= 0 or not (-50 < x < W + 50 and -50 < y < H + 50):
+            continue
+        if k.startswith("loadcell") and not vis:   # under the machine: no marker
             continue
         flash = TL.clamp01((t - t_on) / 0.6) if t - t_on < 0.6 else 0.0
         r = 7 if t < TL.LABELS_OUT[1] else 6
@@ -437,7 +458,6 @@ def compose(base: Image.Image, t: float, anchors: dict) -> Image.Image:
     draw_title(ov, t)
     draw_heading(ov, t)
     d = ImageDraw.Draw(ov)
-    draw_ghost_note(ov, d, anchors, t)
     draw_bracket(ov, d, anchors, t)
     draw_sensors(ov, anchors, t)
     draw_inset(ov, t)

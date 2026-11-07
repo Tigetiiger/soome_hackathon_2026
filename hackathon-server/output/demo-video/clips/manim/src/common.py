@@ -42,12 +42,17 @@ EASE = rate_functions.ease_in_out_cubic
 config.background_color = C["ground"]
 
 
+# Pango renders Text noticeably larger than its nominal px size at 1080p; sizes in the
+# scenes are "design px" and are scaled once here (26 design px ~ 28 px cap+desc on screen).
+TEXT_SCALE = 0.72
+
+
 def txt(s: str, size: int = 32, color: str = C["ink"], weight: str = "NORMAL", font: str = SANS) -> Text:
-    return Text(s, font=font, font_size=size, color=color, weight=weight)
+    return Text(s, font=font, font_size=size * TEXT_SCALE, color=color, weight=weight)
 
 
 def mono(s: str, size: int = 26, color: str = C["muted"]) -> Text:
-    return Text(s, font=MONO, font_size=size, color=color)
+    return Text(s, font=MONO, font_size=size * TEXT_SCALE, color=color)
 
 
 def card(w: float, h: float, r: float = 0.14) -> RoundedRectangle:
@@ -64,6 +69,7 @@ def data_tag(label: str) -> VGroup:
     t.move_to(pill)
     g = VGroup(pill, t)
     g.to_corner(UR, buff=0.4)
+    g.set_z_index(100)
     return g
 
 
