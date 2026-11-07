@@ -182,6 +182,12 @@
   .ps-lock { list-style: none; padding: var(--s-3) 0; display: block !important; }
   .pd-presets button:disabled { opacity: .55; cursor: not-allowed; }
 
+  /* partner driver plan */
+  .opd-tips { display: flex; flex-direction: column; gap: var(--s-2); margin-top: var(--s-4); font-size: var(--fs-2); color: var(--ink); }
+  .opd-tips p { display: flex; flex-wrap: wrap; align-items: center; gap: var(--s-2); }
+  .opd-best { padding: var(--s-3); border-radius: var(--radius-1); background: var(--good-bg); color: var(--ink); display: block !important; }
+  .opd-best b { color: var(--good-c); }
+
   /* customer weight page */
   .cw-view, #cwBody { display: flex; flex-direction: column; gap: var(--s-6); }
   .cw-answers { grid-template-columns: repeat(3, minmax(0, 1fr)); }

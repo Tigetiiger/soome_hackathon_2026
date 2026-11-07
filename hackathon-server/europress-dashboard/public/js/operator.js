@@ -16,17 +16,6 @@ function kpi(icon, label, value, sub, onClick) {
   return b;
 }
 
-function workload(o) {
-  const pickups = o.forecast_per_day.pickups;
-  const max = Math.max(...pickups, 1);
-  el("workload").innerHTML = pickups.map((n, i) => {
-    const dots = Array.from({ length: Math.min(n, 9) }, () => '<span class="wl-dot"></span>').join("");
-    const day = i === 0 ? t("day.today") : t("day.d", { n: i });
-    return `<div class="wl-col ${n === max && n > 0 ? "peak" : ""}" title="${fmt(o.forecast_per_day.tonnes[i], 1)} t">
-      <span class="wl-day">${esc(day)}</span><span class="wl-t">${fmt(o.forecast_per_day.tonnes[i], 0)} t</span>${dots}${n ? `<span class="wl-top">${n}</span>` : ""}</div>`;
-  }).join("");
-}
-
 // ---------------------------------------------------------------- collected → predicted, and SMART's value
 /* global Chart */
 let historyChart = null;
@@ -69,7 +58,15 @@ function driverPlan(o) {
   const avg = o.weekday_avg_pickups, typical = o.typical_day_pickups;
   if (!avg || typical == null) return null;
   const crew = Math.max(1, Math.ceil(typical / PICKUPS_PER_DRIVER_DAY));
-  const days = o.forecast_per_day.pickups.slice(0, 14).map((smart, i) => {
+  // machines that reach 85 % at the weekend are emptied on the next Monday (operators rarely drive at weekends)
+  const smartByDay = o.forecast_per_day.pickups.slice(0, 14);
+  const carried = smartByDay.map(() => 0);
+  smartByDay.forEach((n, i) => {
+    const dow = (FIRST_DAY_DOW + i) % 7;
+    const to = dow >= 5 ? i + (7 - dow) : i;
+    if (to < carried.length) carried[to] += n;
+  });
+  const days = carried.map((smart, i) => {
     const dow = (FIRST_DAY_DOW + i) % 7;
     const expected = Math.max(avg[dow], smart);
     const drivers = Math.ceil(expected / PICKUPS_PER_DRIVER_DAY);

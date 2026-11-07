@@ -333,7 +333,7 @@ async function route(opts) {
   } else if (state.ws === "partners") {
     const id = el("operatorSelect").value;
     setAskContext({ view: "operator", id, page: "operators", name: id });
-    if (view === "operators") { renderOperator(await getJson(`/data/operators/${id}.json`), state.index.customers); gate(el("opValue"), "plan.lock.forecast"); }
+    if (view === "operators") { renderOperator(await getJson(`/data/operators/${id}.json`), state.index.customers); gate(el("opValue"), "plan.lock.forecast"); gate(el("opDriverTips"), "plan.lock.drivers"); }
     else renderFaq();
   } else if (view === "faq") renderFaq();
   else {

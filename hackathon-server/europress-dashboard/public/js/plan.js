@@ -18,7 +18,7 @@ addStrings({
     "plan.lock.savings": "{n} more savings worth {eur} a year are waiting in SMART.",
     "plan.lock.when": "Daily and hourly patterns are part of SMART.",
     "plan.lock.forecast": "The 14-day pickup forecast and SMART's value for your routes are part of SMART.",
-    "plan.lock.period": "Longer periods are part of SMART.",
+    "plan.lock.period": "Longer periods are part of SMART.", "plan.lock.drivers": "Which days to call in drivers, and how to flatten the peaks, is part of SMART.",
     "plan.asks": "Free: {n} of {max} questions left today", "plan.asksOut": "You used today's {max} free questions. SMART has no limit.",
   },
   fi: {
@@ -27,7 +27,7 @@ addStrings({
     "plan.lock.savings": "{n} muuta säästöä, yhteensä {eur} vuodessa, odottaa SMARTissa.",
     "plan.lock.when": "Päivä- ja tuntikohtaiset tiedot kuuluvat SMARTiin.",
     "plan.lock.forecast": "14 päivän tyhjennysennuste ja SMARTin arvo reiteillesi kuuluvat SMARTiin.",
-    "plan.lock.period": "Pidemmät jaksot kuuluvat SMARTiin.",
+    "plan.lock.period": "Pidemmät jaksot kuuluvat SMARTiin.", "plan.lock.drivers": "Milloin kutsua lisää kuljettajia ja miten huiput tasoitetaan, kuuluu SMARTiin.",
     "plan.asks": "Free: {n}/{max} kysymystä jäljellä tänään", "plan.asksOut": "Käytit tämän päivän {max} ilmaista kysymystä. SMARTissa ei ole rajaa.",
   },
 });
