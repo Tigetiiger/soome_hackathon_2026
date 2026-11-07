@@ -59,16 +59,19 @@ def duration_of(video: Path) -> float:
 
 # ---------- overlays (Pillow) ----------
 
-def pill(text: str, dark: bool) -> Image.Image:
-    """Small data-source tag, top right."""
-    f = font("IBMPlexMono-Medium.ttf", 24)
-    tw = int(f.getlength(text))
-    img = Image.new("RGBA", (tw + 36, 46), (0, 0, 0, 0))
+def pill(text: str, dark: bool, stacked: bool = False) -> Image.Image:
+    """Small data-source tag. stacked=True puts each ' · ' part on its own line (narrow, for the app sidebar)."""
+    f = font("IBMPlexMono-Medium.ttf", 22 if stacked else 24)
+    lines = text.split(" · ") if stacked else [text]
+    tw = max(int(f.getlength(line)) for line in lines)
+    lh = 30
+    img = Image.new("RGBA", (tw + 36, lh * len(lines) + 16), (0, 0, 0, 0))
     d = ImageDraw.Draw(img)
-    fill = (255, 255, 255, 30) if dark else (255, 255, 255, 235)
+    fill = (255, 255, 255, 30) if dark else (255, 255, 255, 240)
     edge = (255, 255, 255, 110) if dark else (195, 202, 217, 255)
-    d.rounded_rectangle([0, 0, img.width - 1, img.height - 1], radius=23, fill=fill, outline=edge, width=2)
-    d.text((18, 9), text, font=f, fill=(232, 237, 243) if dark else INK)
+    d.rounded_rectangle([0, 0, img.width - 1, img.height - 1], radius=16, fill=fill, outline=edge, width=2)
+    for i, line in enumerate(lines):
+        d.text((18, 7 + i * lh), line, font=f, fill=(232, 237, 243) if dark else INK)
     return img
 
 
@@ -140,9 +143,13 @@ def build_segment(seg: dict) -> Path:
     last = "[b]"
     if seg["kind"] in ("screen", "external"):
         tag = TMP / f"tag_{seg['id']}.png"
-        pill(seg["tag"], dark).save(tag)
+        # Screen recording: the app header owns the top-right, so tag goes in the sidebar, bottom-left,
+        # above the caption band. 3D clip: top-right.
+        stacked = seg["kind"] == "screen"
+        pill(seg["tag"], dark, stacked).save(tag)
         inputs += ["-i", str(tag)]
-        filt += f";[b][1:v]overlay=W-w-36:30{'[t]'}"
+        pos = "24:H-h-200" if stacked else "W-w-36:30"
+        filt += f";[b][1:v]overlay={pos}[t]"
         last = "[t]"
     # Short fades in and out of the dark 3D clip so the cut from the light clips is soft.
     if dark:
