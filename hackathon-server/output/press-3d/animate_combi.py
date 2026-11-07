@@ -181,7 +181,10 @@ def configure_render(scene, samples, scale, threads=0, res=(1920, 1080)):
     c.transmission_bounces, c.volume_bounces, c.transparent_max_bounces = 0, 0, 8
     c.caustics_reflective = c.caustics_refractive = False
     c.blur_glossy = 1.0
-    scene.render.use_persistent_data = True
+    # Persistent data is OFF: with it on, long runs produced stale shading on some frames
+    # (pure-black chamber floor on one worker from frame 333). A fresh sync per frame costs
+    # about 1 s and is always correct.
+    scene.render.use_persistent_data = False
     if threads:
         scene.render.threads_mode = "FIXED"
         scene.render.threads = threads
@@ -231,7 +234,11 @@ def export_anchors(scene, cam, path: Path):
 def render_frames(scene, args):
     out = OUT / "frames3d"
     out.mkdir(parents=True, exist_ok=True)
-    frames = [f for f in range(1, TL.LAST_3D_FRAME + 1) if (f - 1) % args.workers == args.worker]
+    # split the frames that are still MISSING across the workers, so a resume after a
+    # partial re-render keeps every worker busy (all workers list the same set at start-up)
+    todo = [f for f in range(1, TL.LAST_3D_FRAME + 1)
+            if args.overwrite or not (out / f"f{f:04d}.png").exists()]
+    frames = todo[args.worker::args.workers]
     if args.frames:
         frames = frames[:args.frames]
     t0 = time.time()
