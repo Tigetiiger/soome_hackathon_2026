@@ -73,22 +73,66 @@ border-radius:5px;font:.83rem/1.45 system-ui,-apple-system,"Segoe UI",Roboto,san
 .lb[hidden]{display:none}.lb img{max-width:100%;max-height:calc(100vh - 7rem);object-fit:contain;background:#fff;border-radius:4px}
 .lb-x{position:fixed;top:12px;right:12px;width:3rem;height:3rem;border-radius:50%;border:0;background:#fff;color:#000;font-size:1.8rem;line-height:1;cursor:pointer}
 .lb-cap{color:#eee;font:.9rem system-ui,sans-serif;margin:.6rem 0 0;text-align:center;max-width:90ch}.lb-cap a{color:#9cc8ff}
+nav.toc.spy li.has-sub:not(.open)>ol{display:none}
+nav.toc a[aria-current]{color:var(--accent);font-weight:700}nav.toc ol ol a[aria-current]{font-weight:600}
+nav.toc a[aria-current] .n{color:var(--accent)}
+details.gallery{margin:1.2rem 0 .4rem;border:1px solid var(--line);border-radius:6px;background:var(--card);
+font-family:system-ui,-apple-system,"Segoe UI",Roboto,sans-serif}
+details.gallery>summary{cursor:pointer;padding:.75rem 1rem;font-weight:600;font-size:1rem}
+details.gallery>summary:focus-visible{outline:2px solid var(--accent);outline-offset:2px}
+details.gallery[open]>summary{border-bottom:1px solid var(--line)}
+.gnote{margin:.8rem 1rem .2rem;color:var(--muted);font-size:.88rem;max-width:none}
+ol.glist{list-style:none;margin:0;padding:.6rem 1rem 1rem;display:grid;gap:1.1rem 1.4rem;
+grid-template-columns:repeat(auto-fill,minmax(min(100%,360px),1fr))}
+li.gitem{max-width:none;margin:0;border-top:1px solid var(--line);padding-top:.8rem;min-width:0}
+li.gitem img{width:100%;height:auto;display:block;background:#fff;border:1px solid var(--line);border-radius:3px;cursor:zoom-in}
+li.gitem img[data-src]{min-height:180px}
+.gtext p{margin:.5rem 0 0;font-size:.86rem;line-height:1.5;max-width:none}.gtext p.gtitle{font-weight:600}
+.gtext .gtitle a{text-decoration:none}
+figcaption .fdesc{display:block;margin-top:.3rem}
+.lb-res{font-style:normal;color:#bbb}
 footer{border-top:1px solid var(--line);margin-top:3rem;padding-top:1rem;font:.85rem/1.5 system-ui,sans-serif;color:var(--muted)}
 """
 
 LIGHTBOX = """<div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Enlarged image">
 <button class="lb-x" type="button" aria-label="Close image">&times;</button><img alt="">
-<p class="lb-cap"><span></span> · <a target="_blank" rel="noopener">open full size</a> · click anywhere or press Esc
-to close</p></div>
+<p class="lb-cap"><span></span> · <a target="_blank" rel="noopener">open full size</a> <em class="lb-res"></em> · click anywhere
+or press Esc to close</p></div>
 <script>(function(){var lb=document.getElementById("lb");if(!lb)return;var im=lb.querySelector("img"),
-cap=lb.querySelector(".lb-cap span"),full=lb.querySelector(".lb-cap a"),last=null;
-function close(){lb.hidden=true;im.removeAttribute("src");document.body.style.overflow="";if(last)last.focus();}
+cap=lb.querySelector(".lb-cap span"),full=lb.querySelector(".lb-cap a"),res=lb.querySelector(".lb-res"),last=null,cur=null;
+function close(){lb.hidden=true;cur=null;im.removeAttribute("src");document.body.style.overflow="";if(last)last.focus();}
+function show(a){var hi=a.getAttribute("href"),lo=a.getAttribute("data-lo")||hi;cur=last=a;im.src=lo;
+im.alt=a.dataset.cap||"";cap.textContent=a.dataset.cap||"";full.href=hi;res.textContent="";lb.hidden=false;
+document.body.style.overflow="hidden";lb.querySelector(".lb-x").focus();if(hi===lo)return;
+res.textContent="(loading high resolution…)";var pre=new Image();
+pre.onload=function(){if(cur===a){im.src=hi;res.textContent="(high resolution)";}};
+pre.onerror=function(){if(cur===a){full.href=lo;res.textContent="";}};pre.src=hi;}
 document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a.zoom");
-if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();last=a;im.src=a.getAttribute("href");
-im.alt=a.dataset.cap||"";cap.textContent=a.dataset.cap||"";full.href=a.getAttribute("href");lb.hidden=false;
-document.body.style.overflow="hidden";lb.querySelector(".lb-x").focus();return;}
+if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();show(a);return;}
 if(!lb.hidden&&!(e.target.closest&&e.target.closest(".lb-cap a")))close();});
 document.addEventListener("keydown",function(e){if(!lb.hidden&&e.key==="Escape")close();});})();</script>"""
+
+TOC_SPY = """<script>(function(){var nav=document.querySelector("nav.toc");if(!nav)return;var items=[],groups=[];
+[].forEach.call(nav.querySelectorAll("nav.toc > ol > li"),function(li,i){var a=li.querySelector("a"),
+sub=li.querySelector("ol");if(!a)return;var g={li:li,a:a,sub:sub};groups.push(g);
+if(sub){sub.id="toc-sub-"+i;a.setAttribute("aria-controls",sub.id);a.setAttribute("aria-expanded","false");
+li.classList.add("has-sub");}var h=document.getElementById(a.hash.slice(1));if(h)items.push({h:h,a:a,g:g});
+if(sub)[].forEach.call(sub.querySelectorAll("a"),function(s){var hs=document.getElementById(s.hash.slice(1));
+if(hs)items.push({h:hs,a:s,g:g,sub:true});});});
+if(!items.length)return;nav.classList.add("spy");var cur=null,tick=false;
+function pick(){var y=Math.min(140,window.innerHeight*0.3),best=null;
+if(window.innerHeight+window.scrollY>=document.documentElement.scrollHeight-2)best=items[items.length-1];
+else for(var i=0;i<items.length;i++){if(items[i].h.getBoundingClientRect().top<=y)best=items[i];else break;}return best;}
+function update(){tick=false;var it=pick();if(it===cur)return;cur=it;var main=it?it.g:null;
+groups.forEach(function(g){var on=g===main;g.li.classList.toggle("open",on);if(g.sub)g.a.setAttribute("aria-expanded",on?"true":"false");
+if(on)g.a.setAttribute("aria-current","location");else g.a.removeAttribute("aria-current");});
+[].forEach.call(nav.querySelectorAll("ol ol a[aria-current]"),function(a){a.removeAttribute("aria-current");});
+if(it&&it.sub)it.a.setAttribute("aria-current","location");var act=it?it.a:null;
+if(act&&nav.scrollHeight>nav.clientHeight){var r=act.getBoundingClientRect(),n=nav.getBoundingClientRect();
+if(r.top<n.top+40||r.bottom>n.bottom-40)nav.scrollTop+=r.top-n.top-n.height/3;}}
+function req(){if(!tick){tick=true;requestAnimationFrame(update);}}
+window.addEventListener("scroll",req,{passive:true});window.addEventListener("resize",req);
+window.addEventListener("hashchange",req);update();})();</script>"""
 
 TOOLTIP = """<div id="tip" role="tooltip" hidden></div>
 <script>(function(){var el=document.getElementById("terms"),tip=document.getElementById("tip");if(!el||!tip)return;
@@ -123,4 +167,4 @@ def page(title: str, body: str, nav: str = "", glossary: dict[str, str] | None =
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title>'
             f'<meta name="color-scheme" content="light dark"><style>{CSS}</style></head><body>'
-            f'<div class="layout">{nav}<main>{body}</main></div>{extra}{LIGHTBOX}</body></html>')
+            f'<div class="layout">{nav}<main>{body}</main></div>{extra}{LIGHTBOX}{TOC_SPY if nav else ""}</body></html>')

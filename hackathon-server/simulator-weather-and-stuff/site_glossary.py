@@ -246,7 +246,7 @@ def build_glossary(cfg: dict | None, feature_docs: dict[str, str]) -> tuple[dict
 
 
 # ---------------------------------------------------------------- automatic wrapping
-SKIP_TAGS = {"a", "pre", "script", "style", "h1", "h2", "h3", "h4", "h5", "h6", "nav", "button", "svg", "title", "textarea"}
+SKIP_TAGS = {"a", "pre", "script", "style", "h1", "h2", "h3", "h4", "h5", "h6", "nav", "button", "svg", "title", "textarea", "summary"}
 # plain words that are also column/feature names: wrapped only when they appear inside <code>
 CODE_ONLY = {"hour", "weekday", "material", "presses", "ts", "drainage", "infeed", "k", "relief", "width"}
 BLOCK_TAGS = {"p", "li", "td", "th", "figcaption", "dd", "dt", "blockquote", "caption", "div", "section", "h5"}
