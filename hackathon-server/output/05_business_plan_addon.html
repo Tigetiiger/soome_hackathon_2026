@@ -138,6 +138,10 @@ details.why .wb{padding:12px 18px 16px;display:grid;gap:10px;font-size:15px;colo
 details.why .wb b{color:var(--ink);font-weight:500}
 details.why .alt{font-size:13px;color:var(--ink-3);border-top:1px dashed var(--line);padding-top:8px}
 details.why .alt b{color:var(--ink-3)}
+.seven{background:var(--surface);border:1px solid var(--line);border-left:3px solid var(--mark);border-radius:0 16px 16px 0;padding:18px 22px;display:grid;gap:10px;max-width:86ch}
+.seven ol{margin:0;padding-left:22px;display:grid;gap:8px;font:400 17px/1.5 var(--serif);color:var(--ink-2)}
+.seven ol li::marker{font:500 12px var(--mono);color:var(--ink-3)}
+.seven b{color:var(--ink);font-weight:500}
 .flow{margin:0;padding-left:22px;display:grid;gap:10px;font-size:15px;color:var(--ink-2);max-width:84ch}
 .flow li b{color:var(--ink);font-weight:500}
 .flow .who{font:500 11px/1 var(--mono);letter-spacing:.05em;text-transform:uppercase;color:var(--ink-3);margin-right:6px}
@@ -162,7 +166,18 @@ details.why .alt b{color:var(--ink-3)}
 <header class="sec" style="gap:18px">
   <p class="eyebrow">Europress × Since AI 2026 · Business plan and dashboard add-on · 7 Nov 2026</p>
   <h1>SMART Weight &amp; Insight: a weight for every compactor, an answer for every customer</h1>
-  <p class="lead">Europress told us that every invoice and every contract is about weight, and that only the party paid per tonne knows it. This plan turns the machines Europress already has on site into an independent weight. It turns the SMART dashboard we built into five plain answers for customers, a pickup feed for operators and a "what to say" brief for Europress sales. Most of it is software. The hardware is cheap and goes only where it pays.</p>
+  <div class="seven">
+    <p class="eyebrow">The plan in seven sentences</p>
+    <ol>
+      <li>Europress's compactors already know how <b>full</b> they are, but nobody on the customer's side knows how <b>heavy</b> the waste is, even though every invoice and every contract is priced per tonne.</li>
+      <li>We propose to turn each SMART-connected machine into an <b>independent weight estimate</b>, computed from the fill level, ram pressure and weather data the machine already produces, and anchored by a small group of machines fitted with real load cells and by the operators' weighbridge tickets.</li>
+      <li>On top of that weight, the SMART Insights dashboard we built in the hackathon gets <b>seven additions</b>: the weight engine itself, a five-answer customer home page, nightly sales briefs, a pickup feed with tonnes for operators, a fleet map with weather, a quality panel and a reporting pack.</li>
+      <li>Fixed rules make every decision, Claude only writes the explanations with citations, and a person approves anything that leaves the system, so the weight stays a <b>neutral second opinion</b> and never becomes a bill.</li>
+      <li>The Answers tier is <b>free</b> as a hook for the roughly 85 % of customers not yet on SMART, Verified Weight costs <b>€15 per machine per month</b> for chains and fixed-schedule customers, and operators get the feed free in exchange for sharing their tickets.</li>
+      <li>Expected add-on revenue is about <b>€0.9M a year by 2029</b>, but the real case for Europress is stickier SMART subscriptions and service contracts, which turn a negative stand-alone NPV into a positive one.</li>
+      <li>The roadmap starts with <b>software only in November 2026</b>, runs a €0 test of archived pressure data against tickets before any hardware is bought, and stops at any phase gate that fails, so the most Europress can lose is the Phase 0 budget of about €270k.</li>
+    </ol>
+  </div>
   <div class="stats">
     <div class="stat"><b>±4.7 %</b><span>mean weight error per pickup on unseen machines, soft sensor <span class="tag">simulated</span></span></div>
     <div class="stat"><b>9 % → 96 %</b><span>pickups the demo customer can check today vs with machine weight <span class="tag">practice data</span></span></div>
