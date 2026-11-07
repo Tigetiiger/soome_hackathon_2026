@@ -25,6 +25,11 @@ def _parser() -> argparse.ArgumentParser:
     pr.add_argument("--output", type=Path, required=True)
     pr.add_argument("--split", choices=["bins", "time"], default=None, help="bundle to use (default: time)")
     pr.add_argument("--strokes", type=Path, default=None, help="optional strokes.parquet")
+    c = sub.add_parser("curve", help="one material: error vs number of training machines")
+    c.add_argument("--data", type=Path, required=True)
+    c.add_argument("--models", type=Path, required=True, help="trained folder (uses its bins bundle settings)")
+    c.add_argument("--material", default="cardboard")
+    c.add_argument("--sizes", default="1,2,4,8,16,32,64,128")
     r = sub.add_parser("report", help="(re)build plots and REPORT.md from a trained folder")
     r.add_argument("--models", type=Path, required=True)
     return p
@@ -50,6 +55,10 @@ def main(argv: list[str] | None = None) -> int:
         elif args.cmd == "predict":
             from .predict import run_predict
             run_predict(args.models, args.input, args.output, args.split, args.strokes)
+        elif args.cmd == "curve":
+            from .material_curve import run_material_curve
+            sizes = tuple(int(x) for x in args.sizes.split(","))
+            run_material_curve(args.data, args.models, args.material, sizes)
         else:
             _report(args.models)
     except (FileNotFoundError, ValueError) as exc:
