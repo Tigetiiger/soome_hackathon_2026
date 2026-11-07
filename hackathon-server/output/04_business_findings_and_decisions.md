@@ -147,7 +147,7 @@ Full source documents are in `business_sources/`.
 | Offer | Attaches to | Price [A] | Logic |
 |---|---|---|---|
 | **Free kg teaser plus a dashboard preview** | SMART Intro; replaces the volume calculator | Free (cost to serve ≈ €15 per device-year [E]) | Acquisition hook for the ~85% not on SMART |
-| **Verified Weight** | SMART Insights | **€15 per device per month list, €12 bundled into a new lease** (draft range €5–15) | Fee ≤ ⅓ of realisable value. Charge chains and fixed schedules; the median customer stays free |
+| **Verified Weight**, included in SMART Insights | SMART Insights | **Insights price +€15 per device per month list, +€12 bundled into a new lease** (draft range €5–15) | Fee ≤ ⅓ of realisable value. Charge chains and fixed schedules; the median customer stays free |
 | **Proof of Fullness** | Insights; launch in Poland and Benelux | **25% gain-share** of verified avoided-lift cost in year 1, then a subscription | Answers "cheapest wins" |
 | **Contract benchmark, action inbox and reporting pack** | SMART Integrated | +€25 per device per month, or a **chain licence of €10–40k a year** | Procurement and ESG teams |
 | **Operator Review service** | Integrated / SMART Center | 15% of *verified* recovered or avoided cost, capped | Weight is the evidence layer |
@@ -155,7 +155,7 @@ Full source documents are in `business_sources/`.
 | **Operator data feed** | Operator API | Free for operators who share; paid analytics later | Turns the data-ownership fight into a trade |
 | *Idea from our notes* | SMART | **Discounted SMART for the first 12 months** | Lever 1 (fuller pickups) usually pays it back alone |
 
-**Price decision:** we use **€15 list / €12 bundled**, and record the alternative.
+**Price decision:** weight is **included in SMART Insights**, and the Insights price rises by **€15 list / €12 bundled** (decided 7 Nov). We record the alternative.
 - The draft plan (`business_sources/message_draft_plan.md`) argues for **€8** per device per month. At €8 the contribution is only ~€3.2 per device per month, so break-even needs ~3,500 paying devices.
 - The merged plan picks €12–15, which matches the parallel session's €15.
 - **Europress's real tier prices should replace both.**
@@ -232,7 +232,7 @@ Frame the product as **verified service quality for everyone**:
 | 3 | Position as a **neutral second opinion**, not a billing basis | Legal-for-trade weighing | NAWI rules; data shows gaps are mostly weighbridge-side causes | [F]/[D] |
 | 4 | **Rules decide, AI drafts, a person approves** | ML-first; automatic actions | Rules beat ML on the benchmark; trust; operator relations | [D] |
 | 5 | **Free tier for the median customer**, charge chains and fixed schedules | Charge everyone | The median contract value is €0 | [D] |
-| 6 | Price **€15 list / €12 bundled** in Insights | €8 (draft plan), €10, €25 | Fee ≤ ⅓ of value; agrees with the parallel session | §6 |
+| 6 | Weight **included in Insights**; Insights price **+€15 list / +€12 bundled** | €8 (draft plan), €10, €25 | Fee ≤ ⅓ of value; agrees with the parallel session | §6 |
 | 7 | Board pitch = **stickier SMART and service contracts** | "New revenue line" | Standalone NPV only breaks even (+€0.01M); retention lifts it to +€0.58M | CFO lens |
 | 8 | Main product of this track = an **end-customer dashboard** that educates and shows savings in euros | Internal SMART Center tool | Our session goal; "educate the client" was the priority note | User brief |
 | 9 | **Every number is clickable** to its formula, sources and rows | Plain KPI tiles | "Clicking on the value will show where the info is coming from" | User brief |

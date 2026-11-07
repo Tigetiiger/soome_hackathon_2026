@@ -272,7 +272,7 @@ All prices are **our assumptions** [A]. Europress's real prices should replace t
 | What we offer | Which SMART level it belongs to | Price | Why it's priced this way |
 |---|---|---|---|
 | **Free weight preview plus a dashboard preview** | SMART Intro. Replaces today's volume calculator. | Free. It costs Europress about €15 per machine per year to provide [E]. | A hook to attract the ~85% of customers who don't use SMART yet. |
-| **Verified Weight** | SMART Insights | **€15 per machine per month list price, or €12 when included in a new lease.** An earlier draft suggested €5–15. | The fee is at most **a third** of what the customer can actually save, so the customer keeps at least two-thirds. Charge chains and fixed-schedule customers. The typical (median) customer stays on the free level. |
+| **Verified Weight**, included in SMART Insights | SMART Insights | **The Insights price goes up by €15 per machine per month, or €12 when included in a new lease.** An earlier draft suggested €5–15. | The fee is at most **a third** of what the customer can actually save, so the customer keeps at least two-thirds. Charge chains and fixed-schedule customers. The typical (median) customer stays on the free level. |
 | **Proof of Fullness** | Insights. Launch first in Poland and Benelux. | **25% of the verified savings** from avoided pickups in year 1 ("gain-share"), then a normal subscription | Works in markets where "the cheapest offer wins": the customer pays only out of money already saved. |
 | **Contract benchmark, action list and reporting pack** | SMART Integrated | +€25 per machine per month, or **€10–40k a year as a licence for a whole chain** | For procurement and sustainability teams at large companies. |
 | **Operator Review service** | Integrated / SMART Center | 15% of the money *verifiably* recovered or saved, with a cap | Weight is the evidence that makes the review possible. |
@@ -280,7 +280,7 @@ All prices are **our assumptions** [A]. Europress's real prices should replace t
 | **Data feed for operators** | Operator API | Free for operators who share tickets. Paid analytics later. | Turns the argument over who owns the data into a fair trade. |
 | *An idea from our notes* | SMART | **Discounted SMART for the first 12 months** | The first saving lever (emptying when full) usually pays for it on its own. |
 
-**The price decision: €15 list, €12 in a lease.** We recorded the alternative too:
+**The price decision: weight is part of SMART Insights, and the Insights price goes up by €15 (€12 in a lease).** We recorded the alternative too:
 - A draft plan (`business_sources/message_draft_plan.md`) argued for **€8 per machine per month**. At €8, Europress keeps only about €3.20 per machine per month after costs, so it would need about **3,500 paying machines** just to break even.
 - The merged plan picks €12–15. A parallel team working on the same challenge independently arrived at €15.
 - **Europress's real SMART prices should replace both.**
@@ -380,7 +380,7 @@ The first seven decisions are about the business. Decisions 8–25 are about the
 | 3 | Present the weight as a **neutral second opinion**, not as the basis for the bill | Official, legally certified weighing | The law (NAWI) doesn't allow it, and the data shows most differences come from the weighbridge side anyway. | Public rules / practice data |
 | 4 | **Rules decide, AI drafts, a person approves** | Let machine learning decide; fully automatic actions | Rules performed better in our test, and this keeps trust and good relations with operators. | Practice data |
 | 5 | **Free for the typical customer**; charge chains and fixed-schedule customers | Charge everyone | The typical (median) customer gains €0. | Practice data |
-| 6 | Price at **€15 list, €12 in a lease**, in SMART Insights | €8 (draft plan), €10, €25 | The fee stays at or below a third of the value, and a parallel team reached the same price. | Section 6 |
+| 6 | Include weight in SMART Insights and raise the Insights price by **€15 list, €12 in a lease** | €8 (draft plan), €10, €25 | The fee stays at or below a third of the value, and a parallel team reached the same price. | Section 6 |
 | 7 | Tell the board it makes **SMART and service contracts stickier** | "A new revenue line" | On its own, the subscription only breaks even; keeping customers is where the profit is. | Finance view |
 | 8 | The main thing we built is a **dashboard for the end customer** that teaches them and shows savings in euros | An internal tool for SMART Center staff | It was our team's goal, and "educate the client" was the top priority in our notes. | Our brief |
 | 9 | **Every number can be clicked** to show its formula, sources and records | Plain number tiles | From our brief: "clicking on the value will show where the info is coming from". | Our brief |

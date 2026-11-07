@@ -137,7 +137,7 @@ All of these products measure fill. **We found no commercial compactor "virtual 
 
 **Pricing** [A]:
 - Answers + weight preview: free, in Intro.
-- Verified Weight: €15 per machine per month, €12 in a lease.
+- Verified Weight: included in SMART Insights; the Insights price rises by €15 per machine per month, €12 in a lease.
 - Proof of Fullness: 25 % gain-share.
 - Integrated reporting pack: €10–40k per chain per year.
 - Operator feed: free with ticket sharing; Pro €500/month.

@@ -111,7 +111,7 @@ SENSORS = {
     "gps":      ("press", (0.820, -0.735, 1.300)),
     "tilt":     ("press", (0.440, -0.735, 1.120)),
     "door":     ("container", (6.105, -1.205, 1.330)),
-    "lid":      ("press", (1.990, -0.885, 1.895)),
+    "lid":      ("side_panel", (1.990, -0.885, 1.895)),   # on the near hopper cheek
     "oiltemp":  ("press", (0.750, -0.120, 1.205)),
 }
 
@@ -182,6 +182,36 @@ def fade_emission_material(name, hex_color, strength=2.0):
     mix.name = "fade"
     mix.inputs["Fac"].default_value = 0.0
     nt.links.new(tr.outputs[0], mix.inputs[1])
+    nt.links.new(em.outputs[0], mix.inputs[2])
+    nt.links.new(mix.outputs[0], out.inputs["Surface"])
+    return m
+
+
+def floor_material(name, hex_floor, hex_bg, center, r0, r1):
+    """Studio floor that blends into the background colour with distance (no horizon line)."""
+    m = principled(name, hex_floor, rough=0.55, spec=0.3)
+    nt = m.node_tree
+    out = next(n for n in nt.nodes if n.type == "OUTPUT_MATERIAL")
+    bsdf = next(n for n in nt.nodes if n.type == "BSDF_PRINCIPLED")
+    geo = nt.nodes.new("ShaderNodeNewGeometry")
+    sub = nt.nodes.new("ShaderNodeVectorMath")
+    sub.operation = "SUBTRACT"
+    sub.inputs[1].default_value = center
+    ln = nt.nodes.new("ShaderNodeVectorMath")
+    ln.operation = "LENGTH"
+    mr = nt.nodes.new("ShaderNodeMapRange")
+    mr.interpolation_type = "SMOOTHSTEP"
+    mr.inputs["From Min"].default_value = r0
+    mr.inputs["From Max"].default_value = r1
+    em = nt.nodes.new("ShaderNodeEmission")
+    em.inputs["Color"].default_value = rgba(hex_bg)
+    em.inputs["Strength"].default_value = 1.0
+    mix = nt.nodes.new("ShaderNodeMixShader")
+    nt.links.new(geo.outputs["Position"], sub.inputs[0])
+    nt.links.new(sub.outputs["Vector"], ln.inputs[0])
+    nt.links.new(ln.outputs["Value"], mr.inputs["Value"])
+    nt.links.new(mr.outputs["Result"], mix.inputs["Fac"])
+    nt.links.new(bsdf.outputs[0], mix.inputs[1])
     nt.links.new(em.outputs[0], mix.inputs[2])
     nt.links.new(mix.outputs[0], out.inputs["Surface"])
     return m
@@ -382,7 +412,7 @@ def build(out: Path) -> None:
         "estop": principled("estop_red", "#C2302B", rough=0.35),
         "estop_ring": principled("estop_yellow", "#E1B21C", rough=0.4),
         "lamp_g": principled("lamp_green", "#3FA34D", rough=0.3),
-        "floor": principled("studio_floor", "#121820", rough=0.55, spec=0.3),
+        "floor": floor_material("studio_floor", "#141B24", C["bg"], (3.6, 0, 0), 6.0, 20.0),
     }
     S = {k: sensor_material(f"sensor_{k}") for k in list(SENSORS) + ["loadcell"]}
     ram_glow = fade_emission_material("ram_face_glow", C["teal"], 3.0)
@@ -513,9 +543,9 @@ def build(out: Path) -> None:
     # hopper side cheeks under the sloping lid (fixed)                             [M]
     cheek = [(LID_P0[0], Z_PRESS_TOP), (LID_P0[0], LID_P0[1] - 0.026),
              (LID_P1[0], LID_P1[1] - 0.026), (X_CF, LID_P1[1] - 0.026), (X_CF, Z_PRESS_TOP)]
-    for sy in (-1, 1):
+    for sy in (-1, 1):   # the near (-Y) cheek leaves with the side panel
         B.prism_xz(f"hopper_cheek_{'L' if sy < 0 else 'R'}", cheek, sy * (HW_PRESS - 0.008),
-                   sy * HW_PRESS, M["blue"], E, G, bevel=0.003)
+                   sy * HW_PRESS, M["blue"], E, "side_panel" if sy < 0 else G, bevel=0.003)
     # sloping hopper lid with front lip, side skirts, handle, rear hinges, gas strut
     B.sloped_plate("hopper_lid", LID_P0, LID_P1, 0.025, -HW_PRESS - 0.02, HW_PRESS + 0.02,
                    M["blue"], E, "lid", bevel=0.004)
@@ -767,7 +797,7 @@ def build(out: Path) -> None:
     # ================= STUDIO =======================================================
     ST = "studio"
     bm = bmesh.new()
-    bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=60)
+    bmesh.ops.create_grid(bm, x_segments=1, y_segments=1, size=80)
     B._finish(bm, "studio_floor", M["floor"], ST, (3.2, 0, 0), None)
     world = bpy.data.worlds.new("World")
     scene.world = world
@@ -778,11 +808,16 @@ def build(out: Path) -> None:
     target = bpy.data.objects.new("light_target", None)
     target.location = (3.4, 0, 1.0)
     B.coll(ST).objects.link(target)
-    for name, loc, energy, size, color in (
-        ("key", (-4.0, -9.0, 9.0), 5200, 7.0, "#FFF4E8"),
-        ("fill", (9.0, -8.5, 3.5), 1500, 9.0, "#DCE8FF"),
-        ("rim", (8.5, 8.0, 7.5), 2600, 6.0, "#BFD6FF"),
-        ("top", (3.2, 0.0, 10.0), 1800, 10.0, "#FFFFFF"),
+    press_target = bpy.data.objects.new("light_target_press", None)
+    press_target.location = (1.0, -0.3, 1.6)
+    B.coll(ST).objects.link(press_target)
+    for name, loc, energy, size, color, tgt in (
+        ("key", (-4.0, -9.0, 9.0), 5200, 7.0, "#FFF4E8", target),
+        ("fill", (9.0, -8.5, 3.5), 1500, 9.0, "#DCE8FF", target),
+        ("rim", (8.5, 8.0, 7.5), 2600, 6.0, "#BFD6FF", target),
+        ("top", (3.2, 0.0, 10.0), 1800, 10.0, "#FFFFFF", target),
+        # soft fill into the opened press section (internals read better)
+        ("interior", (-0.8, -5.5, 4.2), 700, 3.0, "#F4F7FF", press_target),
     ):
         light = bpy.data.lights.new(name, "AREA")
         light.energy, light.size = energy, size
@@ -791,7 +826,7 @@ def build(out: Path) -> None:
         ob.location = loc
         B.coll(ST).objects.link(ob)
         tr = ob.constraints.new("TRACK_TO")
-        tr.target = target
+        tr.target = tgt
         tr.track_axis, tr.up_axis = "TRACK_NEGATIVE_Z", "UP_Y"
 
     # machine stands on the scale platform

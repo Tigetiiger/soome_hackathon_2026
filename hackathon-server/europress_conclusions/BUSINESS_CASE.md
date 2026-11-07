@@ -2,9 +2,9 @@
 
 Europress × Since AI Hackathon 2026 · submission item 3
 
-**The case in one paragraph.** Europress should sell weight as verification add-ons inside the SMART tiers it already has, not as a new business:
+**The case in one paragraph.** Europress should include weight in the SMART tiers it already has, not sell it as a new business:
 - a free kg estimate on SMART Intro;
-- Verified Weight at €12–15 per device per month on Insights;
+- Verified Weight included in SMART Insights, with the Insights price raised by €15 per device per month (€12 when bundled into a new lease);
 - Proof of Fullness on gain-share in fixed-schedule markets such as Poland.
 
 The main return for Europress is more customers on SMART and stickier service contracts, which is where it makes its profit [T].
@@ -65,7 +65,7 @@ This matches the 80/20 split Europress described [T]. So we charge the chains an
 | Add-on | Price [A] | Customer value it is priced against |
 |---|---|---|
 | **kg estimate**: monthly kg band per machine | Free. Costs us about €15 per device-year to serve [E] | An acquisition hook that brings the ~85% of customers not on SMART into it [T] |
-| **Verified Weight**: per-lift reconciliation, cause attribution, drift alarm | €15 per device per month list, €12 when bundled into a new lease | ~€150 billing recovery plus ~€190 contract leverage, for chains [D] |
+| **Verified Weight**: per-lift reconciliation, cause attribution, drift alarm. Included in SMART Insights | Insights price +€15 per device per month list, +€12 when bundled into a new lease | ~€150 billing recovery plus ~€190 contract leverage, for chains [D] |
 | **Proof of Fullness**: evidence and a schedule-change proposal | 25% of the verified avoided-pickup cost in year 1, then moved to an Insights subscription | ~€2.5k per device-year saved: about €625 to Europress, €1.9k kept by the customer [D] |
 | **Contract benchmark, action inbox and reporting pack** | +€25 per device per month in Integrated, or a chain licence of €10–40k per year | Procurement and sustainability teams at chains; mandatory BDO waste reporting in Poland [F] |
 | **Measured tier**: Europress's existing scale platform | Europress's current platform price, inside the lease. Kept outside the add-on economics below [T] | Sites that need verification-grade weight (tenant billing, disputes). Our simulated load-cell design reaches 2.3% in the worst 5% of readings, 1.4% with certified cells [S] |

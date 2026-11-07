@@ -40,8 +40,8 @@ QC = HERE / "qc"
 
 # exploded-view travel (metres / degrees)
 LID_LIFT, COVER_LIFT = 1.15, 0.75
-SIDE_OUT = 1.60
-CONTAINER_BACK = 2.70
+SIDE_OUT = 2.40
+CONTAINER_BACK = 2.30
 DOOR_SWING_DEG, DOOR_BACK = 95.0, 0.60
 MACHINE_LIFT = 0.60
 
@@ -118,7 +118,9 @@ def animate(scene, dims):
             stages[o.name] = (o, o.location.copy(), {"stage1": 1 / 3, "stage2": 2 / 3, "rod": 1.0}[name])
     stroke = dims["RAM_STROKE"]
 
-    sensor_mats = {k: bpy.data.materials[f"sensor_{k}"] for k in TL.SENSOR_ORDER}
+    # the ram has no sensor body: it is highlighted by the ram_face_glow frame instead
+    sensor_mats = {k: bpy.data.materials[f"sensor_{k}"] for k in TL.SENSOR_ORDER
+                   if f"sensor_{k}" in bpy.data.materials}
     emis = {k: next(n for n in m.node_tree.nodes if n.type == "BSDF_PRINCIPLED").inputs["Emission Strength"]
             for k, m in sensor_mats.items()}
     ram_glow = bpy.data.materials["ram_face_glow"].node_tree.nodes["fade"].inputs["Fac"]
@@ -203,7 +205,8 @@ def project_anchors(scene, cam, res):
         d = p - cam_pos
         dist = d.length
         hit, loc, _n, _i, obj, _m = scene.ray_cast(dg, cam_pos, d.normalized(), distance=dist)
-        visible = (not hit) or (loc - cam_pos).length > dist - 0.04 or obj.name.startswith("sensor_")
+        visible = ((not hit) or (loc - cam_pos).length > dist - 0.04 or obj.name.startswith("sensor_")
+                   or a.name.startswith("anchor_loadcell"))   # pucks show beside their feet
         out[a.name[len("anchor_"):]] = [round(v.x * w, 1), round((1 - v.y) * h, 1), round(v.z, 3),
                                         int(visible)]
     return out
@@ -331,7 +334,7 @@ def main():
     ap.add_argument("--worker", type=int, default=0)
     ap.add_argument("--workers", type=int, default=1)
     ap.add_argument("--frames", type=int, default=0)
-    ap.add_argument("--still", type=int, default=0, help="render a single frame to qc/still_FFFF.png")
+    ap.add_argument("--still", default="", help="comma-separated frames to render to qc/still_FFFF.png")
     ap.add_argument("--overwrite", action="store_true")
     args = ap.parse_args(argv)
 
@@ -346,11 +349,17 @@ def main():
         export_anchors(scene, cam, OUT / "anchors.json")
     if args.still:
         QC.mkdir(exist_ok=True)
-        scene.frame_set(args.still)
-        scene.render.filepath = str(QC / f"still_{args.still:04d}.png")
-        t0 = time.time()
-        bpy.ops.render.render(write_still=True)
-        print(f"STILL {args.still} {time.time() - t0:.1f}s")
+        anchors = {}
+        for f in [int(v) for v in args.still.split(",")]:
+            scene.frame_set(f)
+            scene.render.filepath = str(QC / f"still_{f:04d}.png")
+            t0 = time.time()
+            bpy.ops.render.render(write_still=True)
+            res = (scene.render.resolution_x * scene.render.resolution_percentage // 100,
+                   scene.render.resolution_y * scene.render.resolution_percentage // 100)
+            anchors[f] = project_anchors(scene, cam, res)
+            print(f"STILL {f} {time.time() - t0:.1f}s", flush=True)
+        (QC / "anchors_stills.json").write_text(json.dumps(anchors))
     if args.render:
         render_frames(scene, args)
     if args.qc:

@@ -14,7 +14,7 @@ try { plan = localStorage.getItem(KEY) === "free" ? "free" : "smart"; } catch { 
 addStrings({
   en: {
     "plan.label": "Plan", "plan.free": "Free", "plan.smart": "SMART", "plan.unlock": "Switch to SMART",
-    "plan.lock.weight": "Live weight of every container is part of SMART.",
+    "plan.lock.weight": "Live weight of every container is included in SMART Insights. Free shows your total tonnes.",
     "plan.lock.savings": "{n} more savings worth {eur} a year are waiting in SMART.",
     "plan.lock.when": "Daily and hourly patterns are part of SMART.",
     "plan.lock.forecast": "The 14-day pickup forecast and SMART's value for your routes are part of SMART.",
@@ -23,7 +23,7 @@ addStrings({
   },
   fi: {
     "plan.label": "Paketti", "plan.free": "Free", "plan.smart": "SMART", "plan.unlock": "Vaihda SMARTiin",
-    "plan.lock.weight": "Jokaisen säiliön reaaliaikainen paino kuuluu SMARTiin.",
+    "plan.lock.weight": "Jokaisen säiliön reaaliaikainen paino sisältyy SMART Insightsiin. Free näyttää kokonaistonnit.",
     "plan.lock.savings": "{n} muuta säästöä, yhteensä {eur} vuodessa, odottaa SMARTissa.",
     "plan.lock.when": "Päivä- ja tuntikohtaiset tiedot kuuluvat SMARTiin.",
     "plan.lock.forecast": "14 päivän tyhjennysennuste ja SMARTin arvo reiteillesi kuuluvat SMARTiin.",

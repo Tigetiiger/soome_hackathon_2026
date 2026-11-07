@@ -167,7 +167,7 @@ Clicking a card opens the next level: why, and the numbered steps to take. Click
 
 ## Three problems the plan creates for itself, and how it handles them
 
-**The median customer saves nothing.** In the practice data, half the customers have no savings to find. Charging them would fail. So the five answers are free for everyone, as the hook for the 85 % of customers not on SMART, and only chains and fixed-schedule customers, where the savings are real, pay €15 per machine per month for the verified weight. The fee is kept under a third of what they save.
+**For the median customer, weight unlocks nothing extra.** In the practice data, half the contracts have no contract or billing value for the weight to unlock (median €0 per contract-year), even though most customers can still save with the ordinary SMART levers. Charging them for weight would fail. So the five answers and a monthly weight estimate are free for everyone, as the hook for the 85 % of customers not on SMART. Verified weight is included in SMART Insights, whose price rises by €15 per machine per month (€12 in a lease); that is bought by chains and fixed-schedule customers, where the value is real. The fee is kept under a third of what they save.
 
 **The weight could be wrong.** Our two studies disagree, as Problem 1 explains. So the roadmap runs a €0 test on archived data first, fits real scales to a reference group before trusting the estimate, publishes the monthly accuracy openly, and stops at a gate if the numbers are not met. The most Europress can lose is the first phase's budget, about €270k.
 
