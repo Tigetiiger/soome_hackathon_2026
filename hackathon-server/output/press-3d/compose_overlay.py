@@ -458,9 +458,11 @@ def compose(base: Image.Image, t: float, anchors: dict, labels: bool = True) -> 
     draw_title(ov, t)
     draw_heading(ov, t)
     d = ImageDraw.Draw(ov)
-    draw_bracket(ov, d, anchors, t)
+    if labels:   # the QC close-up camera gets dots + caption only
+        draw_bracket(ov, d, anchors, t)
     draw_sensors(ov, anchors, t, labels)
-    draw_inset(ov, t)
+    if labels:
+        draw_inset(ov, t)
     draw_caption(ov, t)
     draw_card(ov, t)
     ov = ov.resize((W, H), Image.LANCZOS)
