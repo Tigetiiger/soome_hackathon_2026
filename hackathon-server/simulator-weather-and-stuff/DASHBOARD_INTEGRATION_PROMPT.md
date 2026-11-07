@@ -15,7 +15,7 @@ data source or hosting.
 Europress × Since AI Hackathon 2026. A **hydraulic soft sensor** for waste compactors: it estimates
 the **mass of waste (kg) inside a compactor container every hour**, from signals the machine already
 has. Those signals are the fill level (which the machine itself estimates from ram back pressure),
-press counts, peak ram pressure, the per-stroke pressure graph, oil temperature and public weather.
+press counts, peak ram pressure, the per-stroke pressure graph and public weather.
 The value one hour before each emptying ("lift") is what a customer compares with the transporter's
 weighbridge ticket. Each prediction comes with a calibrated **p10–p90 interval**.
 
@@ -57,8 +57,9 @@ pandas 3.1, pyarrow 26, LightGBM 4.7, matplotlib 3.11, PyYAML 6). Always run Pyt
 | `summary.json`, `config_used.yaml`, `validate_report.txt`, `plots/` | | run summary, exact config, sanity checks |
 
 `hourly.parquet` columns:
-- **Device / known inputs**: `bin_id` (str, `BIN-0001`…), `ts` (timestamp[ns, Europe/Helsinki], hour start), `material` (`cardboard|paper|plastic_film|mixed_waste`), `equipment_class` (`COMBI|DUO`), `container_volume_m3`, `region` (`UUS|VAR|PIR|POP|LAP`), `infeed` (`open_hopper|lidded_hopper|indoor_shaft`), `drainage` (bool), `temp_c`, `rh_pct` and `precip_mm_day` (that day's mean/total), `fill_pct` (firmware estimate from back pressure, NaN on dropout), `presses`, `peak_pressure_bar` (NaN without a stroke), `lift_event` (1 = emptied at the start of this hour), `oil_temp_c`, `energy_kwh`, `precip_mm` (hourly), `snow_mm_day`.
+- **Device / known inputs**: `bin_id` (str, `BIN-0001`…), `ts` (timestamp[ns, Europe/Helsinki], hour start), `material` (`cardboard|paper|plastic_film|mixed_waste`), `equipment_class` (`COMBI|DUO`), `container_volume_m3`, `region` (`UUS|VAR|PIR|POP|LAP`), `infeed` (`open_hopper|lidded_hopper|indoor_shaft`), `drainage` (bool), `temp_c`, `rh_pct` and `precip_mm_day` (that day's mean/total), `fill_pct` (firmware estimate from back pressure, NaN on dropout), `presses`, `peak_pressure_bar` (NaN without a stroke), `lift_event` (1 = emptied at the start of this hour), `energy_kwh`, `precip_mm` (hourly), `snow_mm_day`.
 - **Pressure graph (hourly mean over strokes)**: `curve_contact_pos`, `curve_rise_slope_bar`, `curve_mean_bar`, `curve_completion`.
+- **Present but not used by the model**: `oil_temp_c` (no oil sensor assumed; the pressure correction uses air temperature).
 - **Truth (evaluation only, never model inputs)**: `true_mass_kg` (the label), `true_fill_pct`, `true_density_kg_m3`, `true_moisture_extra`, `true_water_*_kg`, `true_free_water_kg`, `true_ice_kg`, `true_false_full`, `lifted_mass_kg`, `side_waste_kg`, `ref_scale_kg`.
 
 ### Trained model (`models/full400/`)
@@ -85,7 +86,7 @@ material set and are not referenced by `bundle.json`.
    used for training and prediction). They are backward-looking only; a *cycle* starts at each
    `lift_event`. They cover hours since the lift, forward-filled and maximum fill, presses since the
    lift, peak-pressure statistics, a pressure-implied density (physics inversion), pressure-graph
-   features, oil temperature, weather of *completed* days (rain d1…d7, RH), machine configuration
+   features, weather of *completed* days (rain d1…d7, RH), machine configuration
    and calendar.
 3. **Model**: LightGBM. The target is **kg per m³ of container**, multiplied back by the volume. Per
    material the bundle picks a per-material or shared model. p10/p90 quantile models are widened by

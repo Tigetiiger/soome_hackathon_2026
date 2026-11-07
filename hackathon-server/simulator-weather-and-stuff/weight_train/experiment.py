@@ -293,7 +293,7 @@ def run_split(data: TrainData, kind: str, s: TrainSettings, setup_mode: str = "b
     y = data.y_kg / vol
     tr = split.train
     inverter = PressureInverter.fit(data.base.X["p_now"][tr], data.base.X["fill_ffill"][tr],
-                                    data.base.X["oil_temp_c"][tr], meta["material"][tr], y[tr])
+                                    data.base.X["temp_c"][tr], meta["material"][tr], y[tr])
     feats = add_pressure_density(data.base, inverter)
     ctx = Ctx(feats.X, y, vol, data.pre_lift, meta["material"].to_numpy().astype(str),
               meta["bin_id"].to_numpy(), split, s, np.random.default_rng(s.seed))

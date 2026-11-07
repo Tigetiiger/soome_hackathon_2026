@@ -19,7 +19,7 @@ import lightgbm as lgb
 import numpy as np
 import pandas as pd
 
-HOURLY_COLS = ["bin_id", "ts", "fill_pct", "presses", "peak_pressure_bar", "oil_temp_c", "temp_c", "lift_event"]
+HOURLY_COLS = ["bin_id", "ts", "fill_pct", "presses", "peak_pressure_bar", "temp_c", "lift_event"]
 STATIC = ["material", "equipment_class", "container_volume_m3", "infeed", "drainage"]
 CATEGORICAL = ["material", "equipment_class", "infeed"]
 LAGS = range(1, 8)
@@ -27,7 +27,7 @@ LOG_OFFSET_KG = 50.0
 MIN_MASS_FOR_PCT_KG = 200.0   # % error is meaningless for (near-)empty false-full lifts
 
 FILL = ["fill_last", "fill_med6"]
-PRESSURE = ["p_last", "p_max24", "p_med48", "p_n24", "oil_mean24", "temp_mean24"]
+PRESSURE = ["p_last", "p_max24", "p_med48", "p_n24", "temp_mean24"]
 PRESSES = ["presses_cycle", "hours_cycle"]
 WEATHER = [f"rain_d{k}" for k in LAGS] + [f"rh_d{k}" for k in LAGS]
 FEATURE_SETS = {
@@ -59,7 +59,6 @@ def cycle_features(hourly: pd.DataFrame) -> pd.DataFrame:
     t24 = h.groupby(keys).tail(24).groupby(keys)
     out["p_max24"] = t24["peak_pressure_bar"].max()
     out["p_n24"] = t24["peak_pressure_bar"].count()
-    out["oil_mean24"] = t24["oil_temp_c"].mean()
     out["temp_mean24"] = t24["temp_c"].mean()
     out["p_med48"] = h.groupby(keys).tail(48).groupby(keys)["peak_pressure_bar"].median()
     return out.reset_index()

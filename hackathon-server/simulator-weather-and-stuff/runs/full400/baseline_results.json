@@ -7,68 +7,68 @@
     "mae_kg": 566.2439944221594
   },
   "+pressure": {
-    "mean_ape_pct": 7.157729037736136,
-    "median_ape_pct": 5.74797620002953,
-    "p90_ape_pct": 14.62605452033224,
-    "wape_pct": 7.1444686201357115,
-    "mae_kg": 213.02907149249455
+    "mean_ape_pct": 7.293214765591421,
+    "median_ape_pct": 5.884513790363084,
+    "p90_ape_pct": 14.827310691822234,
+    "wape_pct": 7.277606247869433,
+    "mae_kg": 216.99888180657345
   },
   "+pressure+presses": {
-    "mean_ape_pct": 5.209990363038752,
-    "median_ape_pct": 4.134440556858781,
-    "p90_ape_pct": 10.785609383206172,
-    "wape_pct": 5.16498200199737,
-    "mae_kg": 154.006040009739
+    "mean_ape_pct": 5.2360717481917,
+    "median_ape_pct": 4.157476318505946,
+    "p90_ape_pct": 10.824671141097639,
+    "wape_pct": 5.1857241344497105,
+    "mae_kg": 154.6245152878924
   },
   "+rain+rh (7 d)": {
-    "mean_ape_pct": 5.192349115782563,
-    "median_ape_pct": 4.135500871391202,
-    "p90_ape_pct": 10.744948817702015,
-    "wape_pct": 5.103749595182113,
-    "mae_kg": 152.18025233221445
+    "mean_ape_pct": 5.187578878442442,
+    "median_ape_pct": 4.12793980572805,
+    "p90_ape_pct": 10.736222227853453,
+    "wape_pct": 5.127922604600389,
+    "mae_kg": 152.90102724569664
   },
   "segments": {
     "material=cardboard": {
       "fill_only": 22.440509842834487,
-      "+pressure": 7.3865983300437055,
-      "+pressure+presses": 5.457565072688331,
-      "+rain+rh (7 d)": 5.390413014209406
+      "+pressure": 7.483114891590907,
+      "+pressure+presses": 5.460318038716858,
+      "+rain+rh (7 d)": 5.387729245489972
     },
     "material=mixed_waste": {
       "fill_only": 23.277673496118457,
-      "+pressure": 6.625199638657519,
-      "+pressure+presses": 4.382136137131444,
-      "+rain+rh (7 d)": 4.431399920513019
+      "+pressure": 6.904296508137105,
+      "+pressure+presses": 4.565225729779551,
+      "+rain+rh (7 d)": 4.489224446083582
     },
     "material=paper": {
       "fill_only": 23.065672879259253,
-      "+pressure": 7.705674146762754,
-      "+pressure+presses": 5.700116603925076,
-      "+rain+rh (7 d)": 5.647945453772158
+      "+pressure": 7.849640202277589,
+      "+pressure+presses": 5.656712925783451,
+      "+rain+rh (7 d)": 5.6593772272997445
     },
     "material=plastic_film": {
       "fill_only": 25.226361992214464,
-      "+pressure": 6.6017906269365065,
-      "+pressure+presses": 4.7740095789279255,
-      "+rain+rh (7 d)": 4.847813942373931
+      "+pressure": 6.750329495010791,
+      "+pressure+presses": 4.821683206812354,
+      "+rain+rh (7 d)": 4.8031760014315035
     },
     "false-full lifts": {
       "fill_only": 80.46675839608275,
-      "+pressure": 10.863117934350017,
-      "+pressure+presses": 7.044735169889937,
-      "+rain+rh (7 d)": 7.197340462912004
+      "+pressure": 11.056514110055774,
+      "+pressure+presses": 7.124739615790692,
+      "+rain+rh (7 d)": 7.174211836360993
     },
     "cardboard open_hopper": {
       "fill_only": 24.09416217402866,
-      "+pressure": 7.522467541242142,
-      "+pressure+presses": 5.492653756987654,
-      "+rain+rh (7 d)": 5.318401429162506
+      "+pressure": 7.520499314390871,
+      "+pressure+presses": 5.506538733083061,
+      "+rain+rh (7 d)": 5.321127083880127
     },
     "cardboard indoor_shaft": {
       "fill_only": 21.235211848207552,
-      "+pressure": 7.135546495612427,
-      "+pressure+presses": 5.377942474452549,
-      "+rain+rh (7 d)": 5.430170221277441
+      "+pressure": 7.297087137332171,
+      "+pressure+presses": 5.383771429900729,
+      "+rain+rh (7 d)": 5.44033628680014
     }
   }
 }

@@ -26,7 +26,7 @@ CALENDAR = ["hour", "weekday"]
 CYCLE = ["hours_since_lift"]
 FILL = ["fill_ffill", "fill_max_cycle", "fill_change_24h", "naive_kg_m3"]
 PRESSES = ["presses", "presses_cycle", "presses_per_fill"]
-PRESSURE = ["p_now", "p_last", "p_ewm", "p_max_cycle", "p_count_cycle", "oil_temp_c",
+PRESSURE = ["p_now", "p_last", "p_ewm", "p_max_cycle", "p_count_cycle",
             "rho_p", "rho_p_smooth", "pressure_kg_m3"]
 STROKES = ["stroke_peak_mean", "stroke_duration_mean", "energy_kwh"]
 GRAPH = ["curve_contact_pos", "curve_contact_ewm", "curve_contact_min_cycle", "curve_rise_slope_ewm",
@@ -91,7 +91,6 @@ def _pressure_features(h, seg, f) -> None:
     f["p_ewm"] = _ewm(p, seg, halflife=6.0)
     f["p_max_cycle"] = p.fillna(-np.inf).groupby(seg).cummax().replace(-np.inf, np.nan)
     f["p_count_cycle"] = p.notna().groupby(seg).cumsum()
-    f["oil_temp_c"] = (h["oil_temp_c"] if "oil_temp_c" in h else h["temp_c"]).to_numpy()
     f["energy_kwh"] = h["energy_kwh"].to_numpy() if "energy_kwh" in h else np.nan
 
 
@@ -191,7 +190,8 @@ def base_features(hourly: pd.DataFrame, strokes: pd.DataFrame | None = None) -> 
 def add_pressure_density(feats: Features, inverter: PressureInverter) -> Features:
     X = feats.X.copy()
     seg = feats.meta["seg"].to_numpy()
-    rho = inverter.density(X["p_now"].to_numpy(), X["fill_ffill"].to_numpy(), X["oil_temp_c"].to_numpy(),
+    # viscosity correction with the air temperature (no oil temperature input)
+    rho = inverter.density(X["p_now"].to_numpy(), X["fill_ffill"].to_numpy(), X["temp_c"].to_numpy(),
                            feats.meta["material"].to_numpy())
     X["rho_p"] = rho
     X["rho_p_smooth"] = _ewm(pd.Series(rho, index=X.index), seg, halflife=4.0)

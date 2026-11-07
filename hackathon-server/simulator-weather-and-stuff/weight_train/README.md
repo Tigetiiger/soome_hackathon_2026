@@ -1,7 +1,7 @@
 # weight_train — hydraulic soft sensor (container mass every hour)
 
 Learns to estimate the mass of waste (kg) inside a compactor every hour from signals
-the machine already has: fill level, press count, ram pressure and oil temperature,
+the machine already has: fill level, press count and ram pressure (incl. the pressure graph),
 plus public weather. The value one hour before each emptying is the number a customer
 compares with the transporter's weighbridge. It is trained on simulator output
 (`runs/<name>/`). **All data is synthetic.**
@@ -85,8 +85,7 @@ A *cycle* starts at each `lift_event` hour. "Since lift" means within the curren
 | `p_ewm` | exponentially smoothed peak pressure (half-life 6 observations) within the cycle |
 | `p_max_cycle` | max peak pressure since the lift |
 | `p_count_cycle` | number of hours with a pressure reading since the lift |
-| `oil_temp_c` | hydraulic oil temperature (cold oil reads high) |
-| `rho_p` | pressure-implied pack density: inverts P/visc(oil) − 25 bar = k·fill^a·ρ^b. The per-material k, a, b are fitted on training rows from the label, and it is used only when fill > 25 % and P < 228 bar |
+| `rho_p` | pressure-implied pack density: inverts P/visc(T_air) − 25 bar (air temperature as the oil-viscosity proxy; no oil-temperature input) = k·fill^a·ρ^b. The per-material k, a, b are fitted on training rows from the label, and it is used only when fill > 25 % and P < 228 bar |
 | `rho_p_smooth` | `rho_p` smoothed within the cycle (EWMA, half-life 4) |
 | `pressure_kg_m3` | fill × `rho_p_smooth`, the physics-based kg/m³ estimate |
 | `stroke_peak_mean` | mean per-stroke peak pressure this hour (from strokes.parquet) |

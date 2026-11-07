@@ -1,7 +1,7 @@
 """Pressure-implied pack density.
 
 Forward law (per material, fitted on training rows only):
-    P / visc(oil) - P_idle = k * (fill/100)^a * rho^b
+    P / visc(T) - P_idle = k * (fill/100)^a * rho^b   (T = air temperature as the oil-viscosity proxy)
 The training density is derived from the label (kg/m3 of container / fill), never
 from simulator truth columns. Inverting gives rho_hat from an observed stroke.
 """

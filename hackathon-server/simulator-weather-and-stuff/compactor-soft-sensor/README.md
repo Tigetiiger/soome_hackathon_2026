@@ -3,7 +3,7 @@
 **Europress × Since AI Hackathon 2026 (Turku) — submission.**
 
 A waste compactor already measures a lot about itself: how often the ram presses, the peak hydraulic
-pressure of each stroke, the pressure along the stroke (the "pressure graph"), the oil temperature,
+pressure of each stroke, the pressure along the stroke (the "pressure graph"),
 and a fill level that the firmware estimates from back pressure. What it does not know is **how many
 kilograms are inside the container**. Today the customer learns the mass only from the transporter's
 weighbridge ticket after the container has been emptied. This project builds a **hydraulic soft
@@ -282,7 +282,7 @@ All timestamps are tz-aware **Europe/Helsinki**. Masses are in kg, volumes in m�
 
 | role | columns |
 |---|---|
-| **Device / known inputs** (the model may use these) | `bin_id` (`BIN-0001`…), `ts` (hour start), `material` (`cardboard \| paper \| plastic_film \| mixed_waste`), `equipment_class` (`COMBI \| DUO`), `container_volume_m3`, `region` (`UUS \| VAR \| PIR \| POP \| LAP`), `infeed` (`open_hopper \| lidded_hopper \| indoor_shaft`), `drainage`, `fill_pct` (firmware fill estimate derived from back pressure; NaN on dropout), `presses`, `peak_pressure_bar` (NaN without a stroke), `lift_event` (1 = emptied at the start of this hour), `oil_temp_c`, `energy_kwh`, `temp_c`, `rh_pct`, `precip_mm_day`, `precip_mm`, `snow_mm_day` |
+| **Device / known inputs** (the model may use these) | `bin_id` (`BIN-0001`…), `ts` (hour start), `material` (`cardboard \| paper \| plastic_film \| mixed_waste`), `equipment_class` (`COMBI \| DUO`), `container_volume_m3`, `region` (`UUS \| VAR \| PIR \| POP \| LAP`), `infeed` (`open_hopper \| lidded_hopper \| indoor_shaft`), `drainage`, `fill_pct` (firmware fill estimate derived from back pressure; NaN on dropout), `presses`, `peak_pressure_bar` (NaN without a stroke), `lift_event` (1 = emptied at the start of this hour), `energy_kwh`, `temp_c`, `rh_pct`, `precip_mm_day`, `precip_mm`, `snow_mm_day` |
 | **Pressure-graph features** (hourly mean over strokes) | `curve_contact_pos` (ram position where pressure starts rising, i.e. the pack face), `curve_rise_slope_bar` (rise slope to the peak), `curve_mean_bar` (mean pressure over the stroke), `curve_completion` (share of travel before the relief valve opened) |
 | **Truth: evaluation only, never model inputs** | `true_mass_kg` (**the label**: mass in machine at hour end), `true_fill_pct`, `true_density_kg_m3`, `true_moisture_extra`, `true_water_humidity_kg`, `true_water_carried_kg`, `true_water_hopper_kg`, `true_free_water_kg`, `true_ice_kg`, `true_false_full`, `lifted_mass_kg`, `side_waste_kg`, `ref_scale_kg` (load cell on ~5 % of machines) |
 
@@ -319,7 +319,7 @@ Lift timing convention: the lift happens at the start of the `lift_event` hour, 
   - Fill: forward-filled reading, maximum since lift, 24 h change, naive kg/m³.
   - Peak pressure: now, last, EWM, maximum, count.
   - Pressure-implied density: an inversion of the hydraulic law fitted per material.
-  - Stroke peak and duration, energy, oil temperature.
+  - Stroke peak and duration, energy. (Oil temperature is not used; the pressure correction uses air temperature.)
   - Pressure graph: contact point, rise slope, mean pressure, completion, geometric fill.
   - Weather from completed days only: rain 1–7 days ago, 72 h rain, rain exposure since lift, RH,
     frost days.

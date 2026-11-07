@@ -77,7 +77,7 @@ def _one_run(feats, y, pre, chosen, masks, ref, s, rng) -> dict:
     train = in_chosen & masks["before"] & masks["complete"]
     vol = meta["container_volume_m3"].to_numpy()
     X0 = feats.X
-    inv = PressureInverter.fit(X0["p_now"][train], X0["fill_ffill"][train], X0["oil_temp_c"][train],
+    inv = PressureInverter.fit(X0["p_now"][train], X0["fill_ffill"][train], X0["temp_c"][train],
                                meta["material"][train], (y / vol)[train])
     X = add_pressure_density(feats, inv).X
     rows = make_rows(train, pre, y / vol, s, rng)
