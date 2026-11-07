@@ -95,8 +95,8 @@ class Problem(Timed):
         tr = truck().scale(1.0).move_to([-3.4, 0.55, 0])
         wb = weighbridge().scale(0.85).move_to([-3.2, -0.55, 0])
         tr.next_to(wb[1], UP, buff=0.0).shift(LEFT * 0.4 + UP * 0.25)
-        l_lab = txt("hauler weighs", 40, C["ink"], "MEDIUM").move_to([-3.4, -1.75, 0])
-        l_sub = txt("and is paid per tonne", 28, C["muted"]).next_to(l_lab, DOWN, buff=0.15)
+        l_lab = txt("operator weighs", 40, C["ink"], "MEDIUM").move_to([-3.4, -1.75, 0])
+        l_sub = txt("at the weighbridge, after the truck has left", 28, C["muted"]).next_to(l_lab, DOWN, buff=0.15)
         ho = hotel().move_to([3.6, 0.45, 0])
         q = txt("?", 72, C["bad"], "SEMIBOLD").next_to(ho, RIGHT, buff=0.3)
         r_lab = txt("customer: ?", 40, C["ink"], "MEDIUM").move_to([3.6, -1.75, 0])
@@ -170,7 +170,7 @@ class Problem(Timed):
         self.p(FadeOut(chart), rt=0.5)
 
         comp = compactor(avg / 100.0).scale(0.85).move_to([-4.2, 0.1, 0])
-        c_lab = txt("compactor with fill sensor", 28, C["muted"]).next_to(comp, DOWN, buff=0.35)
+        c_lab = txt("SMART compactor", 28, C["muted"]).next_to(comp, DOWN, buff=0.35)
         self.p(FadeIn(comp, shift=UP * 0.15), FadeIn(c_lab), rt=0.7, rate_func=EASE)
 
         status = MarkupText(

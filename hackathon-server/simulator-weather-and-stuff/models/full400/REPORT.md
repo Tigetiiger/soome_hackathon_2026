@@ -16,9 +16,9 @@ On the `time` (same machines, later months) split the selected soft sensor estim
 | hourly rows / machines | 3,504,000 / 400 |
 | split `time` wall time | 550 s |
 | split `bins` wall time | 350 s |
-| prediction run | 3,504,000 rows in 72.3 s (features + predict 70.9 s) |
-| prediction cost | 20.2 µs per machine-hour |
-| prediction peak memory | 4.00 GB |
+| prediction run | 3,504,000 rows in 81.0 s (features + predict 79.5 s) |
+| prediction cost | 22.7 µs per machine-hour |
+| prediction peak memory | 3.97 GB |
 
 ## Split `time` (same machines, later months)
 

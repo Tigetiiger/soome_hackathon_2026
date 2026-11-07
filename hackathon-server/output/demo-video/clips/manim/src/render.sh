@@ -10,13 +10,15 @@ if [[ "${1:-}" == "preview" ]]; then RES=854,480; MEDIA=out_preview; else RES=19
 declare -A SCENE=([problem]=Problem [solution]=Solution [impact]=Impact)
 declare -A FRAMES=([problem]=450 [solution]=390 [impact]=750)
 pids=()
-for f in problem solution impact; do
+SCENES=${SCENES:-problem solution impact}
+for f in $SCENES; do
   "$MANIM" render -r "$RES" --fps 30 --media_dir "$MEDIA" --disable_caching "$f.py" "${SCENE[$f]}" > "$MEDIA.$f.log" 2>&1 &
   pids+=($!)
 done
 for p in "${pids[@]}"; do wait "$p"; done
 [[ "${1:-}" == "preview" ]] && exit 0
-for f in problem solution impact; do
+SCENES=${SCENES:-problem solution impact}
+for f in $SCENES; do
   src=$(ls "$MEDIA"/videos/"$f"/1080p30/"${SCENE[$f]}".mp4)
   n=${FRAMES[$f]}
   # exact length: clone last frame if short, cut if long; H.264 yuv420p, no audio

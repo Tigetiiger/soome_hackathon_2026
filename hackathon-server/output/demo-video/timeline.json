@@ -1,5 +1,5 @@
 {
-  "_comment": "Single source of truth for the 2-minute demo video. Times in seconds. Each caption is also the voice-over line. Numbers come from output/NUMBERS.md.",
+  "_comment": "v2 (7 Nov 2026, business model v2). Single source of truth for the 2-minute demo video. Times in seconds; each caption is also the voice-over line. Weight figures follow the technical page (http://100.87.158.27:8765/), money figures business.html / dashboard data. v1 is kept as timeline_v1.json.",
   "fps": 30,
   "width": 1920,
   "height": 1080,
@@ -15,7 +15,7 @@
         {
           "t": 0.3,
           "d": 5.0,
-          "text": "Waste is billed per tonne, yet only the hauler, who gets paid, weighs it."
+          "text": "Waste is billed by weight, but only the operator weighs it, after pickup."
         },
         {
           "t": 5.5,
@@ -32,41 +32,79 @@
     {
       "id": "machine3d",
       "kind": "external",
-      "file": "clips/3d/combi_exploded_sensors.mp4",
-      "in_point": 4.0,
+      "file": "clips/3d/press_weight.mp4",
+      "in_point": 0.0,
       "start": 15.0,
-      "duration": 12.0,
-      "tag": "exterior per Europress brochure, internals schematic",
-      "captions": [
+      "duration": 25.0,
+      "tag": "simulated · internals schematic",
+      "_note": "25 s 3D clip (storyboard: machine → inside → sensors → pressure graph → hourly message + weather → model → reassembly → honesty card). Drop it in as clips/3d/press_weight.mp4 and rerun build.py; until then a placeholder card is shown. It replaces solution.mp4, which stays as a fallback.",
+      "scenes": [
         {
-          "t": 0.2,
-          "d": 5.6,
-          "text": "A Europress compactor already measures its hydraulic ram pressure on every stroke."
+          "t": 0.0,
+          "d": 2.3,
+          "what": "The machine."
         },
         {
-          "t": 6.0,
-          "d": 5.8,
-          "text": "Denser, heavier waste pushes back harder. That pressure is our weight signal."
+          "t": 2.3,
+          "d": 2.7,
+          "what": "1 · Inside the machine: it opens up, the hydraulic ram is visible."
+        },
+        {
+          "t": 5.0,
+          "d": 3.0,
+          "what": "2 · Sensors already on board (no oil probe); load cells only as 'SMART Scale option · reference machines only'."
+        },
+        {
+          "t": 8.0,
+          "d": 3.5,
+          "what": "3 · Every push draws a pressure graph; 23–94 % full: fuller pushes back harder."
+        },
+        {
+          "t": 11.5,
+          "d": 4.0,
+          "what": "4 · Hourly message BIN-0001, 16 Mar 2026 16:00: 62 %, 2 presses, 112 bar, graph, GPS; weather −3.9 °C, 78 %, no rain (FMI in production · synthetic here)."
+        },
+        {
+          "t": 15.5,
+          "d": 5.5,
+          "what": "5 · Model: error 32.1 % → 5.3 % as signals are added; example ≈ 1,490 kg (1,370–1,530) vs 1,451 kg true (simulated)."
+        },
+        {
+          "t": 21.0,
+          "d": 1.8,
+          "what": "6 · Reassembles with '≈ 1,490 kg inside' badge: no extra hardware on SMART machines."
+        },
+        {
+          "t": 22.8,
+          "d": 2.2,
+          "what": "Honesty card: Simulated data · internals schematic · real-weight test next."
         }
-      ]
-    },
-    {
-      "id": "solution",
-      "kind": "manim",
-      "file": "clips/manim/solution.mp4",
-      "start": 27.0,
-      "duration": 13.0,
-      "tag": "simulated",
+      ],
       "captions": [
         {
           "t": 0.2,
-          "d": 6.0,
-          "text": "Our soft sensor turns pressure, strokes, oil temperature and weather into kilograms, with an honest range."
+          "d": 4.8,
+          "text": "Inside every Europress compactor, a hydraulic ram presses each load."
         },
         {
-          "t": 6.4,
-          "d": 6.4,
-          "text": "Fill level alone is 32 % off. On simulated machines it never saw, ours is 5.3 % off."
+          "t": 5.2,
+          "d": 6.1,
+          "text": "The sensors are already on board. Every push draws a pressure graph: fuller pushes back harder."
+        },
+        {
+          "t": 11.6,
+          "d": 3.7,
+          "text": "Every hour it reaches the SMART cloud, with local weather."
+        },
+        {
+          "t": 15.6,
+          "d": 5.4,
+          "text": "Fill alone is 32 % off; our model, 5.3 % on machines it never saw."
+        },
+        {
+          "t": 21.2,
+          "d": 3.6,
+          "text": "No extra hardware. Simulated today; real weights next."
         }
       ]
     },
@@ -82,69 +120,69 @@
           "id": "D1",
           "t": 0.0,
           "d": 9.0,
-          "what": "Customer view, Overview: 'Your machines now' cards with fill % and '≈ kg inside', then scroll to 'SMART can save you €60,471 / year'."
+          "what": "Customer overview on SMART Free (weight locked) → click SMART: live container weight 5.8 t, ≈ 2,849 kg inside now."
         },
         {
           "id": "D2",
           "t": 9.0,
           "d": 9.0,
-          "what": "Customer view, 'Weight & seasons' tab: pickup weights with a range and the ticket-vs-machine check (48 of 395 with a ticket)."
+          "what": "Weight page: Mixed waste 2 weight now and expected charge → machine page: most likely range, next pickup, expected charge."
         },
         {
           "id": "D3",
           "t": 18.0,
-          "d": 9.0,
-          "what": "Customer view, 'Operators & contracts': Hauler Delta vs the second operator (on time 57 % vs 62 %, tickets shared 0 % vs 89 %), 'Data as of 30 Sep 2026' visible."
+          "d": 10.0,
+          "what": "How to save money: click the €39,955 'empty when full' lever → trace drawer with formula and data rows."
         },
         {
           "id": "D4",
-          "t": 27.0,
-          "d": 9.0,
-          "what": "Customer view, 'Savings': click the €39,955 'empty machines when they are full' lever so the trace drawer opens with formula and data rows."
+          "t": 28.0,
+          "d": 13.0,
+          "what": "Switch to Partner view (Hauler Alpha): driver plan 14 days ahead, 'call in more drivers' → How SMART creates value: 676 fewer trips → The partnership."
         },
         {
           "id": "D5",
-          "t": 36.0,
-          "d": 10.0,
-          "what": "Switch to 'Europress' workspace, weight sensor 'Weighbridge check' page: predicted vs weighbridge scatter over 4,876 emptyings."
+          "t": 41.0,
+          "d": 8.0,
+          "what": "Switch to Europress view → weight soft sensor, Weighbridge check, New installations."
         },
         {
           "id": "D6",
-          "t": 46.0,
-          "d": 9.0,
-          "what": "Europress workspace, sales leads / pipeline: open a lead pop-up and press 'Brief me' so the three-sentence brief appears."
+          "t": 49.0,
+          "d": 6.0,
+          "what": "Sales pipeline: open Hospitality Customer 0049 → 'Brief me' → Claude brief (cached real answer, brief_cache_v2.sse)."
         }
       ],
       "captions": [
         {
           "t": 0.3,
           "d": 8.5,
-          "text": "This is SMART Insights, running on Europress's practice data. Each machine shows its fill level and estimated weight."
+          "text": "On SMART Free, a customer sees fill levels. Switch to SMART, and every container shows its weight."
         },
         {
           "t": 9.2,
           "d": 8.6,
-          "text": "Every pickup gets a weight with a range, checked against the weighing ticket wherever one exists."
+          "text": "Each machine shows its weight now, at the next pickup, and the expected charge, before the truck comes."
         },
         {
           "t": 18.2,
-          "d": 8.6,
-          "text": "Contracts become comparable: Hauler Delta is on time 57 % of the time and shares none of its weight data."
-        },
-        {
-          "t": 27.2,
-          "d": 8.6,
-          "text": "Every euro opens to its formula and data rows. Here, €39,955 a year from emptying half-full machines."
-        },
-        {
-          "t": 36.2,
           "d": 9.6,
-          "text": "For Europress, the weight sensor is checked against weighbridge tickets, emptying by emptying."
+          "text": "SMART AI found €52,154 a year, 37 % of this customer's cost. Every euro opens to its formula and data rows."
         },
         {
-          "t": 46.2,
-          "d": 8.6,
-          "text": "Sales get a short brief, written by Claude from cited data, for a person to review."
+          "t": 28.2,
+          "d": 12.6,
+          "text": "Operators are partners. They get a driver plan two weeks ahead; Hauler Alpha drives 676 fewer trips a year. In return, they share pickups and weights through SMART."
+        },
+        {
+          "t": 41.2,
+          "d": 7.6,
+          "text": "Europress checks the model against partners' weighbridge weights, pickup by pickup."
+        },
+        {
+          "t": 49.2,
+          "d": 5.6,
+          "text": "Sales start with the biggest savers, with a brief Claude writes from cited data."
         }
       ]
     },
@@ -158,23 +196,23 @@
       "captions": [
         {
           "t": 0.3,
-          "d": 6.4,
-          "text": "This hotel group could save about €60,000 of its €140,000 a year, mostly on half-empty pickups."
+          "d": 7.2,
+          "text": "SMART is paid with a share of what it saves: this hotel group pays about €13,000 and keeps €39,000."
         },
         {
-          "t": 6.9,
-          "d": 5.4,
-          "text": "Across the fleet, pickups with an independent weight rise from 74 % to 97 %."
+          "t": 7.9,
+          "d": 7.6,
+          "text": "Across the demo fleet: €1.25 million saved for 52 customers, 3,945 fewer truck trips, and about €311,000 a year for Europress."
         },
         {
-          "t": 12.5,
-          "d": 6.4,
-          "text": "For Europress, weight makes SMART stickier: one more point of adoption is worth about €21,600 a year."
+          "t": 15.8,
+          "d": 6.0,
+          "text": "Next: weigh a small reference group for real, retrain, and ship it to every machine as software."
         },
         {
-          "t": 19.1,
-          "d": 5.7,
-          "text": "Another study is less optimistic, so step one is a zero-euro test on archived data."
+          "t": 22.2,
+          "d": 2.7,
+          "text": "Europress sells trust and control, never data."
         }
       ]
     }

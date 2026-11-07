@@ -1,4 +1,5 @@
-// Deterministic screen recording of the 55 s "demo" segment (D1–D6).
+// Deterministic screen recording of the 55 s "demo" segment (D1–D6), v2 shot list.
+// v1 (old business model, Hauler Delta comparison) is kept as record_v1.mjs → ../demo_v1.mp4.
 // Every video frame is one PNG screenshot of the live app (headless Chromium, 1600x900 CSS px at
 // deviceScaleFactor 1.2 = 1920x1080 device px). Cursor, scrolling and click ripples are driven per frame
 // by this script, so motion is perfectly even at 30 fps regardless of how long a screenshot takes.
@@ -19,7 +20,8 @@ const FFMPEG = '/home/hackathon/output/animation-comparison/bin/ffmpeg';
 const APP = 'http://127.0.0.1:8080/';
 const FPS = 30;
 const W = 1600, H = 900, DSF = 1.2;
-const BRIEF = readFileSync(join(HERE, process.env.BRIEF_FILE || 'brief_cache.sse'), 'utf8');
+// brief_cache_v2.sse: captured 7 Nov 23:40 from the live endpoint (business model v2: €52,154, 25 % fee, operator = partner).
+const BRIEF = readFileSync(join(HERE, process.env.BRIEF_FILE || 'brief_cache_v2.sse'), 'utf8');
 
 const args = process.argv.slice(2);
 const stillsIdx = args.indexOf('--stills');
@@ -27,9 +29,11 @@ const STILLS = stillsIdx >= 0;
 const ONLY = STILLS ? args.slice(stillsIdx + 1) : [];
 const STILL_DIR = join(HERE, '..', 'explore', 'stills');
 
+// v2 shot list (business model of 7 Nov): weight first, then money, then partner and Europress.
+// D1 Free → SMART · D2 weight per machine · D3 savings trace · D4 partner view · D5 model check · D6 sales brief
 const SHOTS = [
-  { id: 'D1', t: 0.0, d: 9.0 }, { id: 'D2', t: 9.0, d: 9.0 }, { id: 'D3', t: 18.0, d: 9.0 },
-  { id: 'D4', t: 27.0, d: 9.0 }, { id: 'D5', t: 36.0, d: 10.0 }, { id: 'D6', t: 46.0, d: 9.0 },
+  { id: 'D1', t: 0.0, d: 9.0 }, { id: 'D2', t: 9.0, d: 9.0 }, { id: 'D3', t: 18.0, d: 10.0 },
+  { id: 'D4', t: 28.0, d: 13.0 }, { id: 'D5', t: 41.0, d: 8.0 }, { id: 'D6', t: 49.0, d: 6.0 },
 ];
 
 const ease = (x) => (x < 0.5 ? 4 * x * x * x : 1 - Math.pow(-2 * x + 2, 3) / 2); // easeInOutCubic
@@ -39,9 +43,33 @@ const wait = (ms) => new Promise((r) => setTimeout(r, ms));
 const INIT = () => {
   try {
     localStorage.setItem('ep.lang', 'en');
-    localStorage.setItem('ep.plan', 'smart');
+    // The take starts on SMART Free; D1 clicks the SMART switch, which stores 'smart' for the rest.
+    if (!sessionStorage.getItem('__rec')) { localStorage.setItem('ep.plan', 'free'); sessionStorage.setItem('__rec', '1'); }
     localStorage.setItem('ep.customer', 'ORG-0049');
   } catch { /* ignore */ }
+  // This machine has no emoji font, so the app's 🔒 renders as a box. Swap it for an inline SVG lock
+  // in the recording browser only (the app itself is not changed).
+  const LOCK = '<svg viewBox="0 0 24 24" width="0.95em" height="0.95em" style="vertical-align:-0.13em;margin-right:.15em" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round"><rect x="5" y="11" width="14" height="10" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>';
+  const fixLocks = (root) => {
+    if (!root) return;
+    const w = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+    const hits = [];
+    while (w.nextNode()) if (w.currentNode.nodeValue.includes('🔒')) hits.push(w.currentNode);
+    for (const n of hits) {
+      const frag = document.createDocumentFragment();
+      n.nodeValue.split('🔒').forEach((part, i) => {
+        if (i) { const s = document.createElement('span'); s.innerHTML = LOCK; frag.appendChild(s.firstChild); }
+        frag.appendChild(document.createTextNode(part.replace(/^ /, i ? '' : ' ')));
+      });
+      n.replaceWith(frag);
+    }
+  };
+  new MutationObserver((ms) => {
+    for (const m of ms) {
+      if (m.type === 'characterData') fixLocks(m.target.parentNode);
+      for (const a of m.addedNodes) fixLocks(a.nodeType === 1 ? a : a.parentNode);
+    }
+  }).observe(document, { childList: true, subtree: true, characterData: true });
   const install = () => {
     if (document.getElementById('__cur')) return;
     const st = document.createElement('style');
@@ -135,112 +163,131 @@ class Rec {
 
 // ------------------------------------------------------------------ shots (times are seconds within the shot)
 const plan = {
+  // D1 · Customer, SMART Free → SMART: the weight is what SMART sells.
   async D1(r) {
     await r.go('#overview');
-    r.cx = 1180; r.cy = 300;
-    await r.hold(1.0);
-    await r.scrollTo('#view-overview h2[data-i18n="machines.title"]', 115, 1.4);          // 1.0 → 2.4  machine cards
-    await r.move('#machinesNowOverview >> text=/kg inside now/', 1.0, 1.06, 0.55); // → 3.4
-    await r.holdUntil(5.0);
-    await r.scrollTo('.save-card', 105, 1.4);                     // 5.0 → 6.4  savings card
-    await r.move('#saveTitle', 0.9, 0.62, 1.8);                  // → 7.3
+    r.cx = 1180; r.cy = 330;
+    await r.hold(0.8);
+    await r.move('.plan-lock p', 0.9, 0.5, 0.5);                       // → 1.7  "With SMART you see the weight…"
+    await r.holdUntil(3.3);
+    await r.move('#planToggle button[data-plan="smart"]', 0.9, 0.5, 0.55); // → 4.2
+    await r.click(1800);                                               // Free → SMART
+    await r.holdUntil(4.8);
+    await r.move('text=/In your containers now/', 0.8, 0.12, 2.6);     // → 5.6  5.8 t
+    await r.holdUntil(6.6);
+    await r.move('#machinesNowOverview >> text=/kg inside now/', 0.8, 1.04, 0.55); // → 7.4  ≈ 2,849 kg
     await r.holdUntil(9.0);
   },
+  // D2 · Weight per machine: now, at the next pickup, and the expected charge.
   async D2(r) {
     await r.go('#weight');
-    r.cx = 900; r.cy = 200;
+    r.cx = 900; r.cy = 250;
     await r.hold(0.4);
-    await r.move('#weightTable tr:has-text("Mixed waste 2") td >> nth=0', 1.0, 0.3, 0.3); // → 1.4
-    await r.click(2500);                                           // machine page
+    await r.move('#weightTable tr:has-text("Mixed waste 2") td >> nth=2', 1.0, 0.8, 0.5); // → 1.4 weight now
+    await r.holdUntil(2.3);
+    await r.move('#weightTable tr:has-text("Mixed waste 2") td >> nth=5', 0.9, 0.8, 0.5); // → 3.2 expected charge
+    await r.holdUntil(4.0);
+    await r.move('#weightTable tr:has-text("Mixed waste 2") td >> nth=0', 0.6, 0.2, 0.3); // → 4.6
+    await r.click(2500);                                               // machine page
     await r.page.evaluate(() => window.scrollTo(0, 0));
-    await r.hold(0.3);
-    await r.move('#machineWeight >> text=/Most likely/', 0.9, 0.5, 0.5); // → 2.6
-    await r.holdUntil(3.6);
-    await r.scrollTo('#machineWeight >> text=/Weight in the container, last 30 days/', 115, 1.1); // → 4.7
-    await r.move('#machineWeight canvas >> nth=0', 0.8, 0.515, 0.2); // → 5.5  (weighbridge ticket marker on the band)
-    await r.holdUntil(5.9);
-    await r.scrollTo('#machineWeight >> text=/Last pickups/', 115, 1.1); // → 7.0
-    await r.move('#machineWeight table tbody tr >> nth=0 >> td >> nth=2', 0.7, 0.6, 0.5); // → 7.7
+    await r.hold(0.2);
+    await r.move('#machineWeight >> text=/Most likely/', 0.7, 0.5, 0.5); // → 5.5
+    await r.holdUntil(6.4);
+    await r.move('#machineWeight >> text=/Next pickup at your price/', 0.8, 0.5, 0.5); // → 7.2
     await r.holdUntil(9.0);
   },
+  // D3 · Savings: every euro opens to its formula and data rows.
   async D3(r) {
-    await r.go('#contracts');
-    r.cx = 700; r.cy = 420;
-    await r.hold(0.4);
-    await r.move('#operatorsTable tr:has-text("Hauler Delta") td >> nth=1', 1.0, 0.75, 0.5); // → 1.4 on time 57 %
-    await r.holdUntil(2.6);
-    await r.move('#operatorsTable tr:has-text("Hauler Delta") td >> nth=2', 0.8, 0.85, 0.5); // → 3.4 shared 0 %
-    await r.holdUntil(4.6);
-    await r.move('#operatorsTable tr:has-text("Hauler Epsilon") td >> nth=1', 0.8, 0.75, 0.5); // → 5.4
-    await r.holdUntil(5.9);
-    await r.move('#operatorsTable tr:has-text("Hauler Epsilon") td >> nth=2', 0.6, 0.85, 0.5); // → 6.5
-    await r.holdUntil(7.1);
-    await r.move('#operatorsAsOf', 0.8, 0.5, 1.6);                 // → 7.9 data as of
-    await r.holdUntil(9.0);
-  },
-  async D4(r) {
     await r.go('#savings');
     r.cx = 700; r.cy = 500;
-    await r.hold(0.3);
-    await r.move('#leversTable tr:has-text("39,955") >> text=/39,955/', 1.1, 0.5, 0.55); // → 1.4
+    await r.hold(0.8);
+    await r.move('#leversTable tr:has-text("39,955") >> text=/39,955/', 1.1, 0.5, 0.55); // → 1.9
     await r.click(1200);                                           // trace drawer opens
-    await r.holdUntil(2.6);
-    await r.scrollTo('#drawerBody details.calc > summary', 140, 0.8, '#drawerBody'); // → 3.4
-    await r.move('#drawerBody details.calc > summary', 0.6, 0.15, 0.5); // → 4.0
+    await r.holdUntil(3.4);
+    await r.scrollTo('#drawerBody details.calc > summary', 140, 0.8, '#drawerBody'); // → 4.2
+    await r.move('#drawerBody details.calc > summary', 0.6, 0.15, 0.5); // → 4.8
     await r.click(700);                                            // expand "How it is calculated"
     await r.hold(0.3);
-    await r.scrollTo('#drawerBody details.calc > summary', 90, 0.9, '#drawerBody'); // → 5.2
-    await r.move('#drawerBody .formula', 0.7, 0.6, 0.5);          // → 5.9
-    await r.holdUntil(9.0);
-  },
-  async D5(r) {
-    await r.go('#overview');
-    r.cx = 1000; r.cy = 300;
-    await r.hold(0.3);
-    await r.move('#wsBtn', 0.9, 0.5, 0.55);                        // → 1.2
-    await r.click(500);
-    await r.hold(0.2);
-    await r.move('#wsMenu button[data-ws="europress"]', 0.6, 0.4, 0.5); // → 2.0
-    await r.click(2500);                                           // Europress → weight soft sensor (live fleet)
-    await r.hold(0.4);
-    await r.move('.ss-tabs a[href="#ep-sensor-check"]', 0.8, 0.5, 0.55); // → 3.2
-    await r.click(3000);                                           // weighbridge check
-    await r.page.evaluate(() => window.scrollTo(0, 0));
-    await r.hold(0.5);
-    await r.scrollTo('#view-ep-sensor-check >> text=/Emptyings checked/', 125, 1.2); // → 4.9
-    await r.move('#view-ep-sensor-check >> text=/Emptyings checked/', 0.8, 0.4, 3.2); // → 5.7 (4,876)
-    await r.holdUntil(7.0);
-    await r.move('#view-ep-sensor-check canvas >> nth=0', 1.0, 0.55, 0.45); // → 8.0 scatter
+    await r.scrollTo('#drawerBody details.calc > summary', 90, 0.9, '#drawerBody'); // → 6.0
+    await r.move('#drawerBody .formula', 0.7, 0.6, 0.5);          // → 6.7
     await r.holdUntil(10.0);
   },
+  // D4 · Partner view: driver plan 14 days ahead, value of SMART, the data partnership.
+  async D4(r) {
+    await r.go('#overview', 1200);
+    r.cx = 1000; r.cy = 300;
+    await r.hold(0.3);
+    await r.move('#wsBtn', 0.8, 0.5, 0.55);                        // → 1.1
+    await r.click(500);
+    await r.hold(0.2);
+    await r.move('#wsMenu button[data-ws="partners"]', 0.5, 0.4, 0.5); // → 1.8
+    await r.click(2500);                                           // Partner view → Operator insight
+    await r.page.evaluate(() => window.scrollTo(0, 0));
+    await r.hold(0.3);
+    await r.scrollTo('#view-operators >> text=/Driver plan/', 150, 0.8); // → 2.9
+    await r.move('#view-operators >> text=/Call in more drivers/', 0.9, 0.5, 0.5); // → 3.8
+    await r.holdUntil(5.4);
+    await r.scrollTo('#view-operators >> text=/How SMART creates value for you/', 120, 1.3); // → 6.7
+    await r.move('#view-operators >> text=/Fewer trips a year/', 0.8, 0.3, -0.9); // → 7.5  676
+    await r.holdUntil(9.2);
+    await r.move('#view-operators >> text=/You share through SMART/', 0.9, 0.4, 0.5); // → 10.1
+    await r.holdUntil(11.4);
+    await r.move('#view-operators >> text=/^You get$/', 0.7, 0.4, 0.5); // → 12.1
+    await r.holdUntil(13.0);
+  },
+  // D5 · Europress view: the model checked against weighbridge weights, new installations.
+  async D5(r) {
+    await r.go('#operators', 800);
+    r.cx = 1000; r.cy = 300;
+    await r.hold(0.2);
+    await r.move('#wsBtn', 0.7, 0.5, 0.55);                        // → 0.9
+    await r.click(500);
+    await r.hold(0.15);
+    await r.move('#wsMenu button[data-ws="europress"]', 0.5, 0.4, 0.5); // → 1.55
+    await r.click(2500);                                           // Europress → weight soft sensor
+    await r.hold(0.2);
+    await r.move('.ss-tabs a[href="#ep-sensor-check"]', 0.6, 0.5, 0.55); // → 2.35
+    await r.click(3000);                                           // weighbridge check
+    await r.page.evaluate(() => window.scrollTo(0, 0));
+    await r.hold(0.2);
+    await r.move('#view-ep-sensor-check button:has-text("New installations")', 0.6, 0.5, 0.5); // → 3.15
+    await r.click(1500);                                           // machines the model never saw
+    await r.hold(0.2);
+    await r.scrollTo('#view-ep-sensor-check >> text=/Emptyings checked/', 150, 0.9); // → 4.25
+    await r.move('#view-ep-sensor-check >> text=/Mean difference/', 0.6, 0.3, 3.4); // → 4.85
+    await r.holdUntil(6.0);
+    await r.move('#view-ep-sensor-check canvas >> nth=0', 0.8, 0.55, 0.3); // → 6.8 scatter
+    await r.holdUntil(8.0);
+  },
+  // D6 · Sales: biggest savers first, a brief written by Claude from cited data.
   async D6(r) {
     await r.go('#ep-pipeline');
     r.cx = 1100; r.cy = 250;
-    await r.hold(0.3);
-    await r.move('#salesAlerts .lead:has-text("0049") .ans-row', 1.0, 0.5, 0.5); // → 1.3
+    await r.hold(0.2);
+    await r.move('#salesAlerts .lead:has-text("0049") .ans-row', 0.8, 0.5, 0.5); // → 1.0
     await r.click(1000);                                           // lead pop-up
-    await r.hold(0.8);                                             // → 2.1
-    await r.scrollTo('#drawerBody [data-lead="brief"]', 560, 0.9, '#drawerBody'); // → 3.0
-    await r.move('#drawerBody [data-lead="brief"]', 0.7, 0.5, 0.5); // → 3.7
+    await r.hold(0.3);                                             // → 1.3
+    await r.scrollTo('#drawerBody [data-lead="brief"]', 560, 0.6, '#drawerBody'); // → 1.9
+    await r.move('#drawerBody [data-lead="brief"]', 0.5, 0.5, 0.5); // → 2.4
     r.releaseBrief = null;
     const released = new Promise((ok) => { r.releaseBrief = ok; });
     r.briefGate = released;
     await r.click(600);                                            // dock opens: question + "thinking"
-    await r.holdUntil(5.0);
+    await r.holdUntil(3.0);
     r.releaseBrief();
     await wait(1200);
     await r.page.evaluate(() => { const l = document.getElementById('aiLog'); const b = l.querySelector('.msg.bot'); if (b) l.scrollTop = b.offsetTop - 8; });
-    await r.hold(0.3);
-    await r.move('#aiLog .msg.bot', 0.7, 0.015, 0.1);              // → ~6.0
-    await r.holdUntil(6.4);
-    await r.frames(r.sec(1.6), async (p) => {                     // → 8.0 scroll the brief to "Tell the customer"
+    await r.hold(0.2);
+    await r.move('#aiLog .msg.bot', 0.5, 0.015, 0.1);              // → ~3.7
+    await r.holdUntil(4.0);
+    await r.frames(r.sec(1.4), async (p) => {                     // → 5.4 scroll the brief to "Tell the customer"
       await r.page.evaluate((p) => {
         const l = document.getElementById('aiLog'); const b = l.querySelector('.msg.bot');
         const from = b.offsetTop - 8; const to = l.scrollHeight - l.clientHeight;
         l.scrollTop = from + (to - from) * p;
       }, ease(p));
     });
-    await r.holdUntil(9.0);
+    await r.holdUntil(6.0);
   },
 };
 
