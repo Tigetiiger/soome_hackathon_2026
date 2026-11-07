@@ -1,8 +1,7 @@
 // "What should I do?" — ready-made answers to the customer's framework of questions.
-// Level 1: one-line answer · Level 2 (click): why + numbered steps · Level 3: the full calculation / SMART Advisor.
+// Level 1: one-line answer · Level 2 (click): drawer with why + numbered steps + the calculation · Level 3: SMART Advisor.
 import { t, fmt, eur, date } from "./i18n.js";
-import { esc, openTrace } from "./drawer.js";
-import { openAi } from "./ask.js";
+import { esc, openExplain, GO_ICON } from "./drawer.js";
 
 const el = (id) => document.getElementById(id);
 const ORDER = { bad: 0, warn: 1, info: 2, good: 3 };
@@ -26,37 +25,49 @@ function traceFor(p, path) {
   return null;
 }
 
+/** The row's one-line answer — the same text on the row and at the top of the drawer. */
+const oneLine = (a) => t(`a.${a.id}.${a.status === "good" ? "good" : "head"}`, params(a));
+
+/** The € a row shows (annual saving, or the invoice difference for the mismatch answer); null when there is none. */
+const rowEur = (a) => {
+  const v = a.p.eur ?? a.p.inv_eur;
+  return v > 0 ? v : null;
+};
+
+/** Key figure for answers that carry no €; "" when the answer has none. */
+const KEY_FIGURE = {
+  contract: (q) => `${q.ontime} %`,
+  co2: (q) => `${q.co2} t CO₂`,
+  safety: (q) => `${q.full_h} h`,
+};
+
+function openAnswer(p, a) {
+  const q = params(a);
+  const euro = rowEur(a);
+  openExplain({
+    title: t(`a.${a.id}.q`),
+    // "" = no big value; the trace's own value must not take its place
+    value: euro != null ? eur(euro) : (KEY_FIGURE[a.id]?.(q) ?? ""),
+    eyebrow: t("drawer.answer"),
+    what: `${oneLine(a)} ${t(`a.${a.id}.why`, q)}`,
+    todo: t(`a.${a.id}.steps`, q).split("|").map((s) => s.trim()).filter(Boolean),
+    trace: traceFor(p, a.trace),
+    focus: `answers.${a.id}`,
+  });
+}
+
 export function renderAnswers(p) {
   const list = [...(p.answers || [])].sort((a, b) => ORDER[a.status] - ORDER[b.status]);
   el("answers").innerHTML = list.map((a, i) => {
-    const q = params(a);
-    const head = t(`a.${a.id}.${a.status === "good" ? "good" : "head"}`, q);
-    const steps = t(`a.${a.id}.steps`, q).split("|");
-    return `<li class="ans" data-i="${i}" data-status="${a.status}">
-      <button type="button" class="ans-row" aria-expanded="false">
+    const euro = rowEur(a);
+    return `<li class="ans" data-status="${a.status}">
+      <button type="button" class="ans-row" data-i="${i}">
         <span class="state" data-state="${STATE[a.status]}">${esc(t(`ans.${a.status}`))}</span>
         <span class="ans-q">${esc(t(`a.${a.id}.q`))}</span>
-        <b class="ans-h">${esc(head)}</b>
-        <span class="ans-chev" aria-hidden="true">+</span>
-      </button>
-      <div class="ans-more" hidden>
-        <p class="ans-why">${esc(t(`a.${a.id}.why`, q))}</p>
-        <ol class="ans-steps">${steps.map((s) => `<li>${esc(s.trim())}</li>`).join("")}</ol>
-        <div class="ans-actions">
-          ${a.trace ? `<button type="button" class="btn ghost" data-calc="${i}">${esc(t("ans.calc"))}</button>` : ""}
-          <button type="button" class="ask-link" data-ask="${i}">${esc(t("ai.cta"))} →</button>
-        </div>
-      </div></li>`;
+        <b class="ans-h">${esc(oneLine(a))}</b>
+        <span class="ans-eur">${euro != null ? esc(eur(euro)) : ""}</span>${GO_ICON}
+      </button></li>`;
   }).join("");
-  el("answers").querySelectorAll(".ans").forEach((li) => {
-    const a = list[Number(li.dataset.i)];
-    const row = li.querySelector(".ans-row"), more = li.querySelector(".ans-more");
-    row.addEventListener("click", () => {
-      const open = more.hidden;
-      more.hidden = !open; row.setAttribute("aria-expanded", String(open));
-      li.querySelector(".ans-chev").textContent = open ? "−" : "+";
-    });
-    li.querySelector("[data-calc]")?.addEventListener("click", () => openTrace(traceFor(p, a.trace), t(`a.${a.id}.q`), a.trace));
-    li.querySelector("[data-ask]").addEventListener("click", () => openAi(t(`a.${a.id}.q`), `answers.${a.id}`));
-  });
+  el("answers").querySelectorAll(".ans-row").forEach((b) =>
+    b.addEventListener("click", () => openAnswer(p, list[Number(b.dataset.i)])));
 }

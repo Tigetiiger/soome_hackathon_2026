@@ -1,6 +1,6 @@
 // Account view: customer profile, sites, contracts with current price lists.
 import { t, fmt, eur, date, stream, sector } from "./i18n.js";
-import { esc, openTrace } from "./drawer.js";
+import { esc, openTrace, ROW_GO } from "./drawer.js";
 
 const el = (id) => document.getElementById(id);
 
@@ -54,18 +54,18 @@ export function renderAccount(p) {
   const soon = new Date("2027-04-01");
   const tbl = el("contractsTable");
   tbl.innerHTML = `<thead><tr><th>${t("col.contract")}</th><th>${t("col.stream")}</th><th>${t("col.operator")}</th><th>${t("col.pricing")}</th>
-    <th class="num">${t("col.liftFee")}</th><th>${t("col.renewal")}</th><th>${t("col.notice")}</th></tr></thead><tbody>${a.contracts.map((c, i) => `
+    <th class="num">${t("col.liftFee")}</th><th>${t("col.renewal")}</th><th>${t("col.notice")}</th><th class="row-go"></th></tr></thead><tbody>${a.contracts.map((c, i) => `
     <tr class="click" data-i="${i}" tabindex="0">
       <td class="strong">${esc(c.contract_id)}<span class="desc">${esc(c.device_id)} · ${esc(c.site)} · ${fmt(c.volume_m3)} m³</span></td>
       <td>${esc(stream(c.stream))}<span class="desc">${esc(t("policy." + c.collection_policy))}</span></td>
       <td>${esc(c.operator)}</td><td>${esc(t("pricing." + c.pricing_model))}</td>
       <td class="num">${c.terms.lift_fee ? esc(termValue(c.terms.lift_fee)) : "–"}</td>
       <td>${esc(date(c.renewal))}</td>
-      <td><span class="state" data-state="${new Date(c.notice_by) < soon ? "bad" : "mute"}">${esc(date(c.notice_by))}</span></td></tr>`).join("")}</tbody>`;
+      <td><span class="state" data-state="${new Date(c.notice_by) < soon ? "bad" : "mute"}">${esc(date(c.notice_by))}</span></td>${ROW_GO}</tr>`).join("")}</tbody>`;
   tbl.querySelectorAll("tr.click").forEach((tr) => {
     const c = a.contracts[Number(tr.dataset.i)];
     const go = () => openTrace(contractTrace(c), `${c.contract_id} · ${stream(c.stream)} · ${c.site}`, `account.contracts.${c.contract_id}`);
     tr.addEventListener("click", go);
-    tr.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+    tr.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); go(); } }); // the drawer takes focus, so Enter must not click on
   });
 }

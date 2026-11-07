@@ -1,7 +1,7 @@
 // Machine drawings: a compactor outline filled to its current level, with "full in N days".
 // Forecast and weight are DEMO placeholders — production values come from Europress' SMART forecast and the weight model.
 import { t, fmt, date, stream, getLang } from "./i18n.js";
-import { esc } from "./drawer.js";
+import { esc, chip, bindChips, openExplain, tx } from "./drawer.js";
 import { STREAM_COLORS } from "./charts.js";
 import { openAi } from "./ask.js";
 import { getWeightModel } from "./weightmodel.js";
@@ -85,29 +85,39 @@ function scheduleText(m) {
   return t("sched.everyN", { n: step, days: list });
 }
 
-/** Who sends the truck and when: SMART on-call order, or the operator's fixed timetable. */
-function truckBlock(m) {
-  const op = esc(m.operator || m.operator_id || "");
-  const lines = [];
-  let state = "mute";
-  if (m.policy === "ON_CALL") {
-    if (m.pickup_ordered) { lines.push(t("truck.ordered", { op })); state = "info"; }
-    else if (m.order_on) lines.push(t(m.pickup_reason === "interval" ? "truck.willOrderInterval" : "truck.willOrder", { op, date: dayDate(m.order_on), thr: fmt(m.order_threshold_pct) }));
-    else lines.push(t("m.notSoon"));
-    if (m.truck_on) lines.push(t("truck.eta", { date: dayDate(m.truck_on), h: fmt(m.lead_h) }));
-    if ((m.days_to_pickup ?? 99) <= 2) state = "info";
-  } else {
-    lines.push(t("truck.fixed", { op, sched: esc(scheduleText(m)) }));
-    if (m.truck_on) lines.push(t("truck.next", { date: dayDate(m.truck_on), fill: m.visit_fill_pct > PICKUP_LINE ? `≥ ${PICKUP_LINE}` : `≈ ${fmt(m.visit_fill_pct)}` }));
+const visitFill = (m) => (m.visit_fill_pct > PICKUP_LINE ? `≥ ${PICKUP_LINE}` : `≈ ${fmt(m.visit_fill_pct)}`);
+const opName = (m) => m.operator || m.operator_id || "";
+const isEarly = (m) => m.policy !== "ON_CALL" && m.visit_fill_pct != null && m.visit_fill_pct < 60;
+
+/** Who sends the truck and when, as plain-text lines: SMART on-call order, or the operator's fixed timetable. */
+function truckLines(m) {
+  const op = opName(m);
+  if (m.policy !== "ON_CALL") {
+    return [t("truck.fixed", { op, sched: scheduleText(m) }),
+      ...(m.truck_on ? [t("truck.next", { date: dayDate(m.truck_on), fill: visitFill(m) })] : [])];
   }
-  const early = m.policy !== "ON_CALL" && m.visit_fill_pct != null && m.visit_fill_pct < 60;
+  const first = m.pickup_ordered ? t("truck.ordered", { op })
+    : m.order_on ? t(m.pickup_reason === "interval" ? "truck.willOrderInterval" : "truck.willOrder", { op, date: dayDate(m.order_on), thr: fmt(m.order_threshold_pct) })
+    : t("m.notSoon");
+  return [first, ...(m.truck_on ? [t("truck.eta", { date: dayDate(m.truck_on), h: fmt(m.lead_h) })] : [])];
+}
+/** One line for the compact card: the timetable's next visit, or SMART's order. */
+const nextTruck = (m) => (m.policy !== "ON_CALL" && m.truck_on ? truckLines(m)[1] : truckLines(m)[0]);
+
+function truckState(m) {
+  if (isEarly(m)) return "warn";
+  return m.policy === "ON_CALL" && (m.pickup_ordered || (m.days_to_pickup ?? 99) <= 2) ? "info" : "mute";
+}
+
+const tip = (text) => `<p class="mc-tip"><span class="state" data-state="warn">${esc(text)}</span></p>`;
+function truckBlock(m) {
   const lowThr = m.policy === "ON_CALL" && m.stream !== "biowaste" && m.order_threshold_pct != null && m.order_threshold_pct < 75;
-  return `<div class="mc-truck" data-state="${early ? "warn" : state}">
+  return `<div class="mc-truck" data-state="${truckState(m)}">
       <span class="mc-truck-ic">${TRUCK_ICON}</span>
-      <div>${lines.map((l, i) => `<p class="${i ? "mc-truck-sub" : "mc-truck-main"}">${l}</p>`).join("")}
-        ${early ? `<p class="mc-tip"><span class="state" data-state="warn">${esc(t("truck.early"))}</span></p>` : ""}
-        ${lowThr ? `<p class="mc-tip"><span class="state" data-state="warn">${esc(t("truck.thr", { thr: fmt(m.order_threshold_pct) }))}</span></p>` : ""}
-        ${m.operator_on_time_pct != null ? `<p class="mc-truck-sub">${t("truck.onTime", { op, pct: fmt(m.operator_on_time_pct) })}</p>` : ""}
+      <div>${truckLines(m).map((l, i) => `<p class="${i ? "mc-truck-sub" : "mc-truck-main"}">${esc(l)}</p>`).join("")}
+        ${isEarly(m) ? tip(t("truck.early")) : ""}
+        ${lowThr ? tip(t("truck.thr", { thr: fmt(m.order_threshold_pct) })) : ""}
+        ${m.operator_on_time_pct != null ? `<p class="mc-truck-sub">${esc(t("truck.onTime", { op: opName(m), pct: fmt(m.operator_on_time_pct) }))}</p>` : ""}
       </div></div>`;
 }
 
@@ -120,18 +130,28 @@ const weightLine = (m) => (modelKg(m) != null ? `${t("m.weight", { kg: fmt(model
 const mixedAsk = (m) => (KIND[m.stream] === "mixed" ? `<button type="button" class="ask-link" data-mixed="${esc(m.device_id)}">${esc(t("m.askMixed"))}</button>` : "");
 const howScheduled = (m) => (m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
 
-/** "design": drawing cards · "mixed": small drawing + info table per machine · "table": plain table. */
+const meta = (m) => `<p class="mc-meta"><span class="dot" style="background:${STREAM_COLORS[m.stream]}"></span>${esc(stream(m.stream))} · ${fmt(m.volume_m3)} m³ · ${esc(m.device_id)}</p>`;
+/** Fill now, as an explainable value (opens the machine drawer). */
+const fillChip = (m) => chip(`${fmt(m.fill_now)}&nbsp;%`, `${m.device_id}: ${fmt(m.fill_now)} %`, m.device_id);
+
+/** "compact": Overview card · "design": drawing cards · "mixed": small drawing + info table per machine · "table": plain table. */
 const VIEW = {
+  compact: (rows) => rows.map((m) => `<article class="machine compact xv-stretch" data-kind="${KIND[m.stream] || "recycle"}">
+      ${compactorSvg(m)}
+      <div class="mc-head">${fillChip(m)}${typeTag(m)}</div>
+      <p class="mc-next" data-state="${truckState(m)}">${TRUCK_ICON}<span>${esc(nextTruck(m))}</span></p>
+      ${meta(m)}
+    </article>`).join(""),
   design: (rows) => rows.map((m) => `<article class="machine" data-kind="${KIND[m.stream] || "recycle"}">
       ${compactorSvg(m)}
-      <div class="mc-head"><b>${fmt(m.fill_now)}&nbsp;%</b>${typeTag(m)}</div>
+      <div class="mc-head">${fillChip(m)}${typeTag(m)}</div>
       ${truckBlock(m)}
-      <p class="mc-meta"><span class="dot" style="background:${STREAM_COLORS[m.stream]}"></span>${esc(stream(m.stream))} · ${fmt(m.volume_m3)} m³ · ${esc(m.device_id)}</p>
+      ${meta(m)}
       <p class="mc-meta">${modelKg(m) != null ? weightLine(m) : ""}</p>
       ${mixedAsk(m)}
     </article>`).join(""),
   mixed: (rows) => rows.map((m) => `<article class="mrow" data-kind="${KIND[m.stream] || "recycle"}">
-      <div class="mrow-fig">${compactorSvg(m)}<b class="mrow-fill">${fmt(m.fill_now)}&nbsp;%</b></div>
+      <div class="mrow-fig">${compactorSvg(m)}<div class="mrow-fill">${fillChip(m)}</div></div>
       <dl class="mrow-dl">
         <div><dt>${t("col.machine")}</dt><dd>${esc(m.device_id)} · ${esc(m.site)}</dd></div>
         <div><dt>${t("col.stream")}</dt><dd><span class="dot" style="background:${STREAM_COLORS[m.stream]}"></span>${esc(stream(m.stream))} · ${fmt(m.volume_m3)} m³ ${typeTag(m)}</dd></div>
@@ -149,7 +169,7 @@ const VIEW = {
     rows.map((m) => `<tr>
       <td class="strong">${esc(m.device_id)}<span class="desc">${esc(m.site)} · ${fmt(m.volume_m3)} m³</span></td>
       <td><span class="dot" style="background:${STREAM_COLORS[m.stream]}"></span>${esc(stream(m.stream))}</td>
-      <td class="num">${fmt(m.fill_now)} %</td>
+      <td class="num">${fillChip(m)}</td>
       <td>${esc(howScheduled(m))}</td>
       <td>${esc(m.operator || "–")}</td>
       <td>${m.pickup_ordered ? esc(t("mv.ordered")) : m.truck_on ? esc(dayDate(m.truck_on)) : "–"}</td>
@@ -157,11 +177,23 @@ const VIEW = {
       <td class="num">${modelKg(m) != null ? `${fmt(modelKg(m))} kg` : "–"}</td></tr>`).join("")}</tbody></table></div>`,
 };
 
+/** Machine drawer: fill now, what it means, and the few facts that matter. */
+function openMachine(m) {
+  const facts = [
+    [t("m.facts.stream"), `${stream(m.stream)} · ${fmt(m.volume_m3)} m³`],
+    [t("m.facts.next"), truckLines(m).join(" · ")],
+    ...(m.operator_on_time_pct != null ? [[t("m.facts.ontime"), `${opName(m)} · ${fmt(m.operator_on_time_pct)} %`]] : []),
+    ...(modelKg(m) != null ? [[t("m.facts.weight"), `≈ ${fmt(modelKg(m))} kg`]] : []),
+  ];
+  openExplain({ title: `${m.device_id} · ${stream(m.stream)}`, value: `${fmt(m.fill_now)} %`, what: tx("x.machine.fill"), facts, focus: `machines.${m.device_id}` });
+}
+
 export function renderMachinesNow(container, list, { limit = Infinity, mode = "design" } = {}) {
   asOf = list[0]?.as_of ?? null;
   const rows = [...list].sort((a, b) => (a.days_to_pickup ?? 999) - (b.days_to_pickup ?? 999)).slice(0, limit);
   container.dataset.mode = mode;
   container.innerHTML = (VIEW[mode] || VIEW.design)(rows);
+  bindChips(container, (id) => openMachine(rows.find((m) => m.device_id === id)));
   container.querySelectorAll("[data-mixed]").forEach((b) =>
     b.addEventListener("click", () => openAi(t("q.mixedMachine", { id: b.dataset.mixed }), `machines.${b.dataset.mixed}`)));
 }

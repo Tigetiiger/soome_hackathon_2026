@@ -43,7 +43,7 @@ export function renderEpPipeline(f, onOpenCustomer) {
   tbl.querySelectorAll("tr.click").forEach((tr) => {
     const go = () => onOpenCustomer(f.pipeline[Number(tr.dataset.i)].id);
     tr.addEventListener("click", go);
-    tr.addEventListener("keydown", (e) => { if (e.key === "Enter") go(); });
+    tr.addEventListener("keydown", (e) => { if (e.key === "Enter") { e.preventDefault(); go(); } });
   });
 }
 

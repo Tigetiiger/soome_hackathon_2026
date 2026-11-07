@@ -249,7 +249,7 @@
   .formula { padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--radius-2); background: var(--ground); font-size: var(--fs-3); }
   .assumption { display: flex; gap: var(--s-2); align-items: baseline; font-size: var(--fs-2); color: var(--ink-2); }
   .sources { display: flex; flex-wrap: wrap; gap: var(--s-2); }
-  .sources code { padding: var(--s-1) var(--s-2); border: 1px solid var(--line); border-radius: var(--radius-1); font-size: var(--fs-2); }
+  .sources code { padding: var(--s-1) var(--s-2); border: 1px solid var(--line); border-radius: var(--radius-1); font-size: var(--fs-2); overflow-wrap: anywhere; }
   .drawer .table-wrap { margin: 0; max-height: 360px; overflow: auto; border: 1px solid var(--line); border-radius: var(--radius-2); }
   .drawer .table th, .drawer .table td { padding: 6px var(--s-2); white-space: nowrap; }
   .drawer .table th { position: sticky; top: 0; background: var(--surface); }
@@ -500,16 +500,18 @@
   .hero-delta { font: 400 var(--fs-3) var(--font-mono); color: var(--link); white-space: nowrap; }
   .kpis-3 { grid-template-columns: repeat(3, minmax(0, 1fr)); }
 
-  /* problems list */
+  /* "What changed": one row per problem — label + action | from → to */
   .problems { list-style: none; margin: 0; padding: 0; }
-  .problems li { display: grid; grid-template-columns: minmax(0, 1fr) auto; gap: var(--s-2) var(--s-4); padding: var(--s-6) 0; border-top: 1px solid var(--line); }
+  .problems li {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "what chg";
+    align-items: center; gap: var(--s-2) var(--s-6); padding: var(--s-4) 0; border-top: 1px solid var(--line);
+  }
   .problems li:last-child { border-bottom: 1px solid var(--line); }
-  .problems .what { display: flex; flex-direction: column; gap: var(--s-2); }
-  .problems .what b { font: 500 var(--fs-4)/1 var(--font); letter-spacing: -.02em; }
-  .problems .chg { font: 400 var(--fs-2) var(--font-mono); color: var(--ink-3); }
-  .problems .chg strong { color: var(--ink); font-weight: 500; }
-  .problems .act { font: 400 var(--fs-3)/1.3 var(--font-serif); }
-  .problems .eur { font: 400 28px/1 var(--font); letter-spacing: -.03em; white-space: nowrap; }
+  .prob-what { grid-area: what; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+  .prob-what b { font: 500 var(--fs-3)/1.3 var(--font); }
+  .prob-act { font: 400 var(--fs-3)/1.4 var(--font-serif); letter-spacing: -.01em; color: var(--ink-2); }
+  .prob-chg { grid-area: chg; font: 400 var(--fs-2)/1.3 var(--font-mono); color: var(--ink-3); white-space: nowrap; }
+  .prob-chg .xv { color: var(--ink); font-weight: 500; }
   .ask-link { grid-column: 1 / -1; justify-self: start; border: 0; padding: 0; background: none; cursor: pointer; font: 500 var(--fs-2) var(--font-mono); color: var(--link); }
 
   /* machines now */
@@ -682,6 +684,9 @@
   .ans-row:hover .ans-h { color: var(--link); }
   .ans-q { font: 400 var(--fs-2)/1.3 var(--font-mono); color: var(--ink-3); }
   .ans-h { font: 500 var(--fs-3)/1.35 var(--font); }
+  /* customer answers only (the Europress sales alerts reuse .ans-row): fixed € track so every row has the same shape */
+  #answers .ans-row { grid-template-columns: 110px minmax(0, 0.9fr) minmax(0, 2fr) 7rem 20px; }
+  .ans-eur { justify-self: end; white-space: nowrap; font: 500 var(--fs-4)/1 var(--font); letter-spacing: -.02em; }
   .ans-chev { font: 400 var(--fs-4)/1 var(--font-mono); color: var(--ink-3); }
   .ans-more { padding: 0 0 var(--s-6) calc(110px + var(--s-4)); }
   .ans-why { font: 400 var(--fs-3)/1.45 var(--font-serif); max-width: 75ch; }
@@ -721,4 +726,129 @@
   .advisor-fab .fab-ic, .advisor-fab .fab-ic svg { display: block; width: 24px; height: 24px; }
   .advisor-fab .fab-ic svg { stroke: none; }
   .advisor-fab:focus-visible { outline-offset: 3px; border-radius: 50%; }
+}
+
+/* ===== Explainable value ("value chip"): VALUE + small magnifier → explanation drawer ===== */
+@layer components {
+  .xv {
+    position: relative; display: inline-flex; align-items: center; gap: .16em; max-width: 100%;
+    margin: 0; padding: 0; border: 0; border-radius: 2px; background: none; cursor: pointer;
+    font: inherit; color: inherit; letter-spacing: inherit; text-align: inherit;
+  }
+  /* ≥ 44 px tall hit area without growing the visual */
+  .xv::after { content: ""; position: absolute; left: -4px; right: -4px; top: 50%; height: max(100%, var(--tap)); transform: translateY(-50%); }
+  .xv-v {
+    white-space: nowrap; text-decoration: underline dotted transparent;
+    text-decoration-thickness: max(1px, .045em); text-underline-offset: .14em; transition: text-decoration-color .12s;
+  }
+  .xv-ic { width: clamp(12px, .45em, 18px); height: clamp(12px, .45em, 18px); stroke-width: 2.2; color: var(--ink-3); transition: color .12s; }
+  .xv:hover .xv-v, .xv:focus-visible .xv-v, .xv-stretch:hover .xv-v { text-decoration-color: color-mix(in srgb, currentColor 60%, transparent); }
+  .xv:hover .xv-ic, .xv:focus-visible .xv-ic, .xv-stretch:hover .xv-ic { color: var(--link); }
+  .xv:focus-visible { outline: 2px solid var(--action); outline-offset: 3px; }
+
+  /* the whole card / row is the hit area; the chip stays the one focusable element */
+  .xv-stretch { position: relative; cursor: pointer; }
+  .xv-stretch .xv { position: static; }
+  .xv-stretch .xv::after { inset: 0; height: auto; transform: none; }
+
+  /* trailing magnifier on rows that open the drawer */
+  .go-ic { width: 14px; height: 14px; stroke-width: 2.2; color: var(--ink-3); transition: color .12s; }
+  .table .row-go { width: 32px; padding-left: 0; text-align: right; }
+  .row-go .go-ic { vertical-align: middle; }
+  .table tbody tr.click:hover .go-ic, .table tbody tr.click:focus-visible .go-ic { color: var(--link); }
+  .ans-row .go-ic { align-self: center; justify-self: end; }
+  .ans-row:hover .go-ic, .ans-row:focus-visible .go-ic { color: var(--link); }
+}
+
+/* ===== Overview: your year in numbers ===== */
+@layer components {
+  .ov-year { display: flex; flex-direction: column; gap: var(--s-4); }
+  .ov-head { display: flex; justify-content: space-between; align-items: baseline; flex-wrap: wrap; gap: var(--s-2) var(--s-4); }
+  .ov-head .eyebrow { margin: 0; }
+  .ov-year .kpi { container-type: inline-size; }
+  .ov-year .kpi-value { font-size: min(44px, 19cqi); }
+  .ov-year .kpi-sub { min-height: 2.8em; } /* two lines, so the values line up across the row */
+  .kpi-trend { min-height: 2.8em; font: 400 var(--fs-1)/1.4 var(--font-mono); color: var(--ink-3); } /* two lines, empty on the other cards: keeps the values aligned */
+  .kpi.primary .kpi-trend { color: rgba(247, 248, 252, .72); }
+  .kpi.primary .xv-ic { color: color-mix(in srgb, var(--on-action) 72%, transparent); }
+  .kpi.primary:hover .xv-ic, .kpi.primary .xv:focus-visible .xv-ic { color: var(--mark); }
+  .kpi.primary .xv:focus-visible { outline-color: var(--on-action); }
+
+  .stat-line { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); margin: 0; padding: var(--s-4) 0; background: var(--surface); border-radius: var(--radius-3); }
+  .stat-line > div { display: flex; flex-direction: column; justify-content: space-between; gap: var(--s-1); min-width: 0; padding: 0 var(--s-6); border-left: 1px solid var(--line); }
+  .stat-line > div:first-child { border-left: 0; }
+  .stat-line dt { font: 400 var(--fs-1)/1.4 var(--font-mono); color: var(--ink-3); }
+  .stat-line dd { margin: 0; font: 400 var(--fs-4)/1.2 var(--font); letter-spacing: -.02em; }
+  .stat-line small { margin-left: var(--s-1); font: 400 var(--fs-1) var(--font-mono); letter-spacing: 0; color: var(--ink-3); }
+
+  /* how you save — compact lever list */
+  .save-card { display: flex; flex-direction: column; align-items: flex-start; }
+  .save-card .card-head { width: 100%; }
+  .save-list { list-style: none; width: 100%; margin: 0 0 var(--s-6); padding: 0; }
+  .save-list li {
+    display: grid; grid-template-columns: minmax(0, 1fr) auto; grid-template-areas: "ttl eur" "desc eur";
+    align-items: center; gap: 2px var(--s-6); padding: var(--s-4) 0; border-top: 1px solid var(--line);
+  }
+  .save-list li:last-child { border-bottom: 1px solid var(--line); }
+  .sl-ttl { grid-area: ttl; font: 500 var(--fs-3)/1.3 var(--font); }
+  .sl-desc { grid-area: desc; font: 400 var(--fs-3)/1.4 var(--font-serif); letter-spacing: -.01em; color: var(--ink-2); }
+  .sl-eur { grid-area: eur; justify-self: end; font: 500 var(--fs-4)/1 var(--font); letter-spacing: -.02em; }
+  .save-list li:hover .sl-ttl { color: var(--link); }
+
+  /* machines now — compact Overview card */
+  .machine.compact { display: flex; flex-direction: column; }
+  .machine.compact:hover { box-shadow: inset 0 0 0 1px var(--ink); }
+  .mc-head .xv { font: 500 28px/1 var(--font); letter-spacing: -.03em; }
+  .mc-next { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: var(--s-2); margin-top: var(--s-3); padding-top: var(--s-3); border-top: 1px solid var(--line); font: 500 var(--fs-2)/1.35 var(--font); }
+  .mc-next svg { width: 18px; height: 18px; }
+  .mc-next[data-state="info"] { color: var(--link); }
+  .mc-next[data-state="warn"] svg { color: var(--warn-c); }
+}
+
+/* ===== Explanation drawer: what it means · what to do · calculation (collapsed) · sticky ask footer ===== */
+@layer components {
+  .drawer-body { flex: 1 1 auto; min-height: 0; }
+  .drawer-foot { flex: none; padding: var(--s-4) var(--s-6) max(var(--s-4), env(safe-area-inset-bottom)); border-top: 1px solid var(--line); background: var(--surface); }
+  .drawer-foot .btn { width: 100%; min-height: 48px; }
+  .drawer:not(.hidden) ~ .advisor-fab { display: none; } /* the footer is the way to the advisor while a drawer is open */
+  .explain p { margin: 0 0 var(--s-2); font: 400 var(--fs-3)/1.55 var(--font-serif); letter-spacing: -.01em; color: var(--ink); }
+  .explain p:last-child { margin: 0; }
+  .drawer-facts { margin: var(--s-4) 0 0; border-top: 1px solid var(--line); }
+  .drawer-facts div { display: grid; grid-template-columns: minmax(8em, 1fr) minmax(0, 2fr); gap: var(--s-4); padding: var(--s-2) 0; border-bottom: 1px solid var(--line); }
+  .drawer-facts dt { font: 400 var(--fs-1)/1.6 var(--font-mono); color: var(--ink-3); }
+  .drawer-facts dd { margin: 0; font-size: var(--fs-2); font-weight: 500; }
+  .todo-steps { margin: 0; padding: var(--s-4) var(--s-4) var(--s-4) var(--s-8); }
+  .todo-steps li + li { margin-top: var(--s-2); }
+  .calc { border-top: 1px solid var(--line); }
+  .calc > summary { display: flex; align-items: center; gap: var(--s-2); min-height: var(--tap); list-style: none; cursor: pointer; font: 500 var(--fs-2)/1 var(--font-mono); color: var(--link); }
+  .calc > summary::-webkit-details-marker { display: none; }
+  .calc > summary::before { content: "+"; width: 1ch; }
+  .calc[open] > summary::before { content: "−"; }
+  .calc-body { display: flex; flex-direction: column; gap: var(--s-6); padding-top: var(--s-2); }
+}
+
+@layer utilities {
+  @media (max-width: 860px) {
+    /* phone: status pill, € and magnifier share the first line; question and answer follow */
+    #answers .ans-row { grid-template-columns: minmax(0, 1fr) auto auto; column-gap: var(--s-3); }
+    #answers .ans-row .ans-eur { grid-column: 2; grid-row: 1; }
+    #answers .ans-row .go-ic { grid-column: 3; grid-row: 1; }
+    .ans-row .go-ic { grid-column: 2; grid-row: 1; }
+    .problems li { grid-template-columns: minmax(0, 1fr); grid-template-areas: "what" "chg"; }
+    .drawer-foot { padding-left: var(--s-4); padding-right: var(--s-4); }
+  }
+  @media (max-width: 520px) {
+    .stat-line { grid-template-columns: repeat(2, minmax(0, 1fr)); row-gap: var(--s-4); }
+    .stat-line > div { padding: 0 var(--s-4); }
+    .stat-line > div:nth-child(odd) { border-left: 0; }
+    .ov-year .kpi, .ov-year .kpi-sub { min-height: 0; }
+    /* KPI cards: 2 columns, the savings card spans both; no icon and a smaller value so the first answer comes sooner */
+    .ov-year .kpis { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: var(--s-3); }
+    .ov-year .kpi { padding: var(--s-4); }
+    .ov-year .kpi.primary, .ov-year .kpi:last-child:nth-child(even) { grid-column: 1 / -1; } /* no half-empty last row */
+    .ov-year .kpi.primary .kpi-trend { display: none; }
+    .ov-year .kpi-icon42 { display: none; }
+    .ov-year .kpi-value { font-size: min(32px, 21cqi); }
+    .save-list li { gap: var(--s-1) var(--s-4); }
+  }
 }

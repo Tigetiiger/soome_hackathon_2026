@@ -69,34 +69,30 @@
       </div>
     </header>
 
-    <!-- Overview -->
+    <!-- Overview: year in numbers → what to do → machines now → how you save → what changed -->
     <section class="view" id="view-overview" data-view>
+      <section class="ov-year" id="ovYear" aria-labelledby="ovYearTitle">
+        <header class="ov-head"><h2 id="ovYearTitle" data-i18n="ov.year"></h2><span class="eyebrow" data-i18n="top.period"></span></header>
+        <div class="kpis" id="kpis"></div>
+        <dl class="stat-line" id="kpiStats"></dl>
+      </section>
       <article class="card" id="answersCard">
         <header class="card-head"><div class="card-title"><h2 data-i18n="ans.title"></h2></div><span class="eyebrow" data-i18n="ans.sub"></span></header>
         <ul class="answers" id="answers"></ul>
       </article>
       <article class="card">
-        <header class="card-head"><div class="card-title"><h2 data-i18n="machines.title"></h2><button class="info" type="button" data-info="m.forecastNote" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><div class="head-actions"><div class="seg mv" role="group" aria-label="View" data-mv="overview"><button type="button" data-mode="design" data-i18n="mv.design"></button><button type="button" data-mode="mixed" data-i18n="mv.mixed"></button><button type="button" data-mode="table" data-i18n="mv.table"></button></div><a class="link" href="#machines" data-i18n="link.allMachines"></a></div></header>
+        <header class="card-head"><div class="card-title"><h2 data-i18n="machines.title"></h2><button class="info" type="button" data-info="m.forecastNote" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><a class="link" href="#machines" data-i18n="link.allMachines"></a></header>
         <div class="machines-grid" id="machinesNowOverview"></div>
       </article>
-      <div class="feature">
-        <div class="hero">
-        <a class="hero-card" href="#savings" id="heroCard">
-          <span class="hero-top"><span class="hero-label" data-i18n="hero.label"></span><img src="/img/icons/system.svg" width="42" height="42" alt=""></span>
-          <span class="hero-bottom"><span class="hero-num"><b id="heroValue"></b><small data-i18n="hero.unit"></small></span><span class="hero-delta" id="heroDelta"></span></span>
-        </a>
-        </div>
-        <div class="feature-list">
-          <header class="card-head"><div class="card-title"><h2 id="saveTitle"></h2><button class="info" type="button" data-info="save.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
-          <ul class="how-save" id="howSave"></ul>
-          <a class="btn" href="#savings" data-i18n="save.cta"></a>
-        </div>
-      </div>
-      <div class="kpis kpis-3" id="kpis"></div>
+      <article class="card save-card">
+        <header class="card-head"><div class="card-title"><h2 id="saveTitle"></h2><button class="info" type="button" data-info="save.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
+        <ul class="save-list" id="howSave"></ul>
+        <a class="btn" href="#savings" data-i18n="save.cta"></a>
+      </article>
       <article class="card">
-          <header class="card-head"><div class="card-title"><h2 data-i18n="prob.title"></h2><button class="info" type="button" data-info="prob.info" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><span class="eyebrow" id="probPeriod"></span></header>
-          <ul class="problems" id="problems"></ul>
-        </article>
+        <header class="card-head"><div class="card-title"><h2 data-i18n="ov.changed"></h2><button class="info" type="button" data-info="prob.info" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><span class="eyebrow" id="probPeriod"></span></header>
+        <ul class="problems" id="problems"></ul>
+      </article>
     </section>
 
     <!-- Savings -->
@@ -271,10 +267,11 @@
 <div class="scrim hidden" id="scrim"></div>
 <aside class="drawer hidden" id="drawer" role="dialog" aria-modal="true" aria-labelledby="drawerTitle">
   <header class="drawer-head">
-    <div><p class="eyebrow" data-i18n="drawer.title"></p><h2 id="drawerTitle"></h2></div>
-    <button class="icon-btn" type="button" data-close aria-label="Close"><svg viewBox="0 0 24 24"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
+    <div><p class="eyebrow" id="drawerEyebrow" data-i18n="drawer.title"></p><h2 id="drawerTitle"></h2></div>
+    <button class="icon-btn" type="button" data-close data-i18n-aria="drawer.close" aria-label="Close"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>
   </header>
   <div class="drawer-body" id="drawerBody"></div>
+  <footer class="drawer-foot"><button class="btn" type="button" id="drawerAsk" data-i18n="ai.cta"></button></footer>
 </aside>
 
 
