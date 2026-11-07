@@ -31,6 +31,11 @@ python -m venv .venv && .venv/bin/pip install -r requirements.txt
 CLI flags override `run.*` in the config: `--bins`, `--days`, `--seed`, `--out`,
 `--no-strokes`. The same seed gives bit-identical output (tested).
 
+### Run on Red Hat OpenShift
+`deploy/openshift/deploy.sh` builds the image in the cluster and starts a results site.
+`deploy/openshift/run-pipeline.sh` runs the whole pipeline as a Job.
+Setup, parameters and results: [`deploy/openshift/README.md`](deploy/openshift/README.md).
+
 ### Replaying real FMI weather
 Set `weather.mode: fmi_csv` and `weather.fmi_csv.path`. The CSV needs one row per
 region and date covering the simulated span (including the 28-day burn-in):
