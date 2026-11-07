@@ -495,6 +495,11 @@ export function setLang(l) {
   document.documentElement.lang = lang;
 }
 
+/** Feature modules register their own strings (e.g. js/sensor/strings.js); later keys win. */
+export function addStrings(table) {
+  for (const l of Object.keys(table)) if (STRINGS[l]) STRINGS[l] = { ...STRINGS[l], ...table[l] };
+}
+
 export function t(key, params = {}) {
   const s = STRINGS[lang][key] ?? STRINGS.en[key] ?? key;
   return s.replace(/\{(\w+)\}/g, (_, k) => String(params[k] ?? `{${k}}`));

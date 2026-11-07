@@ -24,6 +24,14 @@ const RATE_MAX = Number(process.env.RATE_MAX || 30);       // per IP (IPv6: per 
 const DAILY_MAX = Number(process.env.DAILY_MAX || 500);    // global spend ceiling: questions per UTC day
 const MAX_BUDGET_USD = process.env.MAX_BUDGET_USD || "0.50"; // per-answer cap passed to claude
 const KILL_GRACE_MS = 5_000;
+// Soft-sensor model service (softsensor/, Python) — proxied read-only under /api/sensor/*.
+const SENSOR_URL = new URL(process.env.SENSOR_URL || "http://127.0.0.1:8093");
+const SENSOR_PATH_RE = /^\/api\/sensor\/(health|meta|fleet|machines\/BIN-\d{4})$/;
+const SENSOR_PARAMS = ["at", "hours"];
+const SENSOR_PARAM_RE = /^[0-9A-Za-z:+.\-]{1,40}$/;
+const SENSOR_TIMEOUT_MS = 15_000;
+const SENSOR_RATE_WINDOW_MS = 60_000;
+const SENSOR_RATE_MAX = Number(process.env.SENSOR_RATE_MAX || 300); // per IP per minute (replay ≈ 2 req/s)
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -70,17 +78,26 @@ function send(res, code, text, type = "text/plain; charset=utf-8") {
 }
 
 // ---------------------------------------------------------------- rate limiting + queue
-const hits = new Map(); // ip key -> [timestamps]
 const daily = { day: "", count: 0 };
 const rateKey = (ip) => (ip.includes(":") && !ip.startsWith("::ffff:") ? ip.split(":").slice(0, 4).join(":") + "::/64" : ip);
-function rateLimited(ip) {
-  const now = Date.now();
-  const key = rateKey(ip);
-  const list = (hits.get(key) || []).filter((t) => now - t < RATE_WINDOW_MS);
-  if (list.length >= RATE_MAX) return true;
-  hits.set(key, [...list, now]);
-  return false;
+/** Sliding-window limiter per IP (IPv6 per /64); returns limited(ip) → boolean. Idle keys are swept. */
+function makeLimiter(windowMs, max) {
+  const hits = new Map(); // ip key -> [timestamps]
+  setInterval(() => {
+    const now = Date.now();
+    for (const [k, list] of hits) if (!list.some((t) => now - t < windowMs)) hits.delete(k);
+  }, windowMs).unref();
+  return (ip) => {
+    const now = Date.now();
+    const key = rateKey(ip);
+    const list = (hits.get(key) || []).filter((t) => now - t < windowMs);
+    if (list.length >= max) return true;
+    hits.set(key, [...list, now]);
+    return false;
+  };
 }
+const rateLimited = makeLimiter(RATE_WINDOW_MS, RATE_MAX);
+const sensorLimited = makeLimiter(SENSOR_RATE_WINDOW_MS, SENSOR_RATE_MAX);
 function dailyCapReached() {
   const day = new Date().toISOString().slice(0, 10);
   if (daily.day !== day) { daily.day = day; daily.count = 0; }
@@ -88,10 +105,6 @@ function dailyCapReached() {
   daily.count += 1;
   return false;
 }
-setInterval(() => {
-  const now = Date.now();
-  for (const [k, list] of hits) if (!list.some((t) => now - t < RATE_WINDOW_MS)) hits.delete(k);
-}, RATE_WINDOW_MS).unref();
 let running = 0;
 const queue = [];
 function acquire() {
@@ -260,9 +273,43 @@ async function handleAsk(req, res) {
   });
 }
 
+// ---------------------------------------------------------------- soft-sensor proxy
+const sensorError = (res, code, error) =>
+  send(res, code, JSON.stringify({ success: false, data: null, error }), MIME[".json"]);
+
+/** Forward a whitelisted GET to the soft-sensor service; only `at` and `hours` pass, re-encoded. */
+function proxySensor(req, res, url) {
+  if (!SENSOR_PATH_RE.test(url.pathname)) return sensorError(res, 404, "not found");
+  if (sensorLimited(clientIp(req))) return sensorError(res, 429, "too many requests — slow the replay down");
+  const query = new URLSearchParams();
+  for (const name of SENSOR_PARAMS) {
+    const v = url.searchParams.get(name);
+    if (v === null) continue;
+    if (!SENSOR_PARAM_RE.test(v)) return sensorError(res, 400, `${name}: invalid`);
+    query.set(name, v);
+  }
+  const upstream = new URL(url.pathname.replace(/^\/api\/sensor/, "") + (query.size ? `?${query}` : ""), SENSOR_URL);
+  const up = http.get(upstream, { timeout: SENSOR_TIMEOUT_MS }, (ur) => {
+    res.writeHead(ur.statusCode || 502, { ...SECURITY_HEADERS, "Content-Type": MIME[".json"], "Cache-Control": "no-store" });
+    ur.pipe(res);
+  });
+  up.on("timeout", () => up.destroy(new Error("timeout")));
+  up.on("error", (e) => {
+    log("warn", "sensor_unavailable", { err: e.message });
+    if (!res.headersSent) sensorError(res, 503, "soft-sensor service unavailable");
+    else res.end();
+  });
+  res.on("close", () => up.destroy());
+}
+
 // ---------------------------------------------------------------- router
 const server = http.createServer(async (req, res) => {
   try {
+    if (req.method === "GET" && req.url.startsWith("/api/sensor/")) {
+      let url;
+      try { url = new URL(req.url, "http://x"); } catch { return sensorError(res, 400, "bad request"); }
+      return proxySensor(req, res, url);
+    }
     if (req.method === "POST" && req.url === "/api/ask") return await handleAsk(req, res);
     if (req.method === "GET" && req.url === "/api/health")
       return send(res, 200, JSON.stringify({ ok: true, running, queued: queue.length }), MIME[".json"]);
