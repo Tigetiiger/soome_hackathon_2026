@@ -1,0 +1,104 @@
+# One pipeline run as a Kubernetes Job. Used by run-pipeline.sh:
+#   oc process --local -f pipeline-job.yaml -p BINS=100 ... | oc create -f -
+apiVersion: template.openshift.io/v1
+kind: Template
+metadata:
+  name: compactor-pipeline
+  annotations:
+    description: Compactor simulator + soft-sensor training run (deploy/openshift/pipeline.sh).
+parameters:
+  - name: RUN_NAME
+    description: Folder under runs/ and models/. The site shows full400 and bins25.
+    value: full400
+  - name: BINS
+    value: "400"
+  - name: DAYS
+    value: "365"
+  - name: SEED
+    value: "7"
+  - name: SMALL_RUN
+    description: 1 = also simulate and train the 25-machine run (runs/bins25).
+    value: "1"
+  - name: STEPS
+    description: Any subset, in order, of "sim validate baseline train predict report site".
+    value: sim validate baseline train predict report site
+  - name: CPU
+    description: CPU limit in whole cores. LightGBM uses this many threads.
+    value: "8"
+  - name: CPU_REQUEST
+    value: "4"
+  - name: MEMORY
+    description: Memory limit. 400-machine training peaks at about 3 GiB.
+    value: 10Gi
+  - name: MEMORY_REQUEST
+    value: 6Gi
+  - name: RUN_ID
+    description: Job name suffix, generated.
+    generate: expression
+    from: "[a-z0-9]{5}"
+objects:
+  - apiVersion: batch/v1
+    kind: Job
+    metadata:
+      name: compactor-pipeline-${RUN_ID}
+      labels:
+        app.kubernetes.io/name: compactor-pipeline
+        app.kubernetes.io/part-of: compactor-sim
+    spec:
+      backoffLimit: 0                  # a failed run is reported, not silently retried
+      ttlSecondsAfterFinished: 604800  # finished Job and its logs kept 7 days (logs also in /data/logs)
+      template:
+        metadata:
+          labels:
+            app.kubernetes.io/name: compactor-pipeline
+            app.kubernetes.io/part-of: compactor-sim
+        spec:
+          restartPolicy: Never
+          affinity:
+            # The data volume is ReadWriteOnce: run on the node where the site pod has it mounted.
+            podAffinity:
+              requiredDuringSchedulingIgnoredDuringExecution:
+                - topologyKey: kubernetes.io/hostname
+                  labelSelector:
+                    matchLabels:
+                      app.kubernetes.io/name: compactor-site
+          containers:
+            - name: pipeline
+              image: compactor-sim:latest
+              command: [bash, deploy/openshift/pipeline.sh]
+              env:
+                - name: RUN_NAME
+                  value: "${RUN_NAME}"
+                - name: BINS
+                  value: "${BINS}"
+                - name: DAYS
+                  value: "${DAYS}"
+                - name: SEED
+                  value: "${SEED}"
+                - name: SMALL_RUN
+                  value: "${SMALL_RUN}"
+                - name: STEPS
+                  value: "${STEPS}"
+                - name: OMP_NUM_THREADS   # LightGBM threads = CPU limit (it would otherwise see every node core)
+                  value: "${CPU}"
+              resources:
+                requests:
+                  cpu: "${CPU_REQUEST}"
+                  memory: "${MEMORY_REQUEST}"
+                limits:
+                  cpu: "${CPU}"
+                  memory: "${MEMORY}"
+              securityContext:
+                allowPrivilegeEscalation: false
+                runAsNonRoot: true
+                capabilities:
+                  drop: [ALL]
+                seccompProfile:
+                  type: RuntimeDefault
+              volumeMounts:
+                - name: data
+                  mountPath: /data
+          volumes:
+            - name: data
+              persistentVolumeClaim:
+                claimName: compactor-data

@@ -1,0 +1,41 @@
+# Storage and image build for the compactor pipeline. Applied by deploy.sh.
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: compactor-data
+  labels:
+    app.kubernetes.io/part-of: compactor-sim
+spec:
+  accessModes: [ReadWriteOnce]
+  resources:
+    requests:
+      storage: 5Gi   # one 400-machine run + models is about 0.5 GB
+---
+apiVersion: image.openshift.io/v1
+kind: ImageStream
+metadata:
+  name: compactor-sim
+  labels:
+    app.kubernetes.io/part-of: compactor-sim
+spec:
+  lookupPolicy:
+    local: true   # lets Jobs/Deployments in this project use "image: compactor-sim:latest"
+---
+apiVersion: build.openshift.io/v1
+kind: BuildConfig
+metadata:
+  name: compactor-sim
+  labels:
+    app.kubernetes.io/part-of: compactor-sim
+spec:
+  source:
+    type: Binary   # source is uploaded by deploy.sh (oc start-build --from-archive)
+    binary: {}
+  strategy:
+    type: Docker
+    dockerStrategy:
+      dockerfilePath: deploy/openshift/Containerfile
+  output:
+    to:
+      kind: ImageStreamTag
+      name: compactor-sim:latest
