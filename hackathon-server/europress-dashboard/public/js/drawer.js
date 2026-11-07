@@ -169,8 +169,8 @@ export function deviceTrace(d) {
   return {
     value: d.eur_per_t, unit: "EUR/t",
     formula: {
-      en: `${fmt(d.cost_eur)} € invoiced ÷ ${fmt(d.tonnes, 2)} t collected over ${d.lifts} lifts. Peers (same stream, whole fleet) median: ${fmt(d.peer_median_eur_per_t)} €/t. Average fill at emptying ${fmt(d.avg_fill_pct)} %, ${d.wasted_trips} wasted trips.`,
-      fi: `${fmt(d.cost_eur)} € laskutettu ÷ ${fmt(d.tonnes, 2)} t kerätty ${d.lifts} tyhjennyksessä. Vertailu (sama jae, koko laitekanta) mediaani: ${fmt(d.peer_median_eur_per_t)} €/t. Keskimääräinen täyttöaste ${fmt(d.avg_fill_pct)} %, ${d.wasted_trips} turhaa käyntiä.`,
+      en: `${fmt(d.cost_eur)} € invoiced ÷ ${fmt(d.tonnes, 2)} t collected over ${d.lifts} lifts. Average fill at emptying ${fmt(d.avg_fill_pct)} %, ${d.wasted_trips} wasted trips.`,
+      fi: `${fmt(d.cost_eur)} € laskutettu ÷ ${fmt(d.tonnes, 2)} t kerätty ${d.lifts} tyhjennyksessä. Keskimääräinen täyttöaste ${fmt(d.avg_fill_pct)} %, ${d.wasted_trips} turhaa käyntiä.`,
     },
     sources: ["finance/invoice_lines.parquet", "operations/collection_events.parquet", "reference/devices.parquet"],
     rows: {

@@ -676,14 +676,7 @@ def customer_answers(D, p, dev, lifts):
     out.append({"id": "fleet", "status": "good" if fill >= 75 else "warn" if fill >= 60 else "bad",
                 "p": {"fill": r(fill, 0), "early": early, "lifts": k["lifts"]["value"], "eur": lev["early_lifts"]["saving_eur"]},
                 "trace": "levers.early_lifts"})
-    tiny = int((lifts.device_fill_pct_before < 30).sum())
-    inv = lev.get("invoice_check", {}).get("count", 0) or 0
-    wdiff = p["weight"]["difference_gt_10pct"]
-    n_mis = sum(1 for x in (tiny, inv, wdiff) if x)
-    out.append({"id": "mismatch", "status": "good" if n_mis == 0 else "warn" if n_mis == 1 else "bad",
-                "p": {"tiny": tiny, "inv": inv, "inv_eur": lev.get("invoice_check", {}).get("saving_eur"), "wdiff": wdiff}, "trace": "levers.invoice_check"})
-    gap = lev.get("tender", {}).get("saving_eur") or 0
-    out.append({"id": "price", "status": "good" if gap < 500 else "warn", "p": {"eurt": k["eur_per_t"]["value"], "eur": r(gap, 0)}, "trace": "levers.tender"})
+    # No "mismatch" (invoice / weighbridge differences) or "price" (tender) answers: operators are Europress's partners.
     ops = p["operators"]
     worst = min(ops, key=lambda o: o["on_time_rate"] or 100) if ops else None
     soon = sorted(ops, key=lambda o: o["notice_by"])[0] if ops else None

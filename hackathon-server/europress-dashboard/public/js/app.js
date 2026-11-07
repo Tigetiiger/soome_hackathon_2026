@@ -205,7 +205,7 @@ function renderSavings(p) {
 function renderMachines(p) {
   const tbl = el("devicesTable");
   tbl.innerHTML = `<thead><tr><th>${t("col.machine")}</th><th>${t("col.stream")}</th><th>${t("col.fill")}</th>
-    <th class="num">${t("col.eurt")}</th><th class="num">${t("col.peer")}</th><th>${t("col.status")}</th><th class="row-go"></th></tr></thead><tbody>${
+    <th class="num">${t("col.eurt")}</th><th>${t("col.status")}</th><th class="row-go"></th></tr></thead><tbody>${
     p.devices.map((d, i) => {
       const fill = d.avg_fill_pct ?? 0;
       const fs = fill >= 75 ? "good" : fill >= 55 ? "warn" : "bad";
@@ -213,7 +213,7 @@ function renderMachines(p) {
         <td class="strong">${esc(d.device_id)}<span class="desc">${esc(d.site)} · ${fmt(d.volume_m3)} m³</span></td>
         <td><span class="dot" style="background:${STREAM_COLORS[d.stream]}"></span>${esc(stream(d.stream))}</td>
         <td><span class="fill"><span class="fill-bar" data-state="${fs}"><i style="width:${fill}%"></i></span>${fmt(fill)} %</span></td>
-        <td class="num">${fmt(d.eur_per_t)}</td><td class="num">${fmt(d.peer_median_eur_per_t)}</td>
+        <td class="num">${fmt(d.eur_per_t)}</td>
         <td><span class="state" data-state="${STATUS_STATE[d.status]}">${esc(t(`status.${d.status}`))}</span></td>${ROW_GO}</tr>`;
     }).join("")}</tbody>`;
   bindRows(tbl, (i) => openTrace(deviceTrace(p.devices[i]), `${p.devices[i].device_id} · ${stream(p.devices[i].stream)}`, `devices.${p.devices[i].device_id}`));

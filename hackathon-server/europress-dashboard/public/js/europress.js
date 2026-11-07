@@ -1,4 +1,4 @@
-// Europress internal workspace: fleet overview, sales pipeline, fleet health, data products.
+// Europress internal workspace: fleet overview, sales pipeline, fleet health, data exchange (by agreement only).
 import { t, fmt, eur, date, stream, sector, addStrings } from "./i18n.js";
 import { flowChart, barChart, gradeChart, priceChart } from "./charts.js";
 import { esc, openTrace, openCustom, closePanels } from "./drawer.js";
@@ -65,12 +65,13 @@ export function renderEpFleet(f) {
       <td>${esc(stream(d.stream))}</td><td class="num">${d.orders}</td><td class="num">${fmt(d.downtime_h)} h</td></tr>`).join("")}</tbody>`;
 }
 
-const BUYERS = ["processor", "brand", "property", "recycler", "public"];
+// Europress never sells data: each party shares through SMART only what it agrees to, and gets value back.
+const EXCHANGE = ["customer", "operator", "plant"];
 
 export function renderEpData(f) {
   const d = f.data_products;
-  el("epBuyersTable").innerHTML = `<thead><tr><th>${t("col.buyer")}</th><th>${t("col.product")}</th></tr></thead>
-    <tbody>${BUYERS.map((b) => `<tr><td class="strong">${esc(t(`buyer.${b}`))}<span class="desc">${esc(t(`buyer.${b}.n`))}</span></td><td>${esc(t(`buyer.${b}.p`))}</td></tr>`).join("")}</tbody>`;
+  el("epBuyersTable").innerHTML = `<thead><tr><th>${t("col.buyer")}</th><th>${t("col.product")}</th><th>${t("col.need")}</th></tr></thead>
+    <tbody>${EXCHANGE.map((b) => `<tr><td class="strong">${esc(t(`xc.${b}`))}</td><td>${esc(t(`xc.${b}.give`))}</td><td>${esc(t(`xc.${b}.get`))}</td></tr>`).join("")}</tbody>`;
   gradeChart("epQualityChart", d.quality_by_stream);
   el("epQualityWrap").onclick = () => openTrace(d.quality_trace, t("ep.quality"), "quality");
   const cells = [...d.flow_cells].sort((a, b) => a.region_code.localeCompare(b.region_code) || b.tonnes - a.tonnes);
