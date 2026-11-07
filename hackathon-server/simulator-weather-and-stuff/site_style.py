@@ -36,9 +36,9 @@ a{color:var(--accent)}p,li,dd{max-width:72ch}.muted{color:var(--muted)}
 .tcap,figcaption{font:.86rem/1.45 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;color:var(--muted)}
 .tcap{margin:1.4rem 0 .35rem;max-width:none}.tcap b,figcaption b{color:var(--fg);font-weight:600}
 .tbl{overflow-x:auto;margin:0 0 1rem;max-width:100%}
-table{border-collapse:collapse;font:.875rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;min-width:min(100%,40ch)}
+table{border-collapse:collapse;font:.875rem/1.4 system-ui,-apple-system,"Segoe UI",Roboto,sans-serif;width:100%}
 th,td{padding:.32rem .65rem;text-align:right;border-bottom:1px solid var(--line);vertical-align:top;white-space:nowrap}
-th{border-bottom:2px solid var(--rule);font-weight:600;text-align:right;background:transparent}
+th{border-bottom:2px solid var(--rule);font-weight:600;text-align:right;background:transparent;white-space:normal;min-width:6ch}
 td:first-child,th:first-child,td.l,th.l{text-align:left}td.l,th.l{white-space:normal;min-width:12ch}
 td.good{background:var(--good);color:var(--good-fg);font-weight:600}
 th.lift,td.lift{background:var(--mark)}tr.key td{font-weight:700}tr.fam td{background:var(--code);font-weight:600;text-align:left}

@@ -241,6 +241,8 @@ def build_glossary(cfg: dict | None, feature_docs: dict[str, str]) -> tuple[dict
 
 # ---------------------------------------------------------------- automatic wrapping
 SKIP_TAGS = {"a", "pre", "script", "style", "h1", "h2", "h3", "h4", "h5", "h6", "nav", "button", "svg", "title", "textarea"}
+# plain words that are also column/feature names: wrapped only when they appear inside <code>
+CODE_ONLY = {"hour", "weekday", "material", "presses", "ts", "drainage", "infeed", "k", "relief", "width"}
 BLOCK_TAGS = {"p", "li", "td", "th", "figcaption", "dd", "dt", "blockquote", "caption", "div", "section", "h5"}
 VOID = {"img", "br", "hr", "meta", "link", "input", "source", "wbr"}
 
@@ -258,13 +260,14 @@ def wrap_terms(html: str, glossary: dict[str, str], skip_ids: tuple[str, ...] = 
     keys = list(glossary) + [a for a, k in ALIASES.items() if k in glossary]
     lower = {k.lower(): k for k in glossary}
     lower.update({a.lower(): k for a, k in ALIASES.items() if k in glossary})
-    pat = _pattern(keys)
+    pat_code = _pattern(keys)                                   # inside <code>: every term
+    pat_text = _pattern([k for k in keys if k not in CODE_ONLY])  # in prose: plain words that are also columns are left alone
     tokens = re.split(r"(<[^>]+>)", html)
     stack: list[tuple[str, bool]] = []
     skip_depth, seen, out = 0, set(), []
 
     def sub(m: re.Match) -> str:
-        key = glossary.get(m.group(0)) and m.group(0) or lower.get(m.group(0).lower())
+        key = m.group(0) if m.group(0) in glossary else lower.get(m.group(0).lower())
         if key is None or key in seen:
             return m.group(0)
         seen.add(key)
@@ -292,7 +295,8 @@ def wrap_terms(html: str, glossary: dict[str, str], skip_ids: tuple[str, ...] = 
         elif skip_depth or not tok.strip():
             out.append(tok)
         else:
-            out.append(pat.sub(sub, tok))
+            in_code = bool(stack) and stack[-1][0] == "code"
+            out.append((pat_code if in_code else pat_text).sub(sub, tok))
     return "".join(out)
 
 

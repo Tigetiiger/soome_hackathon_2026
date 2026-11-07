@@ -93,10 +93,10 @@ def protocol(metrics: dict | None) -> str:
     for split in ("time", "bins"):
         sp = dig(metrics, "splits", split) or {}
         r = sp.get("rows") or {}
-        rows.append([f"<strong>{escape(SPLIT_LABEL[split])}</strong>", escape(SPLITS[SPLIT_LABEL[split]].split(":", 1)[1].strip()),
+        rows.append([f"<strong>{escape(SPLIT_LABEL[split])}</strong>", escape(SPLITS[SPLIT_LABEL[split]].split(":", 1)[1].split(";")[-1].strip()),
                      escape(str(sp.get("n_train_machines", "–"))), escape(str(sp.get("n_test_machines", "–"))),
-                     escape(str(sp.get("test_start", "–"))[:10]),
-                     " / ".join(num(r.get(k), 0) for k in ("train", "val", "cal", "test"))])
+                     escape(str(sp.get("test_start", "–"))[:10])]
+                    + [num(r.get(k), 0) for k in ("train", "val", "cal", "test")])
     return (h3("Evaluation protocol", "ov-protocol")
             + p("Two splits are reported. <strong>Same machines, later months</strong> is the pilot-fleet case: every machine "
                 "is in the training data, and the model is tested on the later part of the year. <strong>Unseen machines</strong> "
@@ -105,7 +105,7 @@ def protocol(metrics: dict | None) -> str:
                 "versus per-material choice) and the calibration slice (interval width) are taken from rows that are neither "
                 "trained on nor tested; in the unseen-machines split they are other held-out machines. The first, incomplete "
                 "cycle of every machine is excluded everywhere.")
-            + raw_table(["split", "definition", "train machines", "test machines", "test from", "rows train / val / cal / test"],
+            + raw_table(["split", "case", "train machines", "test machines", "test from", "rows: train", "val", "cal", "test"],
                         rows, left_cols={0, 1}, caption="The two evaluation splits.")
             + p("Training rows are every pre-lift hour plus a random sample of other hours (at most 200 000 rows per model); "
                 "pre-lift hours carry weight 5 because they are the hours that are compared with the weighbridge. All "
