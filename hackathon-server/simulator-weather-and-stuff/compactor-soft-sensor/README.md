@@ -32,6 +32,7 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 
 - [Folder layout](#folder-layout)
 - [Installation](#installation)
+- [Regenerate data and models](#regenerate-data-and-models)
 - [Quick start](#quick-start)
 - [Command-line reference](#command-line-reference)
 - [Runtimes and memory](#runtimes-and-memory)
@@ -39,7 +40,6 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 - [Data formats](#data-formats)
 - [The model in brief](#the-model-in-brief)
 - [Results](#results)
-- [Regenerating everything end to end](#regenerating-everything-end-to-end)
 - [Validation and baseline scripts](#validation-and-baseline-scripts)
 - [Testing](#testing)
 - [Configuration](#configuration)
@@ -59,14 +59,16 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 | `baseline.py` | quick LightGBM baseline: fill only vs + pressure vs + weather |
 | `tests/` | pytest suite (simulator and soft sensor) |
 | `requirements.txt`, `pytest.ini`, `.gitignore` | environment, test config and ignore rules |
-| `runs/full400/` | simulated dataset: 400 machines × 365 days (seed 7), with `validate_report.txt`, `baseline_report.txt`/`baseline_results.json` and `plots/` |
-| `runs/bins25/` | small dataset with the same format: 25 machines × 365 days, for development |
-| `models/full400/` | **trained soft sensor** for `runs/full400`: `time/` and `bins/` bundles, `metrics.json`, [`REPORT.md`](models/full400/REPORT.md), plots, cardboard machines-needed curve |
-| `models/bins25/` | soft sensor trained on `runs/bins25` (small dev model, [`REPORT.md`](models/bins25/REPORT.md)) |
 | `site/` | technical documentation website (added separately) |
+| `runs/full400/` * | simulated dataset: 400 machines × 365 days (seed 7), with `validate_report.txt`, `baseline_report.txt`/`baseline_results.json` and `plots/` |
+| `runs/bins25/` * | small dataset with the same format: 25 machines × 365 days (seed 7), for development |
+| `models/full400/` * | **trained soft sensor** for `runs/full400`: `time/` and `bins/` bundles, `metrics.json`, `REPORT.md`, plots, cardboard machines-needed curve |
+| `models/bins25/` * | soft sensor trained on `runs/bins25` (small dev model) |
 
-Approximate size: 360 MB. The largest files are `runs/full400/hourly.parquet` (117 MB) and
-`runs/full400/strokes.parquet` (101 MB).
+\* **Generated, not in git.** `runs/` and `models/` (about 360 MB) are deterministic outputs of the
+simulator and the training. They are git-ignored, so rebuild them with
+[Regenerate data and models](#regenerate-data-and-models). Paths such as `models/full400/REPORT.md`
+below refer to these generated folders.
 
 ## Installation
 
@@ -81,7 +83,40 @@ python -m venv .venv
 Run every command from this folder (the one that contains `config.yaml`). The examples use
 `.venv/bin/python`; with an activated venv, plain `python` works too.
 
+## Regenerate data and models
+
+The repository holds code and documentation only. Every dataset and trained model is regenerated
+with the commands below. Both steps are deterministic: seed 7 and the same config give bit-identical
+data, and the same data and seed give identical metrics. **The website (`site/`) and all numbers in
+this README show the results of exactly this run.**
+
+```bash
+# 1. simulate (seed 7 is the config default; --seed 7 makes it explicit)
+.venv/bin/python -m compactor_sim --config config.yaml --bins 400 --days 365 --seed 7 --out runs/full400   # ~30 s, 3.5 M hourly rows
+.venv/bin/python -m compactor_sim --config config.yaml --bins 25  --days 365 --seed 7 --out runs/bins25    # ~8 s
+
+# 2. train + evaluate both splits, write plots and REPORT.md
+.venv/bin/python -m weight_train train --data runs/full400 --out models/full400   # ~13 min, ~4 GB RAM
+.venv/bin/python -m weight_train train --data runs/bins25  --out models/bins25    # ~4-5 min, 0.7 GB RAM
+```
+
+Optional extras, used in the report and on the website:
+
+```bash
+.venv/bin/python validate.py runs/full400      # simulator sanity report + plots -> runs/full400/validate_report.txt, plots/
+.venv/bin/python baseline.py runs/full400      # quick baseline (~1 min)        -> runs/full400/baseline_report.txt
+.venv/bin/python -m weight_train predict --models models/full400 \
+    --input runs/full400/hourly.parquet --output models/full400/predictions.parquet   # ~75 s, ~4 GB; also writes predict_stats.json
+.venv/bin/python -m weight_train curve --data runs/full400 --models models/full400 --material cardboard   # ~5.5 min
+.venv/bin/python -m weight_train report --models models/full400   # rebuild REPORT.md so it includes the predict timing and curve
+```
+
+The timings were measured on a 36-core server with 31 GB RAM. Training needs about 4 GB of RAM for
+400 machines.
+
 ## Quick start
+
+Steps 3–5 need `runs/` and `models/` (see [Regenerate data and models](#regenerate-data-and-models)).
 
 ```bash
 # 1. tests (28 tests, ~30 s)
@@ -90,7 +125,7 @@ Run every command from this folder (the one that contains `config.yaml`). The ex
 # 2. simulate a small fleet (5 machines x 30 days, ~2 s)
 .venv/bin/python -m compactor_sim --bins 5 --days 30 --seed 1 --out runs/demo
 
-# 3. predict hourly mass with the shipped 400-machine model (~5 s for 25 machines)
+# 3. predict hourly mass with the 400-machine model (~5 s for 25 machines)
 .venv/bin/python -m weight_train predict --models models/full400 \
     --input runs/bins25/hourly.parquet --output runs/bins25_pred.parquet
 
@@ -157,8 +192,7 @@ python -m weight_train predict --models MODEL_DIR --input HOURLY.parquet --outpu
 
 `predict` also writes `MODEL_DIR/predict_stats.json`: rows, wall time, µs per machine-hour and peak RSS.
 
-The 400-machine prediction file `models/full400/predictions.parquet` (~90 MB) is **not included**.
-To regenerate it (~75 s, ~4 GB RAM):
+Full-year predictions for all 400 machines (`models/full400/predictions.parquet`, ~90 MB, ~75 s, ~4 GB RAM):
 
 ```bash
 .venv/bin/python -m weight_train predict --models models/full400 \
@@ -260,7 +294,7 @@ Lift timing convention: the lift happens at the start of the `lift_event` hour, 
 |---|---|
 | `time/`, `bins/` | one deployable **bundle** per split. `predict` uses `time` (pilot fleet) by default; `bins` is the bundle validated on unseen machines |
 | `<split>/bundle.json` | manifest: the model list with features, parameters and best iteration; the per-material setup selection; pressure-inversion constants; Mondrian conformal calibration; info (nominal densities, feature sets) |
-| `<split>/<setup>__<material\|all>__<point\|q_lo\|q_hi>.txt` | LightGBM text models. Only those listed in `bundle.json` are shipped |
+| `<split>/<setup>__<material\|all>__<point\|q_lo\|q_hi>.txt` | LightGBM text models. Only those listed in `bundle.json` are needed |
 | `<split>/test_predictions.parquet` | test-period predictions vs truth: `y_kg, pred_kg, lo_kg, hi_kg, is_lift, material, bin_id, ts, false_full_in_cycle`, machine attributes, `fill_ffill`, `rain_mm_d1..7` |
 | `<split>/shap_<material>.parquet` | exact TreeSHAP values (`shap__<feature>`) at test lifts |
 | `metrics.json` | every evaluation number: per split, per material, lift and hourly, ladder, breakdowns, learning curve, feature importance, compute |
@@ -307,8 +341,8 @@ Lift timing convention: the lift happens at the start of the `lift_event` hour, 
 
 ## Results
 
-Source: [`models/full400/metrics.json`](models/full400/metrics.json). The full report with plots is
-[`models/full400/REPORT.md`](models/full400/REPORT.md). The metric is the mean absolute % error of
+Source: `models/full400/metrics.json`. The full report with plots is `models/full400/REPORT.md`; both are
+generated by the training run, and the website shows the same numbers. The metric is the mean absolute % error of
 the estimate in the hour before each lift against the true lifted mass. The test period starts
 2026-07-01.
 
@@ -355,39 +389,12 @@ more, and weather adds very little.
 Target "< 5 % at lift": all four materials meet it on `time`. On `bins` only plastic film meets it;
 cardboard (5.2 %) and paper (5.4 %) are just above, and mixed waste (6.7 %) is clearly above.
 
-## Regenerating everything end to end
-
-Everything is deterministic for a given seed. This overwrites the shipped folders, so use new
-`--out` names if you want to keep them.
-
-```bash
-# data (~35 s + ~8 s)
-.venv/bin/python -m compactor_sim --config config.yaml --bins 400 --days 365 --seed 7 --out runs/full400
-.venv/bin/python -m compactor_sim --config config.yaml --bins 25  --days 365 --out runs/bins25
-
-# simulator sanity checks and the quick baseline
-.venv/bin/python validate.py runs/full400
-.venv/bin/python baseline.py runs/full400
-
-# soft sensor (~13 min / ~4 GB, and ~5 min)
-.venv/bin/python -m weight_train train --data runs/full400 --out models/full400
-.venv/bin/python -m weight_train train --data runs/bins25  --out models/bins25
-
-# full-year predictions, then the cardboard machines-needed curve, then the report
-.venv/bin/python -m weight_train predict --models models/full400 --input runs/full400/hourly.parquet --output models/full400/predictions.parquet
-.venv/bin/python -m weight_train curve --data runs/full400 --models models/full400 --material cardboard
-.venv/bin/python -m weight_train report --models models/full400
-```
-
-`runs/bins25` was produced with the config's default seed (`run.seed`). `runs/full400/config_used.yaml`
-and `runs/bins25/config_used.yaml` record the exact parameters of the shipped data.
-
 ## Validation and baseline scripts
 
 - **`validate.py RUN_DIR`** prints a sanity report for a simulator run and writes plots to
   `RUN_DIR/plots/`. It covers integrity and mass balance, lift masses and intervals, weather against
   Finnish climate targets, the weather effect on lift mass, pressure vs fill, the pressure graph and
-  false-full episodes. The shipped output is `runs/full400/validate_report.txt`, and the results are
+  false-full episodes. The output for the reference run is `runs/full400/validate_report.txt`, and the results are
   summarised in [`docs/SIMULATOR.md`](docs/SIMULATOR.md#validation-results-seed-7-400-bins-365-days-validatepy).
 - **`baseline.py RUN_DIR [--folds 5]`** is a quick LightGBM check per lift, with cross-validation
   grouped by machine. Mean % error is 23.3 for fill only, 7.2 with pressure, 5.2 with presses added
@@ -475,8 +482,9 @@ Soft-sensor training settings (fractions, grid, quantiles, coverage target, fill
   - Truck logistics are simple.
   - [`docs/SIMULATOR.md`](docs/SIMULATOR.md#limitations) lists all of them.
 - **Early cycles.** Predictions in a machine's first, incomplete cycle in the input are less accurate.
-- **Large files.** `runs/full400/hourly.parquet` (117 MB) and `runs/full400/strokes.parquet`
-  (101 MB) exceed GitHub's 100 MB per-file limit and need Git LFS, or can be regenerated (~35 s).
+- **Generated data is not versioned.** `runs/` and `models/` are rebuilt from code (about 15 min in
+  total). Reproducing the published numbers exactly assumes the same library versions; LightGBM
+  output can differ slightly across versions.
 
 ## Licences
 

@@ -11,14 +11,16 @@ import { renderMachinesNow } from "./machines.js";
 import { renderTrends } from "./trends.js";
 import { renderAnswers } from "./answers.js";
 import { renderWeightModel } from "./weightmodel.js";
+import { renderSensor, stopLive, SENSOR_VIEWS, isSensorView } from "./sensor/index.js";
 
 const el = (id) => document.getElementById(id);
 const VIEWS = ["overview", "savings", "machines", "contracts", "weight", "trends", "account", "operators", "faq",
-  "ep-overview", "ep-pipeline", "ep-fleet", "ep-data"];
+  "ep-overview", "ep-pipeline", "ep-fleet", "ep-data", ...SENSOR_VIEWS];
 const WS_HOME = { customer: "#overview", europress: "#ep-overview", partners: "#operators" };
 const NAV_KEY = { overview: "title.overview", savings: "nav.savings", machines: "nav.machines", contracts: "nav.operators",
   weight: "nav.weight", trends: "nav.trends", advisor: "nav.advisor", account: "account.details", operators: "title.operator", faq: "title.faq",
-  "ep-overview": "title.ep.overview", "ep-pipeline": "title.ep.pipeline", "ep-fleet": "title.ep.fleet", "ep-data": "title.ep.data" };
+  "ep-overview": "title.ep.overview", "ep-pipeline": "title.ep.pipeline", "ep-fleet": "title.ep.fleet", "ep-data": "title.ep.data",
+  "ep-sensor": "title.ep.sensor", "ep-sensor-check": "title.ep.sensor-check", "ep-sensor-model": "title.ep.sensor-model", "ep-sensor-how": "title.ep.sensor-how" };
 const STATUS_STATE = { good: "good", review: "warn", action: "bad" };
 const EFFORT_STATE = { low: "good", medium: "warn", high: "info" };
 const state = { mv: { machines: "mixed" }, index: null, customer: null, route: "overview", ws: "customer", cache: new Map() };
@@ -259,15 +261,18 @@ const RENDER = {
 };
 
 async function route() {
-  const hash = (location.hash || "#overview").slice(1);
+  const [hash, arg] = (location.hash || "#overview").slice(1).split("/"); // "#ep-sensor/BIN-0001" → view + machine
   const view = VIEWS.includes(hash) ? hash : "overview";
+  if (!isSensorView(view)) stopLive();
   state.route = view;
   state.ws = wsOf(view);
   VIEWS.forEach((v) => el(`view-${v}`).classList.toggle("hidden", v !== view));
   document.querySelectorAll("[data-ws-nav]").forEach((n) => n.classList.toggle("hidden", n.dataset.wsNav !== state.ws));
   document.querySelectorAll(".ws button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ws === state.ws)));
   document.querySelectorAll(".navitem").forEach((a) => {
-    if (a.getAttribute("href") === `#${view}`) a.setAttribute("aria-current", "page"); else a.removeAttribute("aria-current");
+    const href = a.getAttribute("href");
+    if (href === `#${view}` || (isSensorView(view) && href === "#ep-sensor")) a.setAttribute("aria-current", "page");
+    else a.removeAttribute("aria-current");
   });
   el("customerPick").classList.toggle("hidden", state.ws !== "customer" || view === "faq");
   el("operatorPick").classList.toggle("hidden", state.ws !== "partners");
@@ -279,6 +284,7 @@ async function route() {
   window.scrollTo({ top: 0 });
   if (state.ws === "europress") {
     setAskContext({ view: "fleet", id: "FLEET", page: view, name: "Europress" });
+    if (isSensorView(view)) return renderSensor(view, arg);
     const f = await getJson("/data/fleet.json");
     if (view === "ep-overview") renderEpOverview(f);
     else if (view === "ep-pipeline") { renderSalesAlerts(f, (q) => { setAskContext({ page: "ep-sales" }); openAi(q, "sales_alerts"); }); }

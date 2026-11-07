@@ -6,7 +6,6 @@
 # Parquet anywhere except the website (site/ may ship small downloads)
 *.parquet
 !site/**/*.parquet
-predictions.parquet
 
 # Python environment and caches
 .venv/
