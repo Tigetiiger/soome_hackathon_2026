@@ -27,6 +27,27 @@ code{background:var(--code);padding:.1rem .3rem;border-radius:4px;font-size:.9em
 pre{background:var(--code);padding:.8rem;border-radius:6px;overflow-x:auto}pre code{padding:0}
 .md{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.2rem 1.2rem;overflow-wrap:anywhere}
 blockquote{margin:1rem 0;padding:.4rem 1rem;border-left:4px solid var(--accent);background:var(--code)}
+.flow{display:flex;flex-wrap:wrap;align-items:stretch;gap:.4rem;margin:1rem 0}
+.flow .box{flex:1 1 180px;background:var(--card);border:1px solid var(--line);border-top:4px solid var(--accent);
+border-radius:10px;padding:.6rem .8rem;font-size:.88rem}.flow .box b{display:block;font-size:1rem;margin-bottom:.2rem}
+.flow .box ul{margin:.2rem 0;padding-left:1.1rem}.flow .arrow{align-self:center;font-size:1.6rem;color:var(--muted)}
+@media (max-width:760px){.flow{flex-direction:column}.flow .arrow{transform:rotate(90deg);text-align:center}}
+.bars{display:grid;grid-template-columns:repeat(auto-fit,minmax(min(100%,300px),1fr));gap:1rem}
+.bar-card{background:var(--card);border:1px solid var(--line);border-radius:10px;padding:.6rem .8rem}
+.bar-card h5{margin:.1rem 0 .5rem;font-size:.95rem}.bar{display:grid;grid-template-columns:11rem 1fr 3.2rem;
+gap:.4rem;align-items:center;font-size:.8rem;margin:.15rem 0}.bar code{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}
+.bar .track{background:var(--code);border-radius:3px;height:.8rem}.bar .fill{background:var(--accent);height:100%;border-radius:3px}
+.bar span{text-align:right;color:var(--muted)}td.l,th.l{text-align:left}
+th.lift,td.lift{background:var(--good);color:var(--good-fg)}tr.key td{font-weight:700}tr.fam td{background:var(--code);font-weight:700;text-align:left}
+details{margin:.6rem 0}summary{cursor:pointer;font-weight:600}.sub{font-size:1.05rem;margin-top:1.6rem}
+.banner{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:.5rem .8rem}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);display:flex;flex-direction:column;
+align-items:center;justify-content:center;padding:16px;cursor:zoom-out}.lb[hidden]{display:none}
+.lb img{max-width:100%;max-height:calc(100vh - 7rem);object-fit:contain;background:#fff;border-radius:6px}
+.lb-x{position:fixed;top:12px;right:12px;width:3rem;height:3rem;border-radius:50%;border:0;background:#fff;
+color:#000;font-size:1.8rem;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.lb-cap{color:#eee;font-size:.9rem;margin:.6rem 0 0;text-align:center;max-width:90ch}.lb-cap a{color:#9cc8ff}
+a.zoom img{cursor:zoom-in}
 footer{border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem;font-size:.85rem;color:var(--muted)}
 </style></head><body><main><p><a href="../../index.html#model">← back</a></p><div class="md"><h1>Hydraulic soft sensor - container mass report (<code>full400</code>)</h1>
 <p>On the <code>time</code> (same machines, later months) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of <strong>3.6 %</strong> (median 2.8 %, 75 % of lifts within 5 %, n = 4958), against 29.7 % for the naive fill × nominal density estimate; 4 of 4 materials meet the &lt; 5 % target. The calibrated p10–p90 interval covers 76 % of lift masses (target 80 %). On the <code>bins</code> (unseen machines) split the selected soft sensor estimates the mass in the hour before emptying with a mean error of <strong>4.7 %</strong> (median 3.9 %, 61 % of lifts within 5 %, n = 1260), against 28.5 % for the naive fill × nominal density estimate; 3 of 4 materials meet the &lt; 5 % target (missing: paper). The calibrated p10–p90 interval covers 76 % of lift masses (target 80 %).</p>
@@ -94,4 +115,16 @@ footer{border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem;font-si
 <h2>Target check (mean % error at lift &lt; 5 %)</h2>
 <div class="tbl"><table><thead><tr><th>material</th><th>split</th><th>mean % at lift</th><th>n lifts</th><th>&lt; 5 %</th></tr></thead><tbody><tr><td>cardboard</td><td>time</td><td>3.6</td><td>2528</td><td>yes</td></tr><tr><td>paper</td><td>time</td><td>3.9</td><td>720</td><td>yes</td></tr><tr><td>plastic_film</td><td>time</td><td>3.4</td><td>1231</td><td>yes</td></tr><tr><td>mixed_plastic</td><td>time</td><td>3.3</td><td>479</td><td>yes</td></tr><tr><td>cardboard</td><td>bins</td><td>4.7</td><td>631</td><td>yes</td></tr><tr><td>paper</td><td>bins</td><td>5.3</td><td>189</td><td><strong>no</strong></td></tr><tr><td>plastic_film</td><td>bins</td><td>4.2</td><td>320</td><td>yes</td></tr><tr><td>mixed_plastic</td><td>bins</td><td>4.7</td><td>120</td><td>yes</td></tr></tbody></table></div>
 <p><strong>Not met, and the likely reasons from the data:</strong></p>
-<ul><li><strong>paper, <code>bins</code> split (5.3 %)</strong>: the error is broad-based (median 4.6 %), not driven by a few outliers; 19 of 189 lifts had a false-full episode in the cycle (8.8 % vs 4.9 % without); the fleet has 60 paper machine(s) of 400, at most 45 of them in training.</li></ul></div></main></body></html>
+<ul><li><strong>paper, <code>bins</code> split (5.3 %)</strong>: the error is broad-based (median 4.6 %), not driven by a few outliers; 19 of 189 lifts had a false-full episode in the cycle (8.8 % vs 4.9 % without); the fleet has 60 paper machine(s) of 400, at most 45 of them in training.</li></ul></div></main><div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Enlarged image">
+<button class="lb-x" type="button" aria-label="Close image">&times;</button><img alt="">
+<p class="lb-cap"><span></span> · <a target="_blank" rel="noopener">open full size</a> · click anywhere or press Esc
+to close</p></div>
+<script>(function(){var lb=document.getElementById("lb");if(!lb)return;var im=lb.querySelector("img"),
+cap=lb.querySelector(".lb-cap span"),full=lb.querySelector(".lb-cap a"),last=null;
+function close(){lb.hidden=true;im.removeAttribute("src");document.body.style.overflow="";if(last)last.focus();}
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a.zoom");
+if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();last=a;im.src=a.getAttribute("href");
+im.alt=a.dataset.cap||"";cap.textContent=a.dataset.cap||"";full.href=a.getAttribute("href");lb.hidden=false;
+document.body.style.overflow="hidden";lb.querySelector(".lb-x").focus();return;}
+if(!lb.hidden&&!(e.target.closest&&e.target.closest(".lb-cap a")))close();});
+document.addEventListener("keydown",function(e){if(!lb.hidden&&e.key==="Escape")close();});})();</script></body></html>

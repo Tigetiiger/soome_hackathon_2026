@@ -75,10 +75,17 @@ border-radius:10px;padding:.6rem .8rem;font-size:.88rem}.flow .box b{display:blo
 .bar-card h5{margin:.1rem 0 .5rem;font-size:.95rem}.bar{display:grid;grid-template-columns:11rem 1fr 3.2rem;
 gap:.4rem;align-items:center;font-size:.8rem;margin:.15rem 0}.bar code{font-size:.78rem;overflow:hidden;text-overflow:ellipsis}
 .bar .track{background:var(--code);border-radius:3px;height:.8rem}.bar .fill{background:var(--accent);height:100%;border-radius:3px}
-.bar span{text-align:right;color:var(--muted)}td.l,th.l{text-align:left}tr.lift td{background:var(--good);color:var(--good-fg);font-weight:600}
-th.lift{background:var(--good);color:var(--good-fg)}tr.fam td{background:var(--code);font-weight:700;text-align:left}
+.bar span{text-align:right;color:var(--muted)}td.l,th.l{text-align:left}
+th.lift,td.lift{background:var(--good);color:var(--good-fg)}tr.key td{font-weight:700}tr.fam td{background:var(--code);font-weight:700;text-align:left}
 details{margin:.6rem 0}summary{cursor:pointer;font-weight:600}.sub{font-size:1.05rem;margin-top:1.6rem}
 .banner{background:var(--card);border:1px solid var(--line);border-left:4px solid var(--accent);border-radius:6px;padding:.5rem .8rem}
+.lb{position:fixed;inset:0;z-index:100;background:rgba(0,0,0,.88);display:flex;flex-direction:column;
+align-items:center;justify-content:center;padding:16px;cursor:zoom-out}.lb[hidden]{display:none}
+.lb img{max-width:100%;max-height:calc(100vh - 7rem);object-fit:contain;background:#fff;border-radius:6px}
+.lb-x{position:fixed;top:12px;right:12px;width:3rem;height:3rem;border-radius:50%;border:0;background:#fff;
+color:#000;font-size:1.8rem;line-height:1;cursor:pointer;box-shadow:0 2px 8px rgba(0,0,0,.4)}
+.lb-cap{color:#eee;font-size:.9rem;margin:.6rem 0 0;text-align:center;max-width:90ch}.lb-cap a{color:#9cc8ff}
+a.zoom img{cursor:zoom-in}
 footer{border-top:1px solid var(--line);margin-top:2rem;padding-top:1rem;font-size:.85rem;color:var(--muted)}
 """
 
@@ -272,17 +279,32 @@ def figures(paths: list[Path]) -> str:
     if not paths:
         return note("Plots not generated yet.")
     figs = [
-        f'<figure><a href="{escape(p.as_posix())}"><img src="{escape(p.as_posix())}" alt="{escape(p.stem)}" '
+        f'<figure><a class="zoom" href="{escape(p.as_posix())}" data-cap="{escape(caption(p.stem))}"><img src="{escape(p.as_posix())}" alt="{escape(p.stem)}" '
         f'loading="lazy"></a><figcaption>{escape(caption(p.stem))}</figcaption></figure>'
         for p in paths
     ]
     return f'<div class="figs">{"".join(figs)}</div>'
 
 
+LIGHTBOX = """<div id="lb" class="lb" hidden role="dialog" aria-modal="true" aria-label="Enlarged image">
+<button class="lb-x" type="button" aria-label="Close image">&times;</button><img alt="">
+<p class="lb-cap"><span></span> · <a target="_blank" rel="noopener">open full size</a> · click anywhere or press Esc
+to close</p></div>
+<script>(function(){var lb=document.getElementById("lb");if(!lb)return;var im=lb.querySelector("img"),
+cap=lb.querySelector(".lb-cap span"),full=lb.querySelector(".lb-cap a"),last=null;
+function close(){lb.hidden=true;im.removeAttribute("src");document.body.style.overflow="";if(last)last.focus();}
+document.addEventListener("click",function(e){var a=e.target.closest&&e.target.closest("a.zoom");
+if(a&&!e.ctrlKey&&!e.metaKey&&!e.shiftKey){e.preventDefault();last=a;im.src=a.getAttribute("href");
+im.alt=a.dataset.cap||"";cap.textContent=a.dataset.cap||"";full.href=a.getAttribute("href");lb.hidden=false;
+document.body.style.overflow="hidden";lb.querySelector(".lb-x").focus();return;}
+if(!lb.hidden&&!(e.target.closest&&e.target.closest(".lb-cap a")))close();});
+document.addEventListener("keydown",function(e){if(!lb.hidden&&e.key==="Escape")close();});})();</script>"""
+
+
 def page(title: str, body: str, nav: str = "") -> str:
     return (f'<!doctype html><html lang="en"><head><meta charset="utf-8">'
             f'<meta name="viewport" content="width=device-width,initial-scale=1"><title>{escape(title)}</title>'
-            f"<style>{CSS}</style></head><body>{nav}{body}</body></html>")
+            f"<style>{CSS}</style></head><body>{nav}{body}{LIGHTBOX}</body></html>")
 
 
 def pre(text: str) -> str:
@@ -291,16 +313,19 @@ def pre(text: str) -> str:
 
 
 def raw_table(header: list[str], rows: list[list[str]], left_cols: set[int] | None = None,
-              row_class: list[str] | None = None, head_class: list[str] | None = None) -> str:
+              row_class: list[str] | None = None, col_class: list[str] | None = None) -> str:
     """Like table() but cells are trusted HTML (callers escape their own text)."""
     left = left_cols or {0}
-    hc = head_class or [""] * len(header)
-    head = "".join(f'<th class="{"l " if i in left else ""}{hc[i]}">{h}</th>' for i, h in enumerate(header))
+    cc = col_class or [""] * len(header)
+
+    def cls(i: int) -> str:
+        names = " ".join(x for x in ("l" if i in left else "", cc[i] if i < len(cc) else "") if x)
+        return f' class="{names}"' if names else ""
+    head = "".join(f"<th{cls(i)}>{h}</th>" for i, h in enumerate(header))
     body = []
     for r, row in enumerate(rows):
-        cls = f' class="{row_class[r]}"' if row_class and row_class[r] else ""
-        body.append(f"<tr{cls}>" + "".join(f'<td{" class=l" if i in left else ""}>{c}</td>'
-                                         for i, c in enumerate(row)) + "</tr>")
+        rc = f' class="{row_class[r]}"' if row_class and row_class[r] else ""
+        body.append(f"<tr{rc}>" + "".join(f"<td{cls(i)}>{c}</td>" for i, c in enumerate(row)) + "</tr>")
     return f'<div class="tbl"><table><thead><tr>{head}</tr></thead><tbody>{"".join(body)}</tbody></table></div>'
 
 
