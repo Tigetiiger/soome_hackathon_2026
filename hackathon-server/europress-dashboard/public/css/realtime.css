@@ -1,0 +1,56 @@
+/* Real-time machine cards (Figma "Customer / 01 Overview" → Article 1:489), with tidier borders and spacing:
+   one hairline border tinted by waste type, a 12 px vertical rhythm, the status on the name row,
+   and the "Ask the SMART assistant" box pinned to the bottom so cards in a row line up. */
+@layer tokens {
+  :root {
+    --rt-recycle-bg: #f6fdf5; --rt-recycle-bd: #d3ecdb;   /* Figma card fill + matching hairline */
+    --rt-ask-bd: #d8e7ff;                                   /* Figma ask-box border */
+  }
+}
+
+@layer views {
+  .machines-grid:not([data-mode="mixed"]):not([data-mode="table"]) { grid-template-columns: repeat(auto-fill, minmax(232px, 1fr)); gap: var(--s-4); align-items: stretch; }
+
+  .rt {
+    display: flex; flex-direction: column; gap: var(--s-3); min-width: 0;
+    padding: var(--s-4); border-radius: var(--radius-2);
+    background: var(--ground); border: 1px solid var(--line);
+  }
+  .rt[data-kind="credit"], .rt[data-kind="recycle"] { background: var(--rt-recycle-bg); border-color: var(--rt-recycle-bd); }
+  .rt[data-kind="mixed"] { border-color: var(--warn-bd); }
+
+  .rt-top { display: flex; align-items: flex-start; justify-content: space-between; gap: var(--s-2); }
+  .rt-name { display: flex; flex-direction: column; min-width: 0; color: var(--ink-2); }
+  .rt-name b { font: 700 var(--fs-1)/1.4 var(--font); }
+  .rt-name span { font: 400 11px/1.4 var(--font); color: var(--ink-3); }
+  .rt-status { display: inline-flex; align-items: center; gap: 6px; flex: none; font: 700 var(--fs-1)/1.4 var(--font); color: var(--ink-2); white-space: nowrap; }
+  .rt-status i { width: 8px; height: 8px; border-radius: 2px; background: var(--mark); }
+  .rt-status[data-up="false"] i { background: var(--bad-c); }
+
+  .rt-fig { margin: 0 calc(-1 * var(--s-1)); }
+  .rt-fig .mc-svg { display: block; }
+
+  .rt-fill { display: flex; flex-direction: column; align-items: flex-start; gap: var(--s-2); }
+  .rt-fill .xv { font: 500 28px/1 var(--font); letter-spacing: -.03em; }
+  .rt-weight { margin-top: calc(-1 * var(--s-1)); font: 400 var(--fs-1)/1.4 var(--font-mono); color: var(--ink-3); }
+
+  .rt-next { display: grid; grid-template-columns: 18px minmax(0, 1fr); gap: var(--s-2); padding-top: var(--s-3); border-top: 1px solid var(--line); }
+  .rt[data-kind="credit"] .rt-next, .rt[data-kind="recycle"] .rt-next { border-top-color: var(--rt-recycle-bd); }
+  .rt-next svg { width: 18px; height: 18px; margin-top: 1px; color: var(--ink); }
+  .rt-next p { font: 500 var(--fs-2)/1.35 var(--font); color: var(--ink); }
+  .rt-next p + p { margin-top: 2px; }
+  .rt-op { font: 400 var(--fs-1)/1.4 var(--font); color: var(--ink-3); }
+
+  .rt-ask {
+    position: relative; overflow: hidden; isolation: isolate; margin-top: auto;
+    display: block; width: 100%; min-height: 64px; padding: var(--s-3) var(--s-3) var(--s-3) 36px; text-align: left;
+    border: 1px solid var(--rt-ask-bd); border-radius: 10px; background: var(--surface); color: var(--ink); cursor: pointer;
+    transition: border-color .12s;
+  }
+  .rt-ask:hover { border-color: var(--ink); }
+  .rt-shader { position: absolute; inset: 0; z-index: -1; width: 100%; height: 100%; border-radius: 10px; pointer-events: none; }
+  /* Figma sparkle asset (176 × 20 frame, glyph at x 14.7–28.7): glyph centred on the first text line */
+  .rt-spark { position: absolute; left: 1px; top: 12px; pointer-events: none; }
+  .rt-ask-text { display: flex; flex-direction: column; font: 500 var(--fs-2)/1.35 var(--font); }
+  .rt-ask-text span { font-weight: 400; }
+}

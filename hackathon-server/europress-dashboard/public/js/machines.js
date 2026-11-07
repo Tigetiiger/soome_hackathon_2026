@@ -5,6 +5,47 @@ import { esc, chip, bindChips, openExplain, tx } from "./drawer.js";
 import { STREAM_COLORS } from "./charts.js";
 import { openAi } from "./ask.js";
 import { getWeightModel } from "./weightmodel.js";
+import { addStrings } from "./i18n.js";
+import { mountShaderFill } from "./shader/runtime.js";
+import { setup as gradientSetup, render as gradientRender, manifest as gradientManifest } from "./shader/moving-gradient.js";
+
+/** "Ask the SMART assistant" fill — parameters exactly as in the Figma design (node 16:343). */
+const ASK_SHADER = {
+  setup: gradientSetup, render: gradientRender, manifest: gradientManifest,
+  params: {
+    intensity: 4.289999961853027,
+    gradient: { stops: [
+      { position: 0, color: { r: 0.8470588326454163, g: 0.9058823585510254, b: 1, a: 0.4699999988079071 } },
+      { position: 0.5, color: { r: 0.3294117748737335, g: 0.8705882430076599, b: 0.6627451181411743, a: 0.47999998927116394 } },
+      { position: 1, color: { r: 0.7215686440467834, g: 0.5372549295425415, b: 0.29019609093666077, a: 0.6600000262260437 } },
+    ] },
+    gradientBalance: 0, material: 0, morphSpeed: 3.740000009536743, detail: 1.7799999713897705, twist: 0.03999999910593033,
+    zoom: 72, gradientMethod: 0, warp: 0.25999999046325684, rotationSpeed: 12,
+  },
+};
+
+addStrings({
+  en: {
+    "rt.up": "Status: up", "rt.noSignal": "No signal",
+    "rt.fullNow": "Full now", "rt.fullTomorrow": "Full tomorrow ({date})", "rt.fullIn": "Full in {n} days ({date})",
+    "rt.ordered": "Truck ordered for {date}", "rt.willOrder": "SMART orders the truck on {date}", "rt.willOrderToday": "SMART orders the truck today",
+    "rt.timetable": "Next truck {date} (timetable)",
+    "rt.weight": "≈ {kg} kg inside now", "rt.ask": "Ask the SMART assistant",
+    "rt.how.save": "How do I save money here?", "rt.how.mixed": "How do I cut mixed waste?",
+    "rt.q.save": "My machine {name} ({id}) is {fill} % full. How do I save money with it? Give me 3 simple steps.",
+    "rt.q.mixed": "My mixed-waste machine {name} ({id}) is {fill} % full. How do I put less in it and save money? Give me 3 simple steps.",
+  },
+  fi: {
+    "rt.up": "Tila: toiminnassa", "rt.noSignal": "Ei yhteyttä",
+    "rt.fullNow": "Täynnä nyt", "rt.fullTomorrow": "Täynnä huomenna ({date})", "rt.fullIn": "Täynnä {n} päivässä ({date})",
+    "rt.ordered": "Auto tilattu: {date}", "rt.willOrder": "SMART tilaa auton {date}", "rt.willOrderToday": "SMART tilaa auton tänään",
+    "rt.timetable": "Seuraava auto {date} (aikataulu)",
+    "rt.weight": "≈ {kg} kg sisällä nyt", "rt.ask": "Kysy SMART-avustajalta",
+    "rt.how.save": "Miten säästän tässä?", "rt.how.mixed": "Miten vähennän sekajätettä?",
+    "rt.q.save": "Laitteeni {name} ({id}) on {fill} % täynnä. Miten säästän sen avulla? Anna 3 helppoa vaihetta.",
+    "rt.q.mixed": "Sekajätelaitteeni {name} ({id}) on {fill} % täynnä. Miten laitan siihen vähemmän ja säästän? Anna 3 helppoa vaihetta.",
+  },
+});
 
 const PICKUP_LINE = 85; // SMART orders the pickup automatically here — the drawing never fills above it
 // What each stream means for the customer: recyclables earn a credit, mixed waste is the one to eliminate.
@@ -101,8 +142,6 @@ function truckLines(m) {
     : t("m.notSoon");
   return [first, ...(m.truck_on ? [t("truck.eta", { date: dayDate(m.truck_on), h: fmt(m.lead_h) })] : [])];
 }
-/** One line for the compact card: the timetable's next visit, or SMART's order. */
-const nextTruck = (m) => (m.policy !== "ON_CALL" && m.truck_on ? truckLines(m)[1] : truckLines(m)[0]);
 
 function truckState(m) {
   if (isEarly(m)) return "warn";
@@ -130,26 +169,63 @@ const weightLine = (m) => (modelKg(m) != null ? `${t("m.weight", { kg: fmt(model
 const mixedAsk = (m) => (KIND[m.stream] === "mixed" ? `<button type="button" class="ask-link" data-mixed="${esc(m.device_id)}">${esc(t("m.askMixed"))}</button>` : "");
 const howScheduled = (m) => (m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
 
-const meta = (m) => `<p class="mc-meta"><span class="dot" style="background:${STREAM_COLORS[m.stream]}"></span>${esc(stream(m.stream))} · ${fmt(m.volume_m3)} m³ · ${esc(m.device_id)}</p>`;
 /** Fill now, as an explainable value (opens the machine drawer). */
 const fillChip = (m) => chip(`${fmt(m.fill_now)}&nbsp;%`, `${m.device_id}: ${fmt(m.fill_now)} %`, m.device_id);
 
+// ---------------------------------------------------------------- real-time card (Figma "Article" 1:489)
+const SPARKLE = '<img class="rt-spark" src="/img/figma/cc0e4.svg" width="176" height="20" alt="">';
+
+/** "Cardboard 1", "Cardboard 2" … when a customer has several machines of one stream. */
+function machineNames(rows) {
+  const total = {}, seen = {};
+  rows.forEach((m) => { total[m.stream] = (total[m.stream] || 0) + 1; });
+  return new Map(rows.map((m) => {
+    seen[m.stream] = (seen[m.stream] || 0) + 1;
+    return [m.device_id, total[m.stream] > 1 ? `${stream(m.stream)} ${seen[m.stream]}` : stream(m.stream)];
+  }));
+}
+
+/** Two plain lines: when it is full, and what happens with the truck. */
+function plainNext(m) {
+  const days = Math.round(m.days_to_full ?? 99);
+  const full = (m.fill_now ?? 0) >= (m.order_threshold_pct ?? PICKUP_LINE) || m.full_on === asOf ? t("rt.fullNow")
+    : !m.full_on ? t("m.notSoon")
+    : days <= 1 ? t("rt.fullTomorrow", { date: fmtDay(m.full_on) })
+    : t("rt.fullIn", { n: fmt(days), date: fmtDay(m.full_on) });
+  const truck = m.pickup_ordered ? t("rt.ordered", { date: dayDate(m.truck_on || m.pickup_on) })
+    : m.policy !== "ON_CALL" && m.truck_on ? t("rt.timetable", { date: dayDate(m.truck_on) })
+    : m.order_on === asOf ? t("rt.willOrderToday")
+    : m.order_on ? t("rt.willOrder", { date: fmtDay(m.order_on) }) : "";
+  return [full, truck].filter(Boolean);
+}
+
+const askQuestion = (m, name) => t(KIND[m.stream] === "mixed" ? "rt.q.mixed" : "rt.q.save", { name, id: m.device_id, fill: fmt(m.fill_now) });
+
+function rtCard(m, name, { full = false } = {}) {
+  const kind = KIND[m.stream] || "recycle";
+  const up = m.fill_sensor_pct != null;
+  const kg = modelKg(m);
+  return `<article class="rt" data-kind="${kind}">
+    <header class="rt-top">
+      <p class="rt-name"><b>${esc(name)}</b><span>${esc(m.device_id)} · ${fmt(m.volume_m3)} m³</span></p>
+      <p class="rt-status" data-up="${up}">${esc(t(up ? "rt.up" : "rt.noSignal"))}<i aria-hidden="true"></i></p>
+    </header>
+    <div class="rt-fig">${compactorSvg(m)}</div>
+    <div class="rt-fill">${fillChip(m)}${typeTag(m)}</div>
+    ${kg != null ? `<p class="rt-weight">${esc(t("rt.weight", { kg: fmt(kg) }))}</p>` : ""}
+    <div class="rt-next">${TRUCK_ICON}<div>${plainNext(m).map((l) => `<p>${esc(l)}</p>`).join("")}</div></div>
+    ${full && m.operator ? `<p class="rt-op">${esc(howScheduled(m))} · ${esc(m.operator)}${m.operator_on_time_pct != null ? ` · ${esc(t("mv.onTime", { pct: fmt(m.operator_on_time_pct) }))}` : ""}</p>` : ""}
+    <button type="button" class="rt-ask" data-ask="${esc(m.device_id)}">
+      <canvas class="rt-shader" aria-hidden="true"></canvas>${SPARKLE}
+      <span class="rt-ask-text"><b>${esc(t("rt.ask"))}</b><span>${esc(t(kind === "mixed" ? "rt.how.mixed" : "rt.how.save"))}</span></span>
+    </button>
+  </article>`;
+}
+
 /** "compact": Overview card · "design": drawing cards · "mixed": small drawing + info table per machine · "table": plain table. */
 const VIEW = {
-  compact: (rows) => rows.map((m) => `<article class="machine compact xv-stretch" data-kind="${KIND[m.stream] || "recycle"}">
-      ${compactorSvg(m)}
-      <div class="mc-head">${fillChip(m)}${typeTag(m)}</div>
-      <p class="mc-next" data-state="${truckState(m)}">${TRUCK_ICON}<span>${esc(nextTruck(m))}</span></p>
-      ${meta(m)}
-    </article>`).join(""),
-  design: (rows) => rows.map((m) => `<article class="machine" data-kind="${KIND[m.stream] || "recycle"}">
-      ${compactorSvg(m)}
-      <div class="mc-head">${fillChip(m)}${typeTag(m)}</div>
-      ${truckBlock(m)}
-      ${meta(m)}
-      <p class="mc-meta">${modelKg(m) != null ? weightLine(m) : ""}</p>
-      ${mixedAsk(m)}
-    </article>`).join(""),
+  compact: (rows, names) => rows.map((m) => rtCard(m, names.get(m.device_id))).join(""),
+  design: (rows, names) => rows.map((m) => rtCard(m, names.get(m.device_id), { full: true })).join(""),
   mixed: (rows) => rows.map((m) => `<article class="mrow" data-kind="${KIND[m.stream] || "recycle"}">
       <div class="mrow-fig">${compactorSvg(m)}<div class="mrow-fill">${fillChip(m)}</div></div>
       <dl class="mrow-dl">
@@ -191,9 +267,15 @@ function openMachine(m) {
 export function renderMachinesNow(container, list, { limit = Infinity, mode = "design" } = {}) {
   asOf = list[0]?.as_of ?? null;
   const rows = [...list].sort((a, b) => (a.days_to_pickup ?? 999) - (b.days_to_pickup ?? 999)).slice(0, limit);
+  const names = machineNames([...list].sort((a, b) => String(a.device_id).localeCompare(String(b.device_id))));
   container.dataset.mode = mode;
-  container.innerHTML = (VIEW[mode] || VIEW.design)(rows);
+  container.innerHTML = (VIEW[mode] || VIEW.design)(rows, names);
   bindChips(container, (id) => openMachine(rows.find((m) => m.device_id === id)));
   container.querySelectorAll("[data-mixed]").forEach((b) =>
     b.addEventListener("click", () => openAi(t("q.mixedMachine", { id: b.dataset.mixed }), `machines.${b.dataset.mixed}`)));
+  container.querySelectorAll("button[data-ask]").forEach((b) => {
+    const m = rows.find((x) => x.device_id === b.dataset.ask);
+    b.addEventListener("click", () => openAi(askQuestion(m, names.get(m.device_id)), `machines.${m.device_id}`));
+  });
+  container.querySelectorAll("canvas.rt-shader").forEach((c) => mountShaderFill(c, ASK_SHADER));
 }
