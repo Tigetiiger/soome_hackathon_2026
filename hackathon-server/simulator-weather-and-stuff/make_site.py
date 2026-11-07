@@ -74,11 +74,15 @@ def toc(body: str) -> str:
     return "".join(out)
 
 
+BUSINESS_LINK = ' Business side: <a href="business.html">business model and summary of the whole submission</a>.'  # companion page site/business.html (hand-written, not generated)
+
+
 def head_block(metrics: dict | None, model_run: Path) -> str:
     return (f"<h1>{escape(TITLE)}</h1>"
             f'<p class="meta">Europress × Since AI Hackathon 2026 — model side. Model version: {escape(model_run.name)} '
             f"(trained on the {dig(metrics, 'compute', 'machines') or '–'}-machine simulation run, seed "
-            f"{escape(str(dig(metrics, 'settings', 'seed') or '–'))}). Document built {escape(datetime.now().strftime('%Y-%m-%d'))}.</p>")
+            f"{escape(str(dig(metrics, 'settings', 'seed') or '–'))}). Document built {escape(datetime.now().strftime('%Y-%m-%d'))}."
+            f'{BUSINESS_LINK}</p>')
 
 
 def build(model_run: Path | None = None) -> Build:
