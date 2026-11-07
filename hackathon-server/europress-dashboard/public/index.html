@@ -17,12 +17,6 @@
 <div class="app">
   <aside class="sidebar" id="sidebar">
     <a class="brand" href="#overview"><img src="/img/europress-smart-logo.svg" alt="Europress SMART" width="96" height="62"></a>
-    <p class="brand-sub">Insights</p>
-    <div class="ws" role="group" aria-label="Workspace">
-      <button type="button" data-ws="customer" data-i18n="ws.customer"></button>
-      <button type="button" data-ws="europress" data-i18n="ws.europress"></button>
-      <button type="button" data-ws="partners" data-i18n="ws.partners"></button>
-    </div>
     <nav class="nav" aria-label="Main" data-ws-nav="customer">
       <a class="navitem" href="#overview"><svg viewBox="0 0 24 24"><rect x="3.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="3.5" width="7" height="7" rx="1.5"/><rect x="3.5" y="13.5" width="7" height="7" rx="1.5"/><rect x="13.5" y="13.5" width="7" height="7" rx="1.5"/></svg><span data-i18n="nav.overview"></span></a>
       <a class="navitem" href="#weight"><svg viewBox="0 0 24 24"><path d="M5.5 9h13l-1.8 11H7.3z"/><circle cx="12" cy="5.5" r="2"/></svg><span data-i18n="nav.weight"></span></a>
@@ -53,6 +47,14 @@
       <button class="icon-btn menu-btn" id="menuBtn" type="button" aria-label="Menu"><svg viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
       <div class="page-title"><p class="eyebrow" id="pageEyebrow"></p><h1 id="pageTitle"></h1></div>
       <div class="top-actions">
+        <div class="view-switch" id="viewSwitch">
+          <button class="vs-btn" id="wsBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="wsMenu"><span id="wsLabel"></span><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M7 10l5 5 5-5"/></svg></button>
+          <div class="ws vs-menu hidden" id="wsMenu" role="menu" aria-label="Workspace">
+          <button type="button" role="menuitemradio" data-ws="customer" data-i18n="ws.customer"></button>
+          <button type="button" role="menuitemradio" data-ws="europress" data-i18n="ws.europress"></button>
+          <button type="button" role="menuitemradio" data-ws="partners" data-i18n="ws.partners"></button>
+          </div>
+        </div>
         <div class="account" id="customerPick">
           <button class="account-btn" id="accountBtn" type="button" aria-haspopup="true" aria-expanded="false" aria-controls="accountMenu">
             <span class="avatar" id="accountAvatar" aria-hidden="true"></span>
@@ -136,7 +138,7 @@
     <!-- Operators & contracts -->
     <section class="view hidden" id="view-contracts" data-view>
       <article class="card">
-        <header class="card-head"><div class="card-title"><h2 data-i18n="card.operators"></h2><button class="info" type="button" data-info="card.operators.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
+        <header class="card-head"><div class="card-title"><h2 data-i18n="card.operators"></h2><button class="info" type="button" data-info="card.operators.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><span class="eyebrow" id="operatorsAsOf"></span></header>
         <div class="table-wrap"><table class="table" id="operatorsTable"></table></div>
       </article>
       <button class="info-pill" type="button" data-info="contracts.note"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg><span data-i18n="info.how"></span></button>
@@ -145,21 +147,6 @@
     <!-- Weight & seasons -->
     <section class="view hidden" id="view-weight" data-view>
       <article class="card weight-table" id="weightTable"></article>
-      <article class="card" id="wmCard">
-        <header class="card-head"><div class="card-title"><h2 data-i18n="wm.title"></h2></div><div class="seg wm-toggle" role="group" aria-label="Model version" id="wmToggle"></div></header>
-        <div id="wmBody"></div>
-      </article>
-      <div class="grid g-1-1">
-        <article class="card">
-          <header class="card-head"><div class="card-title"><h2 data-i18n="card.weight"></h2><button class="info" type="button" data-info="card.weight.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
-          <div class="chart chart-sm clickable" role="button" tabindex="0" id="weightWrap"><canvas id="weightChart"></canvas></div>
-        </article>
-        <article class="card"><header class="card-head"><h2 data-i18n="card.recycling"></h2></header><div class="chart chart-sm"><canvas id="recChart"></canvas></div></article>
-      </div>
-      <article class="card">
-        <header class="card-head"><div class="card-title"><h2 data-i18n="card.density"></h2><button class="info" type="button" data-info="card.density.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
-        <div class="chart"><canvas id="densityChart"></canvas></div>
-      </article>
     </section>
 
     <!-- Trends -->
@@ -199,7 +186,7 @@
         <article class="card"><header class="card-head"><h2 data-i18n="account.sites"></h2></header><div class="table-wrap"><table class="table" id="sitesTable"></table></div></article>
       </div>
       <article class="card">
-        <header class="card-head"><div class="card-title"><h2 data-i18n="account.contracts"></h2><button class="info" type="button" data-info="account.contracts.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div></header>
+        <header class="card-head"><div class="card-title"><h2 data-i18n="account.contracts"></h2><button class="info" type="button" data-info="account.contracts.sub" aria-label="Info"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M12 11v5M12 8h.01"/></svg></button></div><span class="eyebrow" id="contractsAsOf"></span></header>
         <div class="table-wrap"><table class="table" id="contractsTable"></table></div>
       </article>
     </section>

@@ -4,11 +4,9 @@ import { t, fmt, date, stream, getLang } from "./i18n.js";
 import { esc, chip, bindChips, openExplain, tx } from "./drawer.js";
 import { STREAM_COLORS } from "./charts.js";
 import { openAi } from "./ask.js";
-import { getWeightModel } from "./weightmodel.js";
 import { addStrings } from "./i18n.js";
 import { mountShaderFill } from "./shader/runtime.js";
-import { weightsNow, cardWeightLink } from "./sensor/customer.js";
-import { MATERIALS as SENSOR_MATERIALS } from "./sensor/api.js";
+import { weightsNow, cardWeightLink, hasWeightModel } from "./sensor/customer.js";
 import { setup as gradientSetup, render as gradientRender, manifest as gradientManifest } from "./shader/moving-gradient.js";
 
 /** "Ask the SMART assistant" fill — parameters exactly as in the Figma design (node 16:343). */
@@ -32,7 +30,7 @@ addStrings({
     "rt.fullNow": "Full now", "rt.fullTomorrow": "Full tomorrow ({date})", "rt.fullIn": "Full in {n} days ({date})",
     "rt.ordered": "Truck ordered for {date}", "rt.willOrder": "SMART orders the truck on {date}", "rt.willOrderToday": "SMART orders the truck today",
     "rt.timetable": "Next truck {date} (timetable)",
-    "rt.weight": "≈ {kg} kg inside now", "rt.ask": "Ask the SMART assistant",
+    "rt.weight": "≈ {kg} kg inside now", "rt.noModel": "Weight: model coming for this waste type", "rt.ask": "Ask the SMART assistant",
     "rt.how.save": "How do I save money here?", "rt.how.mixed": "How do I cut mixed waste?",
     "rt.q.save": "My machine {name} ({id}) is {fill} % full. How do I save money with it? Give me 3 simple steps.",
     "rt.q.mixed": "My mixed-waste machine {name} ({id}) is {fill} % full. How do I put less in it and save money? Give me 3 simple steps.",
@@ -42,7 +40,7 @@ addStrings({
     "rt.fullNow": "Täynnä nyt", "rt.fullTomorrow": "Täynnä huomenna ({date})", "rt.fullIn": "Täynnä {n} päivässä ({date})",
     "rt.ordered": "Auto tilattu: {date}", "rt.willOrder": "SMART tilaa auton {date}", "rt.willOrderToday": "SMART tilaa auton tänään",
     "rt.timetable": "Seuraava auto {date} (aikataulu)",
-    "rt.weight": "≈ {kg} kg sisällä nyt", "rt.ask": "Kysy SMART-avustajalta",
+    "rt.weight": "≈ {kg} kg sisällä nyt", "rt.noModel": "Paino: malli tulossa tälle jätelajille", "rt.ask": "Kysy SMART-avustajalta",
     "rt.how.save": "Miten säästän tässä?", "rt.how.mixed": "Miten vähennän sekajätettä?",
     "rt.q.save": "Laitteeni {name} ({id}) on {fill} % täynnä. Miten säästän sen avulla? Anna 3 helppoa vaihetta.",
     "rt.q.mixed": "Sekajätelaitteeni {name} ({id}) on {fill} % täynnä. Miten laitan siihen vähemmän ja säästän? Anna 3 helppoa vaihetta.",
@@ -166,8 +164,11 @@ function typeTag(m) {
   const kind = KIND[m.stream] || "recycle";
   return `<span class="state" data-state="${KIND_STATE[kind]}">${esc(t(`kind.${kind}`))}</span>`;
 }
-const modelKg = (m) => { const v = getWeightModel(); return m.weight_by_model && v && m.weight_by_model[v] != null ? m.weight_by_model[v] : m.weight_kg_now; };
-const weightLine = (m) => (modelKg(m) != null ? `${t("m.weight", { kg: fmt(modelKg(m)) })} <span class="demo">${esc(getWeightModel() || t("m.demo"))}${m.weight_by_model && !m.weight_by_model.calibrated && getWeightModel() === "v3" ? ` · ${esc(t("wm.notCal"))}` : ""}</span>` : "–");
+/** Weight now from the soft sensor (the one weight source); filled in after the model service answers. */
+let sensorKg = new Map();
+const modelKg = (m) => sensorKg.get(m.device_id) ?? null;
+const weightSlot = (m) => (hasWeightModel(m.stream) ? `<span data-w="${esc(m.device_id)}">${modelKg(m) != null ? esc(t("rt.weight", { kg: fmt(modelKg(m)) })) : "…"}</span>` : `<span class="fine">${esc(t("rt.noModel"))}</span>`);
+const weightLine = (m) => weightSlot(m);
 const mixedAsk = (m) => (KIND[m.stream] === "mixed" ? `<button type="button" class="ask-link" data-mixed="${esc(m.device_id)}">${esc(t("m.askMixed"))}</button>` : "");
 const howScheduled = (m) => (m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
 
@@ -214,9 +215,9 @@ function rtCard(m, name, { full = false } = {}) {
     </header>
     <div class="rt-fig">${compactorSvg(m)}</div>
     <div class="rt-fill">${fillChip(m)}${typeTag(m)}</div>
-    ${SENSOR_MATERIALS.includes(m.stream)
-      ? `<div class="rt-wrow"><p class="rt-weight" data-w="${esc(m.device_id)}">${kg != null ? esc(t("rt.weight", { kg: fmt(kg) })) : ""}</p>${cardWeightLink(m.device_id)}</div>`
-      : kg != null ? `<p class="rt-weight">${esc(t("rt.weight", { kg: fmt(kg) }))}</p>` : ""}
+    ${hasWeightModel(m.stream)
+      ? `<div class="rt-wrow"><p class="rt-weight">${weightSlot(m)}</p>${cardWeightLink(m.device_id)}</div>`
+      : `<p class="rt-weight rt-nomodel">${esc(t("rt.noModel"))}</p>`}
     <div class="rt-next">${TRUCK_ICON}<div>${plainNext(m).map((l) => `<p>${esc(l)}</p>`).join("")}</div></div>
     ${full && m.operator ? `<p class="rt-op">${esc(howScheduled(m))} · ${esc(m.operator)}${m.operator_on_time_pct != null ? ` · ${esc(t("mv.onTime", { pct: fmt(m.operator_on_time_pct) }))}` : ""}</p>` : ""}
     <button type="button" class="rt-ask" data-ask="${esc(m.device_id)}">
@@ -254,7 +255,7 @@ const VIEW = {
       <td>${esc(m.operator || "–")}</td>
       <td>${m.pickup_ordered ? esc(t("mv.ordered")) : m.truck_on ? esc(dayDate(m.truck_on)) : "–"}</td>
       <td class="num">${m.visit_fill_pct == null ? "–" : m.visit_fill_pct > PICKUP_LINE ? `≥ ${PICKUP_LINE} %` : `${fmt(m.visit_fill_pct)} %`}</td>
-      <td class="num">${modelKg(m) != null ? `${fmt(modelKg(m))} kg` : "–"}</td></tr>`).join("")}</tbody></table></div>`,
+      <td class="num">${weightSlot(m)}</td></tr>`).join("")}</tbody></table></div>`,
 };
 
 /** Machine drawer: fill now, what it means, and the few facts that matter. */
@@ -282,11 +283,14 @@ export function renderMachinesNow(container, list, { limit = Infinity, mode = "d
     b.addEventListener("click", () => openAi(askQuestion(m, names.get(m.device_id)), `machines.${m.device_id}`));
   });
   container.querySelectorAll("canvas.rt-shader").forEach((c) => mountShaderFill(c, ASK_SHADER));
-  // live weight from the soft sensor replaces the placeholder estimate when the model service answers
+  // the soft sensor fills every weight slot once the model service answers
   if (container.querySelector("[data-w]")) {
-    weightsNow(list).then((w) => container.querySelectorAll("[data-w]").forEach((p) => {
-      const row = w.get(p.dataset.w);
-      if (row?.mass_kg != null) p.textContent = t("rt.weight", { kg: fmt(row.mass_kg) });
-    })).catch(() => { /* model service offline: keep the placeholder weight */ });
+    weightsNow(list).then((w) => {
+      sensorKg = new Map([...w].map(([id, row]) => [id, row.mass_kg]));
+      container.querySelectorAll("[data-w]").forEach((el) => {
+        const kgNow = sensorKg.get(el.dataset.w);
+        el.textContent = kgNow != null ? t("rt.weight", { kg: fmt(kgNow) }) : "–";
+      });
+    }).catch(() => container.querySelectorAll("[data-w]").forEach((el) => { el.textContent = "–"; }));
   }
 }

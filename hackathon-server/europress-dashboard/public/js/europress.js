@@ -31,7 +31,7 @@ export function renderEpOverview(f) {
 }
 
 export function renderEpPipeline(f, onOpenCustomer) {
-  const soon = new Date("2027-04-01");
+  const soon = new Date(f.period.notice_soon_before); // pipeline-derived from the data's as-of date
   const tbl = el("epPipelineTable");
   tbl.innerHTML = `<thead><tr><th>${t("col.customer")}</th><th class="num">${t("account.machines")}</th>
     <th class="num">${t("col.savings")}</th><th class="num">${t("col.fee")}</th><th class="num">${t("col.multiple")}</th><th>${t("col.topLever")}</th><th>${t("col.notice")}</th></tr></thead>

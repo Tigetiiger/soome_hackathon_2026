@@ -737,6 +737,10 @@ def customer_payload(D, cid, bench, fleet_dd):
     verified, differ, no_wb = (int(ws.get(k, 0)) for k in ("WITHIN_10PCT", "DIFFERENCE_GT_10PCT", "WEIGHBRIDGE_NOT_AVAILABLE"))
     weight = {"verified_within_10pct": verified, "difference_gt_10pct": differ, "device_only": no_wb,
               "other": int(len(lifts) - verified - differ - no_wb),
+              # "checkable" = the pickup has a weight the customer can check that is not the operator's invoice
+              "lifts": int(len(lifts)), "with_ticket": verified + differ,
+              "with_ticket_or_device_weight": int((lifts.weight_reconciliation_status.isin(["WITHIN_10PCT", "DIFFERENCE_GT_10PCT"])
+                                                  | lifts.device_estimated_collected_kg.notna()).sum()),
               "trace": traced(verified / max(1, len(lifts)) * 100, "%",
                               "lifts where device weight and weighbridge ticket agree within 10% ÷ all lifts",
                               "tyhjennykset, joissa laitteen paino ja vaa'an punnituslippu ovat 10 % sisällä ÷ kaikki tyhjennykset",
@@ -866,6 +870,42 @@ def operator_payload(D, op):
         "wasted_trips": int((ev.status == "WASTED_TRIP").sum()),
         "renewals_12m": ren.to_dict("records"),
         "fill_at_pickup_hist": np.histogram(lifts.device_fill_pct_before.dropna(), bins=10, range=(0, 100))[0].tolist(),
+        **operator_history(ev, lifts),
+    }
+
+
+HISTORY_WEEKS = 26
+
+
+def operator_history(ev: pd.DataFrame, lifts: pd.DataFrame) -> dict:
+    """What SMART collected for the operator (weekly, last HISTORY_WEEKS weeks) and what SMART is worth to them.
+
+    smart_pickups = pickups needed had every machine been emptied at TARGET_FILL_PCT (Σ fill before ÷ target).
+    """
+    def week_of(ts):
+        return pd.to_datetime(ts, utc=True).dt.tz_convert(None).dt.to_period("W-SUN").dt.start_time
+
+    lf = lifts.assign(week=week_of(lifts.actual_at))
+    weeks = pd.date_range(end=(TODAY - pd.Timedelta(days=1)).to_period("W-SUN").start_time, periods=HISTORY_WEEKS, freq="7D") - pd.Timedelta(days=7)  # last FULL week
+    g = lf.groupby("week")
+    hist = pd.DataFrame({
+        "pickups": g.size(),
+        "tonnes": g.device_estimated_collected_kg.sum() / 1000,
+        "smart_pickups": g.device_fill_pct_before.sum() / TARGET_FILL_PCT,
+    }).reindex(weeks, fill_value=0)
+    wasted = ev[ev.status == "WASTED_TRIP"]
+    hist["wasted"] = wasted.assign(week=week_of(wasted.actual_at)).groupby("week").size().reindex(weeks, fill_value=0)
+    year_pickups = len(lifts)
+    year_smart = float(np.ceil(lifts.device_fill_pct_before.fillna(TARGET_FILL_PCT).sum() / TARGET_FILL_PCT))
+    return {
+        "history_weekly": {"weeks": [w.strftime("%Y-%m-%d") for w in weeks], "pickups": hist.pickups.astype(int).tolist(),
+                           "tonnes": [r(v, 1) for v in hist.tonnes], "smart_pickups": [r(v, 1) for v in hist.smart_pickups],
+                           "wasted": hist.wasted.astype(int).tolist()},
+        "value": {"pickups_year": int(year_pickups), "smart_pickups_year": int(year_smart),
+                  "trips_saved_year": int(max(0, year_pickups - year_smart)),
+                  "kg_per_pickup_now": r(lifts.device_estimated_collected_kg.mean(), 0),
+                  "kg_per_pickup_smart": r(lifts.device_estimated_collected_kg.sum() / max(year_smart, 1), 0),
+                  "wasted_trips_year": int((ev.status == "WASTED_TRIP").sum())},
     }
 
 

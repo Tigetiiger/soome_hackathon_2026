@@ -55,7 +55,7 @@
 | # | Problem | Module | Proof |
 |---|---|---|---|
 | 1 | Weight is only estimated | M1 | Monthly error ≤ 6 % vs the reference cohort |
-| 2 | "Am I paying right / are SLAs kept?" | M2 + M1 | Checkable pickups 9 % → 90 %+ (demo: 37 of 395 today [P]) |
+| 2 | "Am I paying right / are SLAs kept?" | M2 + M1 | Checkable pickups ≥ 90 %. Demo: 12 % today (48 of 395 pickups have a weighing ticket) → 99 % with machine weight (393 of 395) [P] |
 | 3 | Customers aren't experts | M2 + digest | Weekly active users |
 | 4 | Sales needs clear answers | M3 | SMART adoption beyond 15 % |
 | 5 | Nothing to offer operators | M4 | Ticket sharing ≥ 90 % |
@@ -91,7 +91,7 @@
 | Cost | €140,574 a year, about €60k of it saveable | Mostly half-full pickups: 49 % average fill |
 | Safety & uptime | No open faults | 2 door-interlock faults fixed; 146 h downtime; 5 electrical faults |
 | CO₂ | 2,060 truck-km a year avoidable | ≈ 3–8 t CO₂ |
-| Contract & service | Hauler Delta on time 57 %, shares 0 % of tickets | Notice due by 17 Oct 2026 |
+| Contract & service | Hauler Delta on time 57 %, shares 0 % of tickets | Notice due 17 Oct 2026 (data as of 30 Sep 2026) |
 | Recycling | 43 % | Mixed waste rose from 55 % to 58.5 % of tonnes |
 
 **Weather** [R, ERA5]:
@@ -108,17 +108,13 @@
 
 | Tier | Hardware | Cost per machine | Accuracy | Grade |
 |---|---|---|---|---|
-| T0 soft sensor | firmware stroke logging | €0 | ≈ 4–7 % mean per pickup [S]; ±5–6 %/month [E] | estimate |
-| T1 + cheap sensors + tickets | oil-temp probe €20–40, lid switch ~€10, hopper T/RH ~€15 [A] | €60–130 | ≈ 3.5 % after 5 tickets [S] | estimate |
+| T0 soft sensor | firmware stroke logging | €0 | ≈ 5.3 % mean per pickup on machines the model never saw (55 % within ±5 %), 3.7 % on the same machines in later months [S]; ±5–6 %/month [E] | estimate |
+| T1 + cheap sensors + tickets | oil-temp probe €20–40, lid switch ~€10, hopper T/RH ~€15 [A] | €60–130 | ≈ 3.6 % median per pickup after 5 tickets (virtual-scale study) [S] | estimate |
 | T2 reference cohort | 4 × IP68 C3 load cells | €3.4–6.3k | P95 ≈ 2.3 % [S] | verification |
 | T3 certified | OIML cells, indicator, Kiwa verification | €5.4–10k + €150–400/yr | P95 ≈ 1.4 % [S] | billing |
 | Quality camera | hopper camera + edge AI | ≈ €300–800 [A] | contamination score | estimate |
 
-**Open conflict.** The two studies disagree on pressure-based weight:
-- The simulator soft sensor reaches 4.7 % mean error on unseen machines (61 % of pickups within ±5 %).
-- The hardware study reaches only about 29 % P95 on pressure-only estimates, because water and stiffness change the mass without changing the pressure.
-
-Phase 0a, the €0 archive test, settles it.
+**Open conflict.** Our two studies disagree. On the simulator, the soft sensor's mean error is 5.3 % on machines the model never saw (3.7 % on the same machines in later months) [S]. The separate hardware study finds pressure-only estimates off by about 29 % at the 95th percentile, because water and stiffness change the mass without changing the pressure [S]. A €0 test on archived pressure data from 10–30 machines against their tickets decides it (Phase 0a).
 
 ## 5. Market
 

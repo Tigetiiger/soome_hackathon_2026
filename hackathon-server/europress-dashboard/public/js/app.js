@@ -157,17 +157,28 @@ function openNotification(id) {
   if (lever) setTimeout(() => openLever(lever), 0);
 }
 
+/** Formatted insight parameters, plus the data's as-of date for date-relative insights. */
+function insightParams(p, ins) {
+  const params = Object.fromEntries(Object.entries(ins.params).map(([k, v]) =>
+    [k, typeof v === "number" ? fmt(v, Number.isInteger(v) ? 0 : 1) : k === "date" ? date(v) : v]));
+  return { ...params, asof: asOfLabel(p) };
+}
+
+/** The date the customer's data stands at (from the pipeline, never the browser clock). */
+const asOfLabel = (p) => (p?.period?.as_of ? date(p.period.as_of) : "–");
+/** Notice deadlines before this date are flagged "soon"; derived by the pipeline from its as-of date. */
+const noticeSoon = (p) => new Date(p.period.notice_soon_before);
+
 function renderInsights(p) {
   const list = p.insights.length ? p.insights : [{ id: "mixed_falling", params: { from: "–", to: "–" }, severity: "good" }];
   el("insights").innerHTML = list.map((ins, i) => {
-    const params = Object.fromEntries(Object.entries(ins.params).map(([k, v]) =>
-      [k, typeof v === "number" ? fmt(v, Number.isInteger(v) ? 0 : 1) : k === "date" ? date(v) : v]));
+    const params = insightParams(p, ins);
     return `<li><span class="state" data-state="${ins.severity}">${esc(t(`sev.${ins.severity}`))}</span>
       <div>${esc(t(`ins.${ins.id}`, params))}<br><button type="button" data-ins="${i}">${esc(t("ai.cta"))} →</button></div></li>`;
   }).join("");
   el("insights").querySelectorAll("button[data-ins]").forEach((b) => {
     const ins = list[Number(b.dataset.ins)];
-    b.addEventListener("click", () => openAi(t(`ins.${ins.id}`, ins.params), `insights.${ins.id}`));
+    b.addEventListener("click", () => openAi(t(`ins.${ins.id}`, insightParams(p, ins)), `insights.${ins.id}`));
   });
 }
 
@@ -228,7 +239,8 @@ function renderMachines(p) {
 }
 
 function renderContracts(p) {
-  const soon = new Date("2027-04-01");
+  const soon = noticeSoon(p);
+  el("operatorsAsOf").textContent = t("asof.data", { date: asOfLabel(p) });
   const tbl = el("operatorsTable");
   tbl.innerHTML = `<thead><tr><th>${t("col.operator")}</th><th class="num">${t("col.ontime")}</th><th class="num">${t("col.shared")}</th>
     <th class="num">${t("col.leadtime")}</th><th>${t("col.notice")}</th><th class="row-go"></th></tr></thead><tbody>${
@@ -305,7 +317,7 @@ async function route() {
   el("bellWrap").classList.toggle("hidden", state.ws !== "customer");
   el("pageTitle").textContent = t(NAV_KEY[view]);
   el("pageEyebrow").textContent = state.ws === "europress" ? t("ep.eyebrow")
-    : state.ws === "partners" || view === "faq" ? "Europress SMART" : `${state.customer?.customer.name ?? ""} · ${state.customer ? periodLabel(state.customer) : t("top.period")}`;
+    : state.ws === "partners" || view === "faq" ? "Europress SMART" : `${state.customer?.customer.name ?? ""} · ${state.customer ? `${periodLabel(state.customer)} · ${t("asof.data", { date: asOfLabel(state.customer) })}` : t("top.period")}`;
   el("sidebar").classList.remove("open");
   toggleMenu(false);
   window.scrollTo({ top: 0 });

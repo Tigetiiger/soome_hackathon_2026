@@ -3,7 +3,11 @@
 // waste type and the nearest volume — the soft sensor runs on simulator telemetry (synthetic data).
 import { t, fmt, eur, stream, addStrings } from "../i18n.js";
 import { esc } from "../drawer.js";
-import { sensorGet, fmtTime, kg, MATERIALS } from "./api.js";
+import { sensorGet, fmtTime, kg } from "./api.js";
+
+/** The one weight source: which trained soft-sensor model weighs each waste type (null = not trained yet). */
+const MODEL_FOR = { cardboard: "cardboard", paper: "paper", plastic_film: "plastic_film", mixed_waste: "mixed_waste", mixed_plastic: "plastic_film" };
+export const hasWeightModel = (streamKey) => Boolean(MODEL_FOR[streamKey]);
 import { massChart } from "./charts.js";
 import "./strings.js";
 
@@ -22,7 +26,7 @@ addStrings({
     "cw.cost": "Expected charge", "cw.costSub": "Next pickup at your price {eurt} €/t",
     "cw.chart": "Weight in the container, last 30 days", "cw.history": "Last pickups: our estimate vs the weighbridge ticket",
     "cw.trust": "Our estimate was within ±{pct} % of the weighbridge on {n} of {m} pickups.", "cw.noLifts": "No pickups in the last 30 days.",
-    "cw.tech": "How the model knows (technical)", "cw.noModel": "The weight model is not trained for {stream} yet (trained: cardboard, paper, plastic film, mixed waste).",
+    "cw.tech": "How the model knows (technical)", "cw.noModel": "The weight model is not trained for {stream} yet (trained: cardboard, paper, plastic film, mixed waste; mixed plastic uses the plastic film model).",
     "cw.offline": "The weight model is not reachable right now. Fill levels and pickups still work.",
     "cw.card": "See weight & next bill →", "cw.title": "{name} · weight", "cw.when": "When", "cw.ours": "Our estimate", "cw.ticket": "Weighbridge", "cw.diff": "Difference",
   },
@@ -33,7 +37,7 @@ addStrings({
     "cw.cost": "Odotettu veloitus", "cw.costSub": "Seuraava tyhjennys hinnallasi {eurt} €/t",
     "cw.chart": "Paino säiliössä, viimeiset 30 päivää", "cw.history": "Viimeiset tyhjennykset: arviomme vs. punnituslappu",
     "cw.trust": "Arviomme osui ±{pct} %:n sisään punnituksesta {n} kertaa {m}:stä.", "cw.noLifts": "Ei tyhjennyksiä viimeisen 30 päivän aikana.",
-    "cw.tech": "Miten malli sen tietää (tekninen)", "cw.noModel": "Painomallia ei ole vielä opetettu jätelajille {stream} (opetettu: pahvi, paperi, muovikalvo, sekajäte).",
+    "cw.tech": "Miten malli sen tietää (tekninen)", "cw.noModel": "Painomallia ei ole vielä opetettu jätelajille {stream} (opetettu: pahvi, paperi, muovikalvo, sekajäte; sekamuovi käyttää muovikalvomallia).",
     "cw.offline": "Painomalliin ei saada nyt yhteyttä. Täyttöasteet ja tyhjennykset toimivat.",
     "cw.card": "Katso paino ja seuraava lasku →", "cw.title": "{name} · paino", "cw.when": "Milloin", "cw.ours": "Arviomme", "cw.ticket": "Punnitus", "cw.diff": "Ero",
   },
@@ -56,9 +60,10 @@ function hash(s) {
  * is nearest the customer's fill (ties broken by a hash of the id), so the model sees a similar state.
  */
 export function pairBin(device, machines, fleetByBin) {
-  if (!MATERIALS.includes(device.stream)) return null;
+  const model = MODEL_FOR[device.stream];
+  if (!model) return null;
   const fill = device.fill_now ?? 0;
-  const pool = machines.filter((b) => b.material === device.stream && (fleetByBin.get(b.bin_id)?.fill_pct ?? 0) >= MIN_TWIN_FILL)
+  const pool = machines.filter((b) => b.material === model && (fleetByBin.get(b.bin_id)?.fill_pct ?? 0) >= MIN_TWIN_FILL)
     .sort((a, b) => Math.abs(a.container_volume_m3 - device.volume_m3) - Math.abs(b.container_volume_m3 - device.volume_m3) || a.bin_id.localeCompare(b.bin_id))
     .slice(0, TWIN_POOL);
   if (!pool.length) return null;
@@ -138,7 +143,7 @@ export async function renderCustomerWeight(root, m, { name, eurPerT, dayLabel })
     <p class="ss-notice" role="note"><span class="state" data-state="note">${esc(t("top.synthetic"))}</span>${esc(t("cw.notice"))}</p>
     <div id="cwBody"><p class="note">${esc(t("ss.loading"))}</p></div>`;
   const body = root.querySelector("#cwBody");
-  if (!MATERIALS.includes(m.stream)) { body.innerHTML = `<p class="note">${esc(t("cw.noModel", { stream: stream(m.stream).toLowerCase() }))}</p>`; return; }
+  if (!hasWeightModel(m.stream)) { body.innerHTML = `<p class="note">${esc(t("cw.noModel", { stream: stream(m.stream).toLowerCase() }))}</p>`; return; }
   let d, w;
   try {
     const meta = await getMeta();

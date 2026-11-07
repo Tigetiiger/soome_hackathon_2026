@@ -4,7 +4,7 @@ import { esc } from "../drawer.js";
 import { sensorStatic, material, MATERIALS } from "./api.js";
 import { curvesChart } from "./charts.js";
 
-const CAVEATS = ["ss.h.l1", "ss.h.l2", "ss.h.l3", "ss.h.l4", "ss.h.l5"];
+const CAVEATS = ["ss.h.l6", "ss.h.l1", "ss.h.l2", "ss.h.l3", "ss.h.l4", "ss.h.l5"];
 
 function flow(nFeatures) {
   const steps = [["ss.h.f1", "ss.h.f1.d"], ["ss.h.f2", "ss.h.f2.d"], ["ss.h.f3", "ss.h.f3.d"], ["ss.h.f4", "ss.h.f4.d"], ["ss.h.f5", "ss.h.f5.d"]];

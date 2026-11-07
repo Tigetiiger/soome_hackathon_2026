@@ -6,6 +6,7 @@ import { esc, openExplain, GO_ICON } from "./drawer.js";
 const el = (id) => document.getElementById(id);
 const ORDER = { bad: 0, warn: 1, info: 2, good: 3 };
 const STATE = { bad: "bad", warn: "warn", info: "info", good: "good" };
+let asOf = null; // the date the customer's data stands at (period.as_of), shown next to date-relative claims
 
 function params(a) {
   const q = { ...a.p };
@@ -13,6 +14,7 @@ function params(a) {
   for (const k of ["fill", "ontime", "rate", "mixed_a", "mixed_b", "eurt", "km", "full_h", "down_h", "tiny", "inv", "wdiff", "early", "lifts", "wasted", "missed"]) if (typeof q[k] === "number") q[k] = fmt(q[k]);
   if (typeof q.co2 === "number") q.co2 = fmt(q.co2, 1);
   if (q.notice) q.notice = date(q.notice);
+  q.asof = asOf ? date(asOf) : "–";
   return q;
 }
 
@@ -57,6 +59,7 @@ function openAnswer(p, a) {
 }
 
 export function renderAnswers(p) {
+  asOf = p.period?.as_of ?? null;
   const list = [...(p.answers || [])].sort((a, b) => ORDER[a.status] - ORDER[b.status]);
   el("answers").innerHTML = list.map((a, i) => {
     const euro = rowEur(a);

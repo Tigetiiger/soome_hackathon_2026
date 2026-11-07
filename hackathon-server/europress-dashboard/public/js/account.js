@@ -43,6 +43,7 @@ export function renderAccount(p) {
     [t("account.spend"), eur(p.kpis.total_cost.value)],
     [t("account.nextNotice"), next ? `${date(next.notice_by)} · ${next.operator}` : "–"],
     [t("account.period"), t("top.period")],
+    [t("account.asof"), p.period?.as_of ? date(p.period.as_of) : "–"],
   ];
   el("accountFacts").innerHTML = facts.map(([k, v]) => `<dt>${esc(k)}</dt><dd>${esc(v)}</dd>`).join("");
 
@@ -51,7 +52,8 @@ export function renderAccount(p) {
       <td class="strong">${esc(s.name)}<span class="desc">${esc(s.site_id)}</span></td><td>${esc(s.municipality)} · ${esc(s.region)}</td>
       <td class="num">${s.devices}</td><td class="num">${s.round_trip_km} km</td><td>${esc(s.opening_hours)}</td></tr>`).join("")}</tbody>`;
 
-  const soon = new Date("2027-04-01");
+  const soon = new Date(p.period.notice_soon_before); // pipeline-derived from the data's as-of date, not the browser clock
+  el("contractsAsOf").textContent = t("asof.data", { date: p.period?.as_of ? date(p.period.as_of) : "–" });
   const tbl = el("contractsTable");
   tbl.innerHTML = `<thead><tr><th>${t("col.contract")}</th><th>${t("col.stream")}</th><th>${t("col.operator")}</th><th>${t("col.pricing")}</th>
     <th class="num">${t("col.liftFee")}</th><th>${t("col.renewal")}</th><th>${t("col.notice")}</th><th class="row-go"></th></tr></thead><tbody>${a.contracts.map((c, i) => `

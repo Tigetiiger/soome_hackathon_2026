@@ -16,7 +16,7 @@ This file is for someone who has read nothing else. Each chapter takes one probl
 
 **The problem.** Every invoice and every contract in waste is priced per tonne. The only party that weighs the waste is the operator, who is also the party being paid per tonne. Europress's own words: "We only estimate. We have no evidence." The machine knows it is 79 % full, but nobody knows whether that is 1.2 tonnes or 1.6 tonnes, and the customer pays for the difference.
 
-For the hotel group, 395 pickups happened in a year. Only 37 of them, 9 %, came with a weighing ticket the customer could look at. The other 358 are a number on an invoice and nothing else.
+For the hotel group, 395 pickups happened in a year. Only 48 of them, 12 %, came with a weighing ticket the customer could look at, and on just 37 (9 %) the ticket agreed with the machine within 10 %. The other 347 are a number on an invoice and nothing else.
 
 **The solution.** Make the machine itself estimate the weight, and give every pickup a weight with a range, such as "1,400 kg, most likely between 1,240 and 1,560 kg".
 
@@ -24,17 +24,17 @@ The estimate is a **soft sensor**: a piece of software, not a scale. It uses dat
 
 The software is taught on real weights from two places: a small group of machines that get real scales fitted underneath (four load cells, about €3,400–6,300 per machine, on 2–5 % of the fleet), and the weighing tickets that some operators already share. Each machine is then corrected by its own tickets, and an alarm fires if its estimate starts to drift away from them.
 
-With this, the hotel group could check 96 % of its pickups instead of 9 %.
+With this, the hotel group could check 393 of its 395 pickups (99 %) against a weight that is not the operator's invoice, instead of 48 (12 %).
 
 **Why this solution.**
 
 - *Why not a scale on every machine?* A scale platform costs about as much as the compactor. Europress has sold them for years and "few want it". Software costs nothing per machine.
 - *Why not software alone?* An estimate with nothing real to check it against drifts and cannot be trusted in a dispute. The few real scales and the shared tickets are the anchor. This is the hybrid Tommi, the Europress representative, suggested himself: "a very cheap sensor somewhere as a reference point, and then this trained model".
-- *Why pressure and weather?* Fill level alone cannot tell a light load from a heavy one. The dashboard's current fill-only estimate has a median error of 7 %. In our simulator, adding pressure, strokes and weather brought the error on unseen machines to about 4.7 %. Europress also said it has "no long-term data on how density varies, for example cardboard in winter versus summer", so weather is new information for them too.
+- *Why pressure and weather?* Fill level alone cannot tell a light load from a heavy one. The dashboard's current fill-only estimate has a median error of 7 %. In our simulator, adding pressure, strokes and weather brought the mean error to 5.3 % on machines the model never saw (3.7 % on the same machines in later months). Europress also said it has "no long-term data on how density varies, for example cardboard in winter versus summer", so weather is new information for them too.
 - *Why a range and not one number?* Because the number is an estimate, and saying so is what makes it credible to an operator. The range is set so that the true weight falls inside it about 80 % of the time.
-- *Why we are not sure yet.* Our two studies disagree. The simulator says 4.7 %. A separate hardware study, modelling cases where water and stiffness change the mass without changing the pressure, says pressure alone can be off by 29 % in the worst 5 % of cases. So the plan's first step is a €0 test: run archived pressure data from 10–30 machines against their tickets and see who is right, before buying anything.
+- *Why we are not sure yet.* Our two studies disagree. On the simulator, the soft sensor's mean error is 5.3 % on machines the model never saw (3.7 % on the same machines in later months). The separate hardware study finds pressure-only estimates off by about 29 % at the 95th percentile, because water and stiffness change the mass without changing the pressure. A €0 test on archived pressure data from 10–30 machines against their tickets decides it, so that test is the plan's first step, before buying anything.
 
-**How we know it worked.** Monthly weight error against the machines with real scales is 6 % or less, and the share of pickups the customer can check rises from 9 % to over 90 %.
+**How we know it worked.** Monthly weight error against the machines with real scales is 6 % or less, and the share of pickups the customer can check rises from 12 % to over 90 %.
 
 ---
 
@@ -42,9 +42,9 @@ With this, the hotel group could check 96 % of its pickups instead of 9 %.
 
 **The problem.** Europress listed the questions its customers cannot answer today: Am I paying the right amount? Is the operator doing its best? Are the service levels in the contract being kept? Would another operator serve me better? The customer has an invoice, a contract and a truck that comes and goes, and no way to connect them.
 
-For the hotel group: the operator, "Hauler Delta", arrives on time for 57 % of pickups, shares none of its weighing tickets, takes a median 37 hours from order to truck, and made 6 wasted trips. The contract can be put out to tender, and notice is due by 17 October. None of this is visible to the customer today.
+For the hotel group: the operator, "Hauler Delta", arrives on time for 57 % of pickups, shares none of its weighing tickets, takes a median 37 hours from order to truck, and made 6 wasted trips. The contract can be put out to tender, and notice is due 17 Oct 2026 (data as of 30 Sep 2026). None of this is visible to the customer today.
 
-**The solution.** A **contract and service card** on the customer's home page, fed by the weight from Problem 1 and by the records SMART already has (when the truck was ordered, when it came, how full the machine was). It says, in one sentence: "Hauler Delta arrives on time for 57 % of pickups and shares no weighing tickets. Your contract can be tendered. Give notice by 17 October 2026." A click shows the numbers behind it, and a second operator's figures next to them for comparison.
+**The solution.** A **contract and service card** on the customer's home page, fed by the weight from Problem 1 and by the records SMART already has (when the truck was ordered, when it came, how full the machine was). It says, in one sentence: "Hauler Delta arrives on time for 57 % of pickups and shares no weighing tickets. Your contract can be tendered. Give notice by 17 Oct 2026 (data as of 30 Sep 2026)." A click shows the numbers behind it, and a second operator's figures next to them for comparison.
 
 Each pickup is also reconciled: machine weight against ticket against invoice line. When they agree, the pickup is marked "checked". When they disagree repeatedly, the customer sees "needs a second look".
 
