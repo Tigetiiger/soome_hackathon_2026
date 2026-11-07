@@ -17,6 +17,11 @@ from .stores import SensorData
 
 WEATHER_LOOKBACK = pd.Timedelta(days=8)     # rain d1..d7 + RH of the previous completed day
 MAX_CONCURRENT = 4                          # bound CPU/RAM under load
+SLOT_WAIT_S = 3.0                           # then give up with 503 instead of queueing behind abandoned requests
+
+
+class BusyError(RuntimeError):
+    """All inference slots stayed busy for SLOT_WAIT_S."""
 # Features shown to the user as "what the model saw" (all backward-looking device signals).
 DISPLAY_FEATURES = ("hours_since_lift", "fill_ffill", "presses_cycle", "p_ewm", "p_max_cycle",
                     "pressure_kg_m3", "curve_contact_ewm", "oil_temp_c", "temp_c",
@@ -62,8 +67,12 @@ class LiveEngine:
             if key in self._cache:
                 self._cache.move_to_end(key)
                 return {**self._cache[key], "cached": True}
-        with self._slots:
+        if not self._slots.acquire(timeout=SLOT_WAIT_S):
+            raise BusyError("all inference slots busy")
+        try:
             result = self._run(bin_id, at)
+        finally:
+            self._slots.release()
         with self._lock:
             self._cache[key] = result
             while len(self._cache) > self.cache_size:

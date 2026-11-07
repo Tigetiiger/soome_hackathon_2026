@@ -59,7 +59,8 @@ machines in later months and **5.3 %** on machines the model has never seen. The
 | `baseline.py` | quick LightGBM baseline: fill only vs + pressure vs + weather |
 | `tests/` | pytest suite (simulator and soft sensor) |
 | `requirements.txt`, `pytest.ini`, `.gitignore` | environment, test config and ignore rules |
-| `site/` | technical documentation website (added separately) |
+| `site/` | technical documentation website (open `site/index.html`; rebuild with `python make_site.py` after regenerating data and models and running `weight_train predict` for `models/full400` (the hourly sample download includes predictions)) |
+| `make_site.py`, `site_*.py` | website generator (reads the run and model folders; all numbers come from the data) |
 | `runs/full400/` * | simulated dataset: 400 machines × 365 days (seed 7), with `validate_report.txt`, `baseline_report.txt`/`baseline_results.json` and `plots/` |
 | `runs/bins25/` * | small dataset with the same format: 25 machines × 365 days (seed 7), for development |
 | `models/full400/` * | **trained soft sensor** for `runs/full400`: `time/` and `bins/` bundles, `metrics.json`, `REPORT.md`, plots, cardboard machines-needed curve |

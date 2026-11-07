@@ -4,8 +4,8 @@ from __future__ import annotations
 from html import escape
 from pathlib import Path
 
-from site_common import (GOOD_PCT, SPLIT_LABEL, Build, dig, figures, h2, h3, load_json, note, num, p, pct_of, raw_table,
-                         table, term)
+from site_common import (GOOD_PCT, SPLIT_LABEL, Build, dig, figures, h2, h3, load_csv, load_json, note, num, p, pct_of,
+                         raw_table, table, term)
 from site_glossary import LADDER_STEPS
 
 MATERIALS = ("cardboard", "paper", "plastic_film", "mixed_waste")
@@ -152,32 +152,31 @@ def breakdowns(metrics: dict | None) -> str:
                          escape(num(c.get("mean_pct"))), escape(num(c.get("n"), 0))])
             classes.append("")
     return (h3("Error breakdowns", "res-breakdowns")
-            + p("Mean % error at lift of the selected model by machine and situation. Open hoppers, DUO units and cycles "
-                "with a false-full episode are harder; rain in the week before the lift changes little, which means the "
-                "weather features absorb most of the moisture effect.")
+            + p("Mean % error at lift of the selected model by machine and situation. Cycles with a false-full episode are "
+                "clearly harder; open hoppers and DUO units are somewhat harder on unseen machines but not on known ones; "
+                "rain in the week before the lift changes little, i.e. the weather features absorb most of the moisture effect.")
             + raw_table(["group", "same machines, later months: mean %", "n", "unseen machines: mean %", "n"], rows,
                         row_class=classes, caption="Error at lift by infeed, drainage, equipment class, container size, "
                         "false-full episodes and recent rain."))
 
 
 # ---------------------------------------------------------------- 3.6 learning curve
-def learning(metrics: dict | None, pngs: dict[str, Path]) -> str:
+def learning(b: Build, model_run: Path, metrics: dict | None, pngs: dict[str, Path]) -> str:
     sp = dig(metrics, "splits", "bins") or {}
-    lc = sp.get("learning_curve") or []
-    if not lc:
+    df = load_csv(b, model_run / "learning_curve.csv")
+    if df is None or not {"n_machines", "material", "mean_pct"} <= set(df.columns):
         return h3("Learning curve", "res-learning") + note("No learning curve available.")
-    mats = [m for m in MATERIALS if m in (lc[0].get("by_material") or {})]
-    rows = [[str(x["n_machines"]), str(x.get("repeats", "–")), num(dig(x, "overall", "mean_pct"))]
-            + [num(dig(x, "by_material", m, "mean_pct")) for m in mats] for x in lc]
-    full = dig(sp, "ladder", "full_shared")
+    piv = df.pivot_table(index="n_machines", columns="material", values="mean_pct", aggfunc="first")
+    mats = [m for m in MATERIALS if m in piv.columns]
+    repeats = {x["n_machines"]: x.get("repeats") for x in sp.get("learning_curve") or []}
     n_all = sp.get("n_train_machines")
-    if full and n_all and all(x["n_machines"] < n_all for x in lc):
-        rows.append([f"{n_all} (all)", "1", num(dig(full, "overall", "mean_pct"))] + [num(dig(full, "by_material", m, "mean_pct")) for m in mats])
-    vals = [(x["n_machines"], dig(x, "overall", "mean_pct")) for x in lc]
-    ref = dig(full, "overall", "mean_pct") if full else vals[-1][1]
-    near = next((n for n, v in vals if v is not None and ref is not None and v <= ref + 0.5), None)
-    text = p(f"Shared model trained on random subsets of the training machines of the unseen-machines split and tested on "
-             f"its {sp.get('n_test_machines', '–')} test machines. Small sizes are repeated with different machine draws. "
+    rows = [[f"{n} (all)" if n == n_all else str(n), str(repeats.get(n, 1)), num(piv.at[n, "all"]) if "all" in piv.columns else "–"]
+            + [num(piv.at[n, m]) for m in mats] for n in piv.index]
+    vals = [(int(n), float(piv.at[n, "all"])) for n in piv.index] if "all" in piv.columns else []
+    ref = vals[-1][1] if vals else None
+    near = next((n for n, v in vals if ref is not None and v <= ref + 0.5), None)
+    text = p(f"Shared model trained on random subsets of the {n_all or '–'} training machines of the unseen-machines split and "
+             f"tested on its {sp.get('n_test_machines', '–')} test machines. Small sizes are repeated with different machine draws. "
              + (f"The smallest size within 0.5 pp of the all-machines value ({num(ref)} %) is {near} machines; "
                 f"the largest gain is from {vals[0][0]} to {vals[1][0]} machines ({num(vals[0][1])} → {num(vals[1][1])} %)."
                 if near and len(vals) > 1 else "")
@@ -245,6 +244,6 @@ def results(b: Build, metrics: dict | None, model_run: Path, sim_run: Path, pngs
     stats = load_json(b, model_run / "predict_stats.json")
     head = '<section id="sec-results">' + h2("Results and evaluation", "results")   # numbering: heading first
     body = (split_results(metrics, pngs) + ladder(metrics, pngs) + selection(metrics) + intervals(metrics, pngs)
-            + breakdowns(metrics) + learning(metrics, pngs) + curves_and_target(metrics, pngs) + compute(metrics, stats)
+            + breakdowns(metrics) + learning(b, model_run, metrics, pngs) + curves_and_target(metrics, pngs) + compute(metrics, stats)
             + early_baseline(b, sim_run)) if metrics else note("No evaluation metrics available at build time.")
     return head + body + "</section>"

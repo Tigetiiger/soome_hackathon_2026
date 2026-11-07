@@ -93,6 +93,12 @@ def row_ranges(bin_ids: pd.Series) -> dict:
     return {str(values[s]): (int(s), int(e)) for s, e in zip(starts, stops)} if len(values) else {}
 
 
+def cycle_ids(bin_ids: np.ndarray, lift_event: np.ndarray) -> np.ndarray:
+    """Id of (machine, cycle): a new cycle starts at each lift row (same rule as weight_train.features)."""
+    new_bin = np.concatenate([[True], bin_ids[1:] != bin_ids[:-1]]) if len(bin_ids) else np.array([], bool)
+    return np.cumsum(new_bin | (lift_event == 1))
+
+
 def hours_since_lift(bin_ids: np.ndarray, lift_event: np.ndarray) -> np.ndarray:
     """Hours since the last lift_event row of the same machine (0 on the lift hour, NaN before any)."""
     n = len(lift_event)
@@ -173,8 +179,11 @@ def load_batch(settings: Settings, since: pd.Timestamp) -> pd.DataFrame | None:
 
 def build_grid(telemetry: pd.DataFrame, truth: pd.DataFrame, batch: pd.DataFrame,
                replay_start: pd.Timestamp) -> FleetGrid:
-    hsl = hours_since_lift(telemetry["bin_id"].to_numpy(), telemetry["lift_event"].fillna(0).to_numpy())
-    fill = telemetry["fill_pct"].groupby(telemetry["bin_id"].to_numpy()).ffill().to_numpy()
+    bin_ids = telemetry["bin_id"].to_numpy()
+    lift = telemetry["lift_event"].fillna(0).to_numpy()
+    hsl = hours_since_lift(bin_ids, lift)
+    # forward-fill dropouts within a cycle only (as the model's fill_ffill): never carry a pre-emptying fill over
+    fill = telemetry["fill_pct"].groupby(cycle_ids(bin_ids, lift)).ffill().to_numpy()
     base = pd.DataFrame({"bin_id": telemetry["bin_id"].to_numpy(), "ts": telemetry["ts"].to_numpy(),
                          "fill": fill, "hsl": hsl, "truth": truth["true_mass_kg"].to_numpy()
                          if "true_mass_kg" in truth else np.nan})
@@ -202,7 +211,9 @@ def load_all(settings: Settings, score_batch) -> SensorData:
     since = (replay_start - pd.Timedelta(days=settings.lookback_days)).normalize()
     telemetry, truth = load_telemetry(settings, since)
     strokes = load_strokes(settings, since)
-    batch = load_batch(settings, replay_start)
+    # predictions.parquet is written by `weight_train predict` with its default (time) bundle; for any other
+    # split re-score with the configured bundle so live and batch values come from the same model
+    batch = load_batch(settings, replay_start) if settings.split == "time" else None
     source = "predictions.parquet (batch job)"
     if batch is None:
         batch = score_batch(telemetry, strokes)

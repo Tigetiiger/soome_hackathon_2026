@@ -105,8 +105,9 @@ def model_caveats(metrics: dict | None, summary: dict | None, cfg: dict | None, 
     bias_t, bias_u = dig(time_, "final", "lift", "overall", "bias_kg"), dig(bins_, "final", "lift", "overall", "bias_kg")
     if bias_t is not None:
         items.append(f"<strong>Small negative bias.</strong> The estimate at lift is on average {num(bias_t, 0)} kg "
-                     f"({SPLIT_LABEL['time']}) and {num(bias_u, 0)} kg ({SPLIT_LABEL['bins']}) below the true mass: the fullest hour "
-                     "of a cycle is where pressure saturates at the relief valve and the training distribution thins out.")
+                     f"({SPLIT_LABEL['time']}) and {num(bias_u, 0)} kg ({SPLIT_LABEL['bins']}) below the true mass. A plausible reason, not "
+                     "verified here, is that the fullest hour of a cycle is where the pressure saturates at the relief valve "
+                     "and where the training data are thinnest.")
     ff = dig(time_, "breakdowns", "false_full_in_cycle") or {}
     if ff:
         items.append(f"<strong>False-full episodes hurt.</strong> {pct_of((summary or {}).get('false_full_lift_share'))} % of all "

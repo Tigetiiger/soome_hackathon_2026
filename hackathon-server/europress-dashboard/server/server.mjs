@@ -32,6 +32,8 @@ const SENSOR_PARAM_RE = /^[0-9A-Za-z:+.\-]{1,40}$/;
 const SENSOR_TIMEOUT_MS = 15_000;
 const SENSOR_RATE_WINDOW_MS = 60_000;
 const SENSOR_RATE_MAX = Number(process.env.SENSOR_RATE_MAX || 300); // per IP per minute (replay ≈ 2 req/s)
+const SENSOR_MAX_IN_FLIGHT = Number(process.env.SENSOR_MAX_IN_FLIGHT || 12); // global, across all clients
+let sensorInFlight = 0;
 
 const MIME = {
   ".html": "text/html; charset=utf-8", ".js": "text/javascript; charset=utf-8", ".css": "text/css; charset=utf-8",
@@ -281,6 +283,11 @@ const sensorError = (res, code, error) =>
 function proxySensor(req, res, url) {
   if (!SENSOR_PATH_RE.test(url.pathname)) return sensorError(res, 404, "not found");
   if (sensorLimited(clientIp(req))) return sensorError(res, 429, "too many requests — slow the replay down");
+  if (sensorInFlight >= SENSOR_MAX_IN_FLIGHT) return sensorError(res, 503, "soft-sensor service busy — try again shortly");
+  sensorInFlight += 1;
+  let released = false;
+  const done = () => { if (!released) { released = true; sensorInFlight -= 1; } };
+  res.on("close", done);
   const query = new URLSearchParams();
   for (const name of SENSOR_PARAMS) {
     const v = url.searchParams.get(name);

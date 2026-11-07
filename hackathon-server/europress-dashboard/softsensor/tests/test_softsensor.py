@@ -18,14 +18,15 @@ import pytest
 from softsensor.__main__ import build_api
 from softsensor.api import ApiError, make_handler
 from softsensor.config import Settings
-from softsensor.stores import PUBLIC_MACHINE_COLUMNS, hours_since_lift, row_ranges
+from softsensor.stores import PUBLIC_MACHINE_COLUMNS, build_grid, cycle_ids, hours_since_lift, row_ranges
 
 DEV = dataclasses.replace(Settings.from_env(), run="bins25", models="bins25")
-pytestmark = pytest.mark.skipif(not (DEV.run_dir / "hourly.parquet").is_file(), reason="bins25 dev run missing")
 
 
 @pytest.fixture(scope="module")
 def api():
+    if not (DEV.run_dir / "hourly.parquet").is_file():
+        pytest.skip(f"dev run missing: {DEV.run_dir} (set SOFTSENSOR_SIM_ROOT)")
     return build_api(DEV)
 
 
@@ -57,6 +58,22 @@ def test_hours_since_lift_resets_per_machine():
     out = hours_since_lift(bins, lift)
     assert np.isnan(out[0]) and list(out[1:4]) == [0, 1, 2]
     assert np.isnan(out[4]) and np.isnan(out[5]) and out[6] == 0
+
+
+def test_cycle_ids_start_at_lifts_and_machines():
+    bins = np.array(["A", "A", "A", "B", "B"])
+    assert list(cycle_ids(bins, np.array([0, 1, 0, 0, 1]))) == [1, 2, 2, 3, 4]
+
+
+def test_grid_fill_is_not_carried_over_an_emptying():
+    ts = pd.date_range("2026-07-01", periods=4, freq="h", tz="Europe/Helsinki")
+    tel = pd.DataFrame({"bin_id": ["A"] * 4, "ts": ts, "fill_pct": [90.0, np.nan, np.nan, 5.0], "lift_event": [0, 0, 1, 0]})
+    truth = pd.DataFrame({"bin_id": ["A"] * 4, "ts": ts, "true_mass_kg": [1.0] * 4})
+    batch = pd.DataFrame({"bin_id": ["A"] * 4, "ts": ts, "mass_pred_kg": 1.0, "mass_p10_kg": 1.0, "mass_p90_kg": 1.0})
+    g = build_grid(tel, truth, batch, ts[0])
+    assert g.fill[0, 1] == 90.0           # dropout inside the cycle: forward-filled
+    assert np.isnan(g.fill[0, 2])         # emptied: the old 90 % must not leak into the new cycle
+    assert g.fill[0, 3] == 5.0
 
 
 # ------------------------------------------------------------------ data hygiene
@@ -115,6 +132,10 @@ def test_parse_at_validates_and_floors(api):
     assert bad.value.status == 400
     with pytest.raises(ApiError):
         api.parse_at({"at": ["2020-01-01T00:00:00+02:00"]})
+    for dst in ("2026-10-25T03:30:00", "2026-03-29T03:30:00"):   # ambiguous / non-existent local time
+        with pytest.raises(ApiError) as err:
+            api.parse_at({"at": [dst]})
+        assert err.value.status == 400
 
 
 def test_parse_hours_bounds(api):

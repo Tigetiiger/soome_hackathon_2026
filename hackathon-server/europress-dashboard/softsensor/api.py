@@ -12,15 +12,16 @@ from __future__ import annotations
 import json
 import logging
 import re
+import threading
 import time
-from dataclasses import dataclass
+from dataclasses import dataclass, field
 from http.server import BaseHTTPRequestHandler, ThreadingHTTPServer
 from urllib.parse import parse_qs, urlsplit
 
 import numpy as np
 import pandas as pd
 
-from .engine import LiveEngine
+from .engine import BusyError, LiveEngine
 from .stores import TZ, SensorData
 
 log = logging.getLogger(__name__)
@@ -58,6 +59,8 @@ class SensorApi:
     data: SensorData
     engine: LiveEngine
     model_info: dict
+    _fleet_cache: dict = field(default_factory=dict)
+    _fleet_lock: threading.Lock = field(default_factory=threading.Lock)
 
     # ------------------------------------------------------------------ parsing
     def parse_at(self, query: dict) -> pd.Timestamp:
@@ -66,9 +69,10 @@ class SensorApi:
             return self.data.replay_start
         try:
             at = pd.Timestamp(raw)
+            # ambiguous/non-existent local times (DST) raise here too -> 400, not 500
+            at = (at.tz_localize(TZ) if at.tzinfo is None else at.tz_convert(TZ)).floor("h")
         except (ValueError, TypeError) as exc:
-            raise ApiError(400, "at: not an ISO timestamp") from exc
-        at = (at.tz_localize(TZ) if at.tzinfo is None else at.tz_convert(TZ)).floor("h")
+            raise ApiError(400, "at: not a valid ISO timestamp") from exc
         if not (self.data.replay_start <= at <= self.data.replay_end):
             raise ApiError(400, f"at: outside the replay window {self.data.replay_start.isoformat()} … "
                                 f"{self.data.replay_end.isoformat()}")
@@ -99,6 +103,15 @@ class SensorApi:
 
     def fleet(self, query: dict) -> dict:
         at = self.parse_at(query)
+        with self._fleet_lock:   # deterministic per hour: memoise (2190 hours max)
+            cached = self._fleet_cache.get(at.value)
+        if cached is None:
+            cached = self._fleet_at(at)
+            with self._fleet_lock:
+                self._fleet_cache[at.value] = cached
+        return cached
+
+    def _fleet_at(self, at: pd.Timestamp) -> dict:
         g = self.data.grid
         j = g.hour_index(at)
         m = self.data.machines.set_index("bin_id").reindex(g.bins)
@@ -140,6 +153,8 @@ class SensorApi:
             live = self.engine.estimate(bin_id, at)
         except LookupError as exc:
             raise ApiError(404, str(exc)) from exc
+        except BusyError as exc:
+            raise ApiError(503, "model busy — try again shortly") from exc
         info = self.data.machines.set_index("bin_id").loc[bin_id]
         return {
             "at": at.isoformat(),
@@ -149,7 +164,7 @@ class SensorApi:
             "now": {"fill_pct": _r(g.fill[i, j]), "hours_since_lift": _r(g.hours_since_lift[i, j], 0)},
             "truth_kg": _r(g.truth[i, j]),
             "series": {
-                "t": [int(x) for x in (g.hours[span].asi8 // 1_000_000)],
+                "t": [int(x) for x in (g.hours[span].as_unit("ns").asi8 // 1_000_000)],
                 "mass_kg": _arr(g.pred[i, span]), "p10_kg": _arr(g.p10[i, span]), "p90_kg": _arr(g.p90[i, span]),
                 "fill_pct": _arr(g.fill[i, span]), "truth_kg": _arr(g.truth[i, span]),
             },
@@ -167,7 +182,7 @@ class SensorApi:
             j = g.hour_index(row.ts - pd.Timedelta(hours=1))
             if j is None:
                 continue
-            out.append({"ts": row.ts.isoformat(), "t": int(row.ts.value // 1_000_000), "trigger": row.trigger,
+            out.append({"ts": row.ts.isoformat(), "t": int(row.ts.as_unit("ns").value // 1_000_000), "trigger": row.trigger,
                         "pred_kg": _r(g.pred[i, j]), "p10_kg": _r(g.p10[i, j]), "p90_kg": _r(g.p90[i, j]),
                         "weighbridge_kg": _r(row.weighbridge_net_kg),
                         "truth_kg": _r(getattr(row, "true_mass_removed_kg", np.nan))})

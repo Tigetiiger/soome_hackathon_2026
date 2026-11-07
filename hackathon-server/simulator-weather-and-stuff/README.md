@@ -309,7 +309,7 @@ weather adds almost nothing measurable.
 * Truck logistics are simple (independent random delay, no route capacity). Lifts during
   telemetry outages still happen. Orders use only valid readings.
 * Overflow is reduced but not gone. Fast sites still overfill before the truck arrives:
-  side waste is 3.0 % of inflow, 20 % of lifts had some side waste since the previous
+  side waste is 2.6 % of inflow, 18 % of lifts had some side waste since the previous
   lift, and 13 % of lifts found the container at ≥ 99 % true fill.
 * The fill ceiling differs slightly by material. Right after a stroke the pack is
   compressed by the springback and relaxes over about 3 h, so the reported true fill of a
