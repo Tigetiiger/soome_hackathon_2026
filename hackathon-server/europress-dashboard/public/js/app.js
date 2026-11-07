@@ -7,17 +7,18 @@ import { initAi, openAi, setAskContext } from "./ask.js";
 import { renderOperator } from "./operator.js";
 import { renderAccount, initials } from "./account.js";
 import { FAQ, METHOD } from "./faq.js";
-import { renderMachinesNow } from "./machines.js";
+import { renderMachinesNow, machineNames } from "./machines.js";
+import { renderCustomerWeight, renderWeightHero, titleFor } from "./sensor/customer.js";
 import { renderTrends } from "./trends.js";
 import { renderAnswers } from "./answers.js";
 import { renderWeightModel } from "./weightmodel.js";
 import { renderSensor, stopLive, SENSOR_VIEWS, isSensorView } from "./sensor/index.js";
 
 const el = (id) => document.getElementById(id);
-const VIEWS = ["overview", "savings", "machines", "contracts", "weight", "trends", "account", "operators", "faq",
+const VIEWS = ["overview", "savings", "machines", "machine", "contracts", "weight", "trends", "account", "operators", "faq",
   "ep-overview", "ep-pipeline", "ep-fleet", "ep-data", ...SENSOR_VIEWS];
 const WS_HOME = { customer: "#overview", europress: "#ep-overview", partners: "#operators" };
-const NAV_KEY = { overview: "title.overview", savings: "nav.savings", machines: "nav.machines", contracts: "nav.operators",
+const NAV_KEY = { overview: "title.overview", savings: "nav.savings", machines: "nav.machines", machine: "nav.machines", contracts: "nav.operators",
   weight: "nav.weight", trends: "nav.trends", advisor: "nav.advisor", account: "account.details", operators: "title.operator", faq: "title.faq",
   "ep-overview": "title.ep.overview", "ep-pipeline": "title.ep.pipeline", "ep-fleet": "title.ep.fleet", "ep-data": "title.ep.data",
   "ep-sensor": "title.ep.sensor", "ep-sensor-check": "title.ep.sensor-check", "ep-sensor-model": "title.ep.sensor-model", "ep-sensor-how": "title.ep.sensor-how" };
@@ -246,9 +247,21 @@ function toggleMenu(open) {
   if (show) el("customerSelect").focus();
 }
 
+// ---------------------------------------------------------------- weight (first), per-machine weight page
+const DAY_FMT = (iso) => (iso === state.customer?.machines_now?.[0]?.as_of ? t("m.today") : date(iso));
+
+function renderMachinePage(p, deviceId) {
+  const m = p.machines_now.find((x) => x.device_id === deviceId);
+  if (!m) { location.hash = "#machines"; return; }
+  const name = machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))).get(deviceId);
+  el("pageTitle").textContent = titleFor(name);
+  const eurPerT = p.devices.find((d) => d.device_id === deviceId)?.eur_per_t ?? null;
+  renderCustomerWeight(el("machineWeight"), m, { name, eurPerT, dayLabel: DAY_FMT });
+}
+
 // ---------------------------------------------------------------- routing
 const RENDER = {
-  overview: (p) => { renderKpis(p); renderAnswers(p); renderHowSave(p); renderProblems(p);
+  overview: (p) => { renderWeightHero(el("weightHero"), p, DAY_FMT); renderKpis(p); renderAnswers(p); renderHowSave(p); renderProblems(p);
     renderMachinesNow(el("machinesNowOverview"), p.machines_now, { limit: 4, mode: "compact" }); },
   savings: (p) => { renderSavings(p);
     costChart(p, (s) => openTrace(costStreamTrace(p, s), `${t("card.cost")} · ${stream(s)}`, `monthly.cost_by_stream.${s}`)); },
@@ -271,7 +284,7 @@ async function route() {
   document.querySelectorAll(".ws button").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.ws === state.ws)));
   document.querySelectorAll(".navitem").forEach((a) => {
     const href = a.getAttribute("href");
-    if (href === `#${view}` || (isSensorView(view) && href === "#ep-sensor")) a.setAttribute("aria-current", "page");
+    if (href === `#${view}` || (isSensorView(view) && href === "#ep-sensor") || (view === "machine" && href === "#machines")) a.setAttribute("aria-current", "page");
     else a.removeAttribute("aria-current");
   });
   el("customerPick").classList.toggle("hidden", state.ws !== "customer" || view === "faq");
@@ -299,7 +312,8 @@ async function route() {
   } else if (view === "faq") renderFaq();
   else {
     setAskContext({ view: "customer", id: state.customer.customer.id, page: view, name: state.customer.customer.name });
-    RENDER[view]?.(state.customer);
+    if (view === "machine") renderMachinePage(state.customer, decodeURIComponent(arg || ""));
+    else RENDER[view]?.(state.customer);
   }
 }
 

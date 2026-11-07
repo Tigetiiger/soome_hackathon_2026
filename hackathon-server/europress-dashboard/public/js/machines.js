@@ -7,6 +7,8 @@ import { openAi } from "./ask.js";
 import { getWeightModel } from "./weightmodel.js";
 import { addStrings } from "./i18n.js";
 import { mountShaderFill } from "./shader/runtime.js";
+import { weightsNow, cardWeightLink } from "./sensor/customer.js";
+import { MATERIALS as SENSOR_MATERIALS } from "./sensor/api.js";
 import { setup as gradientSetup, render as gradientRender, manifest as gradientManifest } from "./shader/moving-gradient.js";
 
 /** "Ask the SMART assistant" fill — parameters exactly as in the Figma design (node 16:343). */
@@ -176,7 +178,7 @@ const fillChip = (m) => chip(`${fmt(m.fill_now)}&nbsp;%`, `${m.device_id}: ${fmt
 const SPARKLE = '<img class="rt-spark" src="/img/figma/cc0e4.svg" width="176" height="20" alt="">';
 
 /** "Cardboard 1", "Cardboard 2" … when a customer has several machines of one stream. */
-function machineNames(rows) {
+export function machineNames(rows) {
   const total = {}, seen = {};
   rows.forEach((m) => { total[m.stream] = (total[m.stream] || 0) + 1; });
   return new Map(rows.map((m) => {
@@ -212,7 +214,9 @@ function rtCard(m, name, { full = false } = {}) {
     </header>
     <div class="rt-fig">${compactorSvg(m)}</div>
     <div class="rt-fill">${fillChip(m)}${typeTag(m)}</div>
-    ${kg != null ? `<p class="rt-weight">${esc(t("rt.weight", { kg: fmt(kg) }))}</p>` : ""}
+    ${SENSOR_MATERIALS.includes(m.stream)
+      ? `<div class="rt-wrow"><p class="rt-weight" data-w="${esc(m.device_id)}">${kg != null ? esc(t("rt.weight", { kg: fmt(kg) })) : ""}</p>${cardWeightLink(m.device_id)}</div>`
+      : kg != null ? `<p class="rt-weight">${esc(t("rt.weight", { kg: fmt(kg) }))}</p>` : ""}
     <div class="rt-next">${TRUCK_ICON}<div>${plainNext(m).map((l) => `<p>${esc(l)}</p>`).join("")}</div></div>
     ${full && m.operator ? `<p class="rt-op">${esc(howScheduled(m))} · ${esc(m.operator)}${m.operator_on_time_pct != null ? ` · ${esc(t("mv.onTime", { pct: fmt(m.operator_on_time_pct) }))}` : ""}</p>` : ""}
     <button type="button" class="rt-ask" data-ask="${esc(m.device_id)}">
@@ -278,4 +282,11 @@ export function renderMachinesNow(container, list, { limit = Infinity, mode = "d
     b.addEventListener("click", () => openAi(askQuestion(m, names.get(m.device_id)), `machines.${m.device_id}`));
   });
   container.querySelectorAll("canvas.rt-shader").forEach((c) => mountShaderFill(c, ASK_SHADER));
+  // live weight from the soft sensor replaces the placeholder estimate when the model service answers
+  if (container.querySelector("[data-w]")) {
+    weightsNow(list).then((w) => container.querySelectorAll("[data-w]").forEach((p) => {
+      const row = w.get(p.dataset.w);
+      if (row?.mass_kg != null) p.textContent = t("rt.weight", { kg: fmt(row.mass_kg) });
+    })).catch(() => { /* model service offline: keep the placeholder weight */ });
+  }
 }
