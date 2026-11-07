@@ -728,8 +728,9 @@ def customer_payload(D, cid, bench, fleet_dd):
     credits = -lines[lines.line_type == "MATERIAL_CREDIT"].amount_eur.sum()
 
     early, avoid, early_by_device = lever_early_lifts(lifts, lines)
-    levers = [early, lever_fees(lines), lever_sorting(cid, lines, t_m, fleet_dd, bench),
-              lever_tender(cid, fleet_dd, bench, early_by_device), lever_invoice_check(D, ev, lines)]
+    # Operators are Europress's partners: no tender or invoice-dispute levers in the customer's savings.
+    # The customer sees what SMART itself changes (pickup timing, fees, sorting) — never a verdict on the operator.
+    levers = [early, lever_fees(lines), lever_sorting(cid, lines, t_m, fleet_dd, bench)]
     levers.sort(key=lambda x: -(x["saving_eur"] or 0))
     total_saving = sum(l["saving_eur"] or 0 for l in levers)
 
@@ -778,8 +779,8 @@ def customer_payload(D, cid, bench, fleet_dd):
                            sample(lifts.sort_values("device_fill_pct_before"), LIFT_COLS), n=0),
         "lifts": traced(len(lifts), "lifts", "count of completed + partial lifts", "valmiiden ja osittaisten tyhjennysten määrä",
                         ["events"], sample(ev.sort_values("actual_at"), ["collection_id", "device_id", "trigger_type", "status", "actual_at"]), n=0),
-        "savings": traced(total_saving, "EUR/yr", "Σ of the five savings levers below (each one is clickable)",
-                          "Σ alla olevista viidestä säästövivusta (jokainen avattavissa)", ["lines", "events", "devices", "versions"], None,
+        "savings": traced(total_saving, "EUR/yr", "Σ of the three savings levers below (each one is clickable)",
+                          "Σ alla olevista kolmesta säästövivusta (jokainen avattavissa)", ["lines", "events", "devices", "versions"], None,
                           "Estimates on synthetic data; prices are hypothetical", 0),
         "co2": traced(trips_km * CO2_KG_PER_KM / 1000, "t CO₂", f"Σ truck trips × billable round-trip km × {CO2_KG_PER_KM} kg CO₂/km",
                       f"Σ kuorma-autokäynnit × laskutettava edestakainen km × {CO2_KG_PER_KM} kg CO₂/km", ["events", "sites"], None,

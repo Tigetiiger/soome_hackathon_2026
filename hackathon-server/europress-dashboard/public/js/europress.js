@@ -38,7 +38,7 @@ export function renderEpPipeline(f, onOpenCustomer) {
     <tbody>${f.pipeline.map((c, i) => `<tr class="click" data-i="${i}" tabindex="0">
       <td class="strong">${esc(c.name)}<span class="desc">${esc(sector(c.sector))}</span></td>
       <td class="num">${c.devices}</td><td class="num strong">${eur(c.savings)}</td><td class="num">${eur(c.fee)}</td>
-      <td class="num">${fmt(c.multiple, 1)}×</td><td>${esc(t(`lever.${c.top_lever}`))}</td>
+      <td class="num">${eur(c.keeps)}</td><td>${esc(t(`lever.${c.top_lever}`))}</td>
       <td>${c.next_notice ? `<span class="state" data-state="${new Date(c.next_notice) < soon ? "bad" : "mute"}">${esc(date(c.next_notice))}</span>` : "–"}</td></tr>`).join("")}</tbody>`;
   tbl.querySelectorAll("tr.click").forEach((tr) => {
     const go = () => onOpenCustomer(f.pipeline[Number(tr.dataset.i)].id);

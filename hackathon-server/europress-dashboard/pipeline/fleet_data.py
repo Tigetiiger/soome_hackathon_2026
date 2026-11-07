@@ -8,7 +8,7 @@ import pandas as pd
 
 from build_data import LOW_FILL_PCT, SRC, TODAY, as_of_fields, load, r, sample, traced
 
-SMART_FEE_EUR_PER_DEVICE_MONTH = 12.0  # bundled Verified Weight price [assumption, see business plan]
+SMART_SAVINGS_SHARE = 0.25  # SMART fee = a share of the savings SMART predicts for the customer; set per customer [demo assumption]
 K_ANON_MIN_CUSTOMERS = 5               # publish a material-flow cell only with ≥5 customers
 SRC.setdefault("maintenance", "operations/maintenance_work_orders.parquet")
 SRC.setdefault("price_index", "reference/price_index_monthly.parquet")
@@ -23,7 +23,7 @@ def fleet_kpis(D, payloads):
     active = D["dev"][D["dev"].lifecycle_status == "ACTIVE"]
     spend = sum(p["kpis"]["total_cost"]["value"] or 0 for p in payloads)
     pool = sum(p["kpis"]["savings"]["value"] or 0 for p in payloads)
-    fee_pool = len(active) * SMART_FEE_EUR_PER_DEVICE_MONTH * 12
+    fee_pool = pool * SMART_SAVINGS_SHARE
     cols = ["collection_id", "device_id", "material_stream", "actual_at", "device_fill_pct_before", "device_estimated_collected_kg"]
     return {
         "devices": traced(len(active), "machines", "active compactors and balers in the fleet", "aktiiviset puristimet ja paalaimet",
@@ -33,11 +33,11 @@ def fleet_kpis(D, payloads):
                          "Σ laitteiden arvioimat kg kaikista tyhjennyksistä ÷ 1000", ["events"], sample(lifts.sort_values("actual_at"), cols), n=0),
         "spend": traced(spend, "EUR", "Σ customers' invoiced waste-management cost, 12 months", "Σ asiakkaiden laskutetut jätehuoltokulut, 12 kk",
                         ["invoices", "lines"], None, n=0),
-        "savings_pool": traced(pool, "EUR/yr", "Σ savings potential of all customers (five levers each)", "Σ kaikkien asiakkaiden säästöpotentiaali (viisi vipua)",
+        "savings_pool": traced(pool, "EUR/yr", "Σ savings potential of all customers (three levers each)", "Σ kaikkien asiakkaiden säästöpotentiaali (kolme vipua)",
                                ["lines", "events", "devices"], None, "Synthetic data; prices hypothetical", 0),
-        "fee_pool": traced(fee_pool, "EUR/yr", f"active machines × €{SMART_FEE_EUR_PER_DEVICE_MONTH:.0f} / month × 12 (Verified Weight bundled price)",
-                           f"aktiiviset laitteet × {SMART_FEE_EUR_PER_DEVICE_MONTH:.0f} € / kk × 12 (Verified Weight -pakettihinta)", ["devices"], None,
-                           "Price is a business-plan assumption, not a Europress price", 0),
+        "fee_pool": traced(fee_pool, "EUR/yr", f"Σ customers' predicted savings × {SMART_SAVINGS_SHARE:.0%} (SMART fee = a share of what it saves)",
+                           f"Σ asiakkaiden ennustetut säästöt × {SMART_SAVINGS_SHARE:.0%} (SMART-maksu = osuus säästöstä)", ["lines", "events", "devices"], None,
+                           "The share is agreed per customer; 25 % is a demo assumption, not a Europress price", 0),
         "avg_fill": traced(lifts.device_fill_pct_before.mean(), "%", "mean fill at emptying across the fleet", "laitekannan keskimääräinen täyttöaste tyhjennettäessä",
                            ["events"], sample(lifts.sort_values("device_fill_pct_before"), cols), n=0),
         "early_share": r((lifts.device_fill_pct_before < LOW_FILL_PCT).mean() * 100),
@@ -49,11 +49,11 @@ def sales_pipeline(payloads):
     rows = []
     for p in payloads:
         n = p["customer"]["n_devices"]
-        fee = n * SMART_FEE_EUR_PER_DEVICE_MONTH * 12
         sav = p["kpis"]["savings"]["value"] or 0
+        fee = sav * SMART_SAVINGS_SHARE
         notices = sorted(c["notice_by"] for c in p["account"]["contracts"])
         rows.append({"id": p["customer"]["id"], "name": p["customer"]["name"], "sector": p["customer"]["sector"], "devices": n,
-                     "cost": p["kpis"]["total_cost"]["value"], "savings": sav, "fee": r(fee, 0), "multiple": r(sav / fee if fee else None, 1),
+                     "cost": p["kpis"]["total_cost"]["value"], "savings": sav, "fee": r(fee, 0), "keeps": r(sav - fee, 0),
                      "top_lever": p["levers"][0]["id"], "avg_fill": p["kpis"]["avg_fill"]["value"],
                      "next_notice": notices[0] if notices else None})
     rows.sort(key=lambda x: -(x["savings"] or 0))
@@ -161,10 +161,7 @@ def sales_alerts(payloads):
         if mixed and mixed.get("a") and mixed.get("b") and mixed["b"] > mixed["a"] * 1.1:
             out.append({"type": "recycling", "value": lev.get("sorting", 0), "a": mixed["a"], "b": mixed["b"],
                         "customer": c["id"], "name": c["name"], "devices": c["n_devices"]})
-        soon = [o for o in p.get("operators", []) if TODAY <= pd.Timestamp(o["notice_by"]) < TODAY + pd.DateOffset(days=90)]
-        if soon:
-            out.append({"type": "tender", "value": lev.get("tender", 0), "date": min(o["notice_by"] for o in soon), "op": soon[0]["name"].replace(" (fictional)", ""),
-                        "customer": c["id"], "name": c["name"], "devices": c["n_devices"]})
+        # No "contract window / tender" alert: operators are Europress's partners.
         full_h = next((a["p"]["full_h"] for a in p.get("answers", []) if a["id"] == "safety"), 0)
         if full_h > 200:
             out.append({"type": "capacity", "value": 0, "hours": full_h, "customer": c["id"], "name": c["name"], "devices": c["n_devices"]})
@@ -181,6 +178,6 @@ def fleet_payload(D, payloads):
         "maintenance": maintenance(D),
         "period": as_of_fields(),
         "data_products": data_products(D),
-        "assumptions": {"fee_eur_per_device_month": SMART_FEE_EUR_PER_DEVICE_MONTH, "k_anon_min_customers": K_ANON_MIN_CUSTOMERS,
+        "assumptions": {"fee_share_of_savings": SMART_SAVINGS_SHARE, "k_anon_min_customers": K_ANON_MIN_CUSTOMERS,
                         "today": str(TODAY.date())},
     }
