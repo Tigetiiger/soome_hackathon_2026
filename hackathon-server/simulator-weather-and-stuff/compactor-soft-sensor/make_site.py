@@ -2,7 +2,8 @@
 
 Re-runnable: only includes inputs that exist at build time. Sections live in site_overview.py (1), site_model.py (2),
 site_results.py (3), site_curve.py (4), site_sections.py (5), site_limits.py (6), site_extras.py (7 + footer) and
-site_glossary.py (8 + tooltips); helpers in site_common.py and site_style.py.
+site_glossary.py (8 + tooltips); the figure gallery at the top and the figure descriptions in site_gallery.py; helpers in
+site_common.py and site_style.py. Run make_hires_plots.py first to (re)create the hi-res twins opened by the image viewer.
 
     .venv/bin/python make_site.py [--model-run models/full400]
 """
@@ -16,9 +17,10 @@ from datetime import datetime
 from html import escape
 from pathlib import Path
 
-from site_common import IMG, ROOT, SITE, Build, copy_plots, dig, load_json, load_yaml, page
+from site_common import FIGURES, IMG, ROOT, SITE, Build, clear_hires, copy_plots, dig, load_json, load_yaml, page
 from site_curve import material_curve_section
 from site_extras import downloads_section, footer, prepare_downloads
+from site_gallery import FALLBACKS, configure, gallery
 from site_glossary import build_glossary, glossary_section, wrap_terms
 from site_limits import limitations
 from site_model import feature_docs, model_inputs
@@ -92,18 +94,21 @@ def build(model_run: Path | None = None) -> Build:
     docs = feature_docs()
     glossary, cats = build_glossary(cfg, docs)
     links = prepare_downloads(b, model_run, SIM_RUN)
+    clear_hires()
+    FIGURES.clear()
+    configure(b, metrics, summary, cfg, model_run, SIM_RUN)
     pngs = {p.stem: p for p in copy_plots(b, model_run / "plots", IMG / "model")}
     sim_pngs = {p.stem: p for p in copy_plots(b, SIM_RUN / "plots", IMG / "sim")}
-    body = (head_block(metrics, model_run)
-            + overview(b, metrics, summary, cfg, pick(pngs, "lift_error_by_material"))
-            + model_inputs(b, metrics, model_run, data_run, docs, pngs)
-            + results(b, metrics, model_run, SIM_RUN, pngs)
-            + material_curve_section(b, model_run)
-            + simulation_detail(b, SIM_RUN, summary, cfg, sim_pngs, links.get("validation"))
-            + limitations(b, metrics, summary, cfg, SIM_RUN)
-            + downloads_section(b)
-            + glossary_section(glossary, cats)
-            + footer(b, model_run, SIM_RUN, metrics))
+    sections = (overview(b, metrics, summary, cfg, pick(pngs, "lift_error_by_material"))
+                + model_inputs(b, metrics, model_run, data_run, docs, pngs)
+                + results(b, metrics, model_run, SIM_RUN, pngs)
+                + material_curve_section(b, model_run)
+                + simulation_detail(b, SIM_RUN, summary, cfg, sim_pngs, links.get("validation"))
+                + limitations(b, metrics, summary, cfg, SIM_RUN)
+                + downloads_section(b)
+                + glossary_section(glossary, cats)
+                + footer(b, model_run, SIM_RUN, metrics))
+    body = head_block(metrics, model_run) + gallery(FIGURES) + sections     # gallery needs every figure: built last
     (SITE / "index.html").write_text(page(TITLE, wrap_terms(body, glossary), toc(body), glossary))
     for name in LEGACY_DIRS:
         if (SITE / name).is_dir():
@@ -125,6 +130,9 @@ def main(argv: list[str] | None = None) -> None:
     logging.info("wrote %s", SITE / "index.html")
     for m in dict.fromkeys(b.missing):
         logging.info("missing at build time: %s", m)
+    logging.info("%d figures, %d with a hi-res twin", len(FIGURES), sum(f.href != f.src for f in FIGURES))
+    for stem in FALLBACKS:
+        logging.warning("figure %s has only a generic description", stem)
 
 
 if __name__ == "__main__":

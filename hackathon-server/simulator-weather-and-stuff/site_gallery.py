@@ -210,7 +210,7 @@ def d_mass_curves(c: Ctx) -> str:
         span = "a few weeks of the test period for example machines"
     return (f"{span[0].upper()}{span[1:]} (same-machines split), one panel each: black line = true mass, coloured line = "
             "hourly estimate, shaded band = p10–p90 interval, triangles = the pre-lift hour compared with the weighbridge. "
-            "The sawtooth rises with loading and drops to near zero at each lift; the estimate tracks it hour by hour. "
+            "The sawtooth rises with loading and drops at each lift; the estimate tracks it hour by hour. "
             f"Over all test hours of this split the mean error is {num(h['mean_pct'])} %, with {pct_of(h['coverage'], 0)} % "
             f"coverage at a mean interval width of {num(h['width_kg'], 0)} kg.")
 
@@ -268,10 +268,12 @@ def d_fill_estimate(c: Ctx) -> str:
     err, err_hi, n = need(f.get("fill_err_pp")), need(f.get("fill_err_hi_pp")), need(f.get("fill_readings"))
     corr = rx(c, r"corr\(pressure-derived fill_pct, true fill\) ([-+]?[\d.]+)")
     level = dig(c.cfg, "sensors", "false_full", "level_pct")
+    if isinstance(level, (list, tuple)):
+        level = "–".join(num(x, 0) for x in level)
     return (f"Density of all {num(n, 0)} hourly readings (log colour scale): x = true fill, y = the firmware's "
             "pressure-derived fill_pct; the dashed white line is a perfect reading. The cloud follows the diagonal "
             f"(correlation {corr.group(1)}) with a mean error of {num(err)} pp, {num(err_hi)} pp at true fill ≥ 30 %"
-            + (f"; the horizontal streak near {level} % is spurious 'full' episodes" if level is not None else "")
+            + (f"; the horizontal band at {level} % reported fill is the spurious 'full' episodes" if level is not None else "")
             + f" — behind {pct_of(dig(c.summary, 'false_full_lift_share'))} % of all lifts.")
 
 
@@ -279,9 +281,12 @@ def d_lifts(c: Ctx) -> str:
     lm = need(dig(c.summary, "lift_mass_by_material"))
     days = rx(c, r"days between lifts: median ([\d.]+), p5 ([\d.]+), p95 ([\d.]+)")
     means = ", ".join(f"{nice(m)} {num(x['mean'] / 1000, 2)} t" for m, x in lm.items())
+    ok = [m for m in lm if re.search(rf"^{m}\s+\d.*\bOK\b", c.report, flags=re.M)]
+    verdict = (" — all inside the target ranges checked by the validation report" if len(ok) == len(lm)
+               else f" — inside the validation targets: {', '.join(nice(m) for m in ok) or 'none'}")
     return (f"Left: histograms of the true lifted mass per material over all {num(c.summary.get('n_lifts'), 0)} lifts "
             "(tonnes); right: days since the previous lift (clipped at 30). "
-            f"Mean lift mass: {means} — all inside the ranges given in the brief. Lifts are typically "
+            f"Mean lift mass: {means}{verdict}. Lifts are typically "
             f"{days.group(1)} days apart (5–95 %: {days.group(2)}–{days.group(3)} days).")
 
 

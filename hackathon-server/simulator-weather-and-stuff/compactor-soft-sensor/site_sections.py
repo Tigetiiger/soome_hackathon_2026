@@ -9,10 +9,12 @@ from pathlib import Path
 import numpy as np
 import pandas as pd
 
-from site_common import (IMG, ROOT, SITE, Build, dig, figures, h2, h3, h4, note, num, p, pct_of, pre, raw_table, sci, table)
+from site_common import (IMG, ROOT, Build, dig, figures, h2, h3, h4, note, num, p, pct_of, pre, raw_table, save_figure, sci,
+                         table)
 
 SHOWN_IN_HYDRAULICS = ("pressure_graph", "pressure_vs_fill")
 GEN = IMG / "gen"                  # site-relative folder for images made by this page
+GEN_DPI = 110                      # inline resolution of those images (the hi-res twin is HIRES_FACTOR x this)
 LIFT_TARGET_T = {"cardboard": "2–3.5", "paper": "2.5–4", "plastic_film": "1.2–2.2", "mixed_waste": "3–6 (assumed)"}
 FILL_BANDS = ((10, 25, "low (10–25 %)", "#2a9d8f"), (45, 60, "medium (45–60 %)", "#c98a00"),
               (85, 100, "high (85–100 %)", "#d62828"))
@@ -269,10 +271,9 @@ def pressure_examples(b: Build, run: Path, cfg: dict) -> list[Path]:
         ax.legend(title="true fill", loc="upper left")
         ax.grid(alpha=0.3)
         fig.tight_layout()
-        (SITE / GEN).mkdir(parents=True, exist_ok=True)
-        fig.savefig(SITE / GEN / "pressure_examples.png", dpi=110)
+        out = save_figure(fig, GEN / "pressure_examples.png", GEN_DPI)
         plt.close(fig)
-        return [GEN / "pressure_examples.png"]
+        return out
     except (OSError, ValueError, KeyError) as exc:
         logging.warning("pressure example plot failed: %s", exc)
         return []
@@ -303,10 +304,9 @@ def fill_error(b: Build, run: Path) -> tuple[str, list[Path]]:
         fig.colorbar(hb, ax=ax, label="hours (log)")
         ax.set(xlabel="true fill (%)", ylabel="reported fill_pct (%)", title="Firmware fill estimate vs truth")
         fig.tight_layout()
-        (SITE / GEN).mkdir(parents=True, exist_ok=True)
-        fig.savefig(SITE / GEN / "fill_estimate.png", dpi=110)
+        out = save_figure(fig, GEN / "fill_estimate.png", GEN_DPI)
         plt.close(fig)
-        return text, [GEN / "fill_estimate.png"]
+        return text, out
     except (OSError, ValueError, KeyError) as exc:
         logging.warning("fill error stats failed: %s", exc)
         return "", []
