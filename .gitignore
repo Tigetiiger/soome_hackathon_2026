@@ -1,0 +1,12 @@
+# Generated data and models (hundreds of MB; regenerate with the commands in README.md)
+runs/
+models/
+site/
+predictions.parquet
+*.log
+
+# Python environment and caches
+.venv/
+__pycache__/
+*.py[cod]
+.pytest_cache/
