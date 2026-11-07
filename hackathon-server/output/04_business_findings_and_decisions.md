@@ -81,12 +81,12 @@ Full source documents are in `business_sources/`.
 
 | Finding | Number |
 |---|---|
-| Lifts with no verifiable weight today | **26%** (one operator shares 0% of tickets). The device estimate covers 95–97% of lifts |
+| Lifts with no verifiable weight today | **26%** (one operator shares 0% of tickets). With the device estimate, **97%** of lifts have at least one independent weight (74% with a ticket today) |
 | Collection spend with no €/t | 11% (€349k) |
 | Mass-billed € that can be verified | **77% → 96%** with device weight |
 | Causes of device-vs-ticket gaps > 10% | Side waste 34%, stale stored tare 30%, combined loads 12%, **device drift only ~4%** → the gaps are explainable, not bad intent |
 | Naive "operator bias" score | Wrongly flags 74% of operator-region-months; cause adjustment cuts the error from 5.5 to 1.2–1.6 pp |
-| Value concentration | Mean ≈ €1,064 per contract-year, but the **median is €0**. Top 5 customers hold 54–75% of value (matches Tommi's 80/20) |
+| Value concentration | Mean ≈ €1,064 per contract-year, but the **median is €0**. The top 5 of all 52 customers hold 54% of realisable value; among the 20 customers with contract-action cases, the top 5 hold 75% (matches Tommi's 80/20) |
 | Billing errors that *need* independent weight | Only ~€8k in 10 months (~€21 per device-year) → **don't headline overbilling recovery** |
 | Fixed/hybrid schedules | 30–32% of lifts unjustified, ≈ €2.5–2.7k per device-year |
 | Operator/contract actions (tender, renegotiate) | Best action set = 7.9% of cost. Weight *enables* it (+€190 per contract-year where tickets aren't shared) |
@@ -96,7 +96,7 @@ Full source documents are in `business_sources/`.
 - **Moisture and contamination can't be detected from mass vs fill** (AUC 0.5–0.7, density proxy ~1% precision).
 - **Over-servicing gains nothing from weight**; that belongs to SMART.
 - **±3.3% per lift is unrealistic**: 53% of paired lifts exceed it, and the weighbridge itself is only ±100 kg on 78% of lifts.
-- **Isolation forest is useless** here (F1 0.10). Rules reach 0.89 and gradient boosting 0.93.
+- **Isolation forest is useless** for weight gaps (F1 0.10 on actionable device-vs-ticket gaps). On that same test, rules reach 0.89 and gradient boosting 0.91–0.93. On the full anomaly benchmark (all families), rules beat ML: 0.73 vs 0.35 macro-F1, and a rules + ML hybrid reaches 0.78.
 
 **Findings from the customer dashboard (all 52 synthetic customers) [D/E]:**
 - **Median savings potential** across five levers:
@@ -108,16 +108,16 @@ Full source documents are in `business_sources/`.
   - **Cost:** €140.6k a year at 283 €/t; recycling rate 43%.
   - **Fill:** machines average 49% full when emptied (target 85%).
   - **Savings potential:** €60.5k a year, of which €40k is from emptying only when full.
-  - **Mixed waste** rose from 55% to 58.5% of tonnes.
-  - **A contract notice deadline** falls on 17 Oct 2026.
+  - **Mixed waste** rose from 56% to 60% of tonnes, and recycling fell from 44% to 40% (Oct–Dec 2025 vs Jul–Sep 2026).
+  - **A contract notice deadline** falls on 17 Oct 2026 (data as of 30 Sep 2026).
 
 ## 5. Product decisions: what we sell and what we don't
 
 **We sell:**
 1. **An accuracy ladder for weight, built on existing assets.**
-   - **T0 virtual scale:** firmware only, €0 BOM. About ±12–15% per lift and ±5–6% on monthly totals [E].
+   - **T0 virtual scale:** firmware only, €0 BOM. About ±12–15% per lift and ±5–6% on monthly totals [E, error budget]. Our simulator: 5.3% mean error per lift on unseen machines [S].
    - **T1 ticket-calibrated:** €0 extra hardware. Adds a drift alarm.
-   - **T2 scale platform:** in the lease, about ±1.4%, for 2–5% of the fleet as ground truth (the "golden cohort").
+   - **T2 load cells:** €3.4–6.3k installed, in the lease, P95 2.3% [S] (certified Tier 3 cells: P95 1.4%), for 2–5% of the fleet as ground truth (the "golden cohort").
 2. **A neutral second opinion.**
    - Each lift is reconciled: device vs ticket vs invoice, with cause attribution.
    - A €/t benchmark and an operator scorecard.
@@ -138,7 +138,7 @@ Full source documents are in `business_sources/`.
 - the brand name "TrueLoad" (it's already a truck-overload product).
 
 **How AI is used:**
-- **Rules decide** (they beat ML: 0.73 vs 0.35 macro-F1 [D]).
+- **Rules decide** (on the full anomaly benchmark they beat ML: 0.73 vs 0.35 macro-F1 [D]).
 - **Claude explains and drafts** dispute letters and advice, citing evidence rows.
 - **A person approves** every action, either SMART Center staff or the customer.
 
@@ -151,7 +151,7 @@ Full source documents are in `business_sources/`.
 | **Proof of Fullness** | Insights; launch in Poland and Benelux | **25% gain-share** of verified avoided-lift cost in year 1, then a subscription | Answers "cheapest wins" |
 | **Contract benchmark, action inbox and reporting pack** | SMART Integrated | +€25 per device per month, or a **chain licence of €10–40k a year** | Procurement and ESG teams |
 | **Operator Review service** | Integrated / SMART Center | 15% of *verified* recovered or avoided cost, capped | Weight is the evidence layer |
-| **Measured tier (scale platform)** | Lease plus service contract | +€39–49 per month in the lease (cost ≈ €14–33 per month over 72 months) | Only where value > cost |
+| **Measured tier (scale platform)** | Lease plus service contract | In the lease, priced from Europress's real platform cost. Our retrofit hardware alone is ≈ €47–88 per month over 72 months (€3.4–6.3k ÷ 72), so the earlier +€39–49 would not cover it | Only where value > cost |
 | **Operator data feed** | Operator API | Free for operators who share; paid analytics later | Turns the data-ownership fight into a trade |
 | *Idea from our notes* | SMART | **Discounted SMART for the first 12 months** | Lever 1 (fuller pickups) usually pays it back alone |
 
@@ -184,8 +184,8 @@ Full source documents are in `business_sources/`.
 | 2 Poland / Benelux | 2028 | Proof of Fullness on gain-share, BDO cross-check | ≥30% of pilot sites move fixed → on-call; gain-share ≥ cost to serve |
 | 3 Platform | 2029+ | Operator feed at scale; anonymised material-flow index (≥5 customers per cell) | EU Data Act consent in every contract; competition-law review passed |
 
-- **Cost to start:** ~2–3 FTE for 6 months (with Vincit), plus €10–19k for the golden cohort.
-- **Downside:** capped at ~€150k by the Phase 0 gate [E].
+- **Cost to start:** ~2–3 FTE for 6 months (with Vincit), plus €34–63k for the golden cohort (10 × €3.4–6.3k).
+- **Downside:** capped by the Phase 0 gate at the Phase 0 budget, ≈ €211–267k, itemised in `05_business_plan_addon.md` §6 [E].
 
 ## 9. Operator stance (critical)
 

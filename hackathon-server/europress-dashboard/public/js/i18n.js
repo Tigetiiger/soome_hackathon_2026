@@ -206,7 +206,7 @@ const STRINGS = {
     "op.value": "Why it matters: fuller pickups mean fewer trips per tonne, and a fair, data-backed scorecard helps you keep the customer at tender.",
     "day.today": "Today", "day.d": "+{n} d",
     "faq.title": "Frequently asked", "faq.method": "Method & assumptions",
-    "footer.note": "Synthetic data from the Europress × Since AI Hackathon 2026 pack. All prices hypothetical. Weight figures are indicative, not legal-for-trade.",
+    "footer.note": "Data is demo (Europress × Since AI Hackathon 2026). Prices are hypothetical. Weights are estimates, not legal-for-trade.",
 
     // ── Explainable values: dashboard redesign (spec section 4) ──
     // Static "What it means" texts: no placeholders, every sentence ends with a period, 45 words or fewer.
@@ -441,7 +441,7 @@ const STRINGS = {
     "op.value": "Miksi tällä on väliä: täydemmät tyhjennykset tarkoittavat vähemmän ajoja per tonni, ja reilu, dataan perustuva tuloskortti auttaa pitämään asiakkaan kilpailutuksessa.",
     "day.today": "Tänään", "day.d": "+{n} pv",
     "faq.title": "Usein kysyttyä", "faq.method": "Menetelmä ja oletukset",
-    "footer.note": "Synteettinen data Europress × Since AI Hackathon 2026 -aineistosta. Kaikki hinnat ovat kuvitteellisia. Painotiedot ovat suuntaa-antavia, eivät kaupalliseen punnitukseen hyväksyttyjä.",
+    "footer.note": "Data on demoa (Europress × Since AI Hackathon 2026). Hinnat ovat kuvitteellisia. Painot ovat arvioita, eivät kaupalliseen punnitukseen hyväksyttyjä.",
 
     // ── Selitettävät luvut: kojelaudan uudistus (spec section 4) ──
     // Staattiset "Mitä tämä tarkoittaa" -tekstit: ei paikkamerkkejä, jokainen virke päättyy pisteeseen, enintään 45 sanaa.

@@ -9,6 +9,7 @@ import { renderAccount, initials } from "./account.js";
 import { FAQ, METHOD } from "./faq.js";
 import { renderMachinesNow, machineNames } from "./machines.js";
 import { renderChanges } from "./changes.js";
+import { isFree, gate, lockRow, initPlanToggle, renderPlanToggle } from "./plan.js";
 import { initNotifications, setNotifications, notifications, problemSolutionHtml } from "./notify.js";
 import { periodView, renderPeriodPicker } from "./period.js";
 import { renderCustomerWeight, renderWeightHero, renderWeightTable, titleFor } from "./sensor/customer.js";
@@ -113,9 +114,13 @@ const openLever = (l) => openTrace(l.trace, t(`lever.${l.id}`), `levers.${l.id}`
 /** "How you save": each line is the customer's problem, then SMART AI's solution, then the money (click → full detail). */
 function renderHowSave(p) {
   el("saveTitle").textContent = t("save.title", { eur: eur(p.kpis.savings.value) });
-  el("howSave").innerHTML = notifications(p).map((n) => `<li class="ps-row">
+  const all = notifications(p);
+  const shown = isFree() ? all.slice(0, 1) : all;
+  const hidden = all.slice(shown.length);
+  el("howSave").innerHTML = shown.map((n) => `<li class="ps-row">
       <button type="button" class="ps-open" data-lever="${esc(n.id)}">${problemSolutionHtml(n)}</button>
-      <span class="sl-eur">${chip(esc(eur(n.eur)), `${t(`lever.${n.id}`)}: ${eur(n.eur)}`, n.id)}</span></li>`).join("");
+      <span class="sl-eur">${chip(esc(eur(n.eur)), `${t(`lever.${n.id}`)}: ${eur(n.eur)}`, n.id)}</span></li>`).join("")
+    + (hidden.length ? `<li class="ps-lock">${lockRow("plan.lock.savings", { n: hidden.length, eur: eur(hidden.reduce((a, x) => a + x.eur, 0)) })}</li>` : "");
   const go = (id) => openLever(p.levers.find((l) => l.id === id));
   bindChips(el("howSave"), go);
   el("howSave").querySelectorAll("button[data-lever]").forEach((b) => b.addEventListener("click", () => go(b.dataset.lever)));
@@ -243,6 +248,13 @@ function toggleMenu(open) {
 }
 
 // ---------------------------------------------------------------- weight (first), per-machine weight page
+/** SMART: render the live weight. Free: a short teaser card with the unlock button (no model call). */
+function renderWeightOrTeaser(box, render) {
+  if (!isFree()) { box.classList.remove("is-locked"); render?.(); return; }
+  box.innerHTML = `<header class="card-head"><h2>${esc(t("wh.title"))}</h2></header>
+    <div class="wh-grid">${["wh.now", "wh.next", "wh.cost"].map((k) => `<div class="wh-item"><span class="wh-label">${esc(t(k))}</span><b class="wh-value">— —</b></div>`).join("")}</div>`;
+  gate(box, "plan.lock.weight");
+}
 const DAY_FMT = (iso) => (iso === state.customer?.machines_now?.[0]?.as_of ? t("m.today") : date(iso));
 
 function renderMachinePage(p, deviceId) {
@@ -251,6 +263,7 @@ function renderMachinePage(p, deviceId) {
   const name = machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))).get(deviceId);
   el("pageTitle").textContent = titleFor(name);
   const eurPerT = p.devices.find((d) => d.device_id === deviceId)?.eur_per_t ?? null;
+  if (isFree()) { renderWeightOrTeaser(el("machineWeight"), null); return; }
   renderCustomerWeight(el("machineWeight"), m, { name, eurPerT, dayLabel: DAY_FMT });
 }
 
@@ -267,7 +280,7 @@ function renderPickers(view) {
 
 // ---------------------------------------------------------------- routing
 const RENDER = {
-  overview: (p) => { renderWeightHero(el("weightHero"), p, DAY_FMT); renderKpis(p); renderHowSave(p);
+  overview: (p) => { renderWeightOrTeaser(el("weightHero"), () => renderWeightHero(el("weightHero"), p, DAY_FMT)); renderKpis(p); renderHowSave(p);
     renderChanges(state.customer, { list: el("problems"), period: el("probPeriod"), toggle: el("chgToggle") });
     renderMachinesNow(el("machinesNowOverview"), p.machines_now, { limit: 4, mode: "compact" }); },
   savings: (p) => { renderSavings(p);
@@ -275,8 +288,8 @@ const RENDER = {
   machines: (p) => { renderMachinesNow(el("machinesNow"), p.machines_now, { mode: state.mv.machines });
     el("machinesAsOf").textContent = p.machines_now[0] ? t("machines.asof", { date: date(p.machines_now[0].as_of) }) : ""; renderMachines(p); },
   contracts: renderContracts,
-  weight: (p) => { renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT }); },
-  trends: (p) => renderTrends(p, state.index.assumptions.target_fill_pct),
+  weight: (p) => { if (isFree()) { renderWeightOrTeaser(el("weightTable"), null); return; } renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT }); },
+  trends: (p) => { renderTrends(p, state.index.assumptions.target_fill_pct); gate(document.querySelector("#view-trends .tr-when"), "plan.lock.when"); },
   account: renderAccount,
 };
 
@@ -320,7 +333,7 @@ async function route(opts) {
   } else if (state.ws === "partners") {
     const id = el("operatorSelect").value;
     setAskContext({ view: "operator", id, page: "operators", name: id });
-    if (view === "operators") renderOperator(await getJson(`/data/operators/${id}.json`), state.index.customers);
+    if (view === "operators") { renderOperator(await getJson(`/data/operators/${id}.json`), state.index.customers); gate(el("opValue"), "plan.lock.forecast"); }
     else renderFaq();
   } else if (view === "faq") renderFaq();
   else {
@@ -354,6 +367,7 @@ function fillSelects() {
 
 function rerenderAll() {
   applyStatic();
+  renderPlanToggle(el("planToggle"));
   syncViewToggles();
   document.querySelectorAll(".seg button[data-lang]").forEach((b) => b.setAttribute("aria-pressed", String(b.dataset.lang === getLang())));
   fillSelects();
@@ -414,6 +428,7 @@ async function init() {
   bindGlobal();
   state.customer = await getJson(`/data/customers/${start}.json`);
   initNotifications();
+  initPlanToggle(el("planToggle"), rerenderAll);
   setNotifications(state.customer, openNotification);
   rerenderAll();
 }

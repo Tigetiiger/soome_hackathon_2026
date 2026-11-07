@@ -3,6 +3,7 @@
 // so all charts and totals follow the chosen period. Lever savings stay annual (they are "per year").
 import { t, month, addStrings } from "./i18n.js";
 import { esc } from "./drawer.js";
+import { isFree, FREE_PRESETS } from "./plan.js";
 
 const KEY = "ep.period";
 const PRESETS = [1, 3, 6, 12];
@@ -20,7 +21,9 @@ const save = () => { try { sessionStorage.setItem(KEY, JSON.stringify(range)); }
 function bounds(months) {
   const i0 = range ? months.indexOf(range.from) : -1;
   const i1 = range ? months.indexOf(range.to) : -1;
-  return i0 >= 0 && i1 >= i0 ? [i0, i1] : [0, months.length - 1];
+  const [a, b] = i0 >= 0 && i1 >= i0 ? [i0, i1] : [0, months.length - 1];
+  const maxFree = Math.max(...FREE_PRESETS);
+  return isFree() && b - a + 1 > maxFree ? [months.length - maxFree, months.length - 1] : [a, b];
 }
 
 export function periodLabel(p) {
@@ -70,13 +73,14 @@ export function renderPeriodPicker(container, p, onChange) {
   const m = p.period.months;
   const [i0, i1] = bounds(m);
   const n = i1 - i0 + 1;
-  const presets = PRESETS.map((k) => `<button type="button" data-n="${k}" aria-pressed="${n === k && i1 === m.length - 1}">${esc(k === 1 ? t("pd.m1") : k === m.length ? t("pd.all") : t("pd.m", { n: k }))}</button>`).join("");
+  const locked = (k) => isFree() && !FREE_PRESETS.includes(k);
+  const presets = PRESETS.map((k) => `<button type="button" data-n="${k}" aria-pressed="${n === k && i1 === m.length - 1}"${locked(k) ? ` disabled title="${esc(t("plan.lock.period"))}"` : ""}>${locked(k) ? "🔒 " : ""}${esc(k === 1 ? t("pd.m1") : k === m.length ? t("pd.all") : t("pd.m", { n: k }))}</button>`).join("");
   container.innerHTML = `<div class="pd">
     <svg viewBox="0 0 24 24" aria-hidden="true"><rect x="3.5" y="5" width="17" height="15" rx="2"/><path d="M3.5 10h17M8 3v4M16 3v4"/></svg>
     <span class="sr">${esc(t("pd.label"))}</span>
-    <label><span class="sr">${esc(t("pd.from"))}</span><input type="month" data-pd="from" min="${m[0]}" max="${m[m.length - 1]}" value="${m[i0]}"></label>
+    <label><span class="sr">${esc(t("pd.from"))}</span><input type="month" data-pd="from"${isFree() ? " disabled" : ""} min="${m[0]}" max="${m[m.length - 1]}" value="${m[i0]}"></label>
     <span aria-hidden="true">–</span>
-    <label><span class="sr">${esc(t("pd.to"))}</span><input type="month" data-pd="to" min="${m[0]}" max="${m[m.length - 1]}" value="${m[i1]}"></label>
+    <label><span class="sr">${esc(t("pd.to"))}</span><input type="month" data-pd="to"${isFree() ? " disabled" : ""} min="${m[0]}" max="${m[m.length - 1]}" value="${m[i1]}"></label>
     <div class="seg pd-presets" role="group" aria-label="${esc(t("pd.label"))}">${presets}</div></div>`;
   const set = (from, to) => { range = from === m[0] && to === m[m.length - 1] ? null : { from, to }; save(); onChange(); };
   container.querySelectorAll("input[data-pd]").forEach((inp) => inp.addEventListener("change", () => {

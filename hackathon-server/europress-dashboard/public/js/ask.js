@@ -2,6 +2,7 @@
 // (headless Claude Code on the server, read-only over the data). It always knows the page, the account and the
 // last thing the user clicked, so questions can be short.
 import { t, getLang } from "./i18n.js";
+import { takeAsk, asksLeftText, asksOutText } from "./plan.js";
 import { esc } from "./drawer.js";
 
 const el = (id) => document.getElementById(id);
@@ -75,6 +76,12 @@ function parseSse(chunk, onEvent) {
 
 export async function ask(question, focus = "") {
   if (busy || !question.trim()) return;
+  if (!takeAsk()) {
+    el("aiLog").querySelector(".ai-empty")?.remove();
+    bubble("bot", `<div class="body">${esc(asksOutText())} <button type="button" class="ask-link" data-unlock>${esc(t("plan.unlock"))} →</button></div>`);
+    return;
+  }
+  el("aiInput").placeholder = asksLeftText() || t("ai.placeholder");
   busy = true;
   el("aiForm").querySelector("button").disabled = true;
   el("aiLog").querySelector(".ai-empty")?.remove();

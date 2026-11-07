@@ -7,6 +7,7 @@ import { openAi } from "./ask.js";
 import { addStrings } from "./i18n.js";
 import { mountShaderFill } from "./shader/runtime.js";
 import { weightsNow, cardWeightLink, hasWeightModel } from "./sensor/customer.js";
+import { isFree } from "./plan.js";
 import { setup as gradientSetup, render as gradientRender, manifest as gradientManifest } from "./shader/moving-gradient.js";
 
 /** "Ask the SMART assistant" fill — parameters exactly as in the Figma design (node 16:343). */
@@ -30,7 +31,7 @@ addStrings({
     "rt.fullNow": "Full now", "rt.fullTomorrow": "Full tomorrow ({date})", "rt.fullIn": "Full in {n} days ({date})",
     "rt.ordered": "Truck ordered for {date}", "rt.willOrder": "SMART orders the truck on {date}", "rt.willOrderToday": "SMART orders the truck today",
     "rt.timetable": "Next truck {date} (timetable)",
-    "rt.weight": "≈ {kg} kg inside now", "rt.noModel": "Weight: model coming for this waste type", "rt.ask": "Ask the SMART assistant",
+    "rt.weight": "≈ {kg} kg inside now", "rt.noModel": "Weight: model coming for this waste type", "rt.weightSmart": "Live weight in SMART", "rt.ask": "Ask the SMART assistant",
     "rt.how.save": "How do I save money here?", "rt.how.mixed": "How do I cut mixed waste?",
     "rt.q.save": "My machine {name} ({id}) is {fill} % full. How do I save money with it? Give me 3 simple steps.",
     "rt.q.mixed": "My mixed-waste machine {name} ({id}) is {fill} % full. How do I put less in it and save money? Give me 3 simple steps.",
@@ -40,7 +41,7 @@ addStrings({
     "rt.fullNow": "Täynnä nyt", "rt.fullTomorrow": "Täynnä huomenna ({date})", "rt.fullIn": "Täynnä {n} päivässä ({date})",
     "rt.ordered": "Auto tilattu: {date}", "rt.willOrder": "SMART tilaa auton {date}", "rt.willOrderToday": "SMART tilaa auton tänään",
     "rt.timetable": "Seuraava auto {date} (aikataulu)",
-    "rt.weight": "≈ {kg} kg sisällä nyt", "rt.noModel": "Paino: malli tulossa tälle jätelajille", "rt.ask": "Kysy SMART-avustajalta",
+    "rt.weight": "≈ {kg} kg sisällä nyt", "rt.noModel": "Paino: malli tulossa tälle jätelajille", "rt.weightSmart": "Reaaliaikainen paino SMARTissa", "rt.ask": "Kysy SMART-avustajalta",
     "rt.how.save": "Miten säästän tässä?", "rt.how.mixed": "Miten vähennän sekajätettä?",
     "rt.q.save": "Laitteeni {name} ({id}) on {fill} % täynnä. Miten säästän sen avulla? Anna 3 helppoa vaihetta.",
     "rt.q.mixed": "Sekajätelaitteeni {name} ({id}) on {fill} % täynnä. Miten laitan siihen vähemmän ja säästän? Anna 3 helppoa vaihetta.",
@@ -165,7 +166,7 @@ function typeTag(m) {
 /** Weight now from the soft sensor (the one weight source); filled in after the model service answers. */
 let sensorKg = new Map();
 const modelKg = (m) => sensorKg.get(m.device_id) ?? null;
-const weightSlot = (m) => (hasWeightModel(m.stream) ? `<span data-w="${esc(m.device_id)}">${modelKg(m) != null ? esc(t("rt.weight", { kg: fmt(modelKg(m)) })) : "…"}</span>` : `<span class="fine">${esc(t("rt.noModel"))}</span>`);
+const weightSlot = (m) => (isFree() ? `<span class="fine">🔒 ${esc(t("rt.weightSmart"))}</span>` : hasWeightModel(m.stream) ? `<span data-w="${esc(m.device_id)}">${modelKg(m) != null ? esc(t("rt.weight", { kg: fmt(modelKg(m)) })) : "…"}</span>` : `<span class="fine">${esc(t("rt.noModel"))}</span>`);
 const weightLine = (m) => weightSlot(m);
 const mixedAsk = (m) => (KIND[m.stream] === "mixed" ? `<button type="button" class="ask-link" data-mixed="${esc(m.device_id)}">${esc(t("m.askMixed"))}</button>` : "");
 const howScheduled = (m) => (m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
@@ -213,8 +214,8 @@ function rtCard(m, name, { full = false } = {}) {
     </header>
     <div class="rt-fig">${compactorSvg(m)}</div>
     <div class="rt-fill">${fillChip(m)}${typeTag(m)}</div>
-    ${hasWeightModel(m.stream)
-      ? `<div class="rt-wrow"><p class="rt-weight">${weightSlot(m)}</p>${cardWeightLink(m.device_id)}</div>`
+    ${hasWeightModel(m.stream) || isFree()
+      ? `<div class="rt-wrow"><p class="rt-weight">${weightSlot(m)}</p>${isFree() ? "" : cardWeightLink(m.device_id)}</div>`
       : `<p class="rt-weight rt-nomodel">${esc(t("rt.noModel"))}</p>`}
     <div class="rt-next">${TRUCK_ICON}<div>${plainNext(m).map((l) => `<p>${esc(l)}</p>`).join("")}</div></div>
     ${full && m.operator ? `<p class="rt-op">${esc(howScheduled(m))} · ${esc(m.operator)}${m.operator_on_time_pct != null ? ` · ${esc(t("mv.onTime", { pct: fmt(m.operator_on_time_pct) }))}` : ""}</p>` : ""}

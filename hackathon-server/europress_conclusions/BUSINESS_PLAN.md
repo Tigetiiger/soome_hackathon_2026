@@ -21,23 +21,23 @@ Europress × Since AI Hackathon 2026. This is the merged conclusion of 4 competi
 | "The operator only has the information about the weight… who owns the data is the holy grail" | Weight decides charges and credits (challenge brief) [F]. In the data, 21% of retail lifts have **no ticket**, and one operator shares **0%** of its tickets [D] |
 | Customers "never even trust" the operator's figures | **77%** of large device-vs-ticket gaps are on the weighbridge side: side waste 34%, stale stored tare 30%, combined loads 12%. **Only 3.9% are sensor faults** [D]. Stored-tare tickets scatter about 2× more than weighed-tare ones (robust SD 7.5% vs 3.8%) [D] |
 | SMART already makes machines as full as possible | So we **do not** sell pickup timing. On **fixed and hybrid schedules** (Poland, Central Europe), 30–32% of lifts are unjustified, worth about €2.5–2.7k per device-year [D] |
-| "Cheapest wins"; ballpark accuracy is fine | T0 has €0 BOM. It is only ±12–15% (1σ) per lift, and ticket calibration does not shrink that per-lift error [D]. Its value is removing *bias*: monthly totals go from ≈11% off uncalibrated to ≈5–6% after ~20 clean tickets [D]. At σ≈10% a +10% overbilling is caught 62% of the time per quarter [D]. The 96%/10-month figure only holds for the dataset's simulated precise sensor (±1.4%), not for T0 |
+| "Cheapest wins"; ballpark accuracy is fine | T0 has €0 BOM. Our error budget puts it at ±12–15% (1σ) per lift, and ticket calibration does not shrink that per-lift error [E]. Its value is removing *bias*: monthly totals reach ≈5–6% after ~20 clean tickets [E] (error budget: `soome_hackathon_2026/docs/agents/science-researcher.md` §2). At σ≈10% a +10% overbilling is caught 62% of the time per quarter [D]. The 96%/10-month figure only holds for the dataset's simulated precise sensor (±1.4%), not for T0 |
 | Bio-waste is hard; humidity changes weight | Bio-waste gets wider uncertainty bands. Moisture becomes a money story: under EN 643, recovered paper above 10% moisture can be claimed back [F, from the Sonnet science lens] |
 | "Recognise material that doesn't fit" | Our density proxy **fails** on this data (~1% precision) [D]. This goes on the roadmap because it needs pressure-curve shape from new firmware. It is not a demo claim |
 
 **Who has the pain: value is concentrated.**
 - The mean is about €1,064 per contract-year, but the **median is €0**. 52% of contracts show no positive value [D].
-- The top 5 of 20 customers hold 75% of the value [D].
+- Among the 20 customers with contract-action cases, the top 5 hold 75% of the value [D]. Across all 52 customers, the top 5 hold 54% of realisable value [D].
 - This matches Tommi's 80/20: "big chains want more SMART, small want to save money".
 
 ## 2. Part 1 in business terms: an accuracy ladder on existing assets
 
 | Tier | What it is | BOM per unit | Accuracy (honest) | Existing Europress asset it reuses |
 |---|---|---|---|---|
-| **T0 Virtual scale** | Ram back-pressure per stroke, plus cycles and fill → kg ± band | **€0.** Firmware only: 10–20 Hz logging, delivered over the air | ±12–15% per lift uncalibrated; ±5–6% on monthly totals [E] | 0–200 bar pressure sensor, fill algorithm, Vincit ML pipeline, "waste volume calculator" |
-| **T1 Ticket-calibrated** | Clean tickets (weighed tare, single load) update a per-machine gain via a Kalman/robust update. A CUSUM alarm flags drift | €0 | Per lift still ≈ ±12% [D]; monthly bias ≈ ±5–6% after ~20 clean tickets [D]; plus a drift alarm | Existing operator API and emptying calls |
-| **T2 Measured** | 4-corner load-cell platform | €1.0–1.9k [E]. Sold **inside the lease**, which is ≈ €14–26/month over 72 months | ≈ ±1.4% [E]; verification grade | **The Scale Solutions platform, already a product** |
-| **Golden cohort** | T2 on 2–5% of the fleet, used as ground truth for the fleet model | €10–19k for about 10 machines [E] | A fleet model trained on 25 scale-fitted machines reached 4.96% error on unscaled ones (Mansouri 2025, via the Sonnet science lens) | Kerava manufacturing and the existing platform |
+| **T0 Virtual scale** | Ram back-pressure per stroke, plus cycles and fill → kg ± band | **€0.** Firmware only: 10–20 Hz logging, delivered over the air | ±12–15% per lift uncalibrated; ±5–6% on monthly totals [E, error budget]. Our simulator: 5.3% mean error per lift on unseen machines [S] | 0–200 bar pressure sensor, fill algorithm, Vincit ML pipeline, "waste volume calculator" |
+| **T1 Ticket-calibrated** | Clean tickets (weighed tare, single load) update a per-machine gain via a Kalman/robust update. A CUSUM alarm flags drift | €0 | Per lift still ≈ ±12% [E]; monthly bias ≈ ±5–6% after ~20 clean tickets [E]; plus a drift alarm | Existing operator API and emptying calls |
+| **T2 Measured** | 4 stainless IP68 C3 shear-beam load cells under the supports | €3.4–6.3k installed, mid €4.85k (`smartweight/BILL_OF_MATERIALS.md`). Sold **inside the lease**: hardware alone is ≈ €47–88/month over 72 months (€3.4–6.3k ÷ 72) | P95 2.3% [S]; certified cells (Tier 3, €5.4–10k) P95 1.4% [S]; verification grade | **The Scale Solutions platform, already a product** |
+| **Golden cohort** | T2 on 2–5% of the fleet, used as ground truth for the fleet model | €34–63k for 10 machines (10 × €3.4–6.3k) [E] | A fleet model trained on 25 scale-fitted machines reached 4.96% error on unscaled ones (Mansouri 2025, via the Sonnet science lens) | Kerava manufacturing and the existing platform |
 
 **Validation experiment (pilot).**
 - Setup: 10 machines, about 150–240 lifts. The reference is the T2 platform plus weighed-tare tickets.
@@ -58,11 +58,11 @@ All prices are hypothetical; the logic is in §4.
 | **Contract and €/t benchmark + action inbox:** dispute, request ticket data, renegotiate. Tendering is shown last and is gated | **SMART Integrated** | Procurement teams at chains | 28% of renegotiation value sits on contracts where **device weight is the only mass figure** [D]. Drafts cite evidence rows, and nothing is sent without approval | Included in Integrated (+€25/device/month), or a **chain licence at €10–40k per year** |
 | **Reporting pack:** kg per fraction, recycling rate, "unknown destination" share, Poland BDO mass cross-check | Integrated. Builds on the per-tenant reports Scale Solutions already produces | Sustainability teams; Polish customers (BDO reporting is mandatory) | Covers the 21% of lifts that are untracked today. Ready for ESRS E5-5 (the Omnibus has narrowed CSRD to large companies) and for BDO | Part of Integrated, or €X per legal entity per year [A] |
 | **Operator data feed (give-to-get):** operators push tickets via the API and get back a reconciliation receipt and a private tare-hygiene report | Existing operator API | Operators. Fortum, Remeo and Alba are already Europress references [F] | Fewer disputes and better weighbridge hygiene. Operators see findings **first** | Free for operators who share; a paid analytics feed later |
-| **Measured tier:** scale platform as a lease uplift | **Lease + service contract** | Sites that need verification-grade weight (tenant billing, disputes) | ±1–2% weight | **+€39–49/month** inside the lease, against a cost of ≈ €21–33/month |
+| **Measured tier:** scale platform as a lease uplift | **Lease + service contract** | Sites that need verification-grade weight (tenant billing, disputes) | P95 1.4–2.3% weight [S] | Inside the lease, priced from Europress's real platform cost. Our retrofit hardware alone is ≈ €47–88/month over 72 months, so the earlier +€39–49/month would not cover it |
 | **Calibration and drift checks** | **Service contract**, during technician visits that already happen | All service-contract customers | The ticket-based drift alarm fires about 33 days before today's fix [D] | Bundled; it helps justify the service price |
 
 **Why AI, and where.**
-- **Rules decide.** In the benchmark, rules beat ML (0.73 vs 0.35 macro-F1) [F].
+- **Rules decide.** In the benchmark, rules beat ML (0.73 vs 0.35 macro-F1) [D].
 - **Claude drafts** explanations, dispute letters and operator notes, with row-level citations.
 - **SMART Center staff or the customer approve** before anything is sent.
 
@@ -113,8 +113,8 @@ Sources: `agents/business-strategy.md` (`analysis/pl_model.py`), `bizplan-esg-ch
 
 **Cost to start [E].**
 - People: about 2–3 FTE for 6 months, working with Vincit, on firmware logging, the model and the portal screens.
-- Golden cohort: €10–19k.
-- Downside: capped at about €150k by the Phase 0 gate (CFO lens).
+- Golden cohort: €34–63k (10 × €3.4–6.3k).
+- Phase 0 budget: ≈ €211–267k in total, itemised in `output/05_business_plan_addon.md` §6. The Phase 0 gate caps the downside at that budget.
 
 ## 7. Operator stance (critical)
 

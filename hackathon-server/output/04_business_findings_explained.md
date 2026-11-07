@@ -163,12 +163,12 @@ Remember: imaginary customers and prices. These results show what the approach c
 
 | What we looked at | What we found | What it means |
 |---|---|---|
-| Pickups where the customer can't check the weight today | **26%**. One operator shares none of its weighing tickets. Our machine estimate could cover **95–97%** of pickups. | A quarter of pickups are a black box today, and the machine could fill almost all of that gap. |
+| Pickups where the customer can't check the weight today | **26%**. One operator shares none of its weighing tickets. With our machine estimate, **97%** of pickups would have at least one independent weight (74% have a ticket today). | A quarter of pickups are a black box today, and the machine could fill almost all of that gap. |
 | Collection spending that can't be linked to a price per tonne | **11%**, or €349k | Money spent without knowing what it bought per tonne. |
 | Share of weight-based billing the customer can check | **77% today, 96%** with machine weight | Almost the whole bill becomes checkable. |
 | Why the machine's weight and the ticket weight differ by more than 10% | Side waste 34%, an outdated empty-container weight (tare) 30%, several customers' loads weighed together 12%, the **machine's own measurement drifting only about 4%** | Big differences usually have an innocent, explainable cause. **They are not evidence of cheating.** |
 | A simple "is this operator biased?" score | It wrongly flags **74%** of operator-region-months as suspicious. Correcting for the known causes cuts its error from 5.5 to 1.2–1.6 percentage points. | A naive check would wrongly accuse operators. The causes must be explained first. |
-| How savings are spread between customers | The **average** is about €1,064 per contract per year, but the **median is €0**. The top 5 customers hold 54–75% of all the value. | Most customers would gain little. A few large ones gain a lot. This matches Tommi's "80/20" remark. |
+| How savings are spread between customers | The **average** is about €1,064 per contract per year, but the **median is €0**. The top 5 of all 52 customers hold 54% of the value that can be realised. Among the 20 customers with contract cases, the top 5 hold 75%. | Most customers would gain little. A few large ones gain a lot. This matches Tommi's "80/20" remark. |
 | Billing errors that can **only** be found with an independent weight | Only about **€8k in 10 months**, roughly €21 per machine per year | Don't sell this as "we recover overcharging". The money isn't there. |
 | Customers on fixed schedules | **30–32%** of pickups were unnecessary, worth about **€2.5–2.7k per machine per year** | A real saving: empty when full, not on a timetable. |
 | Changing operator or renegotiating the contract | The best combination of actions saves **7.9%** of costs. Weight makes this possible: +€190 per contract per year where operators don't share tickets. | Weight is the evidence that makes a negotiation or tender possible. |
@@ -181,7 +181,7 @@ We think it matters to say what we tried and what failed:
 - **Wet or contaminated waste can't be detected** by comparing weight with fill level. The results were close to a coin toss (a score of 0.5–0.7, where 0.5 means pure chance). Using density as a clue was right only about 1% of the time.
 - **Reducing unnecessary service gains nothing from weight.** SMART's fill-level data already handles that.
 - **An accuracy of ±3.3% for each pickup is unrealistic.** 53% of pickups with both measurements differ by more than that. Even the operator's own weighbridge is within ±100 kg on only 78% of pickups.
-- **A popular automatic method for spotting unusual data ("isolation forest") was useless here**, scoring 0.10 out of 1. Simple, hand-written rules scored 0.89, and a more advanced machine-learning method ("gradient boosting") scored 0.93.
+- **A popular automatic method for spotting unusual data ("isolation forest") was useless here**, scoring 0.10 out of 1 at finding weight gaps worth acting on. On that same test, simple, hand-written rules scored 0.89, and a more advanced machine-learning method ("gradient boosting") scored 0.91–0.93. On the full test of all problem types, rules scored 0.73 and machine learning 0.35.
 
 ### What the customer dashboard shows (all 52 practice customers) [D/E]
 
@@ -200,8 +200,8 @@ Europress doesn't currently tell prospective customers "a customer like you typi
 - **Cost:** €140.6k a year, at €283 per tonne. 43% of its waste is recycled.
 - **Fill:** its machines are on average only **49% full** when emptied. SMART's target is 85%. So it is paying for many half-empty trips.
 - **Savings potential:** **€60.5k a year**, of which €40k comes from emptying only when full.
-- **Mixed waste** (the unsorted, most expensive kind) **grew from 55% to 58.5%** of its tonnes.
-- **A contract deadline:** it must give notice to its operator by **17 October 2026** if it wants to tender.
+- **Mixed waste** (the unsorted, most expensive kind) **grew from 56% to 60%** of its tonnes, and its recycling rate fell from 44% to 40% (October–December 2025 compared with July–September 2026).
+- **A contract deadline:** it must give notice to its operator by **17 October 2026** if it wants to tender. The data runs to 30 September 2026, so in the data this deadline is 17 days away.
 
 ---
 
@@ -215,9 +215,9 @@ The customer climbs only as high as they need:
 
 | Step | How it works | Extra hardware cost | How accurate |
 |---|---|---|---|
-| **T0: virtual scale** | A software update. The machine estimates weight from data it already collects. | €0 | About ±12–15% for a single pickup, but **±5–6% over a month**, because errors even out [E] |
+| **T0: virtual scale** | A software update. The machine estimates weight from data it already collects. | €0 | About ±12–15% for a single pickup, but **±5–6% over a month**, because errors even out [E, our error budget]. In our simulator: 5.3% average error per pickup on machines the model never saw [S] |
 | **T1: calibrated with tickets** | Same as T0, but corrected using the operator's weighing tickets when they are available. Adds an alarm if the estimate starts to drift. | €0 | Better than T0 |
-| **T2: scale platform** | A real scale under the container, included in the lease. | Yes | About ±1.4% |
+| **T2: load cells** | Four load cells under the container's supports, included in the lease. | €3.4–6.3k per machine, installed | In the worst 5% of readings, off by 2.3% [S]. Certified cells (Tier 3): 1.4% [S] |
 
 The plan is to put the T2 scale on just **2–5% of machines**. These act as a trusted reference group (the "golden cohort") used to check and improve the estimates for all the others.
 
@@ -259,7 +259,7 @@ This is a trade: operators get useful data, and in return they share their weigh
 
 ### How AI is used
 
-- **Fixed rules make the decisions.** On our test, simple rules clearly beat machine learning: a score of 0.73 against 0.35 [D].
+- **Fixed rules make the decisions.** On the full anomaly test, simple rules clearly beat machine learning: a score of 0.73 against 0.35 [D].
 - **Claude (an AI model) explains** the findings and **drafts** letters and advice, always pointing to the data behind them.
 - **A person approves every action**, either SMART Center staff or the customer.
 
@@ -276,7 +276,7 @@ All prices are **our assumptions** [A]. Europress's real prices should replace t
 | **Proof of Fullness** | Insights. Launch first in Poland and Benelux. | **25% of the verified savings** from avoided pickups in year 1 ("gain-share"), then a normal subscription | Works in markets where "the cheapest offer wins": the customer pays only out of money already saved. |
 | **Contract benchmark, action list and reporting pack** | SMART Integrated | +€25 per machine per month, or **€10–40k a year as a licence for a whole chain** | For procurement and sustainability teams at large companies. |
 | **Operator Review service** | Integrated / SMART Center | 15% of the money *verifiably* recovered or saved, with a cap | Weight is the evidence that makes the review possible. |
-| **Measured tier (real scale platform)** | Lease plus service contract | +€39–49 per month added to the lease. It costs Europress about €14–33 per month over a 6-year lease. | Only offered where the value is higher than the cost. |
+| **Measured tier (real scale platform)** | Lease plus service contract | Priced from Europress's real platform cost. Our load-cell hardware alone costs about €47–88 per month over a 6-year lease (€3.4–6.3k ÷ 72 months), so the earlier +€39–49 would not cover it. | Only offered where the value is higher than the cost. |
 | **Data feed for operators** | Operator API | Free for operators who share tickets. Paid analytics later. | Turns the argument over who owns the data into a fair trade. |
 | *An idea from our notes* | SMART | **Discounted SMART for the first 12 months** | The first saving lever (emptying when full) usually pays for it on its own. |
 
@@ -322,8 +322,8 @@ Each phase has a clear test. **If the test fails, we stop** rather than keep spe
 | **2. Poland and Benelux** | 2028 | Proof of Fullness on the gain-share model, and cross-checks against Poland's BDO waste register. | At least 30% of pilot sites move from fixed schedules to on-call pickups, and the gain-share earns more than it costs to serve. |
 | **3. Platform** | 2029 onwards | The operator data feed at scale, plus anonymous statistics on waste flows. A statistic is only published if it covers at least 5 customers, so nobody can be identified. | Every contract includes consent under the EU Data Act, and a competition-law review is passed. |
 
-- **Cost to start:** about 2–3 full-time people for 6 months (working with Vincit), plus €10–19k for the reference-group scales.
-- **Worst case:** because of the stop sign after Phase 0, the most Europress could lose is about **€150k** [E].
+- **Cost to start:** about 2–3 full-time people for 6 months (working with Vincit), plus €34–63k for the reference-group scales (10 machines × €3.4–6.3k).
+- **Worst case:** because of the stop sign after Phase 0, the most Europress could lose is the Phase 0 budget, about **€211–267k** (itemised in `05_business_plan_addon.md` §6) [E].
 
 ---
 

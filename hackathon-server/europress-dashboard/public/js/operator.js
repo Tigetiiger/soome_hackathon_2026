@@ -2,6 +2,7 @@
 import { t, fmt, date, sector, addStrings } from "./i18n.js";
 import { opStreamChart, histChart, regionChart } from "./charts.js";
 import { esc, openTrace } from "./drawer.js";
+import { isFree } from "./plan.js";
 
 const el = (id) => document.getElementById(id);
 
@@ -26,7 +27,81 @@ function workload(o) {
   }).join("");
 }
 
+// ---------------------------------------------------------------- collected → predicted, and SMART's value
+/* global Chart */
+let historyChart = null;
+const INK = "#000d61", SMART_LINE = "#1a7a47", FORECAST = "#9aa3c7";
+
+/** Weekly pickups SMART collected (bars), what an 85 %-full rule needs (line), and the 14-day forecast (light bars). */
+function renderHistory(o) {
+  const h = o.history_weekly;
+  const canvas = el("opHistoryChart");
+  if (!h || !canvas) return;
+  const fc = o.forecast_per_day.pickups;
+  const fcWeeks = [fc.slice(0, 7), fc.slice(7, 14)].map((w) => w.reduce((a, b) => a + b, 0));
+  const lastWeek = new Date(`${h.weeks[h.weeks.length - 1]}T12:00:00Z`);
+  const nextLabels = [1, 2].map((k) => new Date(lastWeek.getTime() + k * 7 * 864e5).toISOString().slice(0, 10));
+  const labels = [...h.weeks, ...nextLabels].map((d) => new Intl.DateTimeFormat(undefined, { day: "numeric", month: "short" }).format(new Date(`${d}T12:00:00Z`)));
+  const pad = (arr, n) => [...arr, ...Array(n).fill(null)];
+  historyChart?.destroy();
+  historyChart = new Chart(canvas, {
+    type: "bar",
+    data: { labels, datasets: [
+      { label: t("opx.collected"), data: pad(h.pickups, 2), backgroundColor: INK, borderRadius: 3, maxBarThickness: 18, order: 2 },
+      { label: t("opx.forecast"), hidden: isFree(), data: [...Array(h.weeks.length).fill(null), ...fcWeeks], backgroundColor: FORECAST, borderRadius: 3, maxBarThickness: 18, order: 2 },
+      { type: "line", label: t("opx.smart"), data: pad(h.smart_pickups, 2), borderColor: SMART_LINE, backgroundColor: SMART_LINE, borderDash: [5, 4], borderWidth: 2, pointRadius: 0, tension: .3, order: 1 },
+    ] },
+    options: {
+      maintainAspectRatio: false, animation: false,
+      plugins: { legend: { position: "bottom" }, tooltip: { callbacks: { label: (c) => `${c.dataset.label}: ${fmt(c.raw, 0)}` } } },
+      scales: { x: { stacked: true, grid: { display: false }, ticks: { maxTicksLimit: 10 } }, y: { stacked: false, beginAtZero: true, grid: { color: "#e2e5ec" }, border: { display: false } } },
+    },
+  });
+}
+
+function renderValue(o) {
+  const v = o.value;
+  const box = el("opValue");
+  if (!v || !box) return;
+  const fcPickups = o.forecast_per_day.pickups.reduce((a, b) => a + b, 0);
+  const fcT = o.forecast_per_day.tonnes.reduce((a, b) => a + b, 0);
+  const tile = (big, unit, label, sub) => `<div class="opv-tile"><b>${esc(big)}<small>${esc(unit)}</small></b><span class="opv-label">${esc(label)}</span><span class="opv-sub">${esc(sub)}</span></div>`;
+  box.innerHTML = `<header class="card-head"><h2>${esc(t("opx.value"))}</h2></header>
+    <div class="opv-grid">
+      ${tile(fmt(v.trips_saved_year), "", t("opx.v.trips"), t("opx.v.tripsSub", { now: fmt(v.pickups_year), smart: fmt(v.smart_pickups_year) }))}
+      ${tile(fmt(v.kg_per_pickup_smart), "kg", t("opx.v.load"), t("opx.v.loadSub", { now: fmt(v.kg_per_pickup_now) }))}
+      ${tile(fmt(fcPickups), "", t("opx.v.plan"), t("opx.v.planSub", { t: fmt(fcT, 0) }))}
+      ${tile(fmt(v.wasted_trips_year), "", t("opx.v.wasted"), t("opx.v.wastedSub"))}
+    </div>
+    <p class="opv-weight"><span class="state" data-state="good">✓</span>${esc(t("opx.v.weight"))}</p>`;
+}
+
+addStrings({
+  en: {
+    "opx.graph": "Pickups: collected → predicted", "opx.graphSub": "Last 26 weeks collected, what SMART's 85 %-full rule would need, and the next 2 weeks predicted.",
+    "opx.by": "Predicted by Europress SMART AI", "opx.collected": "Collected pickups", "opx.forecast": "Predicted pickups", "opx.smart": "Needed if emptied at 85 % full",
+    "opx.value": "How SMART creates value for you",
+    "opx.v.trips": "Fewer trips a year", "opx.v.tripsSub": "{now} pickups today → {smart} if every machine is emptied at 85 % full",
+    "opx.v.load": "Fuller truck per pickup", "opx.v.loadSub": "Today {now} kg per pickup",
+    "opx.v.plan": "Pickups known 14 days ahead", "opx.v.planSub": "≈ {t} t to collect — plan routes and trucks early",
+    "opx.v.wasted": "Wasted trips to avoid", "opx.v.wastedSub": "SMART only orders a truck when the machine is really full",
+    "opx.v.weight": "Every pickup weighed by the SMART weight model — the load is known before the truck leaves (within ±5 % on 73 % of test pickups).",
+  },
+  fi: {
+    "opx.graph": "Tyhjennykset: kerätty → ennustettu", "opx.graphSub": "Viimeiset 26 viikkoa kerättynä, SMARTin 85 %:n säännön tarve ja seuraavat 2 viikkoa ennustettuna.",
+    "opx.by": "Ennustanut Europress SMART AI", "opx.collected": "Kerätyt tyhjennykset", "opx.forecast": "Ennustetut tyhjennykset", "opx.smart": "Tarve, jos tyhjennetään 85 %:ssa",
+    "opx.value": "Näin SMART tuottaa sinulle arvoa",
+    "opx.v.trips": "Vähemmän ajoja vuodessa", "opx.v.tripsSub": "{now} tyhjennystä nyt → {smart}, jos jokainen laite tyhjennetään 85 %:ssa",
+    "opx.v.load": "Täydempi kuorma per tyhjennys", "opx.v.loadSub": "Nyt {now} kg per tyhjennys",
+    "opx.v.plan": "Tyhjennykset tiedossa 14 pv etukäteen", "opx.v.planSub": "≈ {t} t kerättävää — suunnittele reitit ja autot ajoissa",
+    "opx.v.wasted": "Vältettävät turhat ajot", "opx.v.wastedSub": "SMART tilaa auton vain, kun laite on oikeasti täynnä",
+    "opx.v.weight": "Jokainen tyhjennys punnittu SMART-painomallilla — kuorma tiedetään ennen kuin auto lähtee (±5 %:n sisällä 73 %:ssa testityhjennyksistä).",
+  },
+});
+
 export function renderOperator(o, customers) {
+  renderHistory(o);
+  renderValue(o);
   const names = Object.fromEntries(customers.map((c) => [c.id, c]));
   const total = o.forecast_per_day.pickups.reduce((a, b) => a + b, 0);
   const k = el("opKpis");

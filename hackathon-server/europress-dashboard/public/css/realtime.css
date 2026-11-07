@@ -159,6 +159,29 @@
   .vs-menu button:hover { background: var(--ground); }
   .vs-menu button[aria-pressed="true"] { background: var(--action-tint); font-weight: 700; }
 
+  /* partner (operator) value tiles */
+  .opv-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: var(--s-3); }
+  .opv-tile { display: flex; flex-direction: column; gap: 2px; padding: var(--s-4); border: 1px solid var(--line); border-radius: var(--radius-2); background: var(--ground); }
+  .opv-tile b { font: 800 var(--fs-5)/1.05 var(--font); letter-spacing: -.02em; color: var(--ink); }
+  .opv-tile b small { margin-left: 4px; font-size: var(--fs-3); font-weight: 600; color: var(--ink-2); }
+  .opv-label { font: 600 var(--fs-2)/1.3 var(--font); color: var(--ink); }
+  .opv-sub { font-size: var(--fs-1); color: var(--ink-3); }
+  .opv-weight { display: flex; align-items: center; gap: var(--s-2); margin-top: var(--s-4); font-size: var(--fs-2); color: var(--ink-2); }
+  @media (max-width: 1000px) { .opv-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+
+  /* Free / SMART plan */
+  .plan-seg button[data-plan="smart"][aria-pressed="true"] { background: var(--mark); color: var(--mark-ink); }
+  .is-locked { position: relative; overflow: hidden; }
+  .is-locked > :not(.plan-lock):not(summary) { filter: blur(6px); opacity: .55; pointer-events: none; user-select: none; }
+  .plan-lock { position: absolute; inset: 0; z-index: 5; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: var(--s-3);
+    padding: var(--s-6); text-align: center; background: rgba(246, 248, 251, .55); }
+  .plan-lock p { max-width: 46ch; font: 600 var(--fs-3)/1.4 var(--font); color: var(--ink); }
+  .weight-hero.is-locked .plan-lock { background: rgba(0, 13, 97, .35); }
+  .weight-hero.is-locked .plan-lock p { color: var(--on-action); }
+  .plan-lockrow { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-3); padding: var(--s-4); border-radius: var(--radius-2); background: var(--action-tint); font: 600 var(--fs-2)/1.4 var(--font); color: var(--ink); }
+  .ps-lock { list-style: none; padding: var(--s-3) 0; display: block !important; }
+  .pd-presets button:disabled { opacity: .55; cursor: not-allowed; }
+
   /* customer weight page */
   .cw-view, #cwBody { display: flex; flex-direction: column; gap: var(--s-6); }
   .cw-answers { grid-template-columns: repeat(3, minmax(0, 1fr)); }
