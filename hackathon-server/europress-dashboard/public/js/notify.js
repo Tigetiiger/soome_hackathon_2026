@@ -17,7 +17,7 @@ addStrings({
     "np.tender.p": "You pay {eurt} €/t — more than similar customers.", "np.tender.s": "Use the fleet price at your next tender.",
     "np.sorting.p": "{mixed} % of your waste goes to expensive mixed waste.", "np.sorting.s": "Sort cardboard and plastic out of mixed waste.",
     "np.avoidable_fees.p": "You paid {fees} in extra fees this year.", "np.avoidable_fees.s": "Order on time and keep side waste off the site.",
-    "np.invoice_check.p": "{n} invoice lines differ from your price list.", "np.invoice_check.s": "Ask your operator to check these lines.",
+    "np.invoice_check.p": "{n} billing lines from your waste operator differ from your price list.", "np.invoice_check.s": "Ask your operator to check them. Europress gets the billing data from the operator — you send nothing.",
     "nav.savings": "How to save money",
   },
   fi: {
@@ -28,7 +28,7 @@ addStrings({
     "np.tender.p": "Maksat {eurt} €/t — enemmän kuin vastaavat asiakkaat.", "np.tender.s": "Käytä kannan hintaa seuraavassa kilpailutuksessa.",
     "np.sorting.p": "{mixed} % jätteestäsi menee kalliiseen sekajätteeseen.", "np.sorting.s": "Lajittele pahvi ja muovi pois sekajätteestä.",
     "np.avoidable_fees.p": "Maksoit tänä vuonna {fees} lisämaksuja.", "np.avoidable_fees.s": "Tilaa ajoissa ja pidä sivujäte poissa.",
-    "np.invoice_check.p": "{n} laskuriviä poikkeaa hinnastostasi.", "np.invoice_check.s": "Pyydä operaattoria tarkistamaan rivit.",
+    "np.invoice_check.p": "{n} jäteoperaattorisi laskuriviä poikkeaa hinnastostasi.", "np.invoice_check.s": "Pyydä operaattoria tarkistamaan ne. Europress saa laskutustiedot operaattorilta — sinun ei tarvitse lähettää mitään.",
     "nav.savings": "Näin säästät",
   },
 });

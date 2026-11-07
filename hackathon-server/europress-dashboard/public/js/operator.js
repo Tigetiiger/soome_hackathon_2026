@@ -59,6 +59,72 @@ function renderHistory(o) {
   });
 }
 
+// ---------------------------------------------------------------- driver plan (next 14 days)
+const PICKUPS_PER_DRIVER_DAY = 6;     // hook-lift container exchanges one driver does in a day [assumption]
+const FIRST_DAY_DOW = 3;              // forecast day 0 = 1 Oct 2026, a Thursday (Mon = 0)
+const FIRST_DAY = "2026-10-01";
+let driverChart = null;
+
+function driverPlan(o) {
+  const avg = o.weekday_avg_pickups, typical = o.typical_day_pickups;
+  if (!avg || typical == null) return null;
+  const crew = Math.max(1, Math.ceil(typical / PICKUPS_PER_DRIVER_DAY));
+  const days = o.forecast_per_day.pickups.slice(0, 14).map((smart, i) => {
+    const dow = (FIRST_DAY_DOW + i) % 7;
+    const expected = Math.max(avg[dow], smart);
+    const drivers = Math.ceil(expected / PICKUPS_PER_DRIVER_DAY);
+    const d = new Date(`${FIRST_DAY}T12:00:00Z`); d.setUTCDate(d.getUTCDate() + i);
+    return { i, dow, date: d, expected, smart, drivers, extra: Math.max(0, drivers - crew) };
+  });
+  const peaks = days.filter((d) => d.extra > 0);
+  const quiet = days.filter((d) => d.expected < typical * 0.5 && d.dow < 5);
+  const mondayExcess = Math.round(Math.max(0, avg[0] - typical));
+  return { crew, typical, days, peaks, quiet, mondayExcess };
+}
+
+function renderDriverPlan(o) {
+  const box = el("opDrivers");
+  const plan = driverPlan(o);
+  if (!box || !plan) return;
+  const dayFmt = (d, style = "short") => new Intl.DateTimeFormat(undefined, { weekday: style, day: "numeric", month: "short", timeZone: "UTC" }).format(d.date);
+  box.innerHTML = `<header class="card-head"><div><h2>${esc(t("opd.title"))}</h2><p class="muted">${esc(t("opd.sub", { crew: plan.crew, per: PICKUPS_PER_DRIVER_DAY }))}</p></div></header>
+    <div class="chart chart-sm"><canvas id="opDriverChart"></canvas></div>
+    <div class="opd-tips" id="opDriverTips">
+      ${plan.peaks.length ? `<p><span class="state" data-state="bad">${esc(t("opd.callIn"))}</span>${plan.peaks.map((d) => `<b>${esc(dayFmt(d))}</b> +${d.extra}`).join(" · ")}</p>` : `<p><span class="state" data-state="good">✓</span>${esc(t("opd.noPeaks"))}</p>`}
+      ${plan.quiet.length ? `<p><span class="state" data-state="info">${esc(t("opd.room"))}</span>${plan.quiet.map((d) => esc(dayFmt(d))).join(" · ")}</p>` : ""}
+      ${plan.mondayExcess > 0 ? `<p class="opd-best"><b>✦ ${esc(t("opd.bestTitle"))}</b> ${esc(t("opd.best", { n: plan.mondayExcess }))}</p>` : ""}
+    </div>`;
+  driverChart?.destroy();
+  driverChart = new Chart(el("opDriverChart"), {
+    type: "bar",
+    data: { labels: plan.days.map((d) => dayFmt(d, "short")), datasets: [
+      { label: t("opd.drivers"), data: plan.days.map((d) => d.drivers), backgroundColor: plan.days.map((d) => (d.extra > 0 ? "#b43c3c" : INK)), borderRadius: 3, maxBarThickness: 22, order: 2 },
+      { type: "line", label: t("opd.crew"), data: plan.days.map(() => plan.crew), borderColor: SMART_LINE, borderDash: [5, 4], borderWidth: 2, pointRadius: 0, order: 1 },
+    ] },
+    options: {
+      maintainAspectRatio: false, animation: false,
+      plugins: { legend: { position: "bottom" }, tooltip: { callbacks: { afterLabel: (c) => (c.datasetIndex === 0
+        ? t("opd.tip", { p: fmt(plan.days[c.dataIndex].expected, 0), s: plan.days[c.dataIndex].smart }) : "") } } },
+      scales: { x: { grid: { display: false }, ticks: { maxRotation: 0, autoSkip: true } }, y: { beginAtZero: true, ticks: { precision: 0 }, grid: { color: "#e2e5ec" }, border: { display: false } } },
+    },
+  });
+}
+
+addStrings({
+  en: {
+    "opd.title": "Driver plan — next 14 days", "opd.sub": "Drivers needed per day vs your usual crew of {crew} (≈ {per} pickups per driver a day, assumption).",
+    "opd.drivers": "Drivers needed", "opd.crew": "Usual crew", "opd.tip": "≈ {p} pickups expected · {s} predicted by SMART fill levels",
+    "opd.callIn": "Call in more drivers", "opd.noPeaks": "Your usual crew covers the next 14 days.", "opd.room": "Room for more work",
+    "opd.bestTitle": "Best way:", "opd.best": "Mondays carry the weekend fill-up — about {n} pickups more than a normal day. Let SMART empty machines that are already 75 %+ full on Friday and the Monday peak flattens.",
+  },
+  fi: {
+    "opd.title": "Kuljettajasuunnitelma — seuraavat 14 päivää", "opd.sub": "Tarvittavat kuljettajat päivittäin vs. tavallinen {crew} kuljettajan miehitys (≈ {per} tyhjennystä per kuljettaja päivässä, oletus).",
+    "opd.drivers": "Tarvittavat kuljettajat", "opd.crew": "Tavallinen miehitys", "opd.tip": "≈ {p} tyhjennystä odotettavissa · {s} SMARTin täyttöennusteesta",
+    "opd.callIn": "Kutsu lisää kuljettajia", "opd.noPeaks": "Tavallinen miehitys riittää seuraavat 14 päivää.", "opd.room": "Tilaa lisätyölle",
+    "opd.bestTitle": "Paras tapa:", "opd.best": "Maanantaisin tyhjennetään viikonlopun täyttö — noin {n} tyhjennystä enemmän kuin tavallisena päivänä. Anna SMARTin tyhjentää jo 75 %+ täydet laitteet perjantaina, niin maanantain huippu tasoittuu.",
+  },
+});
+
 function renderValue(o) {
   const v = o.value;
   const box = el("opValue");
@@ -100,6 +166,7 @@ addStrings({
 });
 
 export function renderOperator(o, customers) {
+  renderDriverPlan(o);
   renderHistory(o);
   renderValue(o);
   const names = Object.fromEntries(customers.map((c) => [c.id, c]));
@@ -113,7 +180,6 @@ export function renderOperator(o, customers) {
         () => openTrace(o.early_lift_share, t("op.early"), "early_lift_share")),
     kpi("i-red", t("op.wasted"), fmt(o.wasted_trips), `${fmt(o.operator.customers)} ${t("op.customers").toLowerCase()}`),
   );
-  workload(o);
   opStreamChart(o);
   histChart("opHistChart", o.fill_at_pickup_hist);
   if (o.extras) {

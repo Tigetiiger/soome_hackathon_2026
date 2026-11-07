@@ -897,7 +897,16 @@ def operator_history(ev: pd.DataFrame, lifts: pd.DataFrame) -> dict:
     hist["wasted"] = wasted.assign(week=week_of(wasted.actual_at)).groupby("week").size().reindex(weeks, fill_value=0)
     year_pickups = len(lifts)
     year_smart = float(np.ceil(lifts.device_fill_pct_before.fillna(TARGET_FILL_PCT).sum() / TARGET_FILL_PCT))
+    # typical day: pickups per calendar day in the history window → per weekday (Mon=0) and on working days
+    in_window = lf[(lf.week >= weeks[0]) & (lf.week <= weeks[-1])]
+    days = pd.date_range(weeks[0], weeks[-1] + pd.Timedelta(days=6), freq="D")
+    per_day = (pd.to_datetime(in_window.actual_at, utc=True).dt.tz_convert(None).dt.normalize()
+               .value_counts().reindex(days, fill_value=0))
+    weekday_avg = per_day.groupby(per_day.index.dayofweek).mean().reindex(range(7), fill_value=0)
+    working = per_day[per_day.index.dayofweek < 5]
     return {
+        "weekday_avg_pickups": [r(v, 1) for v in weekday_avg],
+        "typical_day_pickups": r(working.median(), 1),
         "history_weekly": {"weeks": [w.strftime("%Y-%m-%d") for w in weeks], "pickups": hist.pickups.astype(int).tolist(),
                            "tonnes": [r(v, 1) for v in hist.tonnes], "smart_pickups": [r(v, 1) for v in hist.smart_pickups],
                            "wasted": hist.wasted.astype(int).tolist()},

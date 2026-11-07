@@ -22,7 +22,7 @@ export const FAQ = {
 
 export const METHOD = {
   en: [
-    ["Data", "Synthetic Europress competition pack: 52 customers, 447 machines, 12 months (Oct 2025 – Sep 2026), invoices, contracts, weighbridge tickets, telemetry. All prices are hypothetical."],
+    ["Data", "Synthetic Europress competition pack: 52 customers, 447 machines, 12 months (Oct 2025 – Sep 2026), contracts, telemetry, and billing + weighbridge data shared by the waste-operator partners (customers never upload invoices). All prices are hypothetical."],
     ["Savings levers", "Five levers, each clickable: (1) empty at 85 % fill instead of earlier — biowaste and max-interval pickups excluded; (2) 50 % of penalty and extra fees avoided; (3) 20 % of mixed waste moved to recyclable streams; (4) close half the gap to the fleet-median €/t at the next tender; (5) invoice lines that differ from your contract price list."],
     ["Recycling rate", "Tonnes of cardboard, paper, plastics and biowaste ÷ all tonnes. Mixed waste is the only non-recycled stream in the data."],
     ["CO₂", "Truck trips × billable round-trip km × 1.1 kg CO₂/km (diesel refuse truck, assumption)."],
@@ -30,7 +30,7 @@ export const METHOD = {
     ["AI advisor", "Claude (Anthropic) runs on the Europress server with read-only access to the same data files; it cannot browse the web or change anything. It always names the file it used."],
   ],
   fi: [
-    ["Data", "Synteettinen Europress-kilpailuaineisto: 52 asiakasta, 447 laitetta, 12 kk (loka 2025 – syys 2026), laskut, sopimukset, punnituslaput, telemetria. Kaikki hinnat ovat kuvitteellisia."],
+    ["Data", "Synteettinen Europress-kilpailuaineisto: 52 asiakasta, 447 laitetta, 12 kk (loka 2025 – syys 2026), sopimukset, telemetria sekä jäteoperaattorikumppanien jakamat laskutus- ja punnitustiedot (asiakkaat eivät koskaan lähetä laskuja). Kaikki hinnat ovat kuvitteellisia."],
     ["Säästövivut", "Viisi vipua, jokainen avattavissa: (1) tyhjennys 85 % täyttöasteella aiemman sijaan — biojäte ja enimmäisvälin tyhjennykset pois lukien; (2) 50 % sanktioista ja lisämaksuista vältetään; (3) 20 % sekajätteestä siirtyy kierrätysjakeisiin; (4) puolet erosta laitekannan mediaani-€/t:hen suljetaan kilpailutuksessa; (5) laskurivit, jotka poikkeavat sopimushinnastosta."],
     ["Kierrätysaste", "Kartongin, paperin, muovien ja biojätteen tonnit ÷ kaikki tonnit. Sekajäte on aineiston ainoa kierrättämätön jae."],
     ["CO₂", "Kuorma-autokäynnit × laskutettava edestakainen matka × 1,1 kg CO₂/km (dieselkäyttöinen jäteauto, oletus)."],
