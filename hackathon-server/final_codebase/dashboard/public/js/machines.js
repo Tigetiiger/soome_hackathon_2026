@@ -35,6 +35,8 @@ addStrings({
     "rt.how.save": "How do I save money here?", "rt.how.mixed": "How do I cut mixed waste?",
     "rt.q.save": "My machine {name} ({id}) is {fill} % full. How do I save money with it? Give me 3 simple steps.",
     "rt.q.mixed": "My mixed-waste machine {name} ({id}) is {fill} % full. How do I put less in it and save money? Give me 3 simple steps.",
+    "rt.q.saveFree": "How do I save money with my machine {name} ({id})? Give me 3 simple steps.",
+    "rt.q.mixedFree": "How do I put less in my mixed-waste machine {name} ({id}) and save money? Give me 3 simple steps.",
   },
   fi: {
     "rt.up": "Tila: toiminnassa", "rt.noSignal": "Ei yhteyttä",
@@ -45,6 +47,8 @@ addStrings({
     "rt.how.save": "Miten säästän tässä?", "rt.how.mixed": "Miten vähennän sekajätettä?",
     "rt.q.save": "Laitteeni {name} ({id}) on {fill} % täynnä. Miten säästän sen avulla? Anna 3 helppoa vaihetta.",
     "rt.q.mixed": "Sekajätelaitteeni {name} ({id}) on {fill} % täynnä. Miten laitan siihen vähemmän ja säästän? Anna 3 helppoa vaihetta.",
+    "rt.q.saveFree": "Miten säästän laitteellani {name} ({id})? Anna 3 helppoa vaihetta.",
+    "rt.q.mixedFree": "Miten laitan sekajätelaitteeseeni {name} ({id}) vähemmän ja säästän? Anna 3 helppoa vaihetta.",
   },
 });
 
@@ -60,7 +64,7 @@ const KIND_STATE = { credit: "good", recycle: "info", bio: "note", mixed: "warn"
  * Container length follows the machine's volume so 3 m³ and 12 m³ units read differently.
  */
 export function compactorSvg(m, { label = true } = {}) {
-  const f = Math.max(0, Math.min(PICKUP_LINE, m.fill_now ?? 0));
+  const f = isFree() ? 0 : Math.max(0, Math.min(PICKUP_LINE, m.fill_now ?? 0)); // Free: no fill level
   const color = STREAM_COLORS[m.stream] || "currentColor";
   const v = m.volume_m3 ?? 8;
   const L = Math.round(Math.min(150, Math.max(84, 56 + v * 9)));
@@ -73,7 +77,7 @@ export function compactorSvg(m, { label = true } = {}) {
   const shell = `M${C0} ${top}L${C1 - 7} ${top - rise}L${C1} ${top - rise + 7}V${bot}H${C0}Z`;
   const brackets = Array.from({ length: Math.floor((C1 - P0) / 26) }, (_, i) =>
     `<rect x="${P0 + 8 + i * 26}" y="${bot + 6}" width="7" height="3" class="mc-dark"/>`).join("");
-  return `<svg class="mc-svg" viewBox="0 0 250 118" ${label ? `role="img" aria-label="${esc(m.device_id)} ${fmt(f)} %"` : 'aria-hidden="true"'}>
+  return `<svg class="mc-svg" viewBox="0 0 250 118" ${label ? `role="img" aria-label="${esc(m.device_id)}${isFree() ? "" : ` ${fmt(f)} %`}"` : 'aria-hidden="true"'}>
     <defs><clipPath id="${id}"><path d="${shell}"/></clipPath>
       <pattern id="${id}-h" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" class="mc-hatch"/></pattern></defs>
     <g transform="translate(${ox} 0)">
@@ -95,7 +99,7 @@ export function compactorSvg(m, { label = true } = {}) {
         <rect x="${C0}" y="${level}" width="${L}" height="${bot - level}" class="mc-fill" style="fill:${color}"/>
         ${m.stream === "mixed_waste" ? `<rect x="${C0}" y="${level}" width="${L}" height="${bot - level}" fill="url(#${id}-h)"/>` : ""}
       </g>
-      <line x1="${C0}" x2="${C1}" y1="${target}" y2="${target}" class="mc-pickup"/>
+      ${isFree() ? "" : `<line x1="${C0}" x2="${C1}" y1="${target}" y2="${target}" class="mc-pickup"/>`}
       <!-- container shell, bands, rear door, hinges, lock -->
       <path d="${shell}" class="mc-body"/>
       <path d="M${C0} ${top + 7}L${C1 - 7} ${top - rise + 7}H${C1}" class="mc-line"/>
@@ -132,9 +136,10 @@ const isEarly = (m) => m.policy !== "ON_CALL" && m.visit_fill_pct != null && m.v
 /** Who sends the truck and when, as plain-text lines: SMART on-call order, or the operator's fixed timetable. */
 function truckLines(m) {
   const op = opName(m);
+  if (isFree() && m.policy === "ON_CALL") return [t("plan.manual", { op })];
   if (m.policy !== "ON_CALL") {
     return [t("truck.fixed", { op, sched: scheduleText(m) }),
-      ...(m.truck_on ? [t("truck.next", { date: dayDate(m.truck_on), fill: visitFill(m) })] : [])];
+      ...(m.truck_on ? [isFree() ? t("rt.timetable", { date: dayDate(m.truck_on) }) : t("truck.next", { date: dayDate(m.truck_on), fill: visitFill(m) })] : [])];
   }
   const first = m.pickup_ordered ? t("truck.ordered", { op })
     : m.order_on ? t(m.pickup_reason === "interval" ? "truck.willOrderInterval" : "truck.willOrder", { op, date: dayDate(m.order_on), thr: fmt(m.order_threshold_pct) })
@@ -143,17 +148,18 @@ function truckLines(m) {
 }
 
 function truckState(m) {
+  if (isFree()) return "mute";
   if (isEarly(m)) return "warn";
   return m.policy === "ON_CALL" && (m.pickup_ordered || (m.days_to_pickup ?? 99) <= 2) ? "info" : "mute";
 }
 
 const tip = (text) => `<p class="mc-tip"><span class="state" data-state="warn">${esc(text)}</span></p>`;
 function truckBlock(m) {
-  const lowThr = m.policy === "ON_CALL" && m.stream !== "biowaste" && m.order_threshold_pct != null && m.order_threshold_pct < 75;
+  const lowThr = !isFree() && m.policy === "ON_CALL" && m.stream !== "biowaste" && m.order_threshold_pct != null && m.order_threshold_pct < 75;
   return `<div class="mc-truck" data-state="${truckState(m)}">
       <span class="mc-truck-ic">${TRUCK_ICON}</span>
       <div>${truckLines(m).map((l, i) => `<p class="${i ? "mc-truck-sub" : "mc-truck-main"}">${esc(l)}</p>`).join("")}
-        ${isEarly(m) ? tip(t("truck.early")) : ""}
+        ${!isFree() && isEarly(m) ? tip(t("truck.early")) : ""}
         ${lowThr ? tip(t("truck.thr", { thr: fmt(m.order_threshold_pct) })) : ""}
         ${m.operator_on_time_pct != null ? `<p class="mc-truck-sub">${esc(t("truck.onTime", { op: opName(m), pct: fmt(m.operator_on_time_pct) }))}</p>` : ""}
       </div></div>`;
@@ -169,10 +175,10 @@ const modelKg = (m) => sensorKg.get(m.device_id) ?? null;
 const weightSlot = (m) => (isFree() ? `<span class="fine">🔒 ${esc(t("rt.weightSmart"))}</span>` : hasWeightModel(m.stream) ? `<span data-w="${esc(m.device_id)}">${modelKg(m) != null ? esc(t("rt.weight", { kg: fmt(modelKg(m)) })) : "…"}</span>` : `<span class="fine">${esc(t("rt.noModel"))}</span>`);
 const weightLine = (m) => weightSlot(m);
 const mixedAsk = (m) => (KIND[m.stream] === "mixed" ? `<button type="button" class="ask-link" data-mixed="${esc(m.device_id)}">${esc(t("m.askMixed"))}</button>` : "");
-const howScheduled = (m) => (m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
+const howScheduled = (m) => (isFree() && m.policy === "ON_CALL" ? t("plan.manualShort") : m.policy === "ON_CALL" ? t("mv.onCall", { thr: fmt(m.order_threshold_pct) }) : t("mv.timetable", { sched: scheduleText(m) }));
 
-/** Fill now, as an explainable value (opens the machine drawer). */
-const fillChip = (m) => chip(`${fmt(m.fill_now)}&nbsp;%`, `${m.device_id}: ${fmt(m.fill_now)} %`, m.device_id);
+/** Fill now, as an explainable value (opens the machine drawer). Free: no fill level at all. */
+const fillChip = (m) => (isFree() ? `<span class="fine">🔒 ${esc(t("plan.lock.fill"))}</span>` : chip(`${fmt(m.fill_now)}&nbsp;%`, `${m.device_id}: ${fmt(m.fill_now)} %`, m.device_id));
 
 // ---------------------------------------------------------------- real-time card (Figma "Article" 1:489)
 const SPARKLE = '<img class="rt-spark" src="/img/figma/cc0e4.svg" width="176" height="20" alt="">';
@@ -189,6 +195,7 @@ export function machineNames(rows) {
 
 /** Two plain lines: when it is full, and what happens with the truck. */
 function plainNext(m) {
+  if (isFree()) return [m.policy !== "ON_CALL" && m.truck_on ? t("rt.timetable", { date: dayDate(m.truck_on) }) : t("plan.manual", { op: opName(m) })];
   const days = Math.round(m.days_to_full ?? 99);
   const full = (m.fill_now ?? 0) >= (m.order_threshold_pct ?? PICKUP_LINE) || m.full_on === asOf ? t("rt.fullNow")
     : !m.full_on ? t("m.notSoon")
@@ -201,7 +208,7 @@ function plainNext(m) {
   return [full, truck].filter(Boolean);
 }
 
-const askQuestion = (m, name) => t(KIND[m.stream] === "mixed" ? "rt.q.mixed" : "rt.q.save", { name, id: m.device_id, fill: fmt(m.fill_now) });
+const askQuestion = (m, name) => (isFree() ? t(KIND[m.stream] === "mixed" ? "rt.q.mixedFree" : "rt.q.saveFree", { name, id: m.device_id }) : t(KIND[m.stream] === "mixed" ? "rt.q.mixed" : "rt.q.save", { name, id: m.device_id, fill: fmt(m.fill_now) }));
 
 function rtCard(m, name, { full = false } = {}) {
   const kind = KIND[m.stream] || "recycle";
@@ -218,6 +225,7 @@ function rtCard(m, name, { full = false } = {}) {
       ? `<div class="rt-wrow"><p class="rt-weight">${weightSlot(m)}</p>${isFree() ? "" : cardWeightLink(m.device_id)}</div>`
       : `<p class="rt-weight rt-nomodel">${esc(t("rt.noModel"))}</p>`}
     <div class="rt-next">${TRUCK_ICON}<div>${plainNext(m).map((l) => `<p>${esc(l)}</p>`).join("")}</div></div>
+    ${isFree() && m.policy === "ON_CALL" ? manualOrder(m) : ""}
     ${full && m.operator ? `<p class="rt-op">${esc(howScheduled(m))} · ${esc(m.operator)}${m.operator_on_time_pct != null ? ` · ${esc(t("mv.onTime", { pct: fmt(m.operator_on_time_pct) }))}` : ""}</p>` : ""}
     <button type="button" class="rt-ask" data-ask="${esc(m.device_id)}">
       <canvas class="rt-shader" aria-hidden="true"></canvas>${SPARKLE}
@@ -225,6 +233,9 @@ function rtCard(m, name, { full = false } = {}) {
     </button>
   </article>`;
 }
+
+/** Free: the customer orders the truck by hand (demo: the request is only shown, not sent). */
+const manualOrder = (m) => `<p class="rt-order"><button type="button" class="btn ghost" data-order="${esc(m.device_id)}">${esc(t("plan.order"))}</button></p>`;
 
 /** "compact": Overview card · "design": drawing cards · "mixed": small drawing + info table per machine · "table": plain table. */
 const VIEW = {
@@ -239,7 +250,7 @@ const VIEW = {
         <div><dt>${t("col.operator")}</dt><dd>${esc(m.operator || "–")}${m.operator_on_time_pct != null ? ` · ${t("mv.onTime", { pct: fmt(m.operator_on_time_pct) })}` : ""}</dd></div>
         <div class="span2"><dt>${t("mv.nextTruck")}</dt><dd>${truckBlock(m)}</dd></div>
         <div><dt>${t("mv.weight")}</dt><dd>${weightLine(m)}</dd></div>
-        <div><dt>${t("mv.fillRate")}</dt><dd>${m.fill_rate_per_day != null ? t("mv.perDay", { v: fmt(m.fill_rate_per_day, 1) }) : "–"}</dd></div>
+        <div><dt>${t("mv.fillRate")}</dt><dd>${isFree() ? `🔒 ${esc(t("plan.lock.fill"))}` : m.fill_rate_per_day != null ? t("mv.perDay", { v: fmt(m.fill_rate_per_day, 1) }) : "–"}</dd></div>
       </dl>
       ${mixedAsk(m)}
     </article>`).join(""),
@@ -252,8 +263,8 @@ const VIEW = {
       <td class="num">${fillChip(m)}</td>
       <td>${esc(howScheduled(m))}</td>
       <td>${esc(m.operator || "–")}</td>
-      <td>${m.pickup_ordered ? esc(t("mv.ordered")) : m.truck_on ? esc(dayDate(m.truck_on)) : "–"}</td>
-      <td class="num">${m.visit_fill_pct == null ? "–" : m.visit_fill_pct > PICKUP_LINE ? `≥ ${PICKUP_LINE} %` : `${fmt(m.visit_fill_pct)} %`}</td>
+      <td>${isFree() ? (m.policy !== "ON_CALL" && m.truck_on ? esc(dayDate(m.truck_on)) : esc(t("plan.manualShort"))) : m.pickup_ordered ? esc(t("mv.ordered")) : m.truck_on ? esc(dayDate(m.truck_on)) : "–"}</td>
+      <td class="num">${isFree() ? "🔒" : m.visit_fill_pct == null ? "–" : m.visit_fill_pct > PICKUP_LINE ? `≥ ${PICKUP_LINE} %` : `${fmt(m.visit_fill_pct)} %`}</td>
       <td class="num">${weightSlot(m)}</td></tr>`).join("")}</tbody></table></div>`,
 };
 
@@ -281,6 +292,10 @@ export function renderMachinesNow(container, list, { limit = Infinity, mode = "d
     const m = rows.find((x) => x.device_id === b.dataset.ask);
     b.addEventListener("click", () => openAi(askQuestion(m, names.get(m.device_id)), `machines.${m.device_id}`));
   });
+  container.querySelectorAll("button[data-order]").forEach((b) => b.addEventListener("click", () => {
+    const m = rows.find((x) => x.device_id === b.dataset.order);
+    b.closest(".rt-order").innerHTML = `<span class="state" data-state="info">✓ ${esc(t("plan.ordered", { op: opName(m) }))}</span>`;
+  }));
   container.querySelectorAll("canvas.rt-shader").forEach((c) => mountShaderFill(c, ASK_SHADER));
   // the soft sensor fills every weight slot once the model service answers
   if (container.querySelector("[data-w]")) {

@@ -3,6 +3,7 @@
 // "How you save" list, so the three always say the same thing. Plain words on purpose.
 import { t, fmt, eur, addStrings } from "./i18n.js";
 import { esc } from "./drawer.js";
+import { isFree } from "./plan.js";
 
 const POPUP_DELAY_MS = 5000;
 const READ_KEY = "ep.notes.read";
@@ -75,7 +76,7 @@ function renderBell() {
   btn.setAttribute("aria-label", t("np.bell", { n: unread }));
   el("bellPanel").innerHTML = `<p class="bell-title">${esc(t("np.title"))}</p>${current.list.length ? `<ul class="bell-list">${current.list.map((n) => `
     <li data-read="${read.has(n.id)}"><button type="button" data-note="${esc(n.id)}">${problemSolutionHtml(n)}
-      <span class="ps-eur">${esc(t("np.saves", { eur: eur(n.eur) }))} →</span></button></li>`).join("")}</ul>` : `<p class="muted">${esc(t("np.empty"))}</p>`}`;
+      <span class="ps-eur">${esc(t("np.saves", { eur: eur(n.eur) }))} →</span></button></li>`).join("")}</ul>` : `<p class="muted">${esc(t(isFree() ? "plan.lock.notes" : "np.empty"))}</p>`}`;
 }
 
 function open(id) {
@@ -125,8 +126,10 @@ export function initNotifications() {
 
 /** (Re)build notifications for a customer; schedules the one-time pop-up 5 s after the first load. */
 export function setNotifications(p, onOpen) {
-  current = { orgId: p.customer.id, list: notifications(p), onOpen };
+  current = { orgId: p.customer.id, list: isFree() ? [] : notifications(p), onOpen }; // Free: nothing automatic
   renderBell();
   clearTimeout(popupTimer);
+  hidePopup();
+  if (isFree()) return;
   popupTimer = setTimeout(showPopup, POPUP_DELAY_MS);
 }

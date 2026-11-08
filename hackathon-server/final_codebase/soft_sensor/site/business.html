@@ -114,7 +114,7 @@ td.l,th.l{text-align:left;white-space:normal}
 <li><b>What we built.</b> A weight model that reads the data SMART machines already send (fill, compaction, hydraulic pressure, weather): about <b>5.3 % off</b> on machines it never saw, with <b>€0</b> extra hardware. On top of it, one dashboard with three views.</li>
 <li><b>Customer.</b> Sees the approximate weight in every container and the expected charge before the truck comes, plus the savings SMART AI found. Demo hotel group: <b>€52,154 a year</b>, 37 % of its waste cost.</li>
 <li><b>Waste-operator partners (~20).</b> Share pickups, weights and invoice lines through SMART; get a driver plan, pickups 14 days ahead and the load before the truck leaves. Five demo partners: <b>3,945 fewer truck trips a year</b>.</li>
-<li><b>Europress.</b> More SMART subscriptions. SMART is paid with <b>a share of the money it predicts it saves</b>, agreed per customer (demo 25 % ≈ €311k a year on the demo fleet). Free shows fill levels and hints, never the weight.</li>
+<li><b>Europress.</b> More SMART subscriptions. SMART is paid with <b>a share of the money it predicts it saves</b>, agreed per customer (demo 25 % ≈ €311k a year on the demo fleet). Free is the bare minimum and fully manual: no weight, no fill levels, nothing automatic.</li>
 <li><b>Trust and control.</b> Europress never sells data to third parties; data is only exchanged when both parties agree.</li>
 <li><b>Next step.</b> The model is trained on a simulated fleet today. After the demo, Europress may need to invest in <b>weighing the real output of a small group of compactors</b>, so the model can be retrained on real weights (<a href="#future">section 7</a>).</li>
 </ul>
@@ -160,8 +160,9 @@ td.l,th.l{text-align:left;white-space:normal}
 <p class="tcap"><b>Table 2.</b> Free and SMART.</p>
 <div class="tbl"><table><thead><tr><th class="l"></th><th class="l">Free</th><th class="l">SMART</th></tr></thead><tbody>
 <tr><td class="l">Weight</td><td class="l">none — weight is what SMART sells</td><td class="l">every container, now and at the next pickup</td></tr>
-<tr><td class="l">Money</td><td class="l">the biggest saving, as a hint</td><td class="l">every saving, plus the expected charge of each pickup</td></tr>
-<tr><td class="l">Machines</td><td class="l">fill level and next pickup</td><td class="l">plus history, patterns and forecasts</td></tr>
+<tr><td class="l">Money</td><td class="l">cost and pickup count; the total saving SMART would find, locked</td><td class="l">every saving, plus the expected charge of each pickup</td></tr>
+<tr><td class="l">Machines</td><td class="l">list and timetable pickups only — no fill level</td><td class="l">fill level, when each machine is full, history, patterns and forecasts</td></tr>
+<tr><td class="l">Ordering and alerts</td><td class="l">manual: the customer orders each pickup</td><td class="l">automatic: SMART orders the truck when the machine is full and alerts on savings</td></tr>
 <tr><td class="l">Period and AI</td><td class="l">last 1–3 months; 3 AI questions a day</td><td class="l">any period; no limit</td></tr>
 </tbody></table></div>
 <p><b>Where the money comes from:</b></p>
@@ -177,7 +178,7 @@ td.l,th.l{text-align:left;white-space:normal}
 <div class="tbl"><table><thead><tr><th class="l"></th><th class="l">No SMART</th><th class="l">SMART Free</th><th class="l">SMART</th></tr></thead><tbody>
 <tr><td class="l">Weight of the waste</td><td class="l">known only from the operator, after pickup</td><td class="l">not shown</td><td class="l">approximate weight, any time</td></tr>
 <tr><td class="l">Next bill</td><td class="l">a surprise</td><td class="l">a surprise</td><td class="l">expected charge before the truck comes</td></tr>
-<tr><td class="l">Pickups</td><td class="l">by calendar — trucks often come half full</td><td class="l">fill level and next pickup visible</td><td class="l">truck ordered when the machine is full</td></tr>
+<tr><td class="l">Pickups</td><td class="l">by calendar — trucks often come half full</td><td class="l">ordered by hand; no fill level shown</td><td class="l">truck ordered when the machine is full</td></tr>
 <tr><td class="l">Cost of SMART</td><td class="l">–</td><td class="l">€0</td><td class="l">a share of the saving</td></tr>
 </tbody></table></div>
 <p>For the partner: without SMART, drivers are planned by habit and Mondays overflow; with SMART, the driver plan shows 14 days ahead which days need extra drivers.</p></section>

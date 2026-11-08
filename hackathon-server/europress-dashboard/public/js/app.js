@@ -99,8 +99,8 @@ function kpiCard(key, p, sub) {
     <div class="kpi-trend">${esc(trend?.line ?? "")}</div></article>`;
 }
 
-/** Free shows no weight (kg, t or €/t): weight is what SMART sells. */
-const WEIGHT_KPIS = new Set(["tonnes", "eur_per_t"]);
+/** Free is the bare minimum: cost, pickups and the savings SMART would find. No weight (kg, t, €/t) and no fill. */
+const WEIGHT_KPIS = new Set(["tonnes", "eur_per_t", "recycling_rate", "co2", "avg_fill"]);
 const visibleKpis = (keys) => (isFree() ? keys.filter((k) => !WEIGHT_KPIS.has(k)) : keys);
 
 function renderKpis(p) {
@@ -120,7 +120,7 @@ const openLever = (l) => openTrace(l.trace, t(`lever.${l.id}`), `levers.${l.id}`
 function renderHowSave(p) {
   el("saveTitle").textContent = t("save.title", { eur: eur(p.kpis.savings.value) });
   const all = notifications(p);
-  const shown = isFree() ? all.slice(0, 1) : all;
+  const shown = isFree() ? [] : all; // Free: no automatic savings tips
   const hidden = all.slice(shown.length);
   el("howSave").innerHTML = shown.map((n) => `<li class="ps-row">
       <button type="button" class="ps-open" data-lever="${esc(n.id)}">${problemSolutionHtml(n)}</button>
@@ -187,6 +187,7 @@ function renderSavings(p) {
       <td class="num strong">${eur(l.saving_eur)}</td>${ROW_GO}</tr>`).join("")}
     <tr><td class="strong">${t("total")}</td><td></td><td class="num strong">${eur(p.kpis.savings.value)}</td><td></td></tr></tbody>`;
   bindRows(tbl, (i) => openLever(p.levers[i]));
+  gate(tbl.closest(".card"), "plan.lock.savings", { n: notifications(p).length, eur: eur(p.kpis.savings.value) });
 
   const target = state.index.assumptions.target_fill_pct;
   const v = p.kpis.avg_fill.value;
@@ -195,6 +196,8 @@ function renderSavings(p) {
   el("gaugeStats").innerHTML = [[fmt(p.kpis.lifts.value), t("gauge.lifts")], [fmt(p.early_lifts_n), t("gauge.early")],
     [fmt(p.wasted_trips_n), t("gauge.wasted")], [`${target} %`, t("gauge.target")]]
     .map(([val, lab]) => `<div><dt>${esc(lab)}</dt><dd>${val}</dd></div>`).join("");
+  if (isFree()) { el("gauge").innerHTML = ""; el("gaugeStats").innerHTML = ""; el("gaugeSub").textContent = ""; } // no fill data in the DOM
+  gate(el("gauge").closest(".card"), "plan.lock.fillLong");
 
   const n = p.customer.n_devices;
   const seg = n <= 3 ? "small" : n <= 10 ? "medium" : "large";
@@ -204,16 +207,17 @@ function renderSavings(p) {
 
 function renderMachines(p) {
   const tbl = el("devicesTable");
-  tbl.innerHTML = `<thead><tr><th>${t("col.machine")}</th><th>${t("col.stream")}</th><th>${t("col.fill")}</th>
-    <th class="num">${t("col.eurt")}</th><th>${t("col.status")}</th><th class="row-go"></th></tr></thead><tbody>${
+  const free = isFree(); // Free: no fill and no €/t columns
+  tbl.innerHTML = `<thead><tr><th>${t("col.machine")}</th><th>${t("col.stream")}</th>${free ? "" : `<th>${t("col.fill")}</th>
+    <th class="num">${t("col.eurt")}</th>`}<th>${t("col.status")}</th><th class="row-go"></th></tr></thead><tbody>${
     p.devices.map((d, i) => {
       const fill = d.avg_fill_pct ?? 0;
       const fs = fill >= 75 ? "good" : fill >= 55 ? "warn" : "bad";
       return `<tr class="click" data-i="${i}" tabindex="0">
         <td class="strong">${esc(d.device_id)}<span class="desc">${esc(d.site)} · ${fmt(d.volume_m3)} m³</span></td>
         <td><span class="dot" style="background:${STREAM_COLORS[d.stream]}"></span>${esc(stream(d.stream))}</td>
-        <td><span class="fill"><span class="fill-bar" data-state="${fs}"><i style="width:${fill}%"></i></span>${fmt(fill)} %</span></td>
-        <td class="num">${fmt(d.eur_per_t)}</td>
+        ${free ? "" : `<td><span class="fill"><span class="fill-bar" data-state="${fs}"><i style="width:${fill}%"></i></span>${fmt(fill)} %</span></td>
+        <td class="num">${fmt(d.eur_per_t)}</td>`}
         <td><span class="state" data-state="${STATUS_STATE[d.status]}">${esc(t(`status.${d.status}`))}</span></td>${ROW_GO}</tr>`;
     }).join("")}</tbody>`;
   bindRows(tbl, (i) => openTrace(deviceTrace(p.devices[i]), `${p.devices[i].device_id} · ${stream(p.devices[i].stream)}`, `devices.${p.devices[i].device_id}`));
@@ -295,7 +299,10 @@ const RENDER = {
   contracts: renderContracts,
   weight: (p) => { if (isFree()) { renderWeightOrTeaser(el("weightTable"), null); return; } renderWeightTable(el("weightTable"), p, { names: machineNames([...p.machines_now].sort((a, b) => a.device_id.localeCompare(b.device_id))), dayLabel: DAY_FMT }); },
   trends: (p) => { renderTrends(p, state.index.assumptions.target_fill_pct); gate(document.querySelector("#view-trends .tr-when"), "plan.lock.when");
-    ["mixedTrendChart", "streamTrendChart"].forEach((id) => gate(el(id).closest(".card"), "plan.lock.tonnes")); },
+    ["mixedTrendChart", "streamTrendChart"].forEach((id) => gate(el(id).closest(".card"), "plan.lock.tonnes"));
+    if (isFree()) el("trendFindings").innerHTML = ""; // no fill numbers in the DOM
+    gate(el("trendFindings").closest(".card"), "plan.lock.trends"); gate(el("fillTrendChart").closest(".card"), "plan.lock.fillLong");
+    gate(el("costPickupChart").closest(".card"), "plan.lock.tonnes"); },
   account: renderAccount,
 };
 

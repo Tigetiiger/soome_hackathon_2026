@@ -1,4 +1,5 @@
-// Free / SMART plan for the whole dashboard. Free gives hints and the basics; SMART unlocks the full stack
+// Free / SMART plan for the whole dashboard. Free is the bare minimum and fully manual (no fill levels,
+// no forecasts, no automatic ordering or alerts); SMART unlocks the full stack
 // (live weight, every saving, long periods, forecasts, unlimited SMART Advisor). Demo toggle in the header;
 // a real deployment would read the plan from the customer's subscription instead of localStorage.
 import { t, addStrings } from "./i18n.js";
@@ -14,7 +15,10 @@ try { plan = localStorage.getItem(KEY) === "free" ? "free" : "smart"; } catch { 
 addStrings({
   en: {
     "plan.label": "Plan", "plan.free": "Free", "plan.smart": "SMART", "plan.unlock": "Switch to SMART",
-    "plan.lock.weight": "With SMART you see the weight in every container and what each pickup will cost — before the truck comes. Free shows fill levels and pickups.", "plan.lock.tonnes": "Tonnes and price per tonne are part of SMART.",
+    "plan.lock.weight": "With SMART you see the weight in every container and what each pickup will cost — before the truck comes. Free shows only your machines, your pickups and your costs.",
+    "plan.lock.fill": "Fill level in SMART", "plan.lock.fillLong": "Fill levels, when each machine will be full and automatic truck ordering are part of SMART.",
+    "plan.lock.notes": "Automatic alerts and savings tips are part of SMART.", "plan.lock.trends": "Trends and findings are part of SMART.",
+    "plan.manual": "You order pickups yourself from {op}", "plan.manualShort": "Manual order", "plan.order": "Order a pickup", "plan.ordered": "Pickup requested from {op} — they confirm the date", "plan.lock.tonnes": "Tonnes and price per tonne are part of SMART.",
     "plan.lock.savings": "{n} more savings worth {eur} a year are waiting in SMART.",
     "plan.lock.when": "Daily and hourly patterns are part of SMART.",
     "plan.lock.forecast": "The 14-day pickup forecast and SMART's value for your routes are part of SMART.",
@@ -23,7 +27,10 @@ addStrings({
   },
   fi: {
     "plan.label": "Paketti", "plan.free": "Free", "plan.smart": "SMART", "plan.unlock": "Vaihda SMARTiin",
-    "plan.lock.weight": "SMARTilla näet jokaisen säiliön painon ja mitä kukin tyhjennys maksaa — ennen kuin auto tulee. Free näyttää täyttöasteet ja tyhjennykset.", "plan.lock.tonnes": "Tonnit ja tonnihinta kuuluvat SMARTiin.",
+    "plan.lock.weight": "SMARTilla näet jokaisen säiliön painon ja mitä kukin tyhjennys maksaa — ennen kuin auto tulee. Free näyttää vain laitteesi, tyhjennyksesi ja kulusi.",
+    "plan.lock.fill": "Täyttöaste SMARTissa", "plan.lock.fillLong": "Täyttöasteet, milloin laite täyttyy ja automaattinen autotilaus kuuluvat SMARTiin.",
+    "plan.lock.notes": "Automaattiset hälytykset ja säästövinkit kuuluvat SMARTiin.", "plan.lock.trends": "Trendit ja havainnot kuuluvat SMARTiin.",
+    "plan.manual": "Tilaat tyhjennykset itse: {op}", "plan.manualShort": "Tilaus itse", "plan.order": "Tilaa tyhjennys", "plan.ordered": "Tyhjennyspyyntö lähetetty: {op} — he vahvistavat päivän", "plan.lock.tonnes": "Tonnit ja tonnihinta kuuluvat SMARTiin.",
     "plan.lock.savings": "{n} muuta säästöä, yhteensä {eur} vuodessa, odottaa SMARTissa.",
     "plan.lock.when": "Päivä- ja tuntikohtaiset tiedot kuuluvat SMARTiin.",
     "plan.lock.forecast": "14 päivän tyhjennysennuste ja SMARTin arvo reiteillesi kuuluvat SMARTiin.",

@@ -44,8 +44,8 @@ function block(p, idx) {
            mixed: tonnes ? (100 * mixed) / tonnes : null, pickups, fill };
 }
 
-/** Free shows no weight: tonnes and €/t are SMART. */
-const WEIGHT_MEASURES = new Set(["tonnes", "eurt"]);
+/** Free is the bare minimum: only cost and pickups. Weight-based measures and fill are SMART. */
+const WEIGHT_MEASURES = new Set(["tonnes", "eurt", "recycling", "mixed", "fill"]);
 // measure → [good direction, unit, decimals]
 const MEASURES = { cost: ["down", "€", 0], tonnes: ["info", "t", 1], eurt: ["down", "€/t", 0], recycling: ["up", "%", 1],
                    mixed: ["down", "%", 1], pickups: ["down", "", 0], fill: ["up", "%", 0] };
