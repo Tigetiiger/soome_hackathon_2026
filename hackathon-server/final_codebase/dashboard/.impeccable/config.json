@@ -1,0 +1,23 @@
+{
+  "detector": {
+    "ignoreRules": [],
+    "ignoreFiles": [],
+    "ignoreValues": [
+      {
+        "rule": "pulsing-dot",
+        "value": "*",
+        "files": [
+          "europress-dashboard/public/index.html"
+        ],
+        "createdAt": "2026-11-07T11:32:33.878Z",
+        "reason": "Claude: the only pulse is the SMART Advisor typing indicator, shown only while a live AI request is streaming (ask.js); domain-appropriate live state"
+      },
+      {
+        "rule": "overused-font",
+        "value": "geist mono",
+        "createdAt": "2026-11-07T12:17:02.992Z",
+        "reason": "Figma design system the user asked to implement (file tODJ1f5NDUh2pWYVcB9SXW node 4:44) specifies Geist Mono for Button text and Caption styles"
+      }
+    ]
+  }
+}
