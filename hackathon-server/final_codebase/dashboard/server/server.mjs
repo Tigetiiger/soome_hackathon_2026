@@ -1,5 +1,7 @@
 // Europress SMART customer dashboard server (no dependencies).
-//   GET  /                → static files from ../public
+//   GET  /                → landing page (../public/index.html)
+//   GET  /dashboard/      → dashboard app (../public/dashboard/index.html; assets stay at /css, /js, …)
+//   GET  /docs/           → AI technical docs (../../soft_sensor/site)
 //   POST /api/ask         → Server-Sent Events stream from headless Claude Code over ../ai-workspace
 //   GET  /api/health
 import http from "node:http";
@@ -47,6 +49,15 @@ const SECURITY_HEADERS = {
   "Content-Security-Policy":
     "default-src 'self'; script-src 'self'; style-src 'self' 'unsafe-inline' https://fonts.googleapis.com; font-src https://fonts.gstatic.com; img-src 'self' data:; connect-src 'self'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'",
 };
+// The generated technical docs (soft_sensor/site) are static and use small inline scripts.
+const DOCS_HEADERS = {
+  ...SECURITY_HEADERS,
+  "Content-Security-Policy":
+    "default-src 'self'; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; img-src 'self' data:; connect-src 'self'; base-uri 'self'; frame-ancestors 'self'; form-action 'self'",
+};
+// Site layout: "/" landing page, "/dashboard/" dashboard app, "/docs/" AI technical docs.
+const DOCS_DIR = process.env.DOCS_DIR || path.join(ROOT, "..", "soft_sensor", "site");
+const SECTIONS = ["/dashboard", "/docs"];
 
 const log = (level, msg, extra = {}) =>
   process.stdout.write(JSON.stringify({ t: new Date().toISOString(), level, msg, ...extra }) + "\n");
@@ -55,16 +66,22 @@ const log = (level, msg, extra = {}) =>
 async function serveStatic(req, res) {
   let rel;
   try { rel = decodeURIComponent(new URL(req.url, "http://x").pathname); } catch { return send(res, 400, "Bad request"); }
-  if (rel === "/") rel = "/index.html";
-  const file = path.normalize(path.join(PUBLIC, rel));
-  if (!file.startsWith(PUBLIC + path.sep)) return send(res, 403, "Forbidden");
+  if (SECTIONS.includes(rel)) {
+    res.writeHead(301, { ...SECURITY_HEADERS, Location: rel + "/" });
+    return res.end();
+  }
+  if (rel.endsWith("/")) rel += "index.html";
+  const isDocs = rel.startsWith("/docs/");
+  const base = isDocs ? DOCS_DIR : PUBLIC;
+  const file = path.normalize(path.join(base, isDocs ? rel.slice("/docs".length) : rel));
+  if (!file.startsWith(base + path.sep)) return send(res, 403, "Forbidden");
   try {
     const s = await stat(file);
     if (!s.isFile()) return send(res, 404, "Not found");
     const body = await readFile(file);
     const ext = path.extname(file);
     res.writeHead(200, {
-      ...SECURITY_HEADERS,
+      ...(isDocs ? DOCS_HEADERS : SECURITY_HEADERS),
       "Content-Type": MIME[ext] || "application/octet-stream",
       "Cache-Control": [".json", ".html", ".js", ".css"].includes(ext) ? "no-cache" : "public, max-age=3600",
     });

@@ -49,12 +49,15 @@ def default_model_run() -> Path:
     return FALLBACK_MODEL
 
 
+HOME_LINK = '<a href="/" style="display:inline-block;margin:0 0 1rem;font-size:.85rem;color:var(--muted);text-decoration:none">← SMART Weight home</a>'  # back to the landing page served at / by dashboard/server
+
+
 def toc(body: str) -> str:
     """Sidebar table of contents from the numbered h2/h3 headings of the body."""
     items: list[tuple[int, str, str, str]] = []
     for m in re.finditer(r'<h([23]) id="([^"]+)"><span class="n">([\d.]+)</span>(.*?)</h\1>', body):
         items.append((int(m.group(1)), m.group(2), m.group(3), re.sub(r"<[^>]+>", "", m.group(4))))
-    out, open_sub = ['<nav class="toc" aria-label="Contents"><p>Contents</p><ol>'], False
+    out, open_sub = ['<nav class="toc" aria-label="Contents">' + HOME_LINK + '<p>Contents</p><ol>'], False
     for level, anchor, n, title in items:
         if level == 2:
             if open_sub:
