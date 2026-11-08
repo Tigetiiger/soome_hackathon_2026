@@ -6,8 +6,8 @@
   "segments": [
     {
       "id": "problem",
-      "kind": "manim",
-      "file": "clips/manim/problem.mp4",
+      "kind": "external",
+      "file": "clips/3d/problem_3d.mp4",
       "start": 0.0,
       "duration": 15.0,
       "tag": "practice data",
@@ -27,7 +27,10 @@
           "d": 4.2,
           "text": "The machine knows how full it is. Nobody knows how heavy."
         }
-      ]
+      ],
+      "fallback": "clips/manim/problem.mp4",
+      "own_tag": true,
+      "_note": "3D version from the GPU machine (handoff_3d/PROMPT.md); until it exists the Manim clip (clips/manim/problem.mp4) is used."
     },
     {
       "id": "machine3d",
@@ -188,8 +191,8 @@
     },
     {
       "id": "impact",
-      "kind": "manim",
-      "file": "clips/manim/impact.mp4",
+      "kind": "external",
+      "file": "clips/3d/impact_3d.mp4",
       "start": 95.0,
       "duration": 25.0,
       "tag": "practice data · estimate",
@@ -214,7 +217,10 @@
           "d": 2.7,
           "text": "Europress sells trust and control, never data."
         }
-      ]
+      ],
+      "fallback": "clips/manim/impact.mp4",
+      "own_tag": true,
+      "_note": "3D version from the GPU machine (handoff_3d/PROMPT.md); until it exists the Manim clip (clips/manim/impact.mp4) is used."
     }
   ]
 }

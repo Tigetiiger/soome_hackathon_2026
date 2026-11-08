@@ -121,6 +121,11 @@ def build_segment(seg: dict) -> Path:
     dur = seg["duration"]
     src = ROOT / seg["file"]
     dark = seg["kind"] == "external"
+    own_tag = seg.get("own_tag", False)
+    # 3D clips from the other machine replace the Manim clips once they exist; until then use the fallback.
+    if not src.exists() and seg.get("fallback") and (ROOT / seg["fallback"]).exists():
+        print(f"  ! {seg['id']}: {src.name} not found, using fallback {seg['fallback']}")
+        src, dark, own_tag = ROOT / seg["fallback"], False, True
     inputs: list[str] = []
     if src.exists():
         ss = seg.get("in_point", 0.0)
@@ -143,7 +148,7 @@ def build_segment(seg: dict) -> Path:
     # Tag pill for clips that do not draw their own (screen recording, 3D).
     filt = base + "[b]"
     last = "[b]"
-    if seg["kind"] in ("screen", "external"):
+    if seg["kind"] in ("screen", "external") and not own_tag:
         tag = TMP / f"tag_{seg['id']}.png"
         # Screen recording: the app header owns the top-right, so tag goes in the sidebar, bottom-left,
         # above the caption band. 3D clip: top-right.
