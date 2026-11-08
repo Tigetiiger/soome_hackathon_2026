@@ -208,7 +208,7 @@ def copy_plots(run_dir: Path, model_dir: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description="Build static soft-sensor data for the dashboard")
-    parser.add_argument("--sim-root", type=Path, default=Path("/home/hackathon/simulator-weather-and-stuff"))
+    parser.add_argument("--sim-root", type=Path, default=ROOT.parent / "soft_sensor")
     parser.add_argument("--run", default="full400")
     parser.add_argument("--models", default="full400")
     args = parser.parse_args()

@@ -20,7 +20,7 @@ from softsensor.api import ApiError, make_handler
 from softsensor.config import Settings
 from softsensor.stores import PUBLIC_MACHINE_COLUMNS, build_grid, cycle_ids, hours_since_lift, row_ranges
 
-DEV = dataclasses.replace(Settings.from_env(), run="bins25", models="bins25")
+DEV = dataclasses.replace(Settings.from_env(), run="demo40", models="full400")  # shipped slice + weights
 
 
 @pytest.fixture(scope="module")

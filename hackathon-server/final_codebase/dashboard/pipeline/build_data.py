@@ -8,6 +8,7 @@ Run:  python -I pipeline/build_data.py
 from __future__ import annotations
 
 import json
+import os
 import math
 import shutil
 from pathlib import Path
@@ -16,11 +17,11 @@ import numpy as np
 import pandas as pd
 
 ROOT = Path(__file__).resolve().parents[1]
-PACK = Path(
-    "/home/hackathon/input-files/Europress_SinceAI2026_FINAL/"
-    "Europress_SMART_Material_Value_Engine_v1.0.1_PARTICIPANTS (3)/"
-    "Europress_SMART_Material_Value_Engine_v1.0.1/data/competition/public"
-)
+# Since AI competition pack (not shipped); point EUROPRESS_PACK at its data/competition/public folder.
+PACK = Path(os.environ.get(
+    "EUROPRESS_PACK",
+    "Europress_SMART_Material_Value_Engine_v1.0.1/data/competition/public",
+))
 OUT = ROOT / "public" / "data"
 AI = ROOT / "ai-workspace"
 

@@ -6,13 +6,14 @@ import sys
 from dataclasses import dataclass
 from pathlib import Path
 
-DEFAULT_SIM_ROOT = "/home/hackathon/simulator-weather-and-stuff"
+# final_codebase/soft_sensor, next to this dashboard folder
+DEFAULT_SIM_ROOT = str(Path(__file__).resolve().parents[2] / "soft_sensor")
 
 
 @dataclass(frozen=True)
 class Settings:
     sim_root: Path
-    run: str = "full400"            # runs/<run>: simulated telemetry
+    run: str = "demo40"             # runs/<run>: simulated telemetry (demo40 = shipped 40-machine slice)
     models: str = "full400"         # models/<models>: trained bundles + batch predictions
     split: str = "time"             # bundle used for live inference ("time" = pilot fleet)
     host: str = "127.0.0.1"
@@ -37,7 +38,7 @@ class Settings:
         env = os.environ
         return cls(
             sim_root=Path(env.get("SOFTSENSOR_SIM_ROOT", DEFAULT_SIM_ROOT)),
-            run=env.get("SOFTSENSOR_RUN", "full400"),
+            run=env.get("SOFTSENSOR_RUN", "demo40"),
             models=env.get("SOFTSENSOR_MODELS", "full400"),
             split=env.get("SOFTSENSOR_SPLIT", "time"),
             host=env.get("SOFTSENSOR_HOST", "127.0.0.1"),

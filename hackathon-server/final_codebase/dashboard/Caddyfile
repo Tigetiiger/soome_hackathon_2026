@@ -9,7 +9,7 @@ europress.acq.ee {
 		flush_interval -1
 	}
 	log {
-		output file /home/hackathon/europress-dashboard/logs/access.log {
+		output file /home/hackathon/final_codebase/dashboard/logs/access.log {
 			roll_size 10MiB
 			roll_keep 5
 		}
